@@ -3,6 +3,7 @@
 # compiled output
 /dist
 /tmp
+/views
 
 # dependencies
 node_modules
