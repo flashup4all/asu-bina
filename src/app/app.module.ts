@@ -1,0 +1,124 @@
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {HttpModule, Http} from '@angular/http';
+import{ ToastModule } from 'ng2-toastr/ng2-toastr';
+
+
+import { AuthService } from './auth/auth.service';
+import { AppComponent } from './app.component';
+import { LocalService } from './storage/local.service';
+import { AuthGuardService } from './shared/guards/index';
+import { MembersService } from './vendor/membership/members.service';
+import { FormService } from './vendor/form-settings/form.service';
+import { LoanSettingsService } from './vendor/loans/loan-settings/loan-settings.service';
+import { SettingsService } from './vendor/settings/settings/settings.service';
+import { LoanRequestService } from './vendor/manage-loanrequest/loan-request.service';
+import { MessageService } from './vendor/message-center/message.service';
+import { ContributionService } from './vendor/manage-contribution/contribution.service';
+import { WidthdrawalsService } from './vendor/manage-widthdrawals/widthdrawals.service';
+
+
+// Import containers
+import {
+  FullLayoutComponent,
+  SimpleLayoutComponent
+} from './containers';
+
+const APP_CONTAINERS = [
+  FullLayoutComponent,
+  SimpleLayoutComponent
+]
+
+// Import components
+import {
+  AppAsideComponent,
+  AppBreadcrumbsComponent,
+  AppFooterComponent,
+  AppHeaderComponent,
+  AppSidebarComponent,
+  AppSidebarFooterComponent,
+  AppSidebarFormComponent,
+  AppSidebarHeaderComponent,
+  AppSidebarMinimizerComponent,
+  APP_SIDEBAR_NAV
+} from './components';
+
+const APP_COMPONENTS = [
+  AppAsideComponent,
+  AppBreadcrumbsComponent,
+  AppFooterComponent,
+  AppHeaderComponent,
+  AppSidebarComponent,
+  AppSidebarFooterComponent,
+  AppSidebarFormComponent,
+  AppSidebarHeaderComponent,
+  AppSidebarMinimizerComponent,
+  APP_SIDEBAR_NAV
+]
+
+// Import directives
+import {
+  AsideToggleDirective,
+  NAV_DROPDOWN_DIRECTIVES,
+  ReplaceDirective,
+  SIDEBAR_TOGGLE_DIRECTIVES
+} from './directives';
+
+const APP_DIRECTIVES = [
+  AsideToggleDirective,
+  NAV_DROPDOWN_DIRECTIVES,
+  ReplaceDirective,
+  SIDEBAR_TOGGLE_DIRECTIVES
+]
+
+// Import routing module
+import { AppRoutingModule } from './app.routing';
+
+// Import 3rd party components
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { ChartsModule } from 'ng2-charts/ng2-charts';
+import { SigninComponent } from './auth/signin/signin.component';
+@NgModule({
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpModule,
+    BrowserAnimationsModule,
+    BsDropdownModule.forRoot(),
+    TabsModule.forRoot(),
+    ToastModule.forRoot(),
+    ChartsModule,
+    FormsModule,
+    ReactiveFormsModule,
+
+  ],
+  declarations: [
+    AppComponent,
+    ...APP_CONTAINERS,
+    ...APP_COMPONENTS,
+    ...APP_DIRECTIVES,
+    SigninComponent
+  ],
+  providers: [{
+    provide: LocationStrategy,
+    useClass: HashLocationStrategy
+  },
+  AuthService,
+  LocalService, 
+  AuthGuardService, 
+  MembersService, 
+  FormService,
+  LoanSettingsService,
+  SettingsService,
+  LoanRequestService,
+  MessageService,
+  ContributionService,
+  WidthdrawalsService
+  ],
+  bootstrap: [ AppComponent ]
+})
+export class AppModule { }

@@ -1,0 +1,565 @@
+
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-sm-12 col-lg-6">
+      <div class="card text-white bg-success">
+        <div class="card-body pb-0">
+          <h4 class="mb-0">{{ total_signatories }}</h4>
+          <p>Loan Signatories
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-lg-6">
+      <div class="card text-white bg-primary">
+        <div class="card-body pb-0">
+          <h4 class="mb-0"> {{ total_loan_type }}</h4>
+          <p>Total Loan Types
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <tabset>
+            <tab heading="LOAN SIGNATORY/APPROVALS">
+                <div class="col-md-12">
+                    <div class="row">
+                         <div class="col-md-12">
+                            <h3 class="box-heading pull-left">LOAN SIGNATORY</h3>
+                            <button type="button" class="btn btn-success pull-right" (click)="loanSignatoryModal.show()"><i class="fa fa-plus"></i> Add Loan Signatory</button>
+                        </div>
+                                <small>You can only assign 3 signatories</small>
+                                <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Level</th>
+                                            <th>Staff Name</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="" *ngFor="let item of loanSignatoryList">
+                                            <td><input type="checkbox" name=""></td>
+                                            <td>{{item.signatory_type}}</td>
+                                            <td>
+                                                {{item.staff?.first_name}} 
+                                                {{item.staff?.last_name}} 
+                                                {{item.staff?.middle_name}}
+                                            </td>
+                                            <td class="center">
+                                                 <button class="btn btn-danger" (click)="deleteLoanSignatory(item.id)" title="Delete Loan Signatory"><i class="fa fa-trash-o"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="LOAN TYPES">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="box-heading pull-left">LOAN TYPE</h3>
+                            <button type="button" class="btn btn-success pull-right" (click)="newLoanTypeModal.show()"><i class="fa fa-plus"></i> Add Loan Type</button>
+                        </div>
+                         <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th>Duration</th>
+                                            <th>Interest [%]</th>
+                                            <th>Created</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="" *ngFor="let item of loanTypeList">
+                                            <td><input type="checkbox" name=""></td>
+                                            <td>{{item.loan_type}}</td>
+                                            <td>{{item.description}}</td>
+                                            <td>{{item.duration}}</td>
+                                            <td>{{item.interest}}</td>
+                                            <td>{{item.created_at}}</td>
+                                            <td class="center">
+                                                <button class="btn btn-success" (click)="manageLoanItems(item)" title="Edit Loan Type" title="Manage loan Items">
+                                                    <i class="fa fa-sliders"></i>
+                                                </button>
+                                                <button class="btn btn-primary" (click)="editLoanType(item)" title="Edit Loan Type">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                 <button class="btn btn-danger" (click)="deleteLoanType(item.id)" title="Delete Loan Type"><i class="fa fa-trash-o"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                    
+                    <div class="media stream load-more">
+                        <a  (click)="loadMore()" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
+                    </div>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="LOAN SETTINGS">
+                <div class="col-md-12">
+                    loan settings
+                    <div class="alert alert-danger" *ngIf="!thresholdCheck">
+                        Your Loan Threshold  Settings has been turned off, please turn it on in order to set the loan eligibility for client'
+                    </div>
+                     <!-- eligibility -->
+                    <div class="alert alert-danger" *ngIf="!eligibilitycheck">
+                        Your Loan eligibility Settings has been turned off, please turn it on in order to set the loan eligibility for client'
+                    </div>
+                    <div class="row"  *ngFor="let item of settingsList">
+                        <div class="col-md-6">
+                            <div class="">
+                                <label>{{item.name}}</label>
+                                <!-- <ui-switch *ngIf="item.status == 0" (change)="updateSettings($event, item.id )"></ui-switch> -->
+                                <div>
+                                    {{item?.description}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="switch switch-text switch-pill switch-primary-outline-alt switch-lg">
+                                    <input (change)="updateSettings($event.srcElement.checked, item.id )" type="checkbox" class="switch-input" [checked]="item.status">
+                                    <span class="switch-label" data-on="On" data-off="Off"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2" *ngIf="thresholdCheck">
+                            <div class="">
+                                <p> Loan Threshold Settings</p>
+                            <form [formGroup]="loanThresholdForm" (ngSubmit)="updateThreshold(loanThresholdForm.value)">
+                                <div class="form-group">
+                                    <label>Threshold Amount</label>
+                                    <input type="number" [ngModel]="loanThresholdData?.threshold_amount" formControlName="threshold_amount" min="0" class="form-control" name="">
+                                        &#8358; {{loanThresholdData?.threshold_amount | number : fractionSize}}
+                                </div>
+                                <button type="submit" class="btn btn-success btn-block" [disabled]="loanThresholdForm.invalid || submitPending ">
+                                    <span *ngIf="!submitPending">Update</span>
+                                    <span *ngIf="submitPending && loanThresholdForm.valid">Please Wait...</span>
+                                    <span *ngIf="submitPending && loanThresholdForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                </button>
+                            </form>
+                            </div>
+                        </div>
+                        <div class="" *ngIf="eligibilitycheck">
+
+                            <div class="col-md-8 col-md-offset-2">
+                                <p> Loan Eligibility Settings</p>
+                                <form [formGroup]="eligibilityForm" (ngSubmit)="updateEligibility(eligibilityForm.value)">
+                                    <div class="form-group">
+                                        <label>Loan Eligibility Percentage (%)</label>
+                                        <input type="number" [ngModel]="loanEligibilityData?.percentage" formControlName="percentage" min="0" class="form-control" name="">
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-block" [disabled]="eligibilityForm.invalid || submitPending ">
+                                        <span *ngIf="!submitPending">Update</span>
+                                        <span *ngIf="submitPending && eligibilityForm.valid">Please Wait...</span>
+                                        <span *ngIf="submitPending && eligibilityForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col-md-8 col-md-offset-2">
+                                <p>this settings sets how long a member must been register before requesting for a loan</p>
+                                <form [formGroup]="eligibilityForm" (ngSubmit)="updateEligibility(eligibilityForm.value)">
+                                    <div class="form-group">
+                                        <label>
+                                        Membership Duration (in months)
+                                        </label>
+                                        <select class="form-control" [ngModel]="loanEligibilityData?.membership_duration" formControlName="membership_duration">
+                                            <option value="0">None</option>
+                                            <option value="1">1 months</option>
+                                            <option value="2">2 months</option>
+                                            <option value="3">3 months</option>
+                                            <option value="4">4 months</option>
+                                            <option value="5">5 months</option>
+                                            <option value="6">6 months</option>
+                                            <option value="7">7 months</option>
+                                            <option value="8">8 months</option>
+                                            <option value="9">9 months</option>
+                                            <option value="10">10 months</option>
+                                            <option value="11">11 months</option>
+                                            <option value="12">1 Year</option>
+                                            <option value="18">1 &#189; Year</option>
+                                            <option value="24">2 Years</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-block" [disabled]="eligibilityForm.invalid || submitPending ">
+                                        <span *ngIf="!submitPending">Update</span>
+                                        <span *ngIf="submitPending && eligibilityForm.valid">Please Wait...</span>
+                                        <span *ngIf="submitPending && eligibilityForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col-md-8 col-md-offset-2">
+                                <div class="col-md-12">
+                                   this settings sets the limits on number of running loan a members should have before requesting for another loan
+                                </div>
+                                <form [formGroup]="eligibilityForm" (ngSubmit)="updateEligibility(eligibilityForm.value)">
+                                    <div class="form-group">
+                                        <label> Maximum Running Loans</label>
+                                        <select class="form-control" [ngModel]="loanEligibilityData?.max_running_loans" formControlName="max_running_loans">
+                                            <option value="0">None</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                            <option value="24">24</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-block" [disabled]="eligibilityForm.invalid || submitPending ">
+                                        <span *ngIf="!submitPending">Update</span>
+                                        <span *ngIf="submitPending && eligibilityForm.valid">Please Wait...</span>
+                                        <span *ngIf="submitPending && eligibilityForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </tab>
+        </tabset>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #loanSettingsItemModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Manage Items</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="loanSettingsItemModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+            <div class="col-md-12">
+                <button *ngIf="!addItemCheck" class="btn btn-success pull-right" (click)="addLoanItemCheck('add')"><i class="fa fa-plus"></i>Add Item</button>
+                <button *ngIf="addItemCheck" class="btn btn-warning pull-right" (click)="addLoanItemCheck('remove')">Hide Form</button>
+            </div>
+            <br>
+            <div *ngIf="addItemCheck">
+               <form [formGroup] = "loanTypeItemForm" (ngSubmit) = "addModifyLoanItem(loanTypeItemForm.value)" class="form-horizontal row-fluid">
+                        <div class="form-group">
+                            <input type="text" placeholder="Item Name" formControlName="item_name" name="" class="form-control">
+                            <small [hidden]="(loanTypeItemForm.controls.item_name.valid ) || (loanTypeItemForm.controls.item_name.pristine && !submitted)" class="text-danger">Item Name is Required</small>
+                        </div>
+                        <div class="form-group">
+                           <input type="text" placeholder="Item Amount" formControlName="amount" name="" class="form-control">
+                            <small [hidden]="(loanTypeItemForm.controls.amount.valid ) || (loanTypeItemForm.controls.amount.pristine && !submitted)" class="text-danger">Item Amount is Required</small>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" formControlName="description" placeholder="Description"></textarea>
+                            <small [hidden]="(loanTypeItemForm.controls.description.valid ) || (loanTypeItemForm.controls.description.pristine && !submitted)" class="text-danger">Description is Required</small>
+                        </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-success btn-block" [disabled]="loanTypeItemForm.invalid || submitPending ">
+                                <span *ngIf="!submitPending">{{ loanItemButtonName }}</span>
+                                <span *ngIf="submitPending && loanTypeItemForm.valid">Please Wait...</span>
+                                <span *ngIf="submitPending && loanTypeItemForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+           <div class="new session form">
+                 <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Amount (&#8358;)</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="" *ngFor="let item of loanItemList">
+                            <td><input type="checkbox" name=""></td>
+                            <td>{{item.item_name}}</td>
+                            <td>{{item.amount}}</td>
+                            <td>{{item.description}}</td>
+                            <td class="center">
+                                 <button class="btn btn-primary" (click)="editLoanItem(item)" title="Delete Loan Type"><i class="fa fa-edit"></i></button>
+                                 <button class="btn btn-danger" (click)="deleteLoanItems(item.id)" title="Delete Loan Type"><i class="fa fa-trash-o"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>
+
+<!-- new loan signatory modal -->
+<div bsModal #loanSignatoryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Add Loan Signatory</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="loanSignatoryModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+               <form [formGroup] = "loanSignatoryForm" (ngSubmit) = "addLoanSignatory(loanSignatoryForm.value)" class="form-horizontal row-fluid">
+                    <div class="form-group">
+                        <label>Level</label>
+                        <div class="controls">
+                            <select tabindex="1" formControlName="level" data-placeholder="Level" class="form-control">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                            </select>
+                            <small [hidden]="(loanSignatoryForm.controls.level.valid ) || (loanSignatoryForm.controls.level.pristine && !submitted)" class="text-danger">Level is Required</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Staff</label>
+                        <div class="controls">
+                            <select tabindex="1" formControlName="user_id" data-placeholder="Level" class="form-control">
+                                <option value="{{item.id}}" *ngFor="let item of managementStaffList">
+                                    {{item.first_name}} 
+                                    {{item.last_name}} 
+                                    {{item?.middle_name}}
+                                </option>
+                            </select>
+                            <small [hidden]="(loanSignatoryForm.controls.user_id.valid ) || (loanSignatoryForm.controls.user_id.pristine && !submitted)" class="text-danger">Staff is Required</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-success btn-block" [disabled]="loanSignatoryForm.invalid || loanSignatoryCheck ">
+                                <span *ngIf="!loanSignatoryCheck">Create</span>
+                                <span *ngIf="loanSignatoryCheck && loanSignatoryForm.valid">Please Wait...</span>
+                                <span *ngIf="loanSignatoryCheck && loanSignatoryForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>
+<!-- new edit loan signatory modal -->
+<div bsModal #editLoanSignatoryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Edit Loan Signatory</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="editLoanSignatoryModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+               <form [formGroup] = "editloanSignatoryForm" (ngSubmit) = "updateLoanSignatory(editloanSignatoryForm.value, editLoanSignatoryData.id)" class="form-horizontal row-fluid">
+                    <div class="form-group">
+                        <label>Level {{editLoanSignatoryData?.signatory_type}}</label>
+                        <select tabindex="1" [ngModel]="editLoanSignatoryData?.user?.id" formControlName="user_id" data-placeholder="Level" class="form-control">
+                            <option value="{{item.id}}" *ngFor="let item of managementStaffList">
+                                {{item.first_name}} 
+                                {{item.last_name}} 
+                                {{item?.middle_name}}
+                            </option>
+                        </select>
+                        <small [hidden]="(editloanSignatoryForm.controls.user_id.valid ) || (editloanSignatoryForm.controls.user_id.pristine && !submitted)" class="text-danger">Payment Title is Required</small>
+                    </div>
+                    <div class="form-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-success btn-block" [disabled]="editloanSignatoryForm.invalid || updateloanSignatoryCheck ">
+                                <span *ngIf="!updateloanSignatoryCheck">Update</span>
+                                <span *ngIf="updateloanSignatoryCheck && editloanSignatoryForm.valid">Please Wait...</span>
+                                <span *ngIf="updateloanSignatoryCheck && editloanSignatoryForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>
+<!-- new loan type modal -->
+<div bsModal #newLoanTypeModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">New Loan Type</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="newLoanTypeModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+              <form method="POST" [formGroup] = "newLoanTypeForm" (ngSubmit) = "addLoanType(newLoanTypeForm.value)" class="form-horizontal row-fluid">
+                <div class="form-group">
+                    <label>Type Name</label>
+                    <input type="text" formControlName="loan_type" placeholder="Loan Type" class="form-control" value="" required="">
+                    <small [hidden]="(newLoanTypeForm.controls.loan_type.valid ) || (newLoanTypeForm.controls.loan_type.pristine && !submitted)" class="text-danger">Loan Type Name is Required</small>
+                </div>
+                <div class="form-group">
+                    <label>Interest <small>[ % ]</small></label>
+                    <input type="number" formControlName="interest" placeholder="percentage interest: eg.3%" class="form-control" required="">
+                    <small [hidden]="(newLoanTypeForm.controls.interest.valid ) || (newLoanTypeForm.controls.interest.pristine && !submitted)" class="text-danger">Percentage Interest Required</small>
+                </div>
+               
+                    <div class="form-group"  *ngIf="!percentage">
+                    <label>Minimum Amount <small>[ NGN ]</small></label>
+                    <input type="number" formControlName="minimum_amount" placeholder="minimum loan amount" class="form-control" required="">
+                </div>
+                <div class="form-group"  *ngIf="!percentage">
+                    <label>maximun Amount <small>[ NGN ]</small></label>
+                    <input type="number" formControlName="maximum_amount" placeholder="maximun loan amount" class="form-control" required="">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-control" formControlName="description" placeholder="loan details"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Requirements</label>
+                    <textarea class="form-control" formControlName="requirements" placeholder="loan requirement"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Duration</label>
+                    <select class="form-control" formControlName="duration" required="">
+                        <option value="3">3 Months</option>
+                        <option value="6">6 Months</option>
+                        <option value="12">1 Year</option>
+                        <option value="24">2 Years</option>
+                        <option value="36">3 Years</option>
+                        <option value="48">4 Years</option>
+                        <option value="60">5 Years</option>
+                        <option value="72">6 Years</option>
+                    </select>
+                     <small [hidden]="(newLoanTypeForm.controls.duration.valid ) || (newLoanTypeForm.controls.duration.pristine && !submitted)" class="text-danger">Loan Duration is Required</small>
+                </div>
+                <hr>
+                <h4>Loan Signatory Settings</h4>
+                <small>Please Choose  Signatories that must approve this loan type</small>
+                <small>Please Set Loan Siignatories before Submission</small>
+                <div class="form-group">
+                    <div>
+                        <label class="checkbox-inline" *ngFor="let item of loanSignatoryList">
+                        <div class="icheckbox_minimal-grey" style="position: relative;">
+                            <input type="checkbox" name="loan_signatories[]" value="{{item.signatory_type}}">
+                        </div> Level {{item.signatory_type}} Signatory</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success btn-block" [disabled]="newLoanTypeForm.invalid || loanTypeCheck ">
+                    <span *ngIf="!loanTypeCheck">Create</span>
+                    <span *ngIf="loanTypeCheck && newLoanTypeForm.valid">Please Wait...</span>
+                    <span *ngIf="loanTypeCheck && newLoanTypeForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                </button>
+            </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>
+<!-- new edit loan type modal -->
+<div bsModal #editLoanTypeModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Edit Loan Type</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="editLoanTypeModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+              <form method="POST" [formGroup] = "newLoanTypeForm" (ngSubmit) = "updateLoanType(newLoanTypeForm.value, editLoanTypeData.id)" class="form-horizontal row-fluid">
+                <div class="form-group">
+                    <label>Type Name</label>
+                    <input type="text" [ngModel]="editLoanTypeData?.loan_type" formControlName="loan_type" placeholder="Loan Type" class="form-control" value="" required="">
+                    <small [hidden]="(newLoanTypeForm.controls.loan_type.valid ) || (newLoanTypeForm.controls.loan_type.pristine && !submitted)" class="text-danger">Loan Type Name is Required</small>
+                </div>
+                <div class="form-group">
+                    <label>Interest <small>[ % ]</small></label>
+                    <input type="number" [ngModel]="editLoanTypeData?.interest" formControlName="interest" placeholder="percentage interest: eg.3%" class="form-control" required="">
+                    <small [hidden]="(newLoanTypeForm.controls.interest.valid ) || (newLoanTypeForm.controls.interest.pristine && !submitted)" class="text-danger">Loan Interest is Required</small>
+                </div>
+                <div class="form-group" *ngIf="!percentage">
+                    <label>Minimum Amount <small>[ NGN ]</small></label>
+                    <input type="number" [ngModel]="editLoanTypeData?.minimum_amount" formControlName="minimum_amount" placeholder="minimum loan amount" class="form-control" required="">
+                </div>
+                <div class="form-group" *ngIf="!percentage">
+                    <label>maximun Amount <small>[ NGN ]</small></label>
+                    <input type="number" [ngModel]="editLoanTypeData?.maximum_amount" formControlName="maximum_amount" placeholder="maximun loan amount" class="form-control" required="">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                        <textarea class="form-control" [ngModel]="editLoanTypeData?.description" formControlName="description" placeholder="loan details"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Requirements</label>
+                    <div class="col-sm-7">
+                        <textarea class="form-control" [ngModel]="editLoanTypeData?.requirements" formControlName="requirements" placeholder="loan requirement"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Duration</label>
+                    <select class="form-control" [ngModel]="editLoanTypeData?.duration" formControlName="duration" required="">
+                        <option value="3">3 Months</option>
+                        <option value="6">6 Months</option>
+                        <option value="12">1 Year</option>
+                        <option value="24">2 Years</option>
+                        <option value="36">3 Years</option>
+                        <option value="48">4 Years</option>
+                    </select>
+                     <small [hidden]="(newLoanTypeForm.controls.duration.valid ) || (newLoanTypeForm.controls.duration.pristine && !submitted)" class="text-danger">Loan Duration is Required</small>
+                </div>
+                <hr>
+                <h4>Loan Signatory Settings</h4>
+                <small>Please Choose  Signatories that must approve this loan type</small>
+                <small>Please Set Loan Siignatories before Submission</small>
+                <div class="form-group">
+                    <label class="checkbox-inline" *ngFor="let item of loanSignatoryList">
+                        <div class="icheckbox_minimal-grey" style="position: relative;">
+                            <input type="checkbox" name="loan_signatories[]" value="{{item.signatory_type}}">
+                        </div> Level {{item.signatory_type}} Signatory
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-success btn-block" [disabled]="newLoanTypeForm.invalid || updateloanTypeCheck ">
+                    <span *ngIf="!updateloanTypeCheck">Update</span>
+                    <span *ngIf="updateloanTypeCheck && newLoanTypeForm.valid">Please Wait...</span>
+                    <span *ngIf="updateloanTypeCheck && newLoanTypeForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                </button>
+            </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>

@@ -1,0 +1,120 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <tabset>
+          <tab heading="Members Form Fields">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-12">
+                  <form class="form-horizontal row-fluid" [formGroup]="formPool">
+                            <!-- <div class="defualt-form">
+                                <h3>Default Form</h3>
+                                <br>
+                                <div class="control-group">
+                                    <label class="col-sm-3">Email</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" formControlName="label" placeholder="Email" name="label" class="form-control" title="Mobile Number required for Login Access">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <i class="fa fa-question-circle-o" title="Field label eg: Email:"></i>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="col-sm-3">Mobile Number</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" formControlName="label" placeholder="Mobile Number" name="label" class="form-control" title="Mobile Number required for Login Access">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <i class="fa fa-question-circle-o" title="Field label eg: First Name:"></i>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3>Add Custom Form Fields to Members Form</h3>
+                                <small>your custom form fields</small>
+                                </div>
+                                <div class="form-group" *ngFor="let item of membersFormPoolList">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>{{item.label}}</label>
+                                            <input type="text" *ngIf="item.type =='text'" placeholder="{{item.placeholder}}" name="{{item.label}}" class="form-control">
+                                            <textarea class="form-control"  *ngIf="item.type =='textarea'"  placeholder="{{item.placeholder}}" ></textarea>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button class="btn btn-danger">
+                                                <i class="fa fa-trash-o" (click)="deleteFormField(item.id)" title="Remove This Form Field From Members Form"></i>   
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </form>
+                </div>
+              </div>
+            </div>
+            
+          </tab>
+          <tab heading="Add Form Field">
+            <div class="col-md-12">
+              <div class="row">
+                    <form class="form-horizontal row-fluid" [formGroup] = "formPool" (ngSubmit) = "addFormField(formPool.value)">
+                        <div class="form-group">
+                            <label>Kind</label>
+                            <select class="form-control" formControlName="kind" name="kind" required="">
+                                <option value="input" title=" text field for short text">Input</option>
+                                <option value="textarea" title="large text box for lont text">Text Area</option>
+                                <!-- <option value="image">image</option>
+                                <option value="select">Select</option> -->
+                            </select>
+                            <i class="fa fa-question-circle-o" title="field type"></i>
+                        </div>
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" formControlName="label" placeholder="label [eg. Name, Email etc]" name="label" class="form-control">
+                            <i class="fa fa-question-circle-o" title="Field label eg: First Name:"></i>
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                                 <select class="form-control" formControlName="type" name="type" required="">
+                                    <option value="text">Text</option>
+                                    <option value="text">Email</option>
+                                    <option value="text">Number</option>
+                                </select>
+                                <i class="fa fa-question-circle-o" title="what type of input field id this field"></i>
+                        </div>
+                        <div class="form-group">
+                            <label>Placeholder</label>
+                            <input type="text" formControlName="placeholder" name="placeholder" placeholder="eg. [please enter your email]" class="form-control">
+                                <i class="fa fa-question-circle-o" title="this is the text that appears insides a text field. it disappears once the user types insides the field"></i>
+                        </div>
+                                <!-- <div class="control-group">
+                                    <label class="col-sm-3">Required</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control"  name="required" required="">
+                                            <option value="1">true</option>
+                                            <option value="0">false</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <i class="fa fa-question-circle-o" title="is this field a must fill"></i>
+                                    </div>
+                                </div> -->
+                        <div class="form-group">
+                        <button type="submit" class="btn btn-success btn-block" [disabled]="formPool.invalid || submitPending ">
+                            <span *ngIf="!submitPending">Add Field</span>
+                            <span *ngIf="submitPending && formPool.valid">Please Wait...</span>
+                            <span *ngIf="submitPending && formPool.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                        </button>
+                        </div>
+                </form>
+              </div>
+            </div>
+            
+          </tab>
+        </tabset>
+      </div>
+    </div>
+  </div>
+</div>

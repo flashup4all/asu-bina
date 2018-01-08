@@ -1,0 +1,59 @@
+<div class="module">
+    <div class="module-body">
+        <div class="profile-head media">
+            <a class="media-avatar pull-left">
+                <img *ngIf="!vendor.logo" src="assets/images/avata.png">
+                <img *ngIf="vendor.logo" src="{{vendor.logo}}">
+            </a>
+            <div class="media-body">
+                <h4>
+                    General Settings <small>Manage all Settings</small>
+                </h4>
+                <p class="profile-brief">
+                    General Settings
+                </p>
+            </div>
+        </div>
+        <ul class="profile-tab nav nav-tabs">
+            <li class="active"><a href="#activity" data-toggle="tab">LOAN SIGNATORY/APPROVALS</a></li>
+        </ul>
+        <div class="profile-tab-content tab-content">
+            <div class="tab-pane fade active in" id="activity">
+                <div class="stream-list">
+                <div class="col-md-12">
+                    <h3 class="box-heading pull-left">General Settings</h3>
+                </div>
+                <hr class="mtxl mbxl">
+                    <div class="media stream">
+                        <div class="panel-body">
+                            <div class="stream-list">
+                                <div class="module-body">
+				                    <div class="new session form">
+				                    	<form class="form-horizontal row-fluid">
+				                            <div class="control-group" *ngFor="let item of settingsList">
+				                                <label class="col-sm-3">{{item.name}}</label>
+				                                <div class="col-sm-3">
+				                                    <p>
+				                                    	<ui-switch *ngIf="item.status" [checked]="true" (change)="updateSettings($event, item.id )"></ui-switch>
+				                                    </p>
+				                                    <p>
+				                                    	<ui-switch *ngIf="item.status == 0" (change)="updateSettings($event, item.id )"></ui-switch>
+				                                    </p>
+				                                </div>
+                                                <div class="col-sm-6">
+                                                    {{item?.description}}
+                                                </div>
+				                            </div>
+				                        </form>
+				                    </div>
+				                </div>
+                            </div>
+                        </div>
+                    </div>
+                <!--/.stream-list-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/.module-body-->
+</div>

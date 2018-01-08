@@ -1,0 +1,138 @@
+<div class="card">
+  	<div class="card-body">
+    	<div class="row">
+      		<div class="col">
+		        <tabset>
+		          <tab heading="Manage Widthdrawals">
+			            <div class="col-md-12">
+			            	<div _ngcontent-c4="" class="module-option clearfix">
+					           <form class="pull-left" [formGroup] = "runContributionForm" (ngSubmit) = "runContribution(runContributionForm.value)">
+					           	 	<div class="row">
+					                	<div class="col-md-4">
+					                		<select class="form-control" placeholder="Filter by name..." formControlName = "repayment_method">
+						                        <option value="salary">Salary</option>
+						                    </select>
+						                    <small [hidden]="(runContributionForm.controls.repayment_method.valid ) || (runContributionForm.controls.repayment_method.pristine && !submitted)" class="text-danger">Repayment Method is Required</small> 
+					                	</div>
+							           	<div class="col-md-4">
+							           		<select class="form-control" placeholder="Period" formControlName = "period">
+						                        <option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
+						                        <!-- <option value="January/{{ current_year }}">January/{{ current_year }}</option> -->
+						                    </select>
+						                    <small [hidden]="(runContributionForm.controls.period.valid ) || (runContributionForm.controls.period.pristine && !submitted)" class="text-danger">Period Method is Required</small> 
+							           	</div>
+							           	<div class="col-md-4">
+							           		 <button type="submit" class="btn btn-success" [disabled]="runContributionForm.invalid || submitPending ">
+						                        <span *ngIf="!submitPending">Run Contribution</span>
+						                        <span *ngIf="submitPending && runContributionForm.valid">Please Wait...</span>
+						                        <span *ngIf="submitPending && runContributionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+						                    </button>
+							           	</div>
+					                </div>
+					                <br>
+					            </form>
+					            <button class="btn btn-success" (click)="excelUploadModal.show()">Upload Excel Format</button>
+					            <a class="btn btn-success" [routerLink]="['/app/contributions/run-contributions']" (click)="manageContribution()">Manage Contributions</a>
+					        </div>
+			            	<table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+				                <thead>
+					                <tr>
+					                    <th>#</th>
+					                    <th>Name</th>
+					                    <th>(&#8358;) Contribution</th>
+					                    <th>(&#8358;) Contributed</th>
+					                    <th>Period</th>
+					                    <th>Date</th>
+					                    <th>Actions</th>
+					                </tr>
+					            </thead>
+					            <tbody>
+					                <tr class="" *ngFor="let item of contibutionsList">
+					                    <td><input type="checkbox" name=""></td>
+					                    <td>
+					                        {{item?.member?.first_name}} 
+					                        {{item?.member?.last_name}} 
+					                        {{item?.member?.middle_name}} 
+					                        </td>
+					                    <td>
+					                        {{ item?.member?.contribution }} 
+					                    </td>
+					                    <td>
+					                         {{ item?.amount | number:'.2' }}
+					                    </td>
+					                      <td>
+					                        {{item?.period}} 
+					                    </td>
+					                    <td>
+					                        {{item?.created_at}} 
+					                    </td>
+					                    <td class="center">
+					                        <div class="btn-group">
+					                          <!-- <button class="btn btn-mini">Action</button> -->
+					                          <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+					                            <span><i class="fa fa-ellipsis-v"></i></span>
+					                          </button>
+					                          <ul class="dropdown-menu" style="min-width:1px;">
+					                            
+					                            <!-- <li><a tabindex="-1" (click)="deleteMember(item.id)">Another action</a></li>
+					                             <li class="divider"></li>
+					                            <li>
+					                                <button class="btn btn-small" (click)="deleteMember(item.id)" title="delete member">
+					                                    <i class="fa fa-trash-o"></i>
+					                                </button>
+					                            </li> -->
+					                             <li class="divider"></li>
+					                          </ul>
+					                        </div>
+					                    </td>
+					                </tr>
+					            </tbody>
+					        </table>
+					        <br>
+				            <div class="col-md-12 load-more">
+	                           <a  (click)="loadMoreContributions()" style="cursor: pointer;" class="btn btn-block btn-success"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
+	                        </div>
+			            </div>
+		        	</tab>
+		    	</tabset>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div bsModal #excelUploadModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Upload Excel Format</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="excelUploadModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+         	<button class="btn btn-success"><a href="http://localhost:8000/excels/contributions-format.xls" target="_blank">generate Excel format</a></button>
+           	<div class="new session form">
+               	<form>
+               		<div class="form-group">
+               			please ensure it's the generated excel format you used else it wont upload
+               		</div>
+               		<div class="form-group">
+               			<label>Contribution File</label>
+               			<input id="fileChooseAFile" #data type="file" class="form-control" (change)="handleFile($event)"  name="fileChooseAFile" accept=".csv">
+               		</div>
+               		<!-- <div class="result-container" *ngIf="result && result.length>0">
+					  <h2>
+					    Result :
+					   <br>
+					  </h2>
+					  {{result}}
+					</div> -->
+               		<div class="form-group">
+               			<button class="btn btn-success">Upload</button>
+               		</div>
+               	</form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>

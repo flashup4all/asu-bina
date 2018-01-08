@@ -1,0 +1,156 @@
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <tabset>
+                  <tab heading="Manage Widthdrawals">
+                    <div class="row">
+                        <div class="col-md-6">
+                            Mails
+                        </div>
+                        <span class="col-md-4">
+                            <div class="btn-group">
+                                <button class="btn">
+                                    Inbox</button>
+                                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a (click)="mailSelector('inbox')">Inbox</a></li>
+                                    <li><a (click)="mailSelector('sent')">Sent</a></li>
+                                    <li><a (click)="mailSelector('trash')">Trash</a></li>
+                                </ul>
+                            </div>
+                            <br><br>
+                            <!-- <select class="pull-left form-control" #type (change)="mailSelector(type.value)">
+                                <option value="inbox">inbox</option>
+                                <option value="sent">sent</option>
+                                <option value="trash">trash</option>
+                            </select> -->
+                        </span>
+                        <span class="col-md-2">
+                            <button type="button" class="btn btn-success pull-right" (click)="newMessageModal.show()"><i class="fa fa-plus"></i> Compose</button>
+                        </span>
+                    </div>
+                    <table class="table table-responsive-sm table-hover table-outline mb-0">
+                        <tbody>
+                            <tr class="heading">
+                                <td class="cell-check">
+                                    <input type="checkbox" class="inbox-checkbox">
+                                </td>
+                                <td class="cell-icon">
+                                </td>
+                                <td class="cell-author hidden-phone hidden-tablet">
+                                    Sender
+                                </td>
+                                <td>To</td>
+                                <td class="cell-title">
+                                    Subject
+                                </td>
+                                <td class="cell-icon hidden-phone hidden-tablet">
+                                </td>
+                                <td class="cell-time align-right">
+                                    Date
+                                </td>
+                            </tr>
+                            <tr class="unread" *ngFor="let messages of messagesList">
+                                
+                                    <td class="cell-check">
+                                        <input type="checkbox" class="inbox-checkbox">
+                                    </td>
+                                    <td class="cell-icon">
+                                        <i *ngIf="messages.status == 1" class="icon-star"></i>
+                                        <i *ngIf="messages.status != 1" class="icon-star-0"></i>
+                                    </td>
+                                    <td class="cell-author hidden-phone hidden-tablet">
+                                        <a (click)="viewMessage(messages)">
+                                        {{ messages?.from?.first_name }} 
+                                        {{ messages?.from?.middle_name }} 
+                                        {{ messages?.from?.last_name }}
+                                         </a>
+                                    </td>
+                                    <td class="cell-author hidden-phone hidden-tablet">
+                                        <a (click)="viewMessage(messages)">
+                                        {{ messages?.to?.first_name }} 
+                                        {{ messages?.to?.middle_name }} 
+                                        {{ messages?.to?.last_name }}
+                                         </a>
+                                    </td>
+                                    <td class="cell-title">
+                                        {{ messages?.subject }}
+                                    </td>
+                                    <!-- <td class="cell-icon hidden-phone hidden-tablet">
+                                        <i class="icon-paper-clip"></i>
+                                    </td> -->
+                                    <td class="cell-time align-right">
+                                        {{ messages?.created_at}}
+                                    </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="col-md-12" *ngIf="viewMessages">
+                        <div class="row">
+                            <div class="col-md-12">
+                            <span><p style="margin-left: 30px">{{messageDetails.subject}}</p></span>
+                            <hr>
+                            <div class="col-md-10 col-md-offset-1">{{messageDetails.details}}</div>
+                        </div>
+                        </div>
+                    </div>
+                  </tab>
+              </tabset>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- new loan signatory modal -->
+<div bsModal #newMessageModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">New Message</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="newMessageModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+               <form [formGroup] = "messageForm" (ngSubmit)="sendMessage(messageForm.value)">
+				<div class="form-group">
+					<select class="form-control" formControlName="type">
+                        <option value="asusu">Asusu Feedback</option>
+                        <!-- <option value="multiple">Multiple</option> -->
+                        <option value="vendor">All Staff</option>
+                        <option value="vendor">All Members</option>
+                        <!-- <option value="staff_members">Staff & Members</option> -->
+					</select>
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="Subject" formControlName="subject">
+				</div>
+				<div class="form-group">
+					<textarea class="form-control" placeholder="Details" formControlName="details"></textarea>
+				</div>
+				<!-- <div formArrayName="emails" *ngFor="let item of messageForm.get('emails').controls; let i = index;">
+				  <div [formGroupName]="i">
+				  	<div class="col-md-12">
+				  		<div class="row">
+				  			<div class="col-md-3">
+				  				<select class="form-control" formControlName="recievers_id">
+				  					<option >op</option>
+								</select>
+				  			</div>
+						</div>
+				  	</div>
+				  </div> -->
+			
+				<div class="">
+					<input type="submit" class="btn btn-primary" name="" value="submit">
+				</div>
+			</form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>

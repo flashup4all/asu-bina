@@ -1,0 +1,125 @@
+<div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-5">
+          <h4 class="card-title mb-0">Management</h4>
+          <div class="small text-muted">Update Coorperative details and settings</div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <br>
+      <div class="widget">
+           <div class="row">
+                <div class="col">
+                    <div class="user-profile-top">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img *ngIf="!vendor.logo" class="rounded-circle" src="assets/images/avata.png" alt="image" />
+                                <img *ngIf="vendor.logo" class="rounded-circle" src="{{vendor.logo}}" width="130" height="130" alt="image" />
+                            </div>
+                            <div class="col-md-10">
+                                <h5>{{ vendor.name }}</h5>
+                                <p>
+                                    {{ vendor.address || 'nill'}}, {{ vendor?.state_province || 'nil'}}, {{ vendor?.country_id || 'nil'}}
+                                </p>
+                                <div class="row text-centr buttons">
+                                    <div class="col">
+                                        <div class="row flex-items-xs-middle">
+                                            <div class="col">
+                                                <button type="button" class="btn btn-facebook btn-circle btn-outline btn-xs">
+                                                    <i class="fa fa-facebook"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-twitter btn-circle btn-outline btn-xs">
+                                                    <i class="fa fa-twitter"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-youtube btn-circle btn-outline btn-xs">
+                                                    <i class="fa fa-youtube"></i>
+                                                </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+
+            <div class="row">
+                <div class="col">
+                    <tabset>
+                        <tab heading="Update">
+                            <form method="POST" [formGroup] = "editVendorForm" (ngSubmit) = "updateVendor(editVendorForm.value)" class="form-horizontal row-fluid">
+                                <div class="col-md-8">
+                                    <div class="control-group">
+                                        <label>Name</label>
+                                        <input type="text" [ngModel]="editVendorData?.name" formControlName="name" placeholder="Name" title="Vendor name" class="form-control" value="">
+                                        <small [hidden]="(editVendorForm.controls.name.valid ) || (editVendorForm.controls.name.pristine)" class="text-danger">Vendor Name is Required</small>
+                                    </div>
+                                   
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="text" [ngModel]="editVendorData?.email" formControlName="email" placeholder="Name" title="Vendor Email" class="form-control" value="">
+                                        <small [hidden]="(editVendorForm.controls.email.valid ) || (editVendorForm.controls.email.pristine)" class="text-danger">Vendor Email is Required. please ensure it is valid</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Address</label>
+                                        <input type="text" [ngModel]="editVendorData?.address" formControlName="address" placeholder="Address" title="vendor head address" class="form-control">
+                                        <small [hidden]="(editVendorForm.controls.address.valid ) || (editVendorForm.controls.address.pristine)" class="text-danger">Vendor Address is Required</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Mobile Number</label>
+                                            <div class="input-prepend">
+                                            <span class="add-on">+234</span><input class="span8" formControlName="phone" [ngModel]="editVendorData?.phone" type="text" pattern="[0-9]*"
+                                            minlength="10" maxlength="10" class="form-control" placeholder="eg:  8094500000">
+                                            <small [hidden]="(editVendorForm.controls.phone.valid ) || (editVendorForm.controls.phone.pristine)" class="text-danger">Vendor Mobile Phone is Required</small>       
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Administrative Charge</label>
+                                        <small>Administrative charges applied to member</small>
+                                        <input type="number" [ngModel]="editVendorData?.administrative_charge" formControlName="administrative_charge" placeholder="Administrative Charge" class="form-control" title="Administrative charges applicable to all members">
+                                        <small [hidden]="(editVendorForm.controls.administrative_charge.valid ) || (editVendorForm.controls.administrative_charge.pristine)" class="text-danger">Vendor Administrative Charges is Required</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Charge Duration</label>
+                                        <small>Duration that Administrative charges should be applied</small>
+                                        <select class="form-control" [ngModel]="editVendorData?.charge_duration" formControlName="charge_duration" title="period of time that administrative charges should be made on members">
+                                            <option value="weekly">Weekly</option>
+                                            <option value="monthly">Monthly</option>
+                                            <option value="quarterly">Quarterly</option>
+                                            <option value="bi-annually">Bi-Annually</option>
+                                            <option value="annually">Annually</option>
+                                            <option value="once-for-life">Once For Life</option>
+                                        </select>
+                                        <small [hidden]="(editVendorForm.controls.charge_duration.valid ) || (editVendorForm.controls.charge_duration.pristine)" class="text-danger">Charge Duration is Required</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <textarea class="form-control" title="Vendor description: full details" [ngModel]="editVendorData?.description" formControlName="description" placeholder="Vendor details"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label" for="basicinput">Logo</label>
+                                        <div class="controls">
+                                            <img *ngIf="!file_srcs[0]" src="{{vendor.logo}}" width="200px" height="200px">
+                                            <input type="file" name="" (change)="fileChange(input)" #input>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mbn">
+                                        <button type="submit" class="btn btn-success btn-block" [disabled]="editVendorForm.invalid || submitPending ">
+                                                <span *ngIf="!submitPending">Update</span>
+                                                <span *ngIf="submitPending && editVendorForm.valid">Please Wait...</span>
+                                                <span *ngIf="submitPending && editVendorForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                            </button>
+                                    </div>
+                                </div>
+                                
+                            </form>
+                        </tab>
+                    </tabset>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>

@@ -1,0 +1,124 @@
+<div class="module">
+    <div class="module-body">
+        <!-- <div class="profile-head media">
+            <a href="#" class="media-avatar pull-left">
+                <img *ngIf="!vendor.logo" src="assets/images/avata.png">
+                <img *ngIf="vendor.logo" src="{{vendor.logo}}">
+            </a>
+            <div class="media-body">
+                <h2>
+                    {{vendor.name}} <small>{{vendor.address}}</small>
+                </h2>
+                <p *ngIf="vendor.description" class="profile-brief">
+                    {{vendor.description}}
+                </p>
+                 <p *ngIf="!vendor.description" class="profile-brief">
+                    Description
+                </p>
+                <div class="profile-details muted">
+                    <h3><a class="btn pull-left"><i class="fa fa-money shaded"></i> Loan Request History</a></h3>
+                </div>
+            </div>
+        </div> -->
+        <ul class="profile-tab nav nav-tabs">
+            <li class="active"><a href="#activity" data-toggle="tab">Loan Request History</a></li>
+        </ul>
+        <div class="profile-tab-content tab-content">
+            <div class="tab-pane fade active in" id="activity">
+                <div class="stream-list">
+                    <div class="module-body">
+                    	<div class="profile-head media">
+            <a href="#" class="media-avatar pull-left">
+                <img *ngIf="!loanRequest?.member?.logo" src="assets/images/avata.png">
+                <img *ngIf="loanRequest?.member?.logo" src="{{loanRequest?.member?.logo}}">
+            </a>
+            <div class="media-body">
+                <h2>
+                    {{loanRequest?.member?.first_name}} {{loanRequest?.member?.middle_name}} 
+                    {{loanRequest?.member?.last_name}} <!-- <small>{{loanRequest?.member?.address }}</small> -->
+                </h2>
+                 <p class="profile-brief">
+                    Loan Type: <span class="badge badge-success">{{ loanRequest?.type?.loan_type }}</span>
+                    <span class="badge badge-success">&#8358; {{ loanRequest?.amount }}</span>
+                    <span class="badge badge-success pull-right">{{ loanRequest?.status }}</span>
+                </p>
+                <div class="profile-details muted">
+                    <h3><a class="btn pull-left"><i class="fa fa-money shaded"></i> Total Deductions</a></h3>
+                </div>
+            </div>
+        </div>
+                         <div class="new session form">
+				            <h4>Loan Request</h4>
+				            <table class="datatable-1 table table-responsive">
+				                <thead>
+				                    <tr>
+				                        <th>#</th>
+				                        <th>Monthly Deductions</th>
+				                        <th>Repayment Method</th>
+				                        <th>Duration(Months)</th>
+				                        <th>Status</th>
+				                        <th>Actions</th>
+				                    </tr>
+				                </thead>
+				                <tbody>
+				                    <tr class="" *ngFor="let item of loanRequest?.deductions_per_loan">
+				                        <td><input type="checkbox" name=""></td>
+				                       
+				                        <td>
+				                            {{item.amount_deducted}} 
+				                        </td>
+				                        <td>
+				                            {{item.repayment_method}} 
+				                        </td>
+				                        <td>
+				                            {{item.run_date}} 
+				                        </td>
+				                          <td>
+				                            {{item.status}} 
+				                        </td>
+				                        <td class="center">
+				                         <div class="btn-group">
+				                          <!-- <button class="btn btn-mini">Action</button> -->
+				                          <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+				                            <span><i class="fa fa-ellipsis-v"></i></span>
+				                          </button>
+				                          <ul class="dropdown-menu" style="min-width:1px;">
+				                            <li>
+				                                <a type="button" (click)="requestHistory(item.id)">
+				                                    <i class="fa fa-check">Request History</i>
+				                                </a>
+				                            </li>
+				                            <li *ngIf="item.status != 'approved'">
+				                                <a (click)="approveLoanRequest(item.id)">
+				                                    <i class="fa fa-check"> Approve Request</i>
+				                                </a>
+				                            </li>
+				                            <li *ngIf="item.status != 'cancelled'">
+				                                <a (click)="cancelLoanRequest(item.id)">
+				                                    <i class="fa fa-times"> Cancel Request</i>
+				                                </a>
+				                            </li>
+				                            <li *ngIf="item.status == 'cancelled'">
+				                                <a (click)="deleteLoanRequest(item.id)" >
+				                                    <i class="fa fa-trash-o"> Delete</i>
+				                                </a>
+				                            </li>
+				                        </ul>
+				                        </div>
+				                           <!--  <button class="btn btn-default" (click)="editLoanType(item)" title="Edit Loan Signatory">
+				                                <i class="fa fa-edit"></i>
+				                            </button>
+				                             <button class="btn btn-default" (click)="deleteLoanSignatory(item.id)" title="Delete Loan Signatory"><i class="fa fa-trash-o"></i></button> -->
+				                        </td>
+				                    </tr>
+				                </tbody>
+				            </table>
+				        </div>
+                    </div>
+                </div>
+                <!--/.stream-list-->
+            </div>
+        </div>
+    </div>
+    <!--/.module-body-->
+</div>

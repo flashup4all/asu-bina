@@ -1,0 +1,127 @@
+<div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-5">
+          <h4 class="card-title mb-0">Profile</h4>
+          <div class="small text-muted">Change Password</div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <br>
+      <div class="widget">
+           <div class="row">
+                <div class="col">
+                    <div class="user-profile-top">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img *ngIf="!user.passport" class="rounded-circle" src="/assets/images/avata.png" alt="image" />
+                                <img *ngIf="user.passport" class="rounded-circle" src="{{user.passport}}" width="130" height="130" alt="image" />
+                            </div>
+                            <div class="col-md-4">
+                                <h5>{{ user?.first_name }} {{ user?.middle_name }} {{ user?.last_name }}</h5>
+                                <p>
+                                    {{user?.email }}
+                                </p>
+                                <p>
+                                    {{user?.phone1 }}
+                                </p>
+                                <p>
+                                    {{user?.role_id }}
+                                </p>
+                                <div class="row text-centr buttons">
+                                    <div class="col">
+                                        <div class="row flex-items-xs-middle">
+                                            <div class="col">
+                                                <button type="button" class="btn btn-facebook btn-circle btn-outline btn-xs">
+                                                    <i class="fa fa-facebook"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-twitter btn-circle btn-outline btn-xs">
+                                                    <i class="fa fa-twitter"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-youtube btn-circle btn-outline btn-xs">
+                                                    <i class="fa fa-youtube"></i>
+                                                </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+
+            <div class="row">
+             	 <div class="col">
+                	<tabset>
+                        <tab heading="Update Admin Password">
+                          <div class="widget">
+                                <div class="row">
+                                    <form [formGroup] = "editUserPassword" (ngSubmit) = "updateUserPassword(editUserPassword.value)">
+                                        <div class="col">
+                                            <p>Current password</p>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="sli-lock-open"></i>
+                                                    </span>
+                                                    <input type="password" class="form-control" placeholder="*******" formControlName = "old_password">
+                                                </div>
+                                                    <small [hidden]="editUserPassword.controls.old_password.valid || (editUserPassword.controls.old_password.pristine)" class="text-danger">
+                                                        OldPassword is required.
+                                                  </small>
+                                            </div>
+                                            <p>New password</p>
+                                            <!-- <div class="form-group">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="sli-lock"></i>
+                                                    </span>
+                                                    <input type="password" placeholder="New Password" formControlName = "email" class="form-control">
+                                                </div>
+                                                <small [hidden]="editUserPassword.controls.email.valid || (editUserPassword.controls.email.pristine)" class="text-danger">
+                                                    Email is required (minimum 5 characters).
+                                                </small>
+                                            </div> -->
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="sli-lock"></i>
+                                                    </span>
+                                                    <input type="password" placeholder="New Password" formControlName = "new_password" class="form-control">
+                                                </div>
+                                                <small [hidden]="editUserPassword.controls.new_password.valid || (editUserPassword.controls.new_password.pristine)" class="text-danger">
+                                                    New Password is required (minimum 5 characters).
+                                                </small>
+                                            </div>
+                                            <p>Confirm new password</p>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="sli-lock"></i>
+                                                    </span>
+                                                    <input type="password" class="form-control"placeholder="New Password Again" formControlName = "new_password_again">
+                                                </div>
+                                                <small [hidden]="editUserPassword.controls.new_password_again.valid || (editUserPassword.controls.new_password_again.pristine)" class="text-danger">
+                                                    Retype New Password is required (minimum 5 characters).
+                                                </small>
+                                            </div>
+                                            <div class="form-group">
+                                                <button class="btn btn-primary">
+                                                    <span *ngIf="updatePassword && editUserPassword.valid">Please Wait...</span>
+                                                    <span *ngIf="updatePassword && editUserPassword.valid"><i class="fa fa-spinner"></i></span>
+                                                    <span *ngIf="!updatePassword">Update security settings</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </tab>
+                      </tabset>
+            	</div>
+            </div>
+        </div>
+    </div>
+  </div>

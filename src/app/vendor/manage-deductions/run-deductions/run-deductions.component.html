@@ -1,0 +1,55 @@
+<div class="card">
+  	<div class="card-body">
+    	<div class="row">
+      		<div class="col">
+		        <tabset>
+			        <tab heading="Manage Contributions">
+                      	<form [formGroup]="runDeductionForm" (ngSubmit)="runDeductions(runDeductionForm.value)">
+                      		<div class="form-group">
+                      			<label>Period</label>
+                      			<select class="form-control" placeholder="Period" formControlName = "period">
+			                        <option selected="false">Period</option>
+			                        <option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
+			                    </select>
+			                    <small [hidden]="(runDeductionForm.controls.period.valid ) || (runDeductionForm.controls.period.pristine && !submitted)" class="text-danger">Period Method is Required</small>
+                      		</div>
+                      		 <table class="table table-responsive-sm table-hover table-outline mb-0">
+		                        <thead class="thead-light">
+		                          <tr>
+		                            <th class="text-center"><i class="icon-people"></i></th>
+		                            <th>#</th>
+		                            <th class="text-center">Name</th>
+		                            <th>Deduction</th>
+		                          </tr>
+		                        </thead>
+		                        <tbody>
+		                        	<tr *ngFor="let item of runDeductionForm.controls.deductions.controls; let i=index">
+		                        		<td>
+		                        			<div class="avatar">
+				                                <img *ngIf="!item.passport" title="{{loanRequest[i].member?.first_name}} {{loanRequest[i].member?.middle_name}} {{loanRequest[i].member?.last_name}}" src="assets/images/avata.png" class="img-avatar">
+				                                <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(loanRequest[i].member?.passport)" title="{{loanRequest[i].member?.first_name}} {{loanRequest[i].member?.middle_name}} {{loanRequest[i].member?.last_name}}" class="img-avatar">
+				                                <span class="avatar-status badge-success"></span>
+				                            </div>
+		                        		</td>
+		                        		<td>
+		                        			<input type="checkbox" class="form-control" [checked]="item.controls.status" [formControl]="item.controls.status">
+		                        		</td>
+		                        		<td>{{loanRequest[i].member?.first_name}} {{loanRequest[i].member?.middle_name}} {{loanRequest[i].member?.last_name}}</td>
+		                        		<td>
+		                        			<input type="text" [value]="loanRequest[i].monthly_deductions" [formControl]="item.controls.amount" class="form-control">
+		                        		</td>
+		                        	</tr>
+		                        </tbody>
+		                       </table>
+		                       <button type="submit" class="btn btn-success" [disabled]="runDeductionForm.invalid || submitPending ">
+			                        <span *ngIf="!submitPending">Run Contribution</span>
+			                        <span *ngIf="submitPending && runDeductionForm.valid">Please Wait...</span>
+			                        <span *ngIf="submitPending && runDeductionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+			                    </button>
+                      	</form>
+			        </tab>
+		      	</tabset>
+		  	</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,505 @@
+<div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-5">
+          <h4 class="card-title mb-0">Filter</h4>
+          <div class="small text-muted">November 2015</div>
+        </div><!--/.col-->
+        <div class="col-sm-7 d-none d-md-block">
+          <button type="button" class="btn btn-primary float-right"><i class="icon-cloud-download"></i></button>
+          <div class="btn-toolbar float-right" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group mr-3" data-toggle="buttons" aria-label="First group">
+              <label class="btn btn-outline-secondary">
+                <input type="radio" name="options" id="option1"> Day
+              </label>
+              <label class="btn btn-outline-secondary active">
+                <input type="radio" name="options" id="option2" checked> Month
+              </label>
+              <label class="btn btn-outline-secondary">
+                <input type="radio" name="options" id="option3"> Year
+              </label>
+            </div>
+          </div>
+        </div><!--/.col-->
+      </div><!--/.row-->
+    </div>
+    <div class="card-footer">
+      <ul>
+        <li>
+          <div class="text-muted">Total Members</div>
+          <strong>{{totalMembers | number:'' || 0}}</strong>
+          <div class="progress progress-xs mt-2">
+            <div class="progress-bar bg-primary" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </li>
+        <li class="d-none d-md-table-cell">
+          <div class="text-muted">Active Members</div>
+          <strong>{{totalActiveMembers | number:'' || 0}} ({{ percentageCalculator(totalActiveMembers, totalMembers) }}%)</strong>
+          <div class="progress progress-xs mt-2">
+            <div class="progress-bar bg-success" role="progressbar" style="width: 80%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </li>
+        <li>
+          <div class="text-muted">Inactive Members</div>
+          <strong>{{ (totalMembers - totalActiveMembers) | number:'' || 0}} ({{ percentageCalculator((totalMembers - totalActiveMembers), totalMembers) }}%)</strong>
+          <div class="progress progress-xs mt-2">
+            <div class="progress-bar bg-warning" role="progressbar" style="width: 50%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-primary">
+        <div class="card-body pb-0">
+          <h4 class="mb-0">{{totalContribution | number:'.2' || 0}}</h4>
+          <p>Total Contributions</p>
+        </div>
+        <div class="chart-wrapper px-3" style="height:70px;">
+        </div>
+      </div>
+    </div><!--/.col-->
+    <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-warning">
+        <div class="card-body pb-0">
+          <h4 class="mb-0">{{totalWidthdrawal | number:'' || 0}}</h4>
+          <p>Total Widthdrawals</p>
+        </div>
+        <div class="chart-wrapper" style="height:70px;">
+        </div>
+      </div>
+    </div><!--/.col-->
+    <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-danger">
+        <div class="card-body pb-0">
+          <h4 class="mb-0">{{(totalContribution - totalWidthdrawal) | number:'.2' || 0}}</h4>
+          <p>Balance: width - contri</p>
+        </div>
+        <div class="chart-wrapper px-3" style="height:70px;">
+        </div>
+      </div>
+    </div><!--/.col-->
+    <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-info">
+        <div class="card-body pb-0">
+          <button type="button" class="btn btn-transparent p-0 float-right">
+            <i class="icon-location-pin"></i>
+          </button>
+          <h4 class="mb-0">{{totalDedutions | number:'.2' || 0}}</h4>
+          <p>Total Deductions</p>
+        </div>
+        <div class="chart-wrapper px-3" style="height:70px;">
+        </div>
+      </div>
+    </div><!--/.col-->
+  </div><!--/.row-->
+</div>
+<div class="alert alert-success" *ngIf="successAlert">
+        <button type="button" class="close" data-dismiss="alert" style="right: 0px;">×</button>
+        <strong>{{successAlert}}</strong>
+    </div>
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <tabset>
+          <tab heading="Notifications">
+            <div class="row">
+              <div class="col-md-6">
+                  Mails
+              </div>
+              <span class="col-md-4">
+                <div class="btn-group" dropdown>
+                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                    Inbox<span class="caret"></span>
+                  </button>
+                  <ul *dropdownMenu class="dropdown-menu" role="menu">
+                    <li role="menuitem"><a class="dropdown-item" (click)="mailSelector('inbox')">Inbox</a></li>
+                    <li role="menuitem"><a class="dropdown-item" (click)="mailSelector('sent')">Sent</a></li>
+                    <li role="menuitem"><a class="dropdown-item" (click)="mailSelector('trash')">Trash</a></li>
+                  </ul>
+                </div>
+              </span>
+              <span class="col-md-2">
+                  <button type="button" class="btn btn-success pull-right" (click)="newMessageModal.show()"><i class="fa fa-plus"></i> Compose</button>
+              </span>
+            </div>
+            <table class="table table-responsive-sm table-hover table-outline mb-0">
+                <tbody>
+                    <tr class="heading">
+                        <td class="cell-check">
+                            <input type="checkbox" class="inbox-checkbox">
+                        </td>
+                        <td class="cell-icon">
+                        </td>
+                        <td class="cell-author hidden-phone hidden-tablet">
+                            Sender
+                        </td>
+                        <td class="cell-title">
+                            Subject
+                        </td>
+                        <td class="cell-icon hidden-phone hidden-tablet">
+                        </td>
+                        <td class="cell-time align-right">
+                            Date
+                        </td>
+                    </tr>
+                    <tr class="unread" *ngFor="let messages of messagesList">
+                        
+                            <td class="cell-check">
+                                <input type="checkbox" class="inbox-checkbox">
+                            </td>
+                            <td class="cell-icon">
+                                <i *ngIf="messages.status == 1" class="icon-star"></i>
+                                <i *ngIf="messages.status != 1" class="icon-star-0"></i>
+                            </td>
+                            <td class="cell-author hidden-phone hidden-tablet">
+                                <a (click)="viewMessage(messages)">
+                                {{ messages?.from?.first_name }} 
+                                {{ messages?.from?.middle_name }} 
+                                {{ messages?.from?.last_name }}
+                                 </a>
+                            </td>
+                            <td class="cell-title">
+                                {{ messages?.subject }}
+                            </td>
+                            <!-- <td class="cell-icon hidden-phone hidden-tablet">
+                                <i class="icon-paper-clip"></i>
+                            </td> -->
+                            <td class="cell-time align-right">
+                                {{ messages?.created_at}}
+                            </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="module-body" *ngIf="viewMessages">
+              <div class="row">
+                <div class="col-md-12">
+                  <span><p style="margin-left: 30px">{{messageDetails.subject}}</p></span>
+                  <hr>
+                  <div class="col-md-10 col-md-offset-1">{{messageDetails.details}}</div>
+                </div>
+              </div>
+            </div>
+          </tab>
+          <tab heading="Loan Request">
+              <table class="table table-responsive-sm table-hover table-outline mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Loan Type</th>
+                        <th>Amount</th>
+                        <th>Monthly Deductions</th>
+                        <th>Repayment Method</th>
+                        <th>Duration(Months)</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="" *ngFor="let item of loanRequestList">
+                        <td><input type="checkbox" name=""></td>
+                        <td>
+                            {{item.member.first_name}} 
+                            {{item.member.last_name}} 
+                            {{item.member?.middle_name}} 
+                            </td>
+                        <td>
+                            {{item.type.loan_type}} 
+                        </td>
+                        <td>
+                            {{item.amount}} 
+                        </td>
+                        <td>
+                            {{item.monthly_deductions}} 
+                        </td>
+                        <td>
+                            {{item.repayment_method}} 
+                        </td>
+                        <td>
+                            {{item.type.duration}} 
+                        </td>
+                          <td>
+                            {{item.created_at}} 
+                        </td>
+                          <td>
+                            {{item.status}} 
+                        </td>
+                        <td class="center">
+                          <div class="btn-group" dropdown>
+                            <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                              Inbox<span class="caret"></span>
+                            </button>
+                            <ul *dropdownMenu class="dropdown-menu" role="menu">
+                              <li role="menuitem">
+                                <a class="dropdown-item" type="button" (click)="requestHistory(item.id)">
+                                    <i class="fa fa-check">Request History</i>
+                                </a>
+                            </li>
+                            <li role="menuitem" *ngIf="item.status != 'approved'">
+                                <a class="dropdown-item" (click)="approveLoanRequest(item.id)">
+                                    <i class="fa fa-check"> Approve Request</i>
+                                </a>
+                            </li>
+                            <li role="menuitem" *ngIf="item.status == 'approved'">
+                                <a class="dropdown-item" (click)="paymentModal.show()">
+                                    <i class="fa fa-check"> Pay Now</i>
+                                </a>
+                            </li>
+                            <li role="menuitem" *ngIf="item.status != 'cancelled'">
+                                <a class="dropdown-item" (click)="cancelLoanRequest(item.id)">
+                                    <i class="fa fa-times"> Cancel Request</i>
+                                </a>
+                            </li>
+                            <li role="menuitem" *ngIf="item.status == 'cancelled'">
+                                <a class="dropdown-item" (click)="deleteLoanRequest(item.id)" >
+                                    <i class="fa fa-trash-o"> Delete</i>
+                                </a>
+                            </li>
+                            </ul>
+                          </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="media stream load-more">
+               <a  (click)="loadMore()" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
+            </div>
+          </tab>
+          <tab heading="Approvals">
+            <tabset>
+              <tab heading="Contribution Change Request">
+                <table class="table table-responsive-sm table-hover table-outline mb-0">
+                  <thead>
+                      <tr>
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Amount</th>
+                          <th>Status</th>
+                          <th>Date</th>
+                          <th>Actions</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr class="" *ngFor="let c_request of changeContibutionsRequestList">
+                          <td><input type="checkbox" name=""></td>
+                          <td>
+                              {{c_request.user.first_name}} 
+                              {{c_request.user.last_name}} 
+                              {{c_request.user?.middle_name}} 
+                              </td>
+                          <td>
+                              {{c_request.amount}} 
+                          </td>
+                          <td>
+                              <span *ngIf="c_request.status =='Pending'" class="badge badge-warning">{{c_request.status}} </span>
+                              <span *ngIf="c_request.status =='Approved'" class="badge badge-success">{{c_request.status}} </span>
+
+                          </td>
+                            <td>
+                              {{c_request.created_at}} 
+                          </td>
+                          <td class="center">
+                            <div class="btn-group" dropdown>
+                            <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                              Inbox<span class="caret"></span>
+                            </button>
+                            <ul *dropdownMenu class="dropdown-menu" role="menu">
+                              <li role="menuitem">
+                                  <a class="dropdown-item" *ngIf="c_request.status != 'Approved'" type="button" (click)="approveChangeContribution(c_request)">
+                                      <i class="fa fa-check">Approve</i>
+                                  </a>
+                                  <a class="dropdown-item" *ngIf="c_request.status == 'Approved'" class="" type="button">
+                                      <i class="fa fa-check">Approved Already</i>
+                                  </a>
+                              </li>
+                            </ul>
+                          </div>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+              </tab>
+              <tab heading="Widthdrawal Request">
+                <table class="table table-responsive-sm table-hover table-outline mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Amount</th>
+                            <!-- <th>Payment Method</th> -->
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="" *ngFor="let item of widthdrawalsList">
+                            <td><input type="checkbox" name=""></td>
+                            <td>
+                              {{item.member.first_name}} 
+                              {{item.member.last_name}} 
+                              {{item.member?.middle_name}} 
+                            </td>
+                            <td>
+                                {{item?.amount}} 
+                            </td>
+                            <!-- <td>
+                                {{item?.payment_method}} 
+                            </td> -->
+                            <td>
+                                <span *ngIf="item.status == 'Cancelled'" class="badge badge-danger">{{item?.status}} </span>
+                                <span *ngIf="item.status == 'Approved'" class="badge badge-success">{{item?.status}} </span>
+                            </td>
+                            <td>
+                                {{item?.created_at}} 
+                            </td>
+                            <td class="center">
+
+                              <div class="btn-group" dropdown>
+                                <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                                  Inbox<span class="caret"></span>
+                                </button>
+                                <ul *dropdownMenu class="dropdown-menu" role="menu">
+                                  <li  role="menuitem">
+                                    <a class="dropdown-item" *ngIf="item.status != 'Approved'" (click)="approveWidthdrawalRequest(item.id)">
+                                      <i class="fa fa-check"> Approve Request</i>
+                                    </a>
+                                    <a class="dropdown-item" *ngIf="item.status === 'Approved'">
+                                      <i class="fa fa-check"> Approved Already</i>
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a class="dropdown-item" *ngIf="item.status != 'Approved'" (click)="cancelWidthdrawalRequest(item.id)">
+                                      <i class="fa fa-times"> Cancel Request</i>
+                                    </a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+              </tab>
+            </tabset>
+          </tab>
+          <tab heading="Members">
+            <table class="table table-responsive-sm table-hover table-outline mb-0">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-center"><i class="icon-people"></i></th>
+                  <th>Name</th>
+                  <th class="text-center">Email</th>
+                  <th>Contribution</th>
+                  <th>status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- search result -->
+                <!-- staff list -->
+                <tr *ngFor="let item of membersList">
+                  <td class="text-center">
+                    <div class="avatar">
+                      <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
+                      <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(item.passport)" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" class="img-avatar">
+                      <span class="avatar-status badge-success"></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
+                    <div class="small text-muted">
+                      <span>{{item?.gender}}</span> | {{item?.phone1 || 'nil'}}
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    {{item.email}}
+                  </td>
+                  <td class="text-center">
+                    <span class="label label-sm label-primary">{{ item?.role?.name}}</span>
+                  </td>
+                  <td>
+                    <small *ngIf="item.status == 1" class="muted pull-right">
+                       <h4><span class="label label-sm label-success">Approved</span></h4>
+                    </small>
+                    <small *ngIf="item.status == 2" class="muted pull-right">
+                       <h4><span class="label label-sm label-warning">Blocked</span></h4>
+                    </small>
+                    <small *ngIf="item.status == 0" class="muted pull-right">
+                       <h4><span class="label label-sm label-danger">Inactive</span></h4>
+                    </small>
+                  </td>
+                  <td>
+                    <a class="btn btn-primary btn-sm" [routerLink]="['/app/members/', item.id,'view']" title="edit member details">
+                      <i class="fa fa-sliders"> </i></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="col-md-12" *ngIf="!membersList"> NO MEMBERS YET</div>
+          </tab>
+        </tabset>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- new loan signatory modal -->
+<div bsModal #newMessageModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">New Message</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="newMessageModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+               <form [formGroup] = "messageForm" (ngSubmit)="sendMessage(messageForm.value)">
+        <div class="form-group">
+          <select class="form-control" formControlName="type">
+                        <option value="asusu">Asusu Feedback</option>
+                        <!-- <option value="multiple">Multiple</option> -->
+                        <option value="all-staff">All Staff</option>
+                        <option value="all-members">All Members</option>
+                        <!-- <option value="staff_members">Staff & Members</option> -->
+          </select>
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Subject" formControlName="subject">
+        </div>
+        <div class="form-group">
+          <textarea class="form-control" placeholder="Details" formControlName="details"></textarea>
+        </div>
+        <!-- <div formArrayName="emails" *ngFor="let item of messageForm.get('emails').controls; let i = index;">
+          <div [formGroupName]="i">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-3">
+                  <select class="form-control" formControlName="recievers_id">
+                    <option >op</option>
+                </select>
+                </div>
+            </div>
+            </div>
+          </div> -->
+      
+        <div class="">
+          <button type="submit" class="btn btn-success" [disabled]="messageForm.invalid || submitPending ">
+              <span *ngIf="!submitPending">Send</span>
+              <span *ngIf="submitPending && messageForm.valid">Please Wait...</span>
+              <span *ngIf="submitPending && messageForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+      </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>
