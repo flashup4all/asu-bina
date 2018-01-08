@@ -61,6 +61,5 @@
     "karma-coverage-istanbul-reporter": "1.3.0",
     "protractor": "5.2.0"
    
-  },
-  
+  }
 }
