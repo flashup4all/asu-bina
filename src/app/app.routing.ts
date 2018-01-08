@@ -26,7 +26,7 @@ export const routes: Routes = [
         path: 'dashboard',
         loadChildren: './vendor/dashboard/dashboard.module#DashboardModule'
       },
-      {
+     /* {
         path: 'components',
         loadChildren: './views/components/components.module#ComponentsModule'
       },
@@ -41,7 +41,7 @@ export const routes: Routes = [
       {
         path: 'charts',
         loadChildren: './views/chartjs/chartjs.module#ChartJSModule'
-      },
+      },*/
       {
         path: 'app',
         loadChildren: './vendor/vendor.module#VendorModule'
