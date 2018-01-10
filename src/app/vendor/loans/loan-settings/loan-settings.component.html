@@ -31,31 +31,31 @@
                             <h3 class="box-heading pull-left">LOAN SIGNATORY</h3>
                             <button type="button" class="btn btn-success pull-right" (click)="loanSignatoryModal.show()"><i class="fa fa-plus"></i> Add Loan Signatory</button>
                         </div>
-                                <small>You can only assign 3 signatories</small>
-                                <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Level</th>
-                                            <th>Staff Name</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="" *ngFor="let item of loanSignatoryList">
-                                            <td><input type="checkbox" name=""></td>
-                                            <td>{{item.signatory_type}}</td>
-                                            <td>
-                                                {{item.staff?.first_name}} 
-                                                {{item.staff?.last_name}} 
-                                                {{item.staff?.middle_name}}
-                                            </td>
-                                            <td class="center">
-                                                 <button class="btn btn-danger" (click)="deleteLoanSignatory(item.id)" title="Delete Loan Signatory"><i class="fa fa-trash-o"></i></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <small>You can only assign 3 signatories</small>
+                        <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Level</th>
+                                    <th>Staff Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="" *ngFor="let item of loanSignatoryList">
+                                    <td><input type="checkbox" name=""></td>
+                                    <td>{{item.signatory_type}}</td>
+                                    <td>
+                                        {{item.staff?.first_name}} 
+                                        {{item.staff?.last_name}} 
+                                        {{item.staff?.middle_name}}
+                                    </td>
+                                    <td class="center">
+                                         <button class="btn btn-danger" (click)="deleteLoanSignatory(item.id)" title="Delete Loan Signatory"><i class="fa fa-trash-o"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </tab>

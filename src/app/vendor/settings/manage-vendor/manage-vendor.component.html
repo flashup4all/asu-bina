@@ -117,9 +117,83 @@
                                 
                             </form>
                         </tab>
+                        <tab heading="BanK Settings">
+                            <button type="submit" class="btn btn-success" (click)="accountModal.show()"><i class="fa fa-plus"></i> Add Bank Account</button>
+                            <p>this will enable you perform transactions with any of this the account added</p>
+                            <div class="col-md-12">
+                                 <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Bank</th>
+                                            <th>Account Number</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="" *ngFor="let account of bank_accounts">
+                                            <td><input type="checkbox" name=""></td>
+                                            <td>{{account?.bank_name}}</td>
+                                            <td>
+                                                {{account?.account_number}} 
+                                            </td>
+                                            <td class="center">
+                                                 <button class="btn btn-danger" (click)="deleteLoanSignatory(account.id)" title="Delete Loan Signatory"><i class="fa fa-trash-o"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </tab>
                     </tabset>
                 </div>
             </div>
         </div>
     </div>
   </div>
+
+  <div bsModal #accountModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Add Account Number</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="accountModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+            <div>
+               <form method="POST" [formGroup] = "bankAccountForm" (ngSubmit) = "addAccountNumber(bankAccountForm.value)" class="form-horizontal row-fluid">
+                    <div class="col-md-8">
+                        <div class="control-group">
+                            <label>Account Number</label>
+                            <input type="text" formControlName="account_number" placeholder="Name" title="Account Number" class="form-control" value="">
+                            <small [hidden]="(bankAccountForm.controls.account_number.valid ) || (bankAccountForm.controls.account_number.pristine)" class="text-danger">Acount Number is Required</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Bank</label>
+                            <select class="form-control" formControlName="bank" title="period of time that administrative charges should be made on members">
+                                <option disabled="">Select Bank</option>
+                                <option [value]="bank" *ngFor="let bank of bank_list">{{ bank.name }}</option>
+                            </select>
+                            <small [hidden]="(bankAccountForm.controls.bank.valid ) || (bankAccountForm.controls.bank.pristine)" class="text-danger">Bank is Required</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="form-control" title="Vendor description: full details" [ngModel]="editVendorData?.description" formControlName="description" placeholder="Vendor details"></textarea>
+                        </div>
+                        <div class="form-group mbn">
+                            <button type="submit" class="btn btn-success btn-block" [disabled]="bankAccountForm.invalid || submitPending ">
+                                    <span *ngIf="!submitPending">Update</span>
+                                    <span *ngIf="submitPending && bankAccountForm.valid">Please Wait...</span>
+                                    <span *ngIf="submitPending && bankAccountForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                </button>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>

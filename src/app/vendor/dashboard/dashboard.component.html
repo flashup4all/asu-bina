@@ -288,9 +288,9 @@
                       <tr class="" *ngFor="let c_request of changeContibutionsRequestList">
                           <td><input type="checkbox" name=""></td>
                           <td>
-                              {{c_request.user.first_name}} 
-                              {{c_request.user.last_name}} 
-                              {{c_request.user?.middle_name}} 
+                              {{c_request.member.first_name}} 
+                              {{c_request.member.last_name}} 
+                              {{c_request.member?.middle_name}} 
                               </td>
                           <td>
                               {{c_request.amount}} 
@@ -306,7 +306,7 @@
                           <td class="center">
                             <div class="btn-group" dropdown>
                             <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-                              Inbox<span class="caret"></span>
+                              <i class="fa fa-ellipsis-v"></i><span class="caret"></span>
                             </button>
                             <ul *dropdownMenu class="dropdown-menu" role="menu">
                               <li role="menuitem">

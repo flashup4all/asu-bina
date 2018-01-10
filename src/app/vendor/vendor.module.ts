@@ -6,6 +6,7 @@ import { ProfileComponent } from './user-account/profile/profile.component';
 import { VendorRoutingModule } from './vendor-routing.module';
 import { ManageVendorComponent } from './settings/manage-vendor/manage-vendor.component';
 import { VendorService } from './vendor.service';
+import { ModalModule } from 'ngx-bootstrap';
 
 @NgModule({
   imports: [
@@ -13,13 +14,12 @@ import { VendorService } from './vendor.service';
     VendorRoutingModule,
     TabsModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ModalModule.forRoot(),
   ],
   declarations: [
   	ManageVendorComponent,
     ProfileComponent
-  	
-  	
   ],
   providers:[
   	VendorService

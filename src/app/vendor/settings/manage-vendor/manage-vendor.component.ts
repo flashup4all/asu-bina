@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 
 import { ModalDirective } from 'ngx-bootstrap/modal/modal.component';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -30,16 +30,20 @@ export interface Vendor {
 export class ManageVendorComponent implements OnInit {
 	public vendor;
 	public editVendorData;
-	public editVendorForm : FormGroup;
+    public editVendorForm : FormGroup;
+	public bankAccountForm : FormGroup;
 	submitPending:boolean;
 	public logo;
 	public model;
   	path='';
 	public file_srcs: string[] = [];
-	 
+	bank_accounts;
 	public debug_size_before: string[] = [];
 	public debug_size_after: string[] = [];
     window;
+    bank_list;
+    @ViewChild('accountModal') public accountModal :ModalDirective;
+
 	constructor(
 		private localService : LocalService,
   		private _fb : FormBuilder,
@@ -48,6 +52,8 @@ export class ManageVendorComponent implements OnInit {
 		) {
 			this.vendor = JSON.parse(this.localService.getVendor());
 			this.editVendorData = JSON.parse(this.localService.getVendor());
+            this.getAccountNumbers();
+            this.getBankList();
 		}
 
 	ngOnInit() {
@@ -61,6 +67,12 @@ export class ManageVendorComponent implements OnInit {
 			charge_duration: '',
 			description: ''
 		});
+        /*bank account form*/
+        this.bankAccountForm = this._fb.group({
+            bank: [null, Validators.compose([Validators.required])],
+            account_number: [null, Validators.compose([Validators.required])],
+            description: ''
+        });
 	}
 	/**
 	 * @method updateVendor
@@ -93,7 +105,53 @@ export class ManageVendorComponent implements OnInit {
 	}
 
 
-
+    /*account number*/
+    addAccountNumber(data)
+    {
+        data['vendor_id'] = this.editVendorData.id;
+        console.log(data)
+        this.manageVendorService.addBankAccount(data).subscribe((response) => {
+                  if(response.success = true)
+                  {
+                      console.log(response)
+                    this.submitPending = false;
+                    this.localService.showSuccess(response.message,'Operation Successfull');
+                  }
+                  else{
+                    this.submitPending = false;
+                    this.localService.showError(response.message,'Operation Unsuccessfull');
+                }
+            },(error) => {
+                this.submitPending = false;
+                this.localService.showError(error,'Operation Unsuccessfull');
+            });
+    }
+    getAccountNumbers()
+    {
+        this.manageVendorService.getBankAccount().subscribe((response) => {
+            this.bank_accounts = response.data;
+        },(error) => {
+            this.localService.showError(error,'Operation Unsuccessfull');
+            });
+    }
+     getBankList()
+    {
+        this.manageVendorService.getBankList().subscribe((response) => {
+            console.log(response)
+            let group = [];
+            let bank_list = response.data;
+            for (var key in bank_list) {
+                if (bank_list.hasOwnProperty(key)) {
+                    console.log(key + " -> " + bank_list[key]);   
+                    let data = { code: key, name: bank_list[key]}
+                 group.push(data)                
+                }
+            }
+            this.bank_list = group;
+        },(error) => {
+            this.localService.showError(error,'Operation Unsuccessfull');
+            });
+    }
 
 	fileChange(input){
  

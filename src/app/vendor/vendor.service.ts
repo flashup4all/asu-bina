@@ -37,4 +37,37 @@ export class VendorService {
               .map((response : Response) => response.json()).catch(handleErrors);
     }
 
+    /**
+     * @method addBankAccount
+     * updates a LoanSignatory  resource
+     * @return data
+     */
+    addBankAccount(data)
+    {
+      return this.http.post(environment.api.url+'vendor-bank',JSON.stringify(data), this.localService.header())
+              .map((response : Response) => response.json()).catch(handleErrors);
+    }
+
+     /**
+     * @method getBankAccount
+     * updates a LoanSignatory  resource
+     * @return data
+     */
+    getBankAccount()
+    {
+      return this.http.get(environment.api.url+'vendor-bank/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+              .map((response : Response) => response.json()).catch(handleErrors);
+    }
+
+     /**
+     * @method getBankList
+     * updates a LoanSignatory  resource
+     * @return data
+     */
+    getBankList()
+    {
+      return this.http.post('https://moneywave.herokuapp.com/banks', this.localService.header())
+              .map((response : Response) => response.json()).catch(handleErrors);
+    }
+
 }
