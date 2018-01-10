@@ -120,7 +120,8 @@ export class DashboardComponent implements OnInit {
   percentageCalculator(value, total)
   {
     let percentage = 0;
-    return percentage = (value/total) * 100;
+    percentage = (value/total) * 100;
+    return Math.round(percentage)
   }
 	/**
 	 * @method activateMember

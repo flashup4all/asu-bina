@@ -38,6 +38,8 @@ export class RunContributionComponent implements OnInit {
   	ngOnInit() {
   		this.runContributionForm = this._fb.group({
 			period : [null, Validators.compose([Validators.required])],
+			type : [null, Validators.compose([Validators.required])],
+			date : [null, Validators.compose([Validators.required])],
 			contributions : this._fb.array([])
 		});
   	}
