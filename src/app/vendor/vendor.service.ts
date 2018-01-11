@@ -81,7 +81,11 @@ export class VendorService {
               .map((response : Response) => response.json()).catch(handleErrors);
     }
 
-     /**
+     
+
+    /*money wave*/
+
+    /**
      * @method getBankList
      * updates a LoanSignatory  resource
      * @return data
@@ -92,4 +96,12 @@ export class VendorService {
               .map((response : Response) => response.json()).catch(handleErrors);
     }
 
+    auth_money_wave()
+    {
+      let data = {
+
+      };
+      return this.http.post('https://moneywave.herokuapp.com/v1/merchant/verify', JSON.stringify(environment.api.payment_key), this.localService.header())
+              .map((response : Response) => response.json()).catch(handleErrors);
+    }
 }

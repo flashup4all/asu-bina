@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal/modal.component';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LocalService } from '../../storage/local.service';
 import { LoanRequestService } from './loan-request.service';
-
+import { MembersService } from '../membership/members.service';
 @Component({
   selector: 'app-manage-loanrequest',
   templateUrl: './manage-loanrequest.component.html',
@@ -25,11 +25,16 @@ export class ManageLoanrequestComponent implements OnInit {
 	private loanRequestList= [] ;
   toPage;
   loader;
+  memberData;
+  submitPending: boolean;
+  @ViewChild('paymentModal') public paymentModal :ModalDirective;
+
 	constructor(
 	private localService : LocalService,
 	private _fb : FormBuilder,
   private route: Router,
-	private loanrequestService : LoanRequestService
+  private loanrequestService : LoanRequestService,
+	private memberService : MembersService
 	) {
 	this.vendor = JSON.parse(this.localService.getVendor());
 	this.getLoanRequest();
@@ -115,7 +120,25 @@ export class ManageLoanrequestComponent implements OnInit {
 
     requestHistory(id)
     {
-      this.route.navigate(['coorp/'+id+'/loan-request-history'])
+      this.route.navigate(['app/loan-request/'+id+'/loan-request-history'])
+    }
+    /*manage payment*/
+
+    loadPaymentModal(data)
+    {
+      this.memberData = data
+      this.paymentModal.show();
     }
 
+    requestUpdateDetails(id)
+    {
+      this.submitPending = true;
+      this.memberService.updateBankAcountRequest(id).subscribe((response) => {
+          if(response)
+          {
+            this.submitPending = false;
+            this.localService.showSuccess(response.message,'Operation Successfull');
+          }
+        });
+    }
 }

@@ -64,7 +64,7 @@
                                                         <i class="fa fa-check"> Approve Request</i>
                                                     </a></li>
                                                 <li role="menuitem" *ngIf="item.status == 'approved'">
-                                                    <a class="dropdown-item" (click)="paymentModal.show()">
+                                                    <a class="dropdown-item" (click)="loadPaymentModal(item.member)">
                                                         <i class="fa fa-check"> Pay Now</i>
                                                     </a>
                                                 </li>
@@ -110,22 +110,22 @@
     <div class="row">
     	 <div class="col-xs-12 col-md-6" style="font-size: 12pt; line-height: 2em;">
             
-            	<h1>Features:</h1>
+            	<h1>Pay:</h1>
+                <p>
+                    {{ memberData?.first_name }} {{ memberData?.last_name }} {{ memberData?.middle_name }}</p>
                 <ul>
-                    <li>As-you-type, input formatting</li>
-                    <li>Form field validation (also as you type)</li>
-                    <li>Graceful error feedback for declined card, etc</li>
-                    <li>AJAX form submission w/ visual feedback</li>
-                    <li>Creates a Stripe credit card token</li>
+                    <li *ngIf="memberData?.account_number">Account No. {{ memberData?.account_number }}</li>
+                    <li *ngIf="!memberData?.account_number">This Member has not set his/her account number to accept payment.
+                        <br>
+                        Please  click the button below to notify this member to update his/her account details in order to process payment online.
+                        <br>
+                        <button class="btn btn-success btn-block" (click)="requestUpdateDetails(memberData.id)">
+                            <span *ngIf="!submitPending">Request Account Number</span>
+                            <span *ngIf="submitPending">Please Wait...</span>
+                            <span *ngIf="submitPending" class="fa fa-spinner" aria-hidden="true"></span>
+                        </button>
+                    </li>
                 </ul>
-            
-            <p>Be sure to replace the dummy API key with a valid Stripe API key.</p>
-            
-            <p>Built upon: Bootstrap, jQuery, 
-                <a href="http://jqueryvalidation.org/">jQuery Validation Plugin</a>, 
-                <a href="https://github.com/stripe/jquery.payment">jQuery.payment library</a>,
-                and <a href="https://stripe.com/docs/stripe.js">Stripe.js</a>
-            </p>
         </div>
         <div class="col-xs-12 col-md-6">
             <div class="panel panel-default credit-card-box">

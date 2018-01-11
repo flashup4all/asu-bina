@@ -129,6 +129,17 @@ export class MembersService {
               .map((response : Response) => response.json());
     }
 
+    /**
+     * @method updateBankAcountRequest
+     * sends a request mail to the member to update bank details
+     * @return data
+     */
+    updateBankAcountRequest(id)
+    {
+      return this.http.get(environment.api.url+'member/request-update-bank-details/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
+              .map((response : Response) => response.json());
+    }
+
      /**
      * @method getFormField
      * get form field resource

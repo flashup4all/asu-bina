@@ -1,55 +1,39 @@
-<div class="module">
-    <div class="module-body">
-        <!-- <div class="profile-head media">
-            <a href="#" class="media-avatar pull-left">
-                <img *ngIf="!vendor.logo" src="assets/images/avata.png">
-                <img *ngIf="vendor.logo" src="{{vendor.logo}}">
-            </a>
-            <div class="media-body">
-                <h2>
-                    {{vendor.name}} <small>{{vendor.address}}</small>
-                </h2>
-                <p *ngIf="vendor.description" class="profile-brief">
-                    {{vendor.description}}
-                </p>
-                 <p *ngIf="!vendor.description" class="profile-brief">
-                    Description
-                </p>
-                <div class="profile-details muted">
-                    <h3><a class="btn pull-left"><i class="fa fa-money shaded"></i> Loan Request History</a></h3>
+<div class="card">
+    <div class="card-body">
+    	<div class="row">
+                <div class="col">
+                    <div class="user-profile-top">
+                        <div class="row">
+                            <div class="col-md-2">
+                            	<img *ngIf="!loanRequest?.member?.logo" class="rounded-circle" src="assets/images/avata.png" width="130" height="130" >
+                				<img *ngIf="loanRequest?.member?.logo" class="rounded-circle" src="{{loanRequest?.member?.logo}}">
+                            </div>
+                            <div class="col-md-4">
+                                <h5>{{loanRequest?.member?.first_name}} 
+                                	{{loanRequest?.member?.middle_name}} 
+				                    {{loanRequest?.member?.last_name}}
+				                </h5>
+                                <p>
+                                    Type: {{ loanRequest?.type?.loan_type }}
+                                </p>
+                                <p>
+                                    Amount: &#8358; {{ loanRequest?.amount }}
+                                </p>
+                                <p>
+                                    Status: {{ loanRequest?.status }}
+                                </p>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div> -->
-        <ul class="profile-tab nav nav-tabs">
-            <li class="active"><a href="#activity" data-toggle="tab">Loan Request History</a></li>
-        </ul>
-        <div class="profile-tab-content tab-content">
-            <div class="tab-pane fade active in" id="activity">
-                <div class="stream-list">
-                    <div class="module-body">
-                    	<div class="profile-head media">
-            <a href="#" class="media-avatar pull-left">
-                <img *ngIf="!loanRequest?.member?.logo" src="assets/images/avata.png">
-                <img *ngIf="loanRequest?.member?.logo" src="{{loanRequest?.member?.logo}}">
-            </a>
-            <div class="media-body">
-                <h2>
-                    {{loanRequest?.member?.first_name}} {{loanRequest?.member?.middle_name}} 
-                    {{loanRequest?.member?.last_name}} <!-- <small>{{loanRequest?.member?.address }}</small> -->
-                </h2>
-                 <p class="profile-brief">
-                    Loan Type: <span class="badge badge-success">{{ loanRequest?.type?.loan_type }}</span>
-                    <span class="badge badge-success">&#8358; {{ loanRequest?.amount }}</span>
-                    <span class="badge badge-success pull-right">{{ loanRequest?.status }}</span>
-                </p>
-                <div class="profile-details muted">
-                    <h3><a class="btn pull-left"><i class="fa fa-money shaded"></i> Total Deductions</a></h3>
-                </div>
-            </div>
-        </div>
-                         <div class="new session form">
-				            <h4>Loan Request</h4>
-				            <table class="datatable-1 table table-responsive">
+        <div class="row">
+            <div class="col">
+                <tabset>
+                  <tab heading="Loan Request History">
+                        <div class="col-md-12">
+                        	<table class="table table-responsive-sm table-hover table-outline mb-0">
 				                <thead>
 				                    <tr>
 				                        <th>#</th>
@@ -105,20 +89,14 @@
 				                            </li>
 				                        </ul>
 				                        </div>
-				                           <!--  <button class="btn btn-default" (click)="editLoanType(item)" title="Edit Loan Signatory">
-				                                <i class="fa fa-edit"></i>
-				                            </button>
-				                             <button class="btn btn-default" (click)="deleteLoanSignatory(item.id)" title="Delete Loan Signatory"><i class="fa fa-trash-o"></i></button> -->
 				                        </td>
 				                    </tr>
 				                </tbody>
 				            </table>
-				        </div>
-                    </div>
-                </div>
-                <!--/.stream-list-->
+                        </div>
+                    </tab>
+                </tabset>
             </div>
         </div>
     </div>
-    <!--/.module-body-->
 </div>

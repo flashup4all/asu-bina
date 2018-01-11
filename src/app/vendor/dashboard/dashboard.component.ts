@@ -414,6 +414,7 @@ export class DashboardComponent implements OnInit {
   approveChangeContribution(data)
   {
     data['approved_by'] = JSON.parse(this.localService.getUser()).id;
+    console.log(data)
     this.contributionService.approveChangeContribution(data).subscribe((response) => {
       if (response.success) {
           this.getChangeContributionRequest()
