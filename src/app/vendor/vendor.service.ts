@@ -39,7 +39,7 @@ export class VendorService {
 
     /**
      * @method addBankAccount
-     * updates a LoanSignatory  resource
+     * updates a BankAccount  resource
      * @return data
      */
     addBankAccount(data)
@@ -48,14 +48,36 @@ export class VendorService {
               .map((response : Response) => response.json()).catch(handleErrors);
     }
 
+    /**
+     * @method updateBankAccount
+     * updates a BankAccount  resource
+     * @return data
+     */
+    updateBankAccount(data)
+    {
+      return this.http.post(environment.api.url+'vendor-bank/update',JSON.stringify(data), this.localService.header())
+              .map((response : Response) => response.json()).catch(handleErrors);
+    }
+
      /**
      * @method getBankAccount
-     * updates a LoanSignatory  resource
+     * updates a BankAccount  resource
      * @return data
      */
     getBankAccount()
     {
       return this.http.get(environment.api.url+'vendor-bank/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+              .map((response : Response) => response.json()).catch(handleErrors);
+    }
+
+    /**
+     * @method deleteBankAccount
+     * updates a BankAccount  resource
+     * @return data
+     */
+    deleteBankAccount(id)
+    {
+      return this.http.get(environment.api.url+'vendor-bank/delete/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
               .map((response : Response) => response.json()).catch(handleErrors);
     }
 

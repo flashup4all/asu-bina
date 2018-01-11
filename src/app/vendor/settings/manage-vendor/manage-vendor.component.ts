@@ -42,7 +42,9 @@ export class ManageVendorComponent implements OnInit {
 	public debug_size_after: string[] = [];
     window;
     bank_list;
+    editAccountData;
     @ViewChild('accountModal') public accountModal :ModalDirective;
+    @ViewChild('accountUpdateModal') public accountUpdateModal :ModalDirective;
 
 	constructor(
 		private localService : LocalService,
@@ -69,11 +71,13 @@ export class ManageVendorComponent implements OnInit {
 		});
         /*bank account form*/
         this.bankAccountForm = this._fb.group({
-            bank: [null, Validators.compose([Validators.required])],
+            bank_code: [null, Validators.compose([Validators.required])],
             account_number: [null, Validators.compose([Validators.required])],
             description: ''
         });
 	}
+
+
 	/**
 	 * @method updateVendor
 	 * updates Vendor Profile
@@ -108,12 +112,47 @@ export class ManageVendorComponent implements OnInit {
     /*account number*/
     addAccountNumber(data)
     {
-        data['vendor_id'] = this.editVendorData.id;
+        data['vendor_id'] = this.vendor.id;
+        data['bank_name'] = this.getBankName(data.bank_code)
         console.log(data)
         this.manageVendorService.addBankAccount(data).subscribe((response) => {
+            if(response.success = true)
+            {
+                this.getAccountNumbers();
+                this.submitPending = false;
+                this.localService.showSuccess(response.message,'Operation Successfull');
+            } else{
+                this.submitPending = false;
+                this.localService.showError(response.message,'Operation Unsuccessfull');
+                }
+            },(error) => {
+                this.submitPending = false;
+                this.localService.showError(error,'Operation Unsuccessfull');
+            });
+    }
+
+    newAccount(data)
+    {
+        this.editAccountData = [];
+        this.accountModal.show()
+    }
+
+    editAccount(data)
+    {
+        this.editAccountData = data;
+        this.accountUpdateModal.show()
+    }
+
+    updateAccountNumber(data)
+    {
+        data['id'] = this.editAccountData.id;
+        data['vendor_id'] = this.vendor.id;
+        data['bank_name'] = this.getBankName(data.bank_code)
+        console.log(data)
+        this.manageVendorService.updateBankAccount(data).subscribe((response) => {
                   if(response.success = true)
                   {
-                      console.log(response)
+                      this.getAccountNumbers();
                     this.submitPending = false;
                     this.localService.showSuccess(response.message,'Operation Successfull');
                   }
@@ -134,15 +173,23 @@ export class ManageVendorComponent implements OnInit {
             this.localService.showError(error,'Operation Unsuccessfull');
             });
     }
+
+    deleteAccount(id)
+    {
+        this.manageVendorService.deleteBankAccount(id).subscribe((response) => {
+            this.localService.showError(response.message,'Operation Unsuccessfull');
+
+        },(error) => {
+            this.localService.showError(error,'Operation Unsuccessfull');
+            });
+    }
      getBankList()
     {
         this.manageVendorService.getBankList().subscribe((response) => {
-            console.log(response)
             let group = [];
             let bank_list = response.data;
             for (var key in bank_list) {
                 if (bank_list.hasOwnProperty(key)) {
-                    console.log(key + " -> " + bank_list[key]);   
                     let data = { code: key, name: bank_list[key]}
                  group.push(data)                
                 }
@@ -151,6 +198,17 @@ export class ManageVendorComponent implements OnInit {
         },(error) => {
             this.localService.showError(error,'Operation Unsuccessfull');
             });
+    }
+
+    getBankName(code)
+    {
+        for (let i=0; i < this.bank_list.length; i++) {
+            if(this.bank_list[i].code === code){
+                let name = this.bank_list[i].name;
+                return name;
+
+            }
+        }
     }
 
 	fileChange(input){
