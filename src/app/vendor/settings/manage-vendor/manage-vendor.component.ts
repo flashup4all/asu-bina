@@ -120,6 +120,8 @@ export class ManageVendorComponent implements OnInit {
             {
                 this.getAccountNumbers();
                 this.submitPending = false;
+                this.bankAccountForm.reset()
+                this.accountModal.hide()
                 this.localService.showSuccess(response.message,'Operation Successfull');
             } else{
                 this.submitPending = false;
@@ -154,6 +156,7 @@ export class ManageVendorComponent implements OnInit {
                   {
                       this.getAccountNumbers();
                     this.submitPending = false;
+                    this.accountUpdateModal.hide()
                     this.localService.showSuccess(response.message,'Operation Successfull');
                   }
                   else{
@@ -183,7 +186,7 @@ export class ManageVendorComponent implements OnInit {
             this.localService.showError(error,'Operation Unsuccessfull');
             });
     }
-     getBankList()
+    getBankList()
     {
         this.manageVendorService.getBankList().subscribe((response) => {
             let group = [];

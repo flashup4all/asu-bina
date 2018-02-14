@@ -52,7 +52,6 @@ export class LocalService {
             headers.append('content-type', 'application/json');
         let token = this.getToken();
             if(token) {
-                console.log(token)
                 headers.append('Authorization', 'Bearer ' + token);      
             }
         let request       = new RequestOptions({ headers: headers });

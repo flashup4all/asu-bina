@@ -144,6 +144,9 @@
                           </tr>
                         </tbody>
                       </table>
+                      <div class="media stream load-more">
+                     <a  (click)="loadMore()" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
+                  </div>
                     </div>
                 </div>
             </tab>
@@ -216,134 +219,6 @@
       </div>
     </div>
   </div>
-</div>
-<div class="module">
-  <div class="module-body">
-      <ul class="profile-tab nav nav-tabs">
-          <li class="active"><a href="#friends" data-toggle="tab">MEMBER</a></li>
-          <li><a href="#activity" data-toggle="tab">NEW MEMBER</a></li>
-      </ul>
-      <div class="profile-tab-content tab-content">
-          <div class="tab-pane fade" id="activity">
-          	<div class="">
-               <div class="new session form">
-            <div class="">
-                    
-                </div>
-              </div> 
-              </div>
-          </div>
-          <div class="tab-pane fade active in" id="friends">
-            
-               <div class="row module-option clearfix">
-                 <div *ngIf="results">
-                      <div class="col-md-6" *ngFor="let item of results">
-                          <div class="media user" title="{{item.first_name}} {{item?.middle_name}} {{item.last_name}}">
-                          <div class="">
-                                  <div class="btn-group">
-                                    <!-- <button class="btn btn-mini">Action</button> -->
-                                    <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
-                                      <span><i class="fa fa-ellipsis-v"></i></span>
-                                    </button>
-                                    <ul class="dropdown-menu" style="min-width:1px;">
-                                      <li>
-                                          <a class="" [routerLink]="['/coorp/member/', item.id,'view']" title="edit member details">
-                                          <button class="btn btn-block" ><i class="fa fa-sliders"> </i> Manage
-                                          </button>
-                                      </a>
-                                      </li>
-                                      <li>
-                                          <a (click)="editPassword(item)" title="reset member password: this sends a password reset link">
-                                          <button class="btn btn-block" ><i class="fa fa-lock"></i> 
-                                          Change Password</button>
-                                      </a>
-                                      </li>
-                                      <li>
-                                          <a *ngIf="item.status == 1" (click)="deactivateMember(item.id)" title="deactivate or suspend this member">
-                                          <button class="btn btn-block" >
-                                          <i class="fa fa-hourglass-start"></i>
-                                           De-activate</button>
-                                      </a>
-                                       <a *ngIf="item.status != 1" (click)="activateMember(item.id)" title="activate this member">
-                                          <button class="btn btn-block" >
-                                          <i class="fa fa-hourglass-start"></i>
-                                           Activate</button>
-                                      </a>
-                                      </li>
-                                       <!-- <li class="divider"></li>
-                                      <li>
-                                          <a (click)="deleteMember(item.id)" title="delete member">
-                                             <button class="btn btn-block" >
-                                             <i class="fa fa-trash-o"></i>
-                                               Delete</button>
-                                          </a>
-                                      </li>
-                                       <li class="divider"></li> -->
-                                    </ul>
-                                  </div>
-                          </div>
-                              <a class="media-avatar pull-left" href="#">
-                                  <img *ngIf="!item.passport" src="assets/images/avata.png">
-                                  <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(item.passport)">
-                              </a>
-                              <div class="media-body">
-                                  <h3 class="media-title">
-                                      {{item.first_name}} {{item.last_name}} 
-                                      {{item?.middle_name}}
-                                  </h3>
-                                  <p>
-                                      <small class="muted">{{item.email}}</small>
-                                  </p>
-                                   <p>
-                                      <small class="muted">{{item.phone1}}</small>
-                                  </p>
-                                  <p>
-                                      <small class="muted">{{item.gender}}</small>
-                                  </p>
-                                  <p>
-                                      <small class="muted pull-left"><h5>&#8358; {{item.contribution}}</h5></small>
-                                      <small *ngIf="item.status == 1" class="muted pull-right">
-                                         <h4><span class="label label-sm label-success">Approved</span></h4>
-                                      </small>
-                                      <small *ngIf="item.status == 2" class="muted pull-right">
-                                         <h4><span class="label label-sm label-warning">Blocked</span></h4>
-                                      </small>
-                                      <small *ngIf="item.status == 0" class="muted pull-right">
-                                         <h4><span class="label label-sm label-danger">Inactive</span></h4>
-                                      </small>
-                                  </p>
-                                  <div class="media-option btn-group shaded-icon">
-                                      <!-- <button class="btn btn-small" (click)="editStaff(item)" title="edit staff details">
-                                          <i class="fa fa-edit"></i>
-                                      </button>
-                                      <button class="btn btn-small" (click)="deleteStaff(item.id)" title="delete staff">
-                                          <i class="fa fa-trash-o"></i>
-                                      </button> -->
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-               </div>
-              <div class="module-body">
-                  <div class="media stream load-more">
-                     <a  (click)="loadMore()" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
-                  </div>
-                  <!-- <div class="pagination pagination-centered">
-                      <ul>
-                          <li><a href="#"><i class="icon-double-angle-left"></i></a></li>
-                          <li><a href="#">1</a></li>
-                          <li><a href="#">2</a></li>
-                          <li><a href="#">3</a></li>
-                          <li><a href="#">4</a></li>
-                          <li><a href="#"><i class="icon-double-angle-right"></i></a></li>
-                      </ul>
-                  </div> -->
-              </div>
-          </div>
-      </div>
-  </div>
-  <!--/.module-body-->
 </div>
 <!-- new staff modal -->
 <div bsModal #passwordModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">

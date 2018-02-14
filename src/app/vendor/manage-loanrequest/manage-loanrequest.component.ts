@@ -5,6 +5,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LocalService } from '../../storage/local.service';
 import { LoanRequestService } from './loan-request.service';
 import { MembersService } from '../membership/members.service';
+import { VendorService } from '../vendor.service';
+
 @Component({
   selector: 'app-manage-loanrequest',
   templateUrl: './manage-loanrequest.component.html',
@@ -27,19 +29,45 @@ export class ManageLoanrequestComponent implements OnInit {
   loader;
   memberData;
   submitPending: boolean;
+  paymentOptionCard: boolean;
+  paymentOptionAccount: boolean;
+  bank_accounts
+  cardForm : FormGroup;
+  bankAccountForm: FormGroup;
+  bank_list;
+  editAccountData;
+  account;
   @ViewChild('paymentModal') public paymentModal :ModalDirective;
+  @ViewChild('accountModal') public accountModal :ModalDirective;
+  @ViewChild('accountUpdateModal') public accountUpdateModal :ModalDirective;
 
 	constructor(
 	private localService : LocalService,
 	private _fb : FormBuilder,
   private route: Router,
   private loanrequestService : LoanRequestService,
+      private manageVendorService : VendorService,
 	private memberService : MembersService
 	) {
 	this.vendor = JSON.parse(this.localService.getVendor());
 	this.getLoanRequest();
+  this.getAccountNumbers();
+  this.getBankList()
 		}
 	ngOnInit() {
+    this.cardForm = this._fb.group({
+      name: [null, Validators.compose([Validators.required])],
+      number: [null, Validators.compose([Validators.required])],
+      cvv: [null, Validators.compose([Validators.required])],
+      exp: [null, Validators.compose([Validators.required])]
+    })
+    /*bank account form*/
+        this.bankAccountForm = this._fb.group({
+            bank_code: [null, Validators.compose([Validators.required])],
+            account_number: [null, Validators.compose([Validators.required])],
+            account_name: [null, Validators.compose([Validators.required])],
+            description: ''
+        });
 	}
 	/*loan request method*/
 
@@ -140,5 +168,176 @@ export class ManageLoanrequestComponent implements OnInit {
             this.localService.showSuccess(response.message,'Operation Successfull');
           }
         });
+    }
+    GetCardType(number)
+    {
+        // visa
+        var re = new RegExp("^4");
+        if (number.match(re) != null)
+            return "Visa";
+
+        // Mastercard 
+        // Updated for Mastercard 2017 BINs expansion
+         if (/^(5[1-5][0-9]{14}|2(22[1-9][0-9]{12}|2[3-9][0-9]{13}|[3-6][0-9]{14}|7[0-1][0-9]{13}|720[0-9]{12}))$/.test(number)) 
+            return "Mastercard";
+
+        // AMEX
+        re = new RegExp("^3[47]");
+        if (number.match(re) != null)
+            return "AMEX";
+
+        // Discover
+        re = new RegExp("^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)");
+        if (number.match(re) != null)
+            return "Discover";
+
+        // Diners
+        re = new RegExp("^36");
+        if (number.match(re) != null)
+            return "Diners";
+
+        // Diners - Carte Blanche
+        re = new RegExp("^30[0-5]");
+        if (number.match(re) != null)
+            return "Diners - Carte Blanche";
+
+        // JCB
+        re = new RegExp("^35(2[89]|[3-8][0-9])");
+        if (number.match(re) != null)
+            return "JCB";
+
+        // Visa Electron
+        re = new RegExp("^(4026|417500|4508|4844|491(3|7))");
+        if (number.match(re) != null)
+            return "Visa Electron";
+
+        return "";
+    }
+     paymentOptions(status)
+    {
+      console.log(status)
+      if(status === 'from_card')
+      {
+        this.paymentOptionCard = true;
+        this.paymentOptionAccount = false;
+      }else{
+        this.paymentOptionCard = false;
+        this.paymentOptionAccount = true;
+      }
+
+    }
+    getAccountNumbers()
+    {
+        this.manageVendorService.getBankAccount().subscribe((response) => {
+            this.bank_accounts = response.data;
+        },(error) => {
+            this.localService.showError(error,'Operation Unsuccessfull');
+            });
+    }
+
+    /*account number*/
+    addAccountNumber(data)
+    {
+        data['vendor_id'] = this.vendor.id;
+        data['bank_name'] = this.getBankName(data.bank_code)
+        console.log(data)
+        this.manageVendorService.addBankAccount(data).subscribe((response) => {
+            if(response.success = true)
+            {
+                this.getAccountNumbers();
+                this.submitPending = false;
+                this.bankAccountForm.reset()
+                this.accountModal.hide()
+                this.localService.showSuccess(response.message,'Operation Successfull');
+            } else{
+                this.submitPending = false;
+                this.localService.showError(response.message,'Operation Unsuccessfull');
+                }
+            }/*,(error) => {
+                this.submitPending = false;
+                this.localService.showError(error,'Operation Unsuccessfull');
+            }*/);
+    }
+
+    newAccount()
+    {
+        this.editAccountData = [];
+        this.accountModal.show()
+    }
+
+    editAccount(data)
+    {
+        this.editAccountData = data;
+        this.accountUpdateModal.show()
+    }
+
+    updateAccountNumber(data)
+    {
+        data['id'] = this.editAccountData.id;
+        data['vendor_id'] = this.vendor.id;
+        data['bank_name'] = this.getBankName(data.bank_code)
+        console.log(data)
+        this.manageVendorService.updateBankAccount(data).subscribe((response) => {
+                  if(response.success = true)
+                  {
+                      this.getAccountNumbers();
+                    this.submitPending = false;
+                this.accountUpdateModal.hide()
+                    this.localService.showSuccess(response.message,'Operation Successfull');
+                  }
+                  else{
+                    this.submitPending = false;
+                    this.localService.showError(response.message,'Operation Unsuccessfull');
+                }
+            },(error) => {
+                this.submitPending = false;
+                this.localService.showError(error,'Operation Unsuccessfull');
+            });
+    }
+
+    deleteAccount(id)
+    {
+        this.manageVendorService.deleteBankAccount(id).subscribe((response) => {
+            this.localService.showError(response.message,'Operation Unsuccessfull');
+
+        },(error) => {
+            this.localService.showError(error,'Operation Unsuccessfull');
+            });
+    }
+    getBankList()
+    {
+        this.manageVendorService.getBankList().subscribe((response) => {
+            let group = [];
+            let bank_list = response.data;
+            for (var key in bank_list) {
+                if (bank_list.hasOwnProperty(key)) {
+                    let data = { code: key, name: bank_list[key]}
+                 group.push(data)                
+                }
+            }
+            this.bank_list = group;
+        },(error) => {
+            this.localService.showError(error,'Operation Unsuccessfull');
+            });
+    }
+
+    getBankName(code)
+    {
+        for (let i=0; i < this.bank_list.length; i++) {
+            if(this.bank_list[i].code === code){
+                let name = this.bank_list[i].name;
+                return name;
+
+            }
+        }
+    }
+    chooseAccount(data)
+    {
+      this.account = data;
+    }
+
+    payNow()
+    {
+      console.log(this.account)
     }
 }
