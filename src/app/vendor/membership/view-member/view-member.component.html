@@ -3,7 +3,7 @@
         <div class="profile-head media">
             <a href="#" class="col-md-3 pull-left">
                 <img *ngIf="!member?.passport" class="rounded-circle" src="assets/images/avata.png">
-                <img *ngIf="member?.passport" class="rounded-circle" [src]="sanitizer.bypassSecurityTrustUrl(member.passport)">
+                <img *ngIf="member?.passport" class="rounded-circle" style="width: 150px; height: 150px;" [src]="sanitizer.bypassSecurityTrustUrl(member.passport)">
             </a>
             <div class="col-md-9">
                 <h2>
