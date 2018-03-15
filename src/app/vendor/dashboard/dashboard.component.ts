@@ -5,7 +5,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { LocalService } from '../../storage/local.service';
 import { DashboardService } from './dashboard.service';
-import { ModalDirective } from 'ngx-bootstrap/modal/modal.component';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageService } from '../message-center/message.service';
 import { LoanRequestService } from '../manage-loanrequest/loan-request.service';
 import { ContributionService } from '../manage-contribution/contribution.service';

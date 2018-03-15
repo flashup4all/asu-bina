@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalDirective } from 'ngx-bootstrap/modal/modal.component';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LocalService } from '../../../storage/local.service';
 import { ContributionService } from '../contribution.service';

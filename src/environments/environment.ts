@@ -8,7 +8,7 @@ export const environment = {
   application_name: 'Asusu - Loan Now Pay Later',
   api: {
   	version: '1.2',
-  	url: 'http://ec2-13-59-107-189.us-east-2.compute.amazonaws.com/api/',//'http://asusuapi.asusu.ng/api/',//'http://localhost:8000/api/', //'http://aix.testapi.asusu.ng/api/',//
+  	url: 'http://asusuapi.asusu.ng/api/',//'http://ec2-13-59-107-189.us-east-2.compute.amazonaws.com/api/',//'http://localhost:8000/api/', //'http://aix.testapi.asusu.ng/api/',//
   	imageUrl: 'http://asusuapi.asusu.ng/images/',
   	payment_gateway_live: 'https://live.moneywaveapi.co/',
   	payment_gateway_test: 'https://moneywave.herokuapp.com/',
