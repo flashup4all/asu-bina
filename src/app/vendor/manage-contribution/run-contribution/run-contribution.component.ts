@@ -17,6 +17,7 @@ export class RunContributionComponent implements OnInit {
   	public vendor;
   	public user;
 	public coorpMembers = [];
+	public contribution_type_list;
 	public runContributionForm : FormGroup;
 	file;
 	public result: any;
@@ -31,8 +32,8 @@ export class RunContributionComponent implements OnInit {
 		this.vendor = JSON.parse(this.localService.getVendor());
 		this.user = JSON.parse(this.localService.getUser());
 		this.getAllCoorpMembers();
+		this.get_contribution_type()
 		this.monthList = this.localService.yearjson();
-		console.log(this.monthList)
 		//this.getChangeContributionRequest();
   	}
   	ngOnInit() {
@@ -52,7 +53,12 @@ export class RunContributionComponent implements OnInit {
         name: data.first_name
       });
     }
-
+    get_contribution_type()
+  	{
+  		this.contributionService.get_contribution_type().subscribe((response) => {
+  			this.contribution_type_list = response.data;
+  		})
+  	}
   	/**
 	 * @method getAllCoorpMembers
 	 * get vendor contrinbution
@@ -87,4 +93,8 @@ export class RunContributionComponent implements OnInit {
 		});
 	}
 
+	checkAll(event)
+	{
+		console.log(event)
+	}
 }

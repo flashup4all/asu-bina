@@ -7,6 +7,9 @@ import { LocalService } from '../../../storage/local.service';
 import { MembersService } from '../members.service';
 import { LoanRequestService } from '../../manage-loanrequest/loan-request.service';
 import { LoanSettingsService } from '../../loans/loan-settings/loan-settings.service';
+import { ContributionService } from '../../manage-contribution/contribution.service';
+import { DeductionsService } from '../../manage-deductions/deductions.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-view-member',
@@ -23,27 +26,39 @@ import { LoanSettingsService } from '../../loans/loan-settings/loan-settings.ser
   ]
 })
 export class ViewMemberComponent implements OnInit {
-    private vendor;
-    private memberId;
-    private member;
-    private memberData;
-    private memberLoanRequestList;
-    private memberLoanDeductionsList;
-    private memberContributionList;
-    private membersFormPoolList;
+    public vendor;
+    public user;
+    public memberId;
+    public member;
+    public memberData;
+    public memberLoanRequestList;
+    public memberLoanDeductionsList;
+    public memberContributionList;
+    public membersFormPoolList;
+    public contribution_type_list;
     loanTypeList;
     total_contribution;
     total_deduction;
-
-    private newMemberForm: FormGroup;
+    showFileNames;
+    monthList;
+    public addDeductionForm : FormGroup;
+    public runContributionForm : FormGroup;
+    public newMemberForm: FormGroup;
+    filterForm: FormGroup;
     submitPending:boolean;
     public loanRequestForm : FormGroup;
     files;
+    current_year = moment().format('YYYY');
+
     @ViewChild('newLoanRequestModal') public newLoanRequestModal : ModalDirective;
+    @ViewChild('newContributionModal') public newContributionModal : ModalDirective;
+    @ViewChild('newRepaymentModal') public newRepaymentModal : ModalDirective;
 
     constructor(
       private route : ActivatedRoute, 
     	private localService : LocalService,
+      private contributionService : ContributionService,
+      private deductionService : DeductionsService,
       private router : Router,
       private sanitizer:DomSanitizer,
   	  private _fb : FormBuilder,
@@ -52,15 +67,18 @@ export class ViewMemberComponent implements OnInit {
     	private loanSettingsService : LoanSettingsService
     	) {
         this.vendor = JSON.parse(this.localService.getVendor());
+        this.user = JSON.parse(this.localService.getUser());
         //this.router.events.subscribe((val) => {
         this.memberId = this.route.snapshot.params['member_id'];
          // });
+        this.monthList = this.localService.yearjson();
         this.getMemberProfile();
         this.getMemberLoanRequest();
         this.getMemberLoanDeductions();
         this.getMemberContributions();
         this. getFormFields();
         this.getLoanType();
+        this.get_contribution_type()
        }
 
     ngOnInit() {
@@ -70,7 +88,28 @@ export class ViewMemberComponent implements OnInit {
         amount : [null, Validators.compose([Validators.required])],
         description : '',
         //requirements : '',
+      });
+      this.runContributionForm = this._fb.group({
+        period : [null, Validators.compose([Validators.required])],
+        type : [null, Validators.compose([Validators.required])],
+        date : [null, Validators.compose([Validators.required])],
+        contribution: '',
+      });
+      this.addDeductionForm = this._fb.group({
+        loan_request_id : [null, Validators.compose([Validators.required])],
+        period : [null, Validators.compose([Validators.required])],
+        repayment_method : [null, Validators.compose([Validators.required])],
+        run_date : [null, Validators.compose([Validators.required])],
+        repayment_amount: '',
+      });
+
+        /*filter form*/
+       this.filterForm = this._fb.group({
+        from : '',
+        to : '',
+        id : ''
       })
+
     }
     /**
      * @method getMemberProfile
@@ -94,6 +133,13 @@ export class ViewMemberComponent implements OnInit {
     {
       this.memberService.getMemberLoanRequest(this.memberId).subscribe((response) => {
         this.memberLoanRequestList = response.data
+      })
+    }
+
+    get_contribution_type()
+    {
+      this.contributionService.get_contribution_type().subscribe((response) => {
+        this.contribution_type_list = response.data;
       })
     }
 
@@ -171,13 +217,19 @@ export class ViewMemberComponent implements OnInit {
       }
       return total_contribution;
     }
-    totalDeductions()
+    totalDeductions(array)
     {
       let total_deductions = 0
-      for (var i in this.memberLoanDeductionsList) {
-        total_deductions += this.memberLoanDeductionsList.amount
+      for (var i=0; i < array.length; i++) {
+        total_deductions += array[i].amount_deducted
       }
       return total_deductions;
+    }
+
+    percentage_to_amount(total_amount, percentage)
+    {
+      let amount = 0
+      return amount = parseInt(total_amount) * (parseInt(percentage)/100);
     }
     /**
      * @method getFormFields
@@ -216,4 +268,94 @@ export class ViewMemberComponent implements OnInit {
       });
     }
 
+    runContribution(formValues)
+    {
+       if(parseInt(this.member.status))
+       {
+         let data = {
+           status: parseInt(this.member.status),
+           id:this.memberId,
+           contribution: parseInt(formValues.contribution)
+         }
+        formValues['contributions'] = [data];
+        formValues['vendor_id'] = this.vendor.id;
+        formValues['approved_by'] = this.user.id
+        this.submitPending = true;
+        this.contributionService.runEditedContributions(formValues).subscribe((response) => {
+          if (response.success) {
+            this.submitPending = false;
+          this.getMemberContributions();
+          this.runContributionForm.reset()
+            this.newContributionModal.hide();
+            this.localService.showSuccess(response.message,'Operation Successfull');
+          }else{
+            this.localService.showError(response.message,'Operation Unsuccessfull');
+          }
+        }, (error) => {
+          this.submitPending = false;
+                this.localService.showError(error,'Operation Unsuccessfull');
+        });
+       }else{
+         console.log('not active')
+            this.localService.showError('Cannot make contribution on an inactive account','Account Inactive');
+       }
+    }
+
+    filterContribution(filterValues)
+    {
+      this.submitPending = true;
+      filterValues['vendor_id'] = parseInt(this.vendor.id);
+      filterValues['member_id'] = parseInt(this.memberId);
+      console.log(filterValues)
+      this.contributionService.filterContribution(filterValues).subscribe((response) => {
+        this.memberContributionList = response.data
+        this.submitPending = false;
+      })
+    }
+
+    filterDeduction(filterValues)
+    {
+      this.submitPending = true;
+      filterValues['vendor_id'] = parseInt(this.vendor.id);
+      filterValues['member_id'] = parseInt(this.memberId);
+      this.deductionService.filterDeduction(filterValues).subscribe((response) => {
+        this.memberLoanDeductionsList = response
+        this.submitPending = false;
+      })
+    }
+
+    filterLoanRequest(filterValues)
+    {
+      this.submitPending = true;
+      filterValues['vendor_id'] = parseInt(this.vendor.id);
+      filterValues['member_id'] = parseInt(this.memberId);
+      this.loanRequestService.filterLoanRequest(filterValues).subscribe((response) => {
+        this.memberLoanRequestList = response.data;
+        this.submitPending = false;
+      })
+    }
+
+
+    make_a_repayment(formValues)
+    {
+      formValues['vendor_id'] = this.vendor.id
+      formValues['approved_by'] = this.user.id
+      this.submitPending = true;
+      this.deductionService.repayment(formValues).subscribe((response) => {
+        if (response.success) {
+          this.submitPending = false;
+          this.getMemberLoanRequest();
+          this.getMemberLoanDeductions();
+          this.newRepaymentModal.hide();
+          this.addDeductionForm.reset()
+          this.localService.showSuccess(response.message,'Operation Successfull');
+        }else{
+          this.submitPending = false;
+                this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      }, (error) => {
+        this.submitPending = false;
+              this.localService.showError(error,'Operation Unsuccessfull');
+      });
+    }
 }

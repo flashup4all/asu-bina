@@ -19,7 +19,7 @@ import { SettingsService } from './settings.service';
 })
 export class SettingsComponent implements OnInit {
     public vendor;
-    private settingsList;
+    public settingsList;
     submitPending: boolean;
     public isCollapsed = false;
 

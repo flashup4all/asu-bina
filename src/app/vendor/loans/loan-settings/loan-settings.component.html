@@ -270,15 +270,15 @@
                <form [formGroup] = "loanTypeItemForm" (ngSubmit) = "addModifyLoanItem(loanTypeItemForm.value)" class="form-horizontal row-fluid">
                         <div class="form-group">
                             <input type="text" placeholder="Item Name" formControlName="item_name" name="" class="form-control">
-                            <small [hidden]="(loanTypeItemForm.controls.item_name.valid ) || (loanTypeItemForm.controls.item_name.pristine && !submitted)" class="text-danger">Item Name is Required</small>
+                            <small [hidden]="(loanTypeItemForm.controls.item_name.valid ) || (loanTypeItemForm.controls.item_name.pristine )" class="text-danger">Item Name is Required</small>
                         </div>
                         <div class="form-group">
                            <input type="text" placeholder="Item Amount" formControlName="amount" name="" class="form-control">
-                            <small [hidden]="(loanTypeItemForm.controls.amount.valid ) || (loanTypeItemForm.controls.amount.pristine && !submitted)" class="text-danger">Item Amount is Required</small>
+                            <small [hidden]="(loanTypeItemForm.controls.amount.valid ) || (loanTypeItemForm.controls.amount.pristine )" class="text-danger">Item Amount is Required</small>
                         </div>
                         <div class="form-group">
                             <textarea class="form-control" formControlName="description" placeholder="Description"></textarea>
-                            <small [hidden]="(loanTypeItemForm.controls.description.valid ) || (loanTypeItemForm.controls.description.pristine && !submitted)" class="text-danger">Description is Required</small>
+                            <small [hidden]="(loanTypeItemForm.controls.description.valid ) || (loanTypeItemForm.controls.description.pristine )" class="text-danger">Description is Required</small>
                         </div>
                     <div class="form-group">
                         <div class="col-md-12">
@@ -341,7 +341,7 @@
                                 <option value="B">B</option>
                                 <option value="C">C</option>
                             </select>
-                            <small [hidden]="(loanSignatoryForm.controls.level.valid ) || (loanSignatoryForm.controls.level.pristine && !submitted)" class="text-danger">Level is Required</small>
+                            <small [hidden]="(loanSignatoryForm.controls.level.valid ) || (loanSignatoryForm.controls.level.pristine )" class="text-danger">Level is Required</small>
                         </div>
                     </div>
                     <div class="form-group">
@@ -354,7 +354,7 @@
                                     {{item?.middle_name}}
                                 </option>
                             </select>
-                            <small [hidden]="(loanSignatoryForm.controls.user_id.valid ) || (loanSignatoryForm.controls.user_id.pristine && !submitted)" class="text-danger">Staff is Required</small>
+                            <small [hidden]="(loanSignatoryForm.controls.user_id.valid ) || (loanSignatoryForm.controls.user_id.pristine )" class="text-danger">Staff is Required</small>
                         </div>
                     </div>
                     <div class="form-group">
@@ -394,7 +394,7 @@
                                 {{item?.middle_name}}
                             </option>
                         </select>
-                        <small [hidden]="(editloanSignatoryForm.controls.user_id.valid ) || (editloanSignatoryForm.controls.user_id.pristine && !submitted)" class="text-danger">Payment Title is Required</small>
+                        <small [hidden]="(editloanSignatoryForm.controls.user_id.valid ) || (editloanSignatoryForm.controls.user_id.pristine )" class="text-danger">Payment Title is Required</small>
                     </div>
                     <div class="form-group">
                         <div class="controls">
@@ -427,12 +427,12 @@
                 <div class="form-group">
                     <label>Type Name</label>
                     <input type="text" formControlName="loan_type" placeholder="Loan Type" class="form-control" value="" required="">
-                    <small [hidden]="(newLoanTypeForm.controls.loan_type.valid ) || (newLoanTypeForm.controls.loan_type.pristine && !submitted)" class="text-danger">Loan Type Name is Required</small>
+                    <small [hidden]="(newLoanTypeForm.controls.loan_type.valid ) || (newLoanTypeForm.controls.loan_type.pristine )" class="text-danger">Loan Type Name is Required</small>
                 </div>
                 <div class="form-group">
                     <label>Interest <small>[ % ]</small></label>
                     <input type="number" formControlName="interest" placeholder="percentage interest: eg.3%" class="form-control" required="">
-                    <small [hidden]="(newLoanTypeForm.controls.interest.valid ) || (newLoanTypeForm.controls.interest.pristine && !submitted)" class="text-danger">Percentage Interest Required</small>
+                    <small [hidden]="(newLoanTypeForm.controls.interest.valid ) || (newLoanTypeForm.controls.interest.pristine )" class="text-danger">Percentage Interest Required</small>
                 </div>
                
                     <div class="form-group"  *ngIf="!percentage">
@@ -463,7 +463,7 @@
                         <option value="60">5 Years</option>
                         <option value="72">6 Years</option>
                     </select>
-                     <small [hidden]="(newLoanTypeForm.controls.duration.valid ) || (newLoanTypeForm.controls.duration.pristine && !submitted)" class="text-danger">Loan Duration is Required</small>
+                     <small [hidden]="(newLoanTypeForm.controls.duration.valid ) || (newLoanTypeForm.controls.duration.pristine )" class="text-danger">Loan Duration is Required</small>
                 </div>
                 <hr>
                 <h4>Loan Signatory Settings</h4>
@@ -504,12 +504,12 @@
                 <div class="form-group">
                     <label>Type Name</label>
                     <input type="text" [ngModel]="editLoanTypeData?.loan_type" formControlName="loan_type" placeholder="Loan Type" class="form-control" value="" required="">
-                    <small [hidden]="(newLoanTypeForm.controls.loan_type.valid ) || (newLoanTypeForm.controls.loan_type.pristine && !submitted)" class="text-danger">Loan Type Name is Required</small>
+                    <small [hidden]="(newLoanTypeForm.controls.loan_type.valid ) || (newLoanTypeForm.controls.loan_type.pristine )" class="text-danger">Loan Type Name is Required</small>
                 </div>
                 <div class="form-group">
                     <label>Interest <small>[ % ]</small></label>
                     <input type="number" [ngModel]="editLoanTypeData?.interest" formControlName="interest" placeholder="percentage interest: eg.3%" class="form-control" required="">
-                    <small [hidden]="(newLoanTypeForm.controls.interest.valid ) || (newLoanTypeForm.controls.interest.pristine && !submitted)" class="text-danger">Loan Interest is Required</small>
+                    <small [hidden]="(newLoanTypeForm.controls.interest.valid ) || (newLoanTypeForm.controls.interest.pristine )" class="text-danger">Loan Interest is Required</small>
                 </div>
                 <div class="form-group" *ngIf="!percentage">
                     <label>Minimum Amount <small>[ NGN ]</small></label>
@@ -539,7 +539,7 @@
                         <option value="36">3 Years</option>
                         <option value="48">4 Years</option>
                     </select>
-                     <small [hidden]="(newLoanTypeForm.controls.duration.valid ) || (newLoanTypeForm.controls.duration.pristine && !submitted)" class="text-danger">Loan Duration is Required</small>
+                     <small [hidden]="(newLoanTypeForm.controls.duration.valid ) || (newLoanTypeForm.controls.duration.pristine )" class="text-danger">Loan Duration is Required</small>
                 </div>
                 <hr>
                 <h4>Loan Signatory Settings</h4>

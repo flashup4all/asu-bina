@@ -3,7 +3,7 @@
     <div class="col-sm-12 col-lg-12">
       <div class="card text-white bg-primary">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{ total_staff | number : fractionSize }}</h4>
+          <h4 class="mb-0">{{ total_staff | number  }}</h4>
           <p>Total Staff
         </div>
       </div>
@@ -28,6 +28,7 @@
                           <input type="text" [formControl]="queryField" type="text" class="form-control" placeholder="Filter by staff name...">
                           <span class="input-group-addon"><i class="fa fa-user"></i></span>
                         </div>
+                        <span *ngIf="searching">searching...</span>
                       </div>
                     </form>
                 </div>
@@ -280,14 +281,14 @@
             <label class="control-label" for="basicinput">Surname</label>
             <div class="controls">
               <input type="text" id="basicinput" [ngModel]="editStaffData?.first_name" formControlName="first_name" placeholder="Surname" class="form-control">
-              <small [hidden]="(newStaffForm.controls.first_name.valid ) || (newStaffForm.controls.first_name.pristine && !submitted)" class="text-danger">Surname is Required</small>
+              <small [hidden]="(newStaffForm.controls.first_name.valid ) || (newStaffForm.controls.first_name.pristine )" class="text-danger">Surname is Required</small>
             </div>
           </div>
           <div class="form-group">
             <label class="control-label" for="basicinput">First Name</label>
             <div class="controls">
               <input type="text" id="basicinput" [ngModel]="editStaffData?.last_name" formControlName="last_name" placeholder="First Name" class="form-control">
-              <small [hidden]="(newStaffForm.controls.last_name.valid ) || (newStaffForm.controls.last_name.pristine && !submitted)" class="text-danger">First Name is Required</small>
+              <small [hidden]="(newStaffForm.controls.last_name.valid ) || (newStaffForm.controls.last_name.pristine )" class="text-danger">First Name is Required</small>
             </div>
           </div>
           <div class="form-group">
@@ -300,14 +301,14 @@
             <label class="control-label" for="basicinput">Email</label>
             <div class="controls">
               <input type="text" id="basicinput" [ngModel]="editStaffData?.email" formControlName="email" placeholder="Email" class="form-control">
-              <small [hidden]="(newStaffForm.controls.email.valid ) || (newStaffForm.controls.email.pristine && !submitted)" class="text-danger">Email is Required</small>
+              <small [hidden]="(newStaffForm.controls.email.valid ) || (newStaffForm.controls.email.pristine )" class="text-danger">Email is Required</small>
             </div>
           </div>
           <div class="form-group">
             <label class="control-label" for="basicinput">Date of Birth</label>
             <div class="controls">
               <input type="date" id="basicinput" [ngModel]="editStaffData?.date_of_birth" formControlName="dob" placeholder="Date of Birth" class="form-control">
-              <small [hidden]="(newStaffForm.controls.dob.valid ) || (newStaffForm.controls.dob.pristine && !submitted)" class="text-danger">Date of Birth is Required</small>
+              <small [hidden]="(newStaffForm.controls.dob.valid ) || (newStaffForm.controls.dob.pristine )" class="text-danger">Date of Birth is Required</small>
             </div>
           </div>
 
@@ -316,7 +317,7 @@
             <div class="controls">
               <div class="input-prepend">
                 <span class="add-on">+234</span><input class="form-control" formControlName="mobile_phone"[ngModel]="editStaffData?.phone1" type="text" placeholder="eg:  8094500000">
-                <small [hidden]="(newStaffForm.controls.mobile_phone.valid ) || (newStaffForm.controls.mobile_phone.pristine && !submitted)" class="text-danger">Mobile Phone is Required</small>       
+                <small [hidden]="(newStaffForm.controls.mobile_phone.valid ) || (newStaffForm.controls.mobile_phone.pristine )" class="text-danger">Mobile Phone is Required</small>       
               </div>
             </div>
           </div>
@@ -325,7 +326,7 @@
             <div class="controls">
               <div class="input-prepend">
                 <span class="add-on">+234</span><input class="form-control" [ngModel]="editStaffData?.phone2" formControlName="contact_phone" type="text" placeholder="eg:  8094500000">
-                <small [hidden]="(newStaffForm.controls.contact_phone.valid ) || (newStaffForm.controls.contact_phone.pristine && !submitted)" class="text-danger">Contact Phone is Required</small>       
+                <small [hidden]="(newStaffForm.controls.contact_phone.valid ) || (newStaffForm.controls.contact_phone.pristine )" class="text-danger">Contact Phone is Required</small>       
               </div>
             </div>
           </div>
@@ -342,7 +343,7 @@
                 <input type="radio" name="gender" [ngModel]="editStaffData?.gender" formControlName = "gender" id="optionsRadios2" value="Female">
                 Female
               </label> 
-              <small [hidden]="(newStaffForm.controls.gender.valid ) || (newStaffForm.controls.gender.pristine && !submitted)" class="text-danger">Gender is Required</small>
+              <small [hidden]="(newStaffForm.controls.gender.valid ) || (newStaffForm.controls.gender.pristine )" class="text-danger">Gender is Required</small>
             </div>
           </div>
           

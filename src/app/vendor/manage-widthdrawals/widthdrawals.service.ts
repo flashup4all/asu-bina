@@ -13,7 +13,7 @@ import { environment } from '../../../environments/environment';
 @Injectable()
 export class WidthdrawalsService {
 
-  	constructor(public http : Http, private localService : LocalService) { }
+  	constructor(public http : Http, private localService : LocalService, private handleErr: handleErrors) { }
   	
   	/**
      * @method getWidthdrawals
@@ -24,7 +24,7 @@ export class WidthdrawalsService {
     {
       return this.http.get(environment.api.url+'CoopManagement/widthdrawal/get/'+
                     JSON.parse(this.localService.getVendor()).id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
     /**
@@ -35,7 +35,7 @@ export class WidthdrawalsService {
     approveWidthdrawalRequest(data)
     {
       return this.http.post(environment.api.url+'CoopManagement/widthdrawal/approve',JSON.stringify(data), this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
      * @method cancelWidthdrawalRequest
@@ -45,6 +45,6 @@ export class WidthdrawalsService {
     cancelWidthdrawalRequest(data)
     {
       return this.http.post(environment.api.url+'CoopManagement/widthdrawal/cancel',JSON.stringify(data), this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 }

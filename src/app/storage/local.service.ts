@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Headers, Http, RequestOptions, Response } from '@angular/http'
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs/Rx';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable()
 export class LocalService {
 
-	constructor(public http : Http, private toastrService : ToastsManager) { }
+	constructor(public http : Http, private toastrService : ToastsManager, public router: Router,
+    private route: ActivatedRoute
+    ) { }
 	  /*get jwt token*/
 	setToken(token: string) :void
 	{
@@ -79,6 +84,22 @@ export class LocalService {
       return this.http.get(url, this.header())
               .map((response : Response) => response.json());
     }
+
+    jwtHelper = new JwtHelperService();
+
+useJwtHelper(error: Response) {
+  var token = localStorage.getItem('token');
+
+  console.log(
+    this.jwtHelper.decodeToken(token),
+    this.jwtHelper.getTokenExpirationDate(token),
+    this.jwtHelper.isTokenExpired(token)
+  );
+  if(this.jwtHelper.isTokenExpired(token))
+  {
+    this.router.navigate(['/auth']);
+  }
+}
 
     yearjson()
     {

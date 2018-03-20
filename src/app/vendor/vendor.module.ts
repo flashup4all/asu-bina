@@ -1,6 +1,7 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfileComponent } from './user-account/profile/profile.component';
 import { VendorRoutingModule } from './vendor-routing.module';
@@ -16,6 +17,7 @@ import { ModalModule } from 'ngx-bootstrap';
     FormsModule,
     ReactiveFormsModule,
     ModalModule.forRoot(),
+    NgbModule.forRoot(),
   ],
   declarations: [
   	ManageVendorComponent,
@@ -23,6 +25,8 @@ import { ModalModule } from 'ngx-bootstrap';
   ],
   providers:[
   	VendorService
-  ]
+  ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+
 })
 export class VendorModule { }

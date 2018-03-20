@@ -1,4 +1,7 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Subject } from 'rxjs/Rx';
+import {Observable} from 'rxjs/Observable';
+import {of} from 'rxjs/observable/of'
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { LocalService } from '../../../storage/local.service';
@@ -40,6 +43,8 @@ export class ManageStaffComponent implements OnInit {
  total_staff;
  editMemberData;
  passwordFormCheck:boolean;
+ searching: boolean;
+searchFailed: boolean;
 	public file_srcs: string[] = [];
 	 
 	public debug_size_before: string[] = [];
@@ -67,13 +72,20 @@ export class ManageStaffComponent implements OnInit {
        this.queryField.valueChanges
         .debounceTime(200)
         .distinctUntilChanged()
-          .switchMap((query) =>  this.manageStaffService.filterStaff(query))
+        .do(() => this.searching = true)
+          .switchMap((query) =>  this.manageStaffService.filterStaff(query)
+            .do(() => this.searchFailed = false)
+                .catch(() => {
+                  this.searchFailed = true;
+                  return of([]);
+                })
+            )
           .subscribe( result => { 
             if (result.status === 400)
             { 
               return; 
             }else {  
-              this.results = result.data; 
+              this.results = result; 
             }
           });
   	}

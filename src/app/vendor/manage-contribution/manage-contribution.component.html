@@ -3,23 +3,23 @@
     	<div class="row">
       		<div class="col">
 		        <tabset>
-		          <tab heading="Manage Widthdrawals">
+		          <tab heading="Manage Contributions">
 			            <div class="col-md-12">
 			            	<div _ngcontent-c4="" class="module-option clearfix">
 					           <form class="pull-left" [formGroup] = "runContributionForm" (ngSubmit) = "runContribution(runContributionForm.value)">
 					           	 	<div class="row">
 					                	<div class="col-md-4">
 					                		<select class="form-control" placeholder="Filter by name..." formControlName = "repayment_method">
-						                        <option value="salary">Salary</option>
+						                        <option value="{{ item.id }}" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
 						                    </select>
-						                    <small [hidden]="(runContributionForm.controls.repayment_method.valid ) || (runContributionForm.controls.repayment_method.pristine && !submitted)" class="text-danger">Repayment Method is Required</small> 
+						                    <small [hidden]="(runContributionForm.controls.repayment_method.valid ) || (runContributionForm.controls.repayment_method.pristine )" class="text-danger">Repayment Method is Required</small> 
 					                	</div>
 							           	<div class="col-md-4">
 							           		<select class="form-control" placeholder="Period" formControlName = "period">
 						                        <option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
 						                        <!-- <option value="January/{{ current_year }}">January/{{ current_year }}</option> -->
 						                    </select>
-						                    <small [hidden]="(runContributionForm.controls.period.valid ) || (runContributionForm.controls.period.pristine && !submitted)" class="text-danger">Period Method is Required</small> 
+						                    <small [hidden]="(runContributionForm.controls.period.valid ) || (runContributionForm.controls.period.pristine )" class="text-danger">Period Method is Required</small> 
 							           	</div>
 							           	<div class="col-md-4">
 							           		 <button type="submit" class="btn btn-success" [disabled]="runContributionForm.invalid || submitPending ">
@@ -31,9 +31,51 @@
 					                </div>
 					                <br>
 					            </form>
-					            <button class="btn btn-success" (click)="excelUploadModal.show()">Upload Excel Format</button>
+					            <!-- <button class="btn btn-success" (click)="excelUploadModal.show()">Upload Excel Format</button> -->
 					            <a class="btn btn-success" [routerLink]="['/app/contributions/run-contributions']" (click)="manageContribution()">Manage Contributions</a>
+					            <button class="btn btn-success" (click)="show_adv_form()">Search</button>
 					        </div>
+					        <div class="row" *ngIf="adv_filter"  [@slideInOut]>
+			            		<form [formGroup] = "filterForm" (ngSubmit) = "filterContribution(filterForm.value)" style="width: 100%;">
+                                    <div class="row p-1">
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <label>From</label>
+                                            <input type="date" formControlName = "from" class="form-control" name=""> 
+                                          </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <label>To</label>
+                                            <input type="date" formControlName = "to" class="form-control" name="">
+                                          </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+                                              <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
+                                              <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
+                                              <span *ngIf="!submitPending">Filter</span>
+                                            </button>
+                                             <!-- <button type="button" class="btn btn-primary" (click)="newContributionModal.show()" style="margin-top: 30px;"> Make a Contribution</button> -->
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <!-- <div class="row" *ngIf="adv_filter">
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <label>Trans. ID:</label>
+                                            <input type="text" class="form-control" formControlName="id" placeholder="Invoice Number"/>
+                                            <span *ngIf="searching">searching...</span>
+                                            <ng-template #st let-s="result" let-t="sterm">
+                                              
+                                              {{ s.name}}
+                                            </ng-template>
+                                          </div>
+                                        </div>
+                                      </div> -->
+                                  </form>
+			            	</div>
 			            	<table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
 				                <thead>
 					                <tr>
@@ -42,6 +84,7 @@
 					                    <th>(&#8358;) Contribution</th>
 					                    <th>(&#8358;) Contributed</th>
 					                    <th>Period</th>
+					                    <th>Type</th>
 					                    <th>Date</th>
 					                    <th>Actions</th>
 					                </tr>
@@ -60,7 +103,10 @@
 					                    <td>
 					                         {{ item?.amount | number:'.2' }}
 					                    </td>
-					                      <td>
+					                    <td>
+					                        {{item?.type?.name}} 
+										</td>
+										<td>
 					                        {{item?.period}} 
 					                    </td>
 					                    <td>

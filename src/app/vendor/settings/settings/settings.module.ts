@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule } from '@angular/forms';
 //import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -20,6 +20,8 @@ import { SettingsService } from './settings.service';
      //NgbModule,
   ],
   declarations: [SettingsComponent],
-  providers: [ SettingsService ]
+  providers: [ SettingsService ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+
 })
 export class SettingsModule { }

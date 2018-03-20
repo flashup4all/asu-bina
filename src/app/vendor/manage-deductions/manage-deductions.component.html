@@ -6,20 +6,20 @@
 		          <tab heading="Manage Deductions">
 			            <div class="col-md-12">
 			            	<div class="row">
-			            		<div class="col-md-9">
+			            		<div class="col-md-8">
 						           <form class="" [formGroup] = "runDeductionsForm" (ngSubmit) = "runDeductions(runDeductionsForm.value)">
 						                <div class="row">
 						                	<div class="col-md-4">
 						                		<select class="form-control" placeholder="Filter by name..." formControlName = "repayment_method">
 							                        <option value="salary">Salary</option>
 							                    </select>
-							                    <small [hidden]="(runDeductionsForm.controls.repayment_method.valid ) || (runDeductionsForm.controls.repayment_method.pristine && !submitted)" class="text-danger">Repayment Method is Required</small>
+							                    <small [hidden]="(runDeductionsForm.controls.repayment_method.valid ) || (runDeductionsForm.controls.repayment_method.pristine )" class="text-danger">Repayment Method is Required</small>
 						                	</div>
 								           	<div class="col-md-4">
 								           		<select class="form-control" placeholder="Period" formControlName = "period">
 								           			<option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
 							                    </select>
-							                    <small [hidden]="(runDeductionsForm.controls.period.valid ) || (runDeductionsForm.controls.period.pristine && !submitted)" class="text-danger">Period Method is Required</small> 
+							                    <small [hidden]="(runDeductionsForm.controls.period.valid ) || (runDeductionsForm.controls.period.pristine )" class="text-danger">Period Method is Required</small> 
 								           	</div>
 								           	<div class="col-md-4">
 								           		 <button type="submit" class="btn btn-success" [disabled]="runDeductionsForm.invalid || submitPending ">
@@ -32,9 +32,50 @@
 						                <br>
 						            </form>
 						        </div>
-						        <div class="col-md-3">
+						        <div class="col-md-4">
 						        	<a class="btn btn-success" [routerLink]="['/app/deductions/run-deductions']">Manage Deductions</a>
+						        	<button class="btn btn-success" (click)="show_adv_form()">Search</button>
 						        </div>
+			            	</div>
+			            	<div class="row" *ngIf="adv_filter"  [@slideInOut]>
+			            		<form [formGroup] = "filterForm" (ngSubmit) = "filterDeduction(filterForm.value)" style="width: 100%;">
+                                    <div class="row p-1">
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <label>From</label>
+                                            <input type="date" formControlName = "from" class="form-control" name=""> 
+                                          </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <label>To</label>
+                                            <input type="date" formControlName = "to" class="form-control" name="">
+                                          </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <!-- <button type="button" class="btn btn-primary" style="margin-top: 30px;" (click)="show_adv_form()"><i class="fa fa-filter"></i></button> -->
+                                            <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+                                              <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
+                                              <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
+                                              <span *ngIf="!submitPending">Filter</span>
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <!-- <div class="col-md-3">
+                                          <div class="form-group">
+					                        <label for="typeahead-http">Filter Member <small>[name/phone no./email]</small>:</label>
+					                        <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="searchFailed"formControlName="member_id" [ngbTypeahead]="search" placeholder="Filter Member" [inputFormatter]="formatter" [resultTemplate]="rt"/>
+					                        <span *ngIf="searching">searching...</span>
+					                        <ng-template #rt let-r="result" let-t="term">
+					                          {{ r.name}}
+					                        </ng-template>
+					                      </div>
+                                        </div> -->
+                                      </div>
+                                  </form>
 			            	</div>
 			            	<table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
 				                <thead>
@@ -67,7 +108,7 @@
 					                        {{item.amount_deducted | number:'.2'}} 
 					                    </td>
 					                      <td>
-					                        {{item.created_at}} 
+					                        {{item.created_at | date: 'shortDate'}} 
 					                    </td>
 					                      <td>
 					                        {{item.period}} 

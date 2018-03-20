@@ -1,16 +1,20 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+
+import { HttpEvent, HttpErrorResponse, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {HttpModule, Http} from '@angular/http';
 import{ ToastModule } from 'ng2-toastr/ng2-toastr';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 
 import { AuthService } from './auth/auth.service';
 import { AppComponent } from './app.component';
 import { LocalService } from './storage/local.service';
 import { AuthGuardService } from './shared/guards/index';
+import { handleErrors } from './shared/helpers/index';
 import { MembersService } from './vendor/membership/members.service';
 import { FormService } from './vendor/form-settings/form.service';
 import { LoanSettingsService } from './vendor/loans/loan-settings/loan-settings.service';
@@ -18,6 +22,7 @@ import { SettingsService } from './vendor/settings/settings/settings.service';
 import { LoanRequestService } from './vendor/manage-loanrequest/loan-request.service';
 import { MessageService } from './vendor/message-center/message.service';
 import { ContributionService } from './vendor/manage-contribution/contribution.service';
+import { DeductionsService } from './vendor/manage-deductions/deductions.service';
 import { WidthdrawalsService } from './vendor/manage-widthdrawals/widthdrawals.service';
 
 
@@ -94,6 +99,7 @@ import { SigninComponent } from './auth/signin/signin.component';
     ChartsModule,
     FormsModule,
     ReactiveFormsModule,
+    NgbModule.forRoot(),
 
   ],
   declarations: [
@@ -103,7 +109,8 @@ import { SigninComponent } from './auth/signin/signin.component';
     ...APP_DIRECTIVES,
     SigninComponent
   ],
-  providers: [{
+  providers: [
+  {
     provide: LocationStrategy,
     useClass: HashLocationStrategy
   },
@@ -117,8 +124,11 @@ import { SigninComponent } from './auth/signin/signin.component';
   LoanRequestService,
   MessageService,
   ContributionService,
-  WidthdrawalsService
+  WidthdrawalsService,
+  DeductionsService,
+  handleErrors
   ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

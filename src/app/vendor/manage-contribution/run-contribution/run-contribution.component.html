@@ -11,9 +11,9 @@
 		                      			<label>Type</label>
 		                      			<select class="form-control" placeholder="type" formControlName = "type">
 					                        <option selected="false">Type</option>
-					                        <option value="salary">Salary</option>
+					                        <option value="{{ item.id}}" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
 					                    </select>
-					                    <small [hidden]="(runContributionForm.controls.type.valid ) || (runContributionForm.controls.type.pristine && !submitted)" class="text-danger">Period Method is Required</small>
+					                    <small [hidden]="(runContributionForm.controls.type.valid ) || (runContributionForm.controls.type.pristine )" class="text-danger">Period Method is Required</small>
 		                      		</div>
 	                      		</div>
 	                      		<div class="col-md-4">
@@ -23,14 +23,14 @@
 					                        <option selected="false">Period</option>
 					                        <option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
 					                    </select>
-					                    <small [hidden]="(runContributionForm.controls.period.valid ) || (runContributionForm.controls.period.pristine && !submitted)" class="text-danger">Period  is Required</small>
+					                    <small [hidden]="(runContributionForm.controls.period.valid ) || (runContributionForm.controls.period.pristine )" class="text-danger">Period  is Required</small>
 		                      		</div>
 	                      		</div>
 	                      		<div class="col-md-4">
 	                      			<div class="form-group">
-		                      			<label>Date</label> <small>Date Cotribution was made</small>
+		                      			<label>Date</label> <small>Date Contribution was made</small>
 		                      			<input type="date" name="" formControlName = "date" class="form-control">
-					                    <small [hidden]="(runContributionForm.controls.date.valid ) || (runContributionForm.controls.date.pristine && !submitted)" class="text-danger">Date you contribution was made is Required</small>
+					                    <small [hidden]="(runContributionForm.controls.date.valid ) || (runContributionForm.controls.date.pristine )" class="text-danger">Date you contribution was made is Required</small>
 		                      		</div>
 	                      		</div>
 
@@ -39,13 +39,15 @@
 		                        <thead class="thead-light">
 		                          <tr>
 		                            <th class="text-center"><i class="icon-people"></i></th>
-		                            <th>#</th>
+		                            <th>
+		                            	<input type="checkbox" (click)="checkAll($event)">
+		                            </th>
 		                            <th class="text-center">Name</th>
 		                            <th>Contribution</th>
 		                          </tr>
 		                        </thead>
 		                        <tbody>
-		                        	<tr *ngFor="let item of runContributionForm.controls.contributions.controls; let i=index">
+		                        	<tr *ngFor="let item of runContributionForm['controls'].contributions['controls']; let i=index">
 		                        		<td>
 		                        			<div class="avatar">
 				                                <img *ngIf="!item.passport" title="{{coorpMembers[i].first_name}} {{coorpMembers[i].middle_name}} {{coorpMembers[i].last_name}}" src="assets/images/avata.png" class="img-avatar">

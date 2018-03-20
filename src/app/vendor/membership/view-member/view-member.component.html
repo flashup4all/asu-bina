@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-body" >
-        <div class="profile-head media">
+        <div class="profile-head media" style="padding-bottom: 20px;">
             <a href="#" class="col-md-3 pull-left">
                 <img *ngIf="!member.passport" class="rounded-circle" src="assets/images/avata.png">
                 <img *ngIf="member.passport" class="rounded-circle" style="width: 150px; height: 150px;" [src]="sanitizer.bypassSecurityTrustUrl(member.passport)">
@@ -18,14 +18,14 @@
                     Description
                 </p> -->
                 <div class="profile-details muted">
-                    <h3><a class="btn pull-left"><i class="fa fa-money shaded"></i> Contribution : &#8358;  {{member?.contribution}} </a></h3>
+                    <h3><a class="btn pull-left"><i class="fa fa-money shaded"></i> Contribution : &#8358;  {{member?.contribution | number }} </a></h3>
                     <h3><a class="btn"><i class="fa fa-phone shaded"></i> {{member?.phone1}}, {{member?.phone2}} </a></h3>
                 </div>
                 <div class="profile-details muted">
-                    <h3><a class="btn pull-left"><i class="fa fa-balance-scale shaded"></i> Contribution Balance:<span class="label label-sm label-success"> &#8358; {{ member?.contribution_balance || 0 }} </span></a></h3>
+                    <!--<h3><a class="btn pull-left"><i class="fa fa-balance-scale shaded"></i> Contribution Balance:<span class="label label-sm label-success"> &#8358; {{ member?.contribution_balance | number }} </span></a></h3>
                     <h3><a class="btn pull-left"><i class="fa fa-balance-scale shaded"></i> 
                         Total Deduction: <span class="label label-sm label-danger"> &#8358; {{ total_deduction || 0 }} </span></a></h3>
-                    <h3><a class="btn"><i class="fa fa-phone shaded"></i> {{member?.phone1}}, {{member?.phone2}} </a></h3>
+                     <h3><a class="btn"><i class="fa fa-phone shaded"></i> {{member?.phone2}} </a></h3> -->
                 </div>
                 <div class="row text-centr buttons">
                                     <div class="col">
@@ -57,34 +57,34 @@
                                 </div>
                             </div>
                              <div class="row">
-                                <label class="col-sm-5">Middle Name</label>
-                                <div class="col-sm-7">
-                                    <p>{{member?.middle_name ? member?.middle_name : nill}}</p>
+                                <label class="col-sm-3">Middle Name</label>
+                                <div class="col-sm-9">
+                                    <p>{{member?.middle_name ? member?.middle_name : ''}}</p>
                                 </div>
                             </div>
                             <div class="row">
-                                <label class="col-sm-5">Last Name</label>
-                                <div class="col-sm-7">
+                                <label class="col-sm-3">Last Name</label>
+                                <div class="col-sm-9">
                                     <p>{{member?.last_name}}</p>
                                 </div>
                             </div>
                             <div class="row">
-                                <label class="col-sm-5">Email</label>
-                                <div class="col-sm-7">
+                                <label class="col-sm-3">Email</label>
+                                <div class="col-sm-9">
                                     <p>{{member?.email}}</p>
                                 </div>
                             </div>
                             <div class="row">
-                                <label class="col-sm-5">Contribution</label>
-                                <div class="col-sm-7">
-                                    <p>{{member?.contribution}}</p>
+                                <label class="col-sm-3">Contribution</label>
+                                <div class="col-sm-9">
+                                    <p>{{member?.contribution  | number }}</p>
                                 </div>
                             </div>
                              <h4>Custom</h4>
                             <hr>
                             <div class="row" *ngFor="let item of member?.members">
-                                <label class="col-sm-5">{{item?.key}}</label>
-                                <div class="col-sm-7">
+                                <label class="col-sm-3">{{item?.key}}</label>
+                                <div class="col-sm-9">
                                     <p>{{item?.information}}</p>
                                 </div>
                             </div>
@@ -116,21 +116,8 @@
                                         <label>Mobile Number:</label>
                                       <input type="text" class="form-control" [ngModel]="member?.phone1" value="" name="phone1" ngModel>
                                       </div>
-                                      
-                                      
-                                      
-                                      <!-- <label>Street:</label>
-                                      <input type="text" name="street" ngModel> -->
-                                     <!-- <div class="control-group">
-                                        <label class="control-label" for="basicinput">Passport</label>
-                                        <div class="controls">
-                                            <img *ngIf="!file_srcs[0]" src="assets/images/avata.png">
-                                            <img [attr.src]='file_srcs[0]' alt=""/>
-                                            <input type="file" name="" (change)="fileChange(input)" #input>
-                                        </div>
-                                    </div> -->
                                     <h4>Custom Form Field</h4>
-                                    <div ngModelGroup="member_details" class="control-group" *ngFor="let item of membersFormPoolList;  let i = index; trackBy:trackByIndex">
+                                    <div ngModelGroup="member_details" class="control-group" *ngFor="let item of membersFormPoolList;  let i = index; ">
                                     <label class="control-label">{{item.label}}</label>
                                     <div *ngFor="let mem of member.members">
                                         
@@ -138,10 +125,6 @@
                                             <input type="text" *ngIf="item.type =='text'" ngModel placeholder="" [ngModel]="mem?.information" name="{{mem.id}}" class="form-control">
                                             <textarea class="form-control" name="{{mem.id}}"  *ngIf="item.type =='textarea'" [ngModel]="mem?.information" ngModel></textarea>
                                         </div>
-                                        <!-- <div class="controls" *ngIf="mem.key!=item.label">
-                                            <input type="text" *ngIf="item.type =='text'" ngModel placeholder="" name="{{item.label}}" class="form-control">
-                                            <textarea class="form-control" name="{{item.label}}"  *ngIf="item.type =='textarea'" ngModel></textarea>
-                                        </div> -->
                                     </div>
                                     </div>
                                       <button type="submit" class="btn btn-primary btn-block" [disabled]="form.invalid || submitPending ">
@@ -153,14 +136,57 @@
                             </div>
                         </tab>
                         <tab heading="CONTRIBUTIONS">
+                            <p>Generate Report by Date</p>
                             <div class="row">
+                                  <form [formGroup] = "filterForm" (ngSubmit) = "filterContribution(filterForm.value)" style="width: 100%;">
+                                    <div class="row p-1">
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <label>From</label>
+                                            <input type="date" formControlName = "from" class="form-control" name=""> 
+                                          </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <label>To</label>
+                                            <input type="date" formControlName = "to" class="form-control" name="">
+                                          </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <!-- <button type="button" class="btn btn-primary" style="margin-top: 30px;" (click)="show_adv_form()"><i class="fa fa-filter"></i></button> -->
+                                            <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+                                              <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
+                                              <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
+                                              <span *ngIf="!submitPending">Filter</span>
+                                            </button>
+                                             <button type="button" class="btn btn-primary" (click)="newContributionModal.show()" style="margin-top: 30px;"> Make a Contribution</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <!-- <div class="row" *ngIf="adv_filter">
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <label>Trans. ID:</label>
+                                            <input type="text" class="form-control" formControlName="id" placeholder="Invoice Number"/>
+                                            <span *ngIf="searching">searching...</span>
+                                            <ng-template #st let-s="result" let-t="sterm">
+                                              
+                                              {{ s.name}}
+                                            </ng-template>
+                                          </div>
+                                        </div>
+                                      </div> -->
+                                  </form>
+                               
                                 <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <!-- <th>Name</th> -->
+                                            <th>Trans ID</th>
+                                            <th>Name</th>
                                             <th>Contribution</th>
                                             <th>Contributed</th>
+                                            <th>Type</th>
                                             <th>Status</th>
                                             <th>Date</th>
                                             <th>Actions</th>
@@ -168,17 +194,20 @@
                                     </thead>
                                     <tbody>
                                         <tr class="" *ngFor="let item of memberContributionList">
-                                            <td><input type="checkbox" name=""></td>
-                                          <!--   <td>
-                                                {{item.user.first_name}} 
-                                                {{item.user.last_name}} 
-                                                {{item.user?.middle_name}} 
-                                                </td> -->
+                                            <td>00{{ item?.id }}</td>
                                             <td>
-                                                &#8358; {{item?.member?.contribution}} 
+                                                {{item.member?.first_name}} 
+                                                {{item.member?.last_name}} 
+                                                {{item.member?.middle_name}} 
                                             </td>
                                             <td>
-                                               &#8358; {{item?.amount}}  
+                                                &#8358; {{item?.member?.contribution  | number }} 
+                                            </td>
+                                            <td>
+                                               &#8358; {{ item?.amount  | number }}  
+                                            </td>
+                                            <td>
+                                               {{item?.type?.name}}  
                                             </td>
                                               <td>
                                                 <p *ngIf="item?.status == 1">
@@ -199,7 +228,48 @@
                             </div>
                         </tab>
                         <tab heading="DEDUCTIONS">
+                             <p>Generate Report by Date</p>
                             <div class="row">
+                                  <form [formGroup] = "filterForm" (ngSubmit) = "filterDeduction(filterForm.value)" style="width: 100%;">
+                                    <div class="row p-1">
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <label>From</label>
+                                            <input type="date" formControlName = "from" class="form-control" name=""> 
+                                          </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <label>To</label>
+                                            <input type="date" formControlName = "to" class="form-control" name="">
+                                          </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <!-- <button type="button" class="btn btn-primary" style="margin-top: 30px;" (click)="show_adv_form()"><i class="fa fa-filter"></i></button> -->
+                                            <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+                                              <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
+                                              <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
+                                              <span *ngIf="!submitPending">Filter</span>
+                                            </button>
+                                             <button type="button" class="btn btn-primary" (click)="newRepaymentModal.show()" style="margin-top: 30px;"> Make a Repayment</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <!-- <div class="row" *ngIf="adv_filter">
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <label>Trans. ID:</label>
+                                            <input type="text" class="form-control" formControlName="id" placeholder="Invoice Number"/>
+                                            <span *ngIf="searching">searching...</span>
+                                            <ng-template #st let-s="result" let-t="sterm">
+                                              
+                                              {{ s.name}}
+                                            </ng-template>
+                                          </div>
+                                        </div>
+                                      </div> -->
+                                  </form>
                                 <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
                                     <thead>
                                         <tr>
@@ -208,13 +278,13 @@
                                             <th>Method</th>
                                             <th>Deducted</th>
                                             <th>Date</th>
-                                            <th>Status</th>
+                                           <!--  <th>Status</th> -->
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="" *ngFor="let item of memberLoanDeductionsList">
-                                            <td><input type="checkbox" name=""></td>
+                                            <td>00{{ item?.id }}</td>
                                             <td>
                                                 {{item?.type.loan_type}} 
                                             </td>
@@ -222,14 +292,14 @@
                                                 {{item?.repayment_method}} 
                                             </td>
                                             <td>
-                                                &#8358; {{item?.amount_deducted}} 
+                                                &#8358; {{item?.amount_deducted | number }} 
                                             </td>
                                               <td>
-                                                {{item?.created_at}} 
+                                                {{item?.created_at | date : 'shortDate'}} 
                                             </td>
-                                              <td>
+                                              <!-- <td>
                                                 {{item?.status}} 
-                                            </td>
+                                            </td> -->
                                             <td class="center">
                                                 
                                             </td>
@@ -241,19 +311,59 @@
                         <tab heading="LOAN REQUEST">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <button type="button" class="btn btn-success pull-right" (click)="newLoanRequestModal.show()">
-                                        <i class="fa fa-plus"></i> 
-                                    Make A Loan Request
-                                    </button>
+                                     <form [formGroup] = "filterForm" (ngSubmit) = "filterLoanRequest(filterForm.value)" style="width: 100%;">
+                                    <div class="row p-1">
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <label>From</label>
+                                            <input type="date" formControlName = "from" class="form-control" name=""> 
+                                          </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <label>To</label>
+                                            <input type="date" formControlName = "to" class="form-control" name="">
+                                          </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <!-- <button type="button" class="btn btn-primary" style="margin-top: 30px;" (click)="show_adv_form()"><i class="fa fa-filter"></i></button> -->
+                                            <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+                                              <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
+                                              <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
+                                              <span *ngIf="!submitPending">Filter</span>
+                                            </button>
+                                            <button type="button" class="btn btn-success pull-right" (click)="newLoanRequestModal.show()"style="margin-top:30px" >
+                                                <i class="fa fa-plus"></i> 
+                                            Make A Loan Request
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <!-- <div class="row" *ngIf="adv_filter">
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <label>Trans. ID:</label>
+                                            <input type="text" class="form-control" formControlName="id" placeholder="Invoice Number"/>
+                                            <span *ngIf="searching">searching...</span>
+                                            <ng-template #st let-s="result" let-t="sterm">
+                                              
+                                              {{ s.name}}
+                                            </ng-template>
+                                          </div>
+                                        </div>
+                                      </div> -->
+                                  </form>
                                 </div>
                                 <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
                                     <thead>
                                         <tr>
                                             <th>#</th>
                                             <!-- <th>Name</th> -->
-                                            <th>Loan Type</th>
-                                            <th>Amount</th>
-                                            <th>Monthly Deductions</th>
+                                            <th>Loan Type (interest %)</th>
+                                            <th>&#8358; Amount + interest</th>
+                                            <th>&#8358; Monthly Deductions</th>
+                                            <th>&#8358; Paid</th>
                                             <th>Repayment Method</th>
                                             <th>Duration(Months)</th>
                                             <th>Date</th>
@@ -263,20 +373,23 @@
                                     </thead>
                                     <tbody>
                                         <tr class="" *ngFor="let item of memberLoanRequestList">
-                                            <td><input type="checkbox" name=""></td>
+                                            <td>00{{ item?.id }}</td>
                                             <!-- <td>
                                                 {{item.member.first_name}} 
                                                 {{item.member.last_name}} 
                                                 {{item.member?.middle_name}} 
                                                 </td> -->
                                             <td>
-                                                {{item?.type?.loan_type}} 
+                                                {{item?.type?.loan_type}} ({{ item?.type?.interest }}%)
                                             </td>
                                             <td>
-                                                &#8358; {{item?.amount}} 
+                                                {{item?.amount + percentage_to_amount(item.amount, item.type.interest)  | number }} 
                                             </td>
                                             <td>
-                                                &#8358; {{item?.monthly_deductions}} 
+                                                {{ item?.monthly_deductions | number }} 
+                                            </td>
+                                            <td>
+                                                {{ totalDeductions(item.deductions_per_loan) | number }}
                                             </td>
                                             <td>
                                                 {{item?.repayment_method}} 
@@ -285,7 +398,7 @@
                                                 {{item?.type.duration}} 
                                             </td>
                                               <td>
-                                                {{item?.created_at}} 
+                                                {{item?.created_at | date: 'shortDate'}} 
                                             </td>
                                               <td>
                                                 {{item?.status}} 
@@ -327,7 +440,7 @@
                                 ({{item.duration}} Months)</small>
                             </option>
                         </select>
-                        <small [hidden]="(loanRequestForm.controls.loan_type.valid ) || (loanRequestForm.controls.loan_type.pristine && !submitted)" class="text-danger">Loan Type Name is Required</small>
+                        <small [hidden]="(loanRequestForm.controls.loan_type.valid ) || (loanRequestForm.controls.loan_type.pristine )" class="text-danger">Loan Type Name is Required</small>
                     </div>
                 </div>
                 <div class="control-group">
@@ -338,14 +451,14 @@
                             <option value="repayment">Individual Repayment</option>
                             <option value="both">Both</option>
                         </select>
-                         <small [hidden]="(loanRequestForm.controls.repayment_method.valid ) || (loanRequestForm.controls.repayment_method.pristine && !submitted)" class="text-danger">Method of Repayment Required</small>
+                         <small [hidden]="(loanRequestForm.controls.repayment_method.valid ) || (loanRequestForm.controls.repayment_method.pristine )" class="text-danger">Method of Repayment Required</small>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="col-sm-5">Amount <small>[ NGN ]</small></label>
                     <div class="col-sm-7">
                         <input type="number" formControlName="amount" placeholder="Amount" class="form-control" required="">
-                        <small [hidden]="(loanRequestForm.controls.amount.valid ) || (loanRequestForm.controls.amount.pristine && !submitted)" class="text-danger">Method of Repayment Required</small>
+                        <small [hidden]="(loanRequestForm.controls.amount.valid ) || (loanRequestForm.controls.amount.pristine )" class="text-danger">Method of Repayment Required</small>
                     </div>
                 </div>
                 <div class="control-group">
@@ -358,7 +471,7 @@
                     <label class="col-sm-5">Requirements</label>
                     <div class="col-sm-7">
                        
-                        <input type="file" multiple (change)="onChange($event, showFileNames)" />
+                        <input type="file" multiple />
                     </div>
                 </div>
                 <div><small>please  note that once loans are approve it cannot be canceled</small></div>
@@ -372,6 +485,138 @@
                     </div>
                 </div>
             </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>
+
+<div bsModal #newContributionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Make A Contribution</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="newContributionModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+                <form [formGroup]="runContributionForm" (ngSubmit)="runContribution(runContributionForm.value)">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Type</label>
+                                        <select class="form-control" placeholder="type" formControlName = "type">
+                                            <option selected="false">Type</option>
+                                            <option value="{{item.id}}" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
+                                        </select>
+                                        <small [hidden]="(runContributionForm.controls.type.valid ) || (runContributionForm.controls.type.pristine )" class="text-danger">Period Method is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Period</label>
+                                        <select class="form-control" placeholder="Period" formControlName = "period">
+                                            <option selected="false">Period</option>
+                                            <option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
+                                        </select>
+                                        <small [hidden]="(runContributionForm.controls.period.valid ) || (runContributionForm.controls.period.pristine )" class="text-danger">Period  is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Date</label> <small>Date Contribution was made</small>
+                                        <input type="date" name="" formControlName = "date" class="form-control">
+                                        <small [hidden]="(runContributionForm.controls.date.valid ) || (runContributionForm.controls.date.pristine )" class="text-danger">Date you contribution was made is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Amount</label>
+                                        <input type="text" name="" formControlName = "contribution" class="form-control">
+                                        <small [hidden]="(runContributionForm.controls.contribution.valid ) || (runContributionForm.controls.contribution.pristine )" class="text-danger">contribution Amount Required</small>
+                                    </div>
+                                </div>
+
+                            </div>
+                               <button type="submit" class="btn btn-success" [disabled]="runContributionForm.invalid || submitPending">
+                                    <span *ngIf="!submitPending">Run Contribution</span>
+                                    <span *ngIf="submitPending && runContributionForm.valid">Please Wait...</span>
+                                    <span *ngIf="submitPending && runContributionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                </button>
+                        </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>
+<div bsModal #newRepaymentModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Make A Repayment</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="newRepaymentModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+                <form [formGroup]="addDeductionForm" (ngSubmit)="make_a_repayment(addDeductionForm.value)">
+                            <div class="row">
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Running Loan(s)</label>
+                                        <select class="form-control" placeholder="loan_request_id" formControlName = "loan_request_id">
+                                            <option selected="false">Type</option>
+                                            <option value="{{ item.id }}" *ngFor="let item of memberLoanRequestList">{{ item?.type?.loan_type}} (bal: = {{item?.amount + percentage_to_amount(item.amount, item.type.interest) - (totalDeductions(item.deductions_per_loan))}})</option>
+                                        </select>
+                                        <small [hidden]="(addDeductionForm.controls.loan_request_id.valid ) || (addDeductionForm.controls.loan_request_id.pristine )" class="text-danger">Repayment Method is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Type</label>
+                                        <select class="form-control" placeholder="type" formControlName = "repayment_method">
+                                            <option selected="false">Type</option>
+                                            <option value="salary">Salary</option>
+                                            <option value="Bank Transfer">Bank Transfer</option>
+                                        </select>
+                                        <small [hidden]="(addDeductionForm.controls.repayment_method.valid ) || (addDeductionForm.controls.repayment_method.pristine )" class="text-danger">Repayment Method is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Period</label>
+                                        <select class="form-control" placeholder="Period" formControlName = "period">
+                                            <option selected="false">Period</option>
+                                            <option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
+                                        </select>
+                                        <small [hidden]="(addDeductionForm.controls.period.valid ) || (addDeductionForm.controls.period.pristine )" class="text-danger">Period  is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Date</label> <small>Date Deduction was made</small>
+                                        <input type="date" name="" formControlName = "run_date" class="form-control">
+                                        <small [hidden]="(addDeductionForm.controls.run_date.valid ) || (addDeductionForm.controls.run_date.pristine )" class="text-danger">Date you contribution was made is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Amount</label>
+                                        <input type="text" name="" formControlName = "repayment_amount" class="form-control">
+                                        <small [hidden]="(addDeductionForm.controls.repayment_amount.valid ) || (addDeductionForm.controls.repayment_amount.pristine )" class="text-danger">Amount Required</small>
+                                    </div>
+                                </div>
+
+                            </div>
+                               <button type="submit" class="btn btn-success" [disabled]="addDeductionForm.invalid || submitPending">
+                                    <span *ngIf="!submitPending">Run Contribution</span>
+                                    <span *ngIf="submitPending && addDeductionForm.valid">Please Wait...</span>
+                                    <span *ngIf="submitPending && addDeductionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                </button>
+                        </form>
             </div>
          </div>
        </div>

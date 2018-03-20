@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { trigger, style, animate, transition } from '@angular/animations';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LocalService } from '../../storage/local.service';
@@ -10,6 +11,29 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-manage-contribution',
   templateUrl: './manage-contribution.component.html',
+   animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({transform: 'translateY(-100%)'}),
+        animate('200ms ease-in', style({transform: 'translateY(0%)'}))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({transform: 'translateY(-100%)'}))
+      ])
+    ])
+    /*trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(100%)', opacity: 0}),
+          animate('500ms', style({transform: 'translateX(0)', opacity: 1}))
+        ]),
+        transition(':leave', [
+          style({transform: 'translateX(0)', opacity: 1}),
+          animate('500ms', style({transform: 'translateX(100%)', opacity: 0}))
+        ])
+      ]
+    )*/
+  ],
   styles: [
     `.fa-spinner {
       -animation: spin .7s infinite linear;
@@ -24,19 +48,22 @@ import * as moment from 'moment';
 })
 export class ManageContributionComponent implements OnInit {
 
-	private xlsxToJsonService: XlsxToJsonService = new XlsxToJsonService();
+	public xlsxToJsonService: XlsxToJsonService = new XlsxToJsonService();
 	public vendor;
-	private contibutionsList = [];
+	public contibutionsList = [];
 	public runContributionForm : FormGroup;
 	file;
 	public result: any;
 	submitPending: boolean;
+	contribution_type_list;
 	successAlert;
 	toPage;
   	loader;
   	toRequestPage;
   	monthList;
-  	private changeContibutionsRequestList;
+    filterForm: FormGroup;
+    adv_filter: boolean;
+  	public changeContibutionsRequestList;
   	current_year = moment().format('YYYY');
 	constructor(
 		private localService : LocalService,
@@ -45,8 +72,10 @@ export class ManageContributionComponent implements OnInit {
   		) {
 		this.vendor = JSON.parse(this.localService.getVendor());
 		this.getContributions();
+		this.get_contribution_type()
 		this.monthList = this.localService.yearjson();
 		console.log(this.monthList)
+		this.adv_filter = false;
 		//this.getChangeContributionRequest();
   		}
 
@@ -55,6 +84,13 @@ export class ManageContributionComponent implements OnInit {
   			repayment_method : [null, Validators.compose([Validators.required])],
   			period : [null, Validators.compose([Validators.required])]
   		});
+  		 /*filter form*/
+       this.filterForm = this._fb.group({
+	        from : '',
+	        to : '',
+	        id : ''
+	      })
+
 	  }
 
 	  handleFile(event) {
@@ -65,6 +101,13 @@ export class ManageContributionComponent implements OnInit {
 	    });
 	  }
 
+	get_contribution_type()
+  	{
+  		this.contributionService.get_contribution_type().subscribe((response) => {
+  			this.contribution_type_list = response.data;
+  		})
+  	}
+  	/**
 	/**
 	 * @method getContributions
 	 * get vendor contrinbution
@@ -199,4 +242,21 @@ export class ManageContributionComponent implements OnInit {
             //show error
         }
 	}
+
+
+    filterContribution(filterValues)
+    {
+      this.submitPending = true;
+      filterValues['vendor_id'] = parseInt(this.vendor.id);
+      console.log(filterValues)
+      this.contributionService.filterContribution(filterValues).subscribe((response) => {
+        this.contibutionsList = response.data
+        this.submitPending = false;
+      })
+    }
+    show_adv_form()
+    {
+      this.adv_filter =!this.adv_filter
+    }
+
 }

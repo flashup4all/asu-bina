@@ -14,7 +14,7 @@ import { environment } from '../../../../environments/environment';
 @Injectable()
 export class SettingsService {
 
-  	constructor(public http : Http, private localService : LocalService) { }
+  	constructor(public http : Http, private localService : LocalService, private handleErr: handleErrors) { }
   	/**
   	 * @method editSettings
   	 * update settings resource
@@ -23,7 +23,7 @@ export class SettingsService {
   	updateSettings(data)
   	{
   		return this.http.post(environment.api.url+'CoopManagement/settings/update',JSON.stringify(data), this.localService.header())
-  						.map((response : Response) => response.json()).catch(handleErrors);
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
   	/**
   	 * @method getSettings
@@ -33,7 +33,7 @@ export class SettingsService {
   	getSettings()
   	{
   		return this.http.get(environment.api.url+'CoopManagement/settings/get/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
-  						.map((response : Response) => response.json()).catch(handleErrors);
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
 
 }

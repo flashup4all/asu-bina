@@ -22,11 +22,11 @@ import { MessageService } from './message.service';
 export class MessageCenterComponent implements OnInit {
 
     public vendor;
-	  private messagesList;
-    private messages: boolean;
-    private viewMessages: boolean;
-    private messageDetails;
-    private messageForm: FormGroup;
+	  public messagesList;
+    public messages: boolean;
+    public viewMessages: boolean;
+    public messageDetails;
+    public messageForm: FormGroup;
     submitPending: boolean;
     @ViewChild('newMessageModal')  public newMessageModal: ModalDirective;
 

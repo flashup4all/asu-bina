@@ -29,20 +29,7 @@
                     <div class="module-body">
                          <div class="new session form">
 	                    	<div _ngcontent-c4="" class="module-option clearfix">
-					           <!-- <form class="pull-left" [formGroup] = "runContributionForm" (ngSubmit) = "runContribution(runContributionForm.value)">
-					                <div class="input-append">
-					                    <select class="span3" placeholder="Filter by name..." formControlName = "repayment_method">
-					                        <option value="salary">Salary</option>
-					                    </select>
-					                    <small [hidden]="(runContributionForm.controls.repayment_method.valid ) || (runContributionForm.controls.repayment_method.pristine && !submitted)" class="text-danger">Repayment Method is Required</small> 
-					                    <button type="submit" class="btn btn-success" [disabled]="runContributionForm.invalid || submitPending ">
-					                        <span *ngIf="!submitPending">Run Contribution</span>
-					                        <span *ngIf="submitPending && runContributionForm.valid">Please Wait...</span>
-					                        <span *ngIf="submitPending && runContributionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
-					                    </button>
-					                </div>
-					            </form> -->
-					            <button class="btn btn-success" (click)="excelUploadModal.show()">Upload Excel Format</button>
+					            <!-- <button class="btn btn-success" (click)="excelUploadModal.show()">Upload Excel Format</button> -->
 					        </div>
 					        <div class="alert alert-success" *ngIf="successAlert">
 						        <button type="button" class="close" data-dismiss="alert" style="right: 0px;">×</button>
@@ -103,9 +90,9 @@
 					            </tbody>
 					        </table>
 	                    </div>
-	                     <div class="media stream load-more">
+	                    <!--  <div class="media stream load-more">
                            <a  (click)="loadMoreContributions()" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <!--/.stream-list-->

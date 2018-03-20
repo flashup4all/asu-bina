@@ -6,6 +6,7 @@ import { LocalService } from '../../storage/local.service';
 import { LoanRequestService } from './loan-request.service';
 import { MembersService } from '../membership/members.service';
 import { VendorService } from '../vendor.service';
+import { LoanSettingsService } from '../loans/loan-settings/loan-settings.service';
 
 @Component({
   selector: 'app-manage-loanrequest',
@@ -23,8 +24,8 @@ import { VendorService } from '../vendor.service';
 })
 export class ManageLoanrequestComponent implements OnInit {
 
-	  public vendor;
-	private loanRequestList= [] ;
+	public vendor;
+	public loanRequestList= [] ;
   toPage;
   loader;
   memberData;
@@ -34,25 +35,32 @@ export class ManageLoanrequestComponent implements OnInit {
   bank_accounts
   cardForm : FormGroup;
   bankAccountForm: FormGroup;
+  filterForm: FormGroup;
+  loanTypeList;
+    public loanRequestForm : FormGroup;
   bank_list;
   editAccountData;
   account;
   @ViewChild('paymentModal') public paymentModal :ModalDirective;
   @ViewChild('accountModal') public accountModal :ModalDirective;
   @ViewChild('accountUpdateModal') public accountUpdateModal :ModalDirective;
+  @ViewChild('newLoanRequestModal') public newLoanRequestModal : ModalDirective;
 
 	constructor(
 	private localService : LocalService,
 	private _fb : FormBuilder,
   private route: Router,
   private loanrequestService : LoanRequestService,
-      private manageVendorService : VendorService,
+  private loanSettingsService : LoanSettingsService,
+  private manageVendorService : VendorService,
 	private memberService : MembersService
 	) {
 	this.vendor = JSON.parse(this.localService.getVendor());
 	this.getLoanRequest();
   this.getAccountNumbers();
-  this.getBankList()
+  //this.getBankList()
+  this.getLoanType();
+
 		}
 	ngOnInit() {
     this.cardForm = this._fb.group({
@@ -68,6 +76,25 @@ export class ManageLoanrequestComponent implements OnInit {
             account_name: [null, Validators.compose([Validators.required])],
             description: ''
         });
+        /*filter form*/
+       this.filterForm = this._fb.group({
+        from : '',
+        to : '',
+        id : '',
+        member_id:'',
+        loan_request_id: '',
+        loan_id:'',
+        repayment_method: '',
+        status: '',
+        approved_by: '',
+      })
+       this.loanRequestForm =this._fb.group({
+        loan_type : [null, Validators.compose([Validators.required])],
+        repayment_method : [null, Validators.compose([Validators.required])],
+        amount : [null, Validators.compose([Validators.required])],
+        description : '',
+        //requirements : '',
+      });
 	}
 	/*loan request method*/
 
@@ -106,7 +133,18 @@ export class ManageLoanrequestComponent implements OnInit {
           this.localService.showError('All data have been loaded','Operation Unsuccessfull');
      }
     }
-
+    /**
+     * @method getLoanType
+     * creates a new loan type  resource
+     * @return data
+     */
+    getLoanType()
+    {
+        this.loanSettingsService.getLoanType().subscribe((response) => {
+         
+           this.loanTypeList = response.data
+       })
+    }
 	/**
      * @method approveLoanRequest
      * cancel loan request
@@ -339,5 +377,49 @@ export class ManageLoanrequestComponent implements OnInit {
     payNow()
     {
       console.log(this.account)
+    }
+
+     percentage_to_amount(total_amount, percentage)
+    {
+      let amount = 0
+      return amount = parseInt(total_amount) * (parseInt(percentage)/100);
+    }
+    filterLoanRequest(filterValues)
+    {
+      this.submitPending = true;
+      filterValues['vendor_id'] = parseInt(this.vendor.id);
+      this.loanrequestService.filterLoanRequest(filterValues).subscribe((response) => {
+        this.loanRequestList = response.data;
+        this.submitPending = false;
+      })
+    }
+
+    /**
+     * @method makeLoanRequest
+     * make a loan request
+     * @return true/false
+     */
+    makeLoanRequest(data)
+    {
+      //data['member_id'] = this.memberId
+      data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;
+      //data['requirements'] = this.files;
+      this.loanrequestService.addLoanRequest(data).subscribe((response) => {
+        if(response.success)
+        {
+          this.submitPending = false;
+           this.getLoanRequest()
+           this.newLoanRequestModal.hide();
+           this.loanRequestForm.reset();
+          this.localService.showSuccess(response.message,'Operation Successfull');
+        }
+        else{
+          this.submitPending = false;
+          this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      }, (error) => {
+        this.submitPending = false;
+        this.localService.showError(error,'Operation Unsuccessfull');
+      });
     }
 }

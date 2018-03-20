@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "project": {
-    "version": "1.0.6",
+    "version": "1.0.10",
     "name": "@coreui/angular"
   },
   "apps": [
@@ -17,16 +17,16 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
+        "../node_modules/flag-icon-css/css/flag-icon.css",
         "../node_modules/font-awesome/css/font-awesome.css",
         "../node_modules/simple-line-icons/css/simple-line-icons.css",
-        "scss/style.scss",
-        "../node_modules/ng2-toastr/bundles/ng2-toastr.min.css"      ],
+        "../node_modules/ng2-toastr/bundles/ng2-toastr.min.css",  
+        "scss/style.scss"
+      ],
       "scripts": [
         "../node_modules/chart.js/dist/Chart.bundle.min.js",
-        "../node_modules/chart.js/dist/Chart.min.js",
-        "../node_modules/xlsx/dist/xlsx.full.min.js",
-        "../node_modules/ng2-toastr/bundles/ng2-toastr.min.js"
-
+        "../node_modules/ng2-toastr/bundles/ng2-toastr.min.js",
+        "../node_modules/chart.js/dist/Chart.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

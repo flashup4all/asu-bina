@@ -1,0 +1,89 @@
+<div class="card">
+  	<div class="card-body">
+    	<div class="row">
+      		<div class="col">
+		        <tabset>
+		        	<tab heading="Contribution Types">
+		        		<button type="button" class="btn btn-success pull-right" (click)="new_type()"style="margin-top:30px" >
+                            <i class="fa fa-plus"></i> Add Type</button>
+                        <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+			                <thead>
+				                <tr>
+				                    <th>#</th>
+				                    <th>Name</th>
+				                    <th>Description</th>
+				                    <th>Actions</th>
+				                </tr>
+				            </thead>
+				            <tbody>
+				                <tr class="" *ngFor="let item of contribution_type_list">
+				                    <td>#</td>
+				                    <td>
+				                        {{item?.name}} 
+				                        </td>
+				                    <td>
+				                        {{ item?.description }} 
+				                    </td>
+				                    <td class="center">
+				                          <button class="btn btn-sm btn-primary" (click)="edit(item)">
+				                            <span><i class="fa fa-edit"></i></span>
+				                          </button>
+				                           <button class="btn btn-sm btn-danger" (click)="delete(item.id)">
+				                            <span><i class="fa fa-trash-o"></i></span>
+				                          </button>
+				                    </td>
+				                </tr>
+				            </tbody>
+				        </table>
+		        		
+		        	</tab>
+		        </tabset>
+		    </div>
+		</div>
+	</div>
+</div>
+
+<div bsModal #newContributionTypeModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Make A Contribution</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="newContributionTypeModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+                <form [formGroup]="contribution_type_form" (ngSubmit)="save_contribution_type(contribution_type_form.value, editData?.id)">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Type</label>
+                                        <input type="text" name="" value="{{editData?.name}}" formControlName = "name" placeholder="Name" class="form-control">
+                                        <small [hidden]="(contribution_type_form.controls.name.valid ) || (contribution_type_form.controls.name.pristine )" class="text-danger">Name is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Period</label>
+                                      	<textarea class="form-control" formControlName = "description" placeholder="Description">{{editData?.description}}</textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                               <button *ngIf="new_button" type="submit" class="btn btn-success" [disabled]="contribution_type_form.invalid || submitPending">
+                                    <span *ngIf="!submitPending">ADD</span>
+                                    <span *ngIf="submitPending && contribution_type_form.valid">Please Wait...</span>
+                                    <span *ngIf="submitPending && contribution_type_form.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                </button>
+                                <button *ngIf="update_button" type="submit" class="btn btn-success" [disabled]="contribution_type_form.invalid || submitPending">
+                                    <span *ngIf="!submitPending">Update</span>
+                                    <span *ngIf="submitPending && contribution_type_form.valid">Please Wait...</span>
+                                    <span *ngIf="submitPending && contribution_type_form.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                </button>
+                        </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>

@@ -1,4 +1,7 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Subject } from 'rxjs/Rx';
+import {Observable} from 'rxjs/Observable';
+import {of} from 'rxjs/observable/of'
 import { DomSanitizer } from '@angular/platform-browser';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
@@ -34,6 +37,8 @@ export class ManageMembersComponent implements OnInit {
 	public vendor;
 	items;
 	passwordFormCheck: boolean;
+	searching: boolean;
+searchFailed: boolean;
 	submitPending;
 	public passport;
 	public model;
@@ -66,7 +71,14 @@ export class ManageMembersComponent implements OnInit {
 			this.queryField.valueChanges
 				.debounceTime(200)
 				.distinctUntilChanged()
-		    	.switchMap((query) =>  this.manageMemberService.filterMembers(query))
+				.do(() => this.searching = true)
+		    	.switchMap((query) =>  this.manageMemberService.filterMembers(query)
+		    		.do(() => this.searchFailed = false)
+			          .catch(() => {
+			            this.searchFailed = true;
+			            return of([]);
+			          })
+		    		)
 		    	.subscribe( result => { 
 		    		if (result.status === 400)
 		    		{ 
@@ -75,6 +87,7 @@ export class ManageMembersComponent implements OnInit {
 		    			this.results = result; 
 		    		}
 		  		});
+
 		 }
 
 	ngOnInit() {

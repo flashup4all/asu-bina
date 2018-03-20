@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {
-    handleErrors
+   handleErrors
 } from '../../shared/helpers/index';
 
 import { LocalService } from '../../storage/local.service';
@@ -13,7 +13,7 @@ import { environment } from '../../../environments/environment';
 @Injectable()
 export class StaffService {
 
-  	constructor(public http : Http, private localService : LocalService) { }
+  	constructor(public http : Http, private localService : LocalService, private handleErr: handleErrors) { }
   	/**
   	 * @method addStaffPosition
   	 * creates a new staff position resource
@@ -22,7 +22,7 @@ export class StaffService {
   	addStaffPosition(data)
   	{
   		return this.http.post(environment.api.url+'CoopManagement/staff-position',JSON.stringify(data), this.localService.header())
-  						.map((response : Response) => response.json()).catch(handleErrors);
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
   	/**
   	 * @method getStaffPosition
@@ -32,7 +32,7 @@ export class StaffService {
   	getStaffPosition()
   	{
   		return this.http.get(environment.api.url+'CoopManagement/staff-position/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
-  						.map((response : Response) => response.json()).catch(handleErrors);
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
   	/**
   	 * @method deleteStaffPosition
@@ -42,7 +42,7 @@ export class StaffService {
   	deleteStaffPosition(id)
   	{
   		return this.http.delete(environment.api.url+'CoopManagement/delete-staff-position/'+id, this.localService.header())
-  						.map((response : Response) => response.json()).catch(handleErrors);
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
   	/**
   	 * @method addStaff
@@ -52,7 +52,7 @@ export class StaffService {
   	addStaff(data)
   	{
   		return this.http.post(environment.api.url+'CoopManagement/create-staff',JSON.stringify(data), this.localService.header())
-  						.map((response : Response) => response.json()).catch(handleErrors);
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
 
   	/**
@@ -63,7 +63,7 @@ export class StaffService {
   	updateStaff(data, id)
   	{
   		return this.http.post(environment.api.url+'CoopManagement/update-staff', JSON.stringify(data), this.localService.header())
-  						.map((response : Response) => response.json()).catch(handleErrors);
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
 
   	/**
@@ -74,7 +74,7 @@ export class StaffService {
   	getStaff()
   	{
   		return this.http.get(environment.api.url+'CoopManagement/staff/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
-  						.map((response: Response) => response.json()).catch(handleErrors);
+  						.map((response: Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
   	/**
   	 * @method getUserRoles
@@ -84,7 +84,7 @@ export class StaffService {
   	getUserRoles()
   	{
   		return this.http.get(environment.api.url+'user/roles', this.localService.header())
-  						.map((response: Response) => response.json()).catch(handleErrors);
+  						.map((response: Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
   	/**
   	 * @method deleteStaff
@@ -94,7 +94,7 @@ export class StaffService {
   	deleteStaff(id)
   	{
   		return this.http.delete(environment.api.url+'CoopManagement/delete-staff/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-  						.map((response: Response) => response.json()).catch(handleErrors);
+  						.map((response: Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
 
      /**
@@ -105,6 +105,6 @@ export class StaffService {
     filterStaff(data)
     {
       return this.http.get(environment.api.url+'CoopManagement/staff/'+JSON.parse(this.localService.getVendor()).id+'/'+data, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 }

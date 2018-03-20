@@ -21,7 +21,7 @@ import { WidthdrawalsService } from './widthdrawals.service';
 export class ManageWidthdrawalsComponent implements OnInit {
 
 	public vendor;
-	private widthdrawalsList = [];
+	public widthdrawalsList = [];
 	toPage;
   	loader;
 	constructor(

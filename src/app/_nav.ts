@@ -65,6 +65,11 @@ export const navigation = [
         icon: 'icon-star'
       },
       {
+        name: 'Contribution Settings',
+        url: '/app/contributions/contribution-types',
+        icon: 'icon-star'
+      },
+      {
         name: 'Member Form Settings',
         url: '/app/form-settings/members',
         icon: 'icon-star'

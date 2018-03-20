@@ -11,9 +11,9 @@ import { LoanRequestService } from '../loan-request.service';
 })
 export class ViewRequestHistoryComponent implements OnInit {
 
-	private loan_request_id;
-	private vendor;
-	private loanRequest;
+	public loan_request_id;
+	public vendor;
+	public loanRequest;
   	constructor(
   		private localService : LocalService,
 		private _fb : FormBuilder,

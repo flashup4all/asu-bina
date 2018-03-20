@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {
-    handleErrors
+   handleErrors
 } from '../../shared/helpers/index';
 
 import { LocalService } from '../../storage/local.service';
@@ -13,7 +13,7 @@ import { environment } from '../../../environments/environment';
 @Injectable()
 export class LoanRequestService {
 
-  	constructor(public http : Http, private localService : LocalService) { }
+  	constructor(public http : Http, private localService : LocalService, private handleErr: handleErrors) { }
   	/*loan request*/
 
     /**
@@ -25,7 +25,7 @@ export class LoanRequestService {
     {
       return this.http.get(environment.api.url+'CoopManagement/cancel-loan-request/'+
                     JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     } 
 
     /**
@@ -37,7 +37,7 @@ export class LoanRequestService {
     {
       return this.http.get(environment.api.url+'CoopManagement/delete-loan-request/'+
                     JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     } 
 
     /**
@@ -48,7 +48,7 @@ export class LoanRequestService {
       getLoanRequest()
     {
       return this.http.get(environment.api.url+'CoopManagement/loan-request/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
     /**
@@ -59,7 +59,7 @@ export class LoanRequestService {
       getAllLoanRequest()
     {
       return this.http.get(environment.api.url+'CoopManagement/all-loan-request/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }  
 
     /**
@@ -70,7 +70,7 @@ export class LoanRequestService {
       getSingleLoanRequest(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/loan-request/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     } 
     /**
      * @method approveLoanRequest
@@ -81,7 +81,7 @@ export class LoanRequestService {
     {
       return this.http.get(environment.api.url+'CoopManagement/approve-loan-request/'+
                     JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
     /**
@@ -92,6 +92,17 @@ export class LoanRequestService {
       addLoanRequest(data)
     {
       return this.http.post(environment.api.url+'CoopManagement/new-loan-request',JSON.stringify(data), this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method filterLoanRequest
+     * filter loan request
+     * @return data
+     */
+      filterLoanRequest(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/loan-request/filter',JSON.stringify(data), this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 }

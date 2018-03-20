@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ManageContributionComponent } from './manage-contribution.component';
 import { CollectionsComponent } from './collections/collections.component';
 import { RunContributionComponent } from './run-contribution/run-contribution.component';
+import { ContributionTypeComponent } from './contribution-type/contribution-type.component';
 
 const routes: Routes = [
 	{
@@ -16,6 +17,10 @@ const routes: Routes = [
 	{
 		path: 'run-contributions',
 		component: RunContributionComponent
+	},
+	{
+		path: 'contribution-types',
+		component: ContributionTypeComponent
 	}
 ];
 

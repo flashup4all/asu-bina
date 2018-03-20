@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 @Injectable()
 export class ViewMemberService {
 
-  	constructor(public http : Http, private localService : LocalService) { }
+  	constructor(public http : Http, private localService : LocalService, private handleErr: handleErrors) { }
   	/**
   	 * @method addMember
   	 * creates a new form field resource
@@ -20,7 +20,7 @@ export class ViewMemberService {
   	addMember(data)
   	{
   		return this.http.post(environment.api.url+'CoopManagement/create-member',JSON.stringify(data), this.localService.header())
-  						.map((response : Response) => response.json()).catch(handleErrors);
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
   	/**
   	 * @method getMember
@@ -30,7 +30,7 @@ export class ViewMemberService {
   	getMember()
   	{
   		return this.http.get(environment.api.url+'CoopManagement/coop-members/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
-  						.map((response : Response) => response.json()).catch(handleErrors);
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
   	/**
   	 * @method deleteMember
@@ -40,7 +40,7 @@ export class ViewMemberService {
   	deleteMember(id)
   	{
   		return this.http.delete(environment.api.url+'CoopManagement/delete-staff-position/'+id, this.localService.header())
-  						.map((response : Response) => response.json()).catch(handleErrors);
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
   	/**
 
@@ -52,7 +52,7 @@ export class ViewMemberService {
  	  updateMember(data, id)
   	{
   		return this.http.post(environment.api.url+'CoopManagement/update-staff/'+id,JSON.stringify(data), this.localService.header())
-  						.map((response : Response) => response.json()).catch(handleErrors);
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
 
     /**
@@ -63,7 +63,7 @@ export class ViewMemberService {
      activateMember(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/activate-coop-member/'+id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
     /**
@@ -74,7 +74,7 @@ export class ViewMemberService {
      deactivateMember(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/deactivate-coop-member/'+id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
     /**
@@ -85,7 +85,7 @@ export class ViewMemberService {
     getFormField()
     {
       return this.http.get(environment.api.url+'form/get-custom-field/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
      * @method getMemberProfile
@@ -95,7 +95,7 @@ export class ViewMemberService {
     getMemberProfile(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/get-member-profile/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
      /**
@@ -106,7 +106,7 @@ export class ViewMemberService {
     resetPassword(id)
     {
       return this.http.get(environment.api.url+'form/get-custom-field/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
      /**
@@ -117,7 +117,7 @@ export class ViewMemberService {
     changePassword(data, id)
     {
       return this.http.post(environment.api.url+'user/change-password/'+id, JSON.stringify(data), this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
      * @method getMemberLoanRequest
@@ -127,7 +127,7 @@ export class ViewMemberService {
     getMemberLoanRequest(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/loan-request/member/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
      * @method getContributions
@@ -137,7 +137,7 @@ export class ViewMemberService {
     getMemberContributions(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/contributions/member/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
      * @method getDeductions
@@ -147,7 +147,7 @@ export class ViewMemberService {
     getMemberDeductions(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/deductions/member/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json()).catch(handleErrors);
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
 }

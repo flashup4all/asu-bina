@@ -10,6 +10,7 @@ import { ManageContributionComponent } from './manage-contribution.component';
 import { ContributionService } from './contribution.service';
 import { CollectionsComponent } from './collections/collections.component';
 import { RunContributionComponent } from './run-contribution/run-contribution.component';
+import { ContributionTypeComponent } from './contribution-type/contribution-type.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -19,7 +20,7 @@ import { RunContributionComponent } from './run-contribution/run-contribution.co
     ModalModule.forRoot(),
     TabsModule
   ],
-  declarations: [ManageContributionComponent, CollectionsComponent, RunContributionComponent],
+  declarations: [ManageContributionComponent, CollectionsComponent, RunContributionComponent, ContributionTypeComponent],
   providers: [ContributionService]
 })
 export class ManageContributionModule { }

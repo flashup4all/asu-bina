@@ -133,7 +133,7 @@ export class ManageVendorComponent implements OnInit {
             });
     }
 
-    newAccount(data)
+    newAccount()
     {
         this.editAccountData = [];
         this.accountModal.show()

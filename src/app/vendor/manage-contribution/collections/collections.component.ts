@@ -12,7 +12,7 @@ import { ContributionService } from '../contribution.service';
 export class CollectionsComponent implements OnInit {
 
 	public vendor;
-	private contibutionsList = [];
+	contibutionsList = [];
 	public runContributionForm : FormGroup;
 	file
 	submitPending: boolean;

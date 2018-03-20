@@ -1,8 +1,16 @@
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Rx';
 import { LocalService } from '../../storage/local.service';
-export function handleErrors(error: Response){
+@Injectable()
+
+export class handleErrors{
+  constructor(private router: Router){}
+err(error: Response){
+        //this.router.navigate(['/dashboard']);
+
      switch(error.status){
         case 500:
           return Observable.throw(error.json().message);
@@ -12,9 +20,9 @@ export function handleErrors(error: Response){
           return Observable.throw(error.json().message);
         case 401:
           let user = JSON.parse(window.localStorage.getItem('userProfile'))
-
+          window.localStorage.clear()
           let password = window.confirm('your session has expired please enter your password to login');
-          this.Router.navigate(['/auth']);
+          this.router.navigate(['auth']);
           return Observable.throw(error.json().message);
         case 501:
           return Observable.throw(error.json().message);
@@ -35,3 +43,4 @@ export function handleErrors(error: Response){
           return Observable.throw("We could not perform the requested action at this time. Please check your network connectivity.");
      }
    }
+}

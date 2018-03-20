@@ -203,4 +203,14 @@ data   * get all member deductions
               .map((response : Response) => response.json());
     }
 
+    /**
+     * @method queryMember
+     * activate  all coorp member resource
+     * @return data
+     */
+     queryMember(query)
+    {
+      return this.http.get(environment.api.url+'CoopManagement/members/query/'+JSON.parse(this.localService.getVendor()).id+'/'+query, this.localService.header())
+              .map((response : Response) => response.json());
+    }
 }

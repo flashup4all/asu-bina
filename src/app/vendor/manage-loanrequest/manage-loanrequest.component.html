@@ -5,14 +5,60 @@
                 <tabset>
                   <tab heading="Manage Loan Request">
                         <div class="col-md-12">
+                             <form [formGroup] = "filterForm" (ngSubmit) = "filterLoanRequest(filterForm.value)" style="width: 100%;">
+                            <div class="row p-1">
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>From</label>
+                                    <input type="date" formControlName = "from" class="form-control" name=""> 
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>To</label>
+                                    <input type="date" formControlName = "to" class="form-control" name="">
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <!-- <button type="button" class="btn btn-primary" style="margin-top: 30px;" (click)="show_adv_form()"><i class="fa fa-filter"></i></button> -->
+                                    <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+                                      <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
+                                      <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
+                                      <span *ngIf="!submitPending">Filter</span>
+                                    </button>
+                                    <button type="button" class="btn btn-success pull-right" (click)="newLoanRequestModal.show()"style="margin-top:30px" >
+                                        <i class="fa fa-plus"></i> 
+                                    Make A Loan Request
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- <div class="row" *ngIf="adv_filter">
+                                <div class="col-md-3">
+                                  <div class="form-group">
+                                    <label>Trans. ID:</label>
+                                    <input type="text" class="form-control" formControlName="id" placeholder="Invoice Number"/>
+                                    <span *ngIf="searching">searching...</span>
+                                    <ng-template #st let-s="result" let-t="sterm">
+                                      
+                                      {{ s.name}}
+                                    </ng-template>
+                                  </div>
+                                </div>
+                              </div> -->
+                          </form>
+                        </div>
+                        <div class="col-md-12">
                             <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
-                                        <th>Loan Type</th>
-                                        <th>Amount</th>
-                                        <th>Monthly Deductions</th>
+                                        <th>Loan Type (% Intr)</th>
+                                        <th>&#8358; Amount</th>
+                                        <th>&#8358; Interest</th>
+                                        <th>&#8358;Monthly Deductions</th>
                                         <th>Repayment Method</th>
                                         <th>Duration(Months)</th>
                                         <th>Date</th>
@@ -24,15 +70,18 @@
                                     <tr class="" *ngFor="let item of loanRequestList">
                                         <td><input type="checkbox" name=""></td>
                                         <td>
-                                            {{item.member.first_name}} 
-                                            {{item.member.last_name}} 
+                                            {{item.member?.first_name}} 
+                                            {{item.member?.last_name}} 
                                             {{item.member?.middle_name}} 
                                             </td>
                                         <td>
-                                            {{item.type.loan_type}} 
+                                            {{item.type.loan_type}} ({{item.type.interest}})% 
                                         </td>
                                         <td>
-                                            {{item.amount}} 
+                                            {{item?.amount | number }} 
+                                        </td>
+                                        <td>
+                                            {{ percentage_to_amount(item.amount, item.type.interest)  | number }} 
                                         </td>
                                         <td>
                                             {{item.monthly_deductions | number:'.2'}} 
@@ -348,6 +397,81 @@
        </div>
      </div>
 </div>
+
+<!-- new loan type modal -->
+<div bsModal #newLoanRequestModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">New Loan Request</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="newLoanRequestModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+              <form method="POST" [formGroup] = "loanRequestForm" (ngSubmit) = "makeLoanRequest(loanRequestForm.value)" class="form-horizontal row-fluid">
+                <div class="control-group">
+                    <label class="col-sm-5">Type Name</label>
+                    <div class="col-sm-7">
+                        <select class="form-control" formControlName="loan_type">
+                            <option value="{{item.id}}" *ngFor="let item of loanTypeList">
+                                {{item.loan_type}}
+                                <small>{{item.minimum_amount}}- {{item.maximum_amount}} 
+                                ({{item.duration}} Months)</small>
+                            </option>
+                        </select>
+                        <small [hidden]="(loanRequestForm.controls.loan_type.valid ) || (loanRequestForm.controls.loan_type.pristine )" class="text-danger">Loan Type Name is Required</small>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="col-sm-5">Repayment Method</label>
+                    <div class="col-sm-7">
+                        <select class="form-control" formControlName="repayment_method">
+                            <option value="salary">Salary Deduction</option>
+                            <option value="repayment">Individual Repayment</option>
+                            <option value="both">Both</option>
+                        </select>
+                         <small [hidden]="(loanRequestForm.controls.repayment_method.valid ) || (loanRequestForm.controls.repayment_method.pristine )" class="text-danger">Method of Repayment Required</small>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="col-sm-5">Amount <small>[ NGN ]</small></label>
+                    <div class="col-sm-7">
+                        <input type="number" formControlName="amount" placeholder="Amount" class="form-control" required="">
+                        <small [hidden]="(loanRequestForm.controls.amount.valid ) || (loanRequestForm.controls.amount.pristine )" class="text-danger">Method of Repayment Required</small>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="col-sm-5">Description</label>
+                    <div class="col-sm-7">
+                        <textarea class="form-control" formControlName="description" placeholder="Reasons for loan request"></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="col-sm-5">Requirements</label>
+                    <div class="col-sm-7">
+                       
+                        <input type="file" multiple />
+                    </div>
+                </div>
+                <div><small>please  note that once loans are approve it cannot be canceled</small></div>
+                <div class="control-group mbn">
+                    <div class="col-sm-12 ">
+                        <button type="submit" class="btn btn-success btn-block" [disabled]="loanRequestForm.invalid || submitPending ">
+                                <span *ngIf="!submitPending">Create</span>
+                                <span *ngIf="submitPending && loanRequestForm.valid">Please Wait...</span>
+                                <span *ngIf="submitPending && loanRequestForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                            </button>
+                    </div>
+                </div>
+            </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>
+
 <style type="text/css">
     *{font-family: 'Roboto', sans-serif;}
 
