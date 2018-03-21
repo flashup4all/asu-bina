@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalModule } from 'ngx-bootstrap';
@@ -18,7 +19,8 @@ import { ContributionTypeComponent } from './contribution-type/contribution-type
     FormsModule,
     ReactiveFormsModule,
     ModalModule.forRoot(),
-    TabsModule
+    TabsModule,
+    NgbModule
   ],
   declarations: [ManageContributionComponent, CollectionsComponent, RunContributionComponent, ContributionTypeComponent],
   providers: [ContributionService]

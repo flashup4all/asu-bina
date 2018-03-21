@@ -34,120 +34,128 @@
         <tabset>
             <tab heading="Members">
                 <div class="col-md-12">
-                    <div class="row">
-                      <form class="pull-left">
-                        <div class="input-append">
-                            <input type="text" [formControl]="queryField" class="span3" placeholder="Filter by name...">
-                            <button type="submit" class="btn">
-                                <i class="icon-search"></i>
-                            </button>
+                  <div class="row">
+                    <form style=" width:100%;">
+                        <div class="form-group">
+                            <input type="text" [formControl]="queryField" class="form-control" placeholder="Filter by name..." >
                         </div>
-                        <button class="btn btn-success" (click)="excelUploadModal.show()">Upload Excel Format</button>
+                        <!-- <button class="btn btn-success" (click)="excelUploadModal.show()">Upload Excel Format</button> -->
                       </form>
+                  </div>
+                    <div class="row">
                       <div class="pull-right">
                         <button class="btn btn-success pull-left" (click)="activateAllMember()">Activate All Members</button>
                         <button class="btn btn-danger pull-right" (click)="deactivateAllMember()">Deactivate All Members</button>
                       </div>
-                      <table class="table table-responsive-sm table-hover table-outline mb-0">
-                        <thead class="thead-light">
-                          <tr>
-                            <th class="text-center"><i class="icon-people"></i></th>
-                            <th>Name</th>
-                            <th class="text-center">Email</th>
-                            <th>(&#8358;)Contribution</th>
-                            <th>status</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <!-- search result -->
-                          <tr *ngFor="let item of results">
-                            <td class="text-center">
-                              <div class="avatar">
-                                <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
-                                <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(item.passport)" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" class="img-avatar">
-                                <span class="avatar-status badge-success"></span>
-                              </div>
-                            </td>
-                            <td>
-                              <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
-                              <div class="small text-muted">
-                                <span>{{item?.gender}}</span> | {{item?.phone1 || 'nil'}}
-                              </div>
-                            </td>
-                            <td class="text-center">
-                              {{item.email}}
-                            </td>
-                            <td class="text-center">
-                              <span class="label label-sm label-primary">{{ item?.contribution}}</span>
-                            </td>
-                            <td>
-                              <small *ngIf="item.status == 1" class="muted pull-right">
-                                 <h4><span class="label label-sm label-success">Active</span></h4>
-                              </small>
-                              <small *ngIf="item.status == 2" class="muted pull-right">
-                                 <h4><span class="label label-sm label-warning">Blocked</span></h4>
-                              </small>
-                              <small *ngIf="item.status == 0" class="muted pull-right">
-                                 <h4><span class="label label-sm label-danger">Inactive</span></h4>
-                              </small>
-                            </td>
-                            <td>
-                              <a class="btn btn-primary btn-sm" [routerLink]="['/app/members/', item.id,'view']" title="edit member details">
-                                <i class="fa fa-sliders"> </i></a>
-                              <button class="btn btn-success btn-sm" (click)="editPassword(item)" title="reset member password: this sends a password reset link"><i class="fa fa-key"></i></button>
-                              <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivateMember(item.id)" title="deactivate or suspend this member">
-                                <i class="fa fa-unlock"></i></button>
-                              <button class="btn btn-success btn-sm" *ngIf="item.status != 1" (click)="activateMember(item.id)" title="activate this member"><i class="fa fa-unlock"></i></button>
-                            </td>
-                          </tr>
-                          <!-- staff list -->
-                          <tr *ngFor="let item of membersList">
-                            <td class="text-center">
-                              <div class="avatar">
-                                <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
-                                <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(item.passport)" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" class="img-avatar">
-                                <span class="avatar-status badge-success"></span>
-                              </div>
-                            </td>
-                            <td>
-                              <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
-                              <div class="small text-muted">
-                                <span>{{item?.gender}}</span> | {{item?.phone1 || 'nil'}}
-                              </div>
-                            </td>
-                            <td class="text-center">
-                              {{item.email}}
-                            </td>
-                            <td class="text-center">
-                              <span class="label label-sm label-primary">{{ item?.contribution}}</span>
-                            </td>
-                            <td>
-                              <small *ngIf="item.status == 1" class="muted pull-right">
-                                 <h4><span class="label label-sm label-success">Approved</span></h4>
-                              </small>
-                              <small *ngIf="item.status == 2" class="muted pull-right">
-                                 <h4><span class="label label-sm label-warning">Blocked</span></h4>
-                              </small>
-                              <small *ngIf="item.status == 0" class="muted pull-right">
-                                 <h4><span class="label label-sm label-danger">Inactive</span></h4>
-                              </small>
-                            </td>
-                            <td>
-                              <a class="btn btn-primary btn-sm" [routerLink]="['/app/members/', item.id,'view']" title="edit member details">
-                                <i class="fa fa-sliders"> </i></a>
-                              <button class="btn btn-success btn-sm" (click)="editPassword(item)" title="reset member password: this sends a password reset link"><i class="fa fa-lock"></i></button>
-                              <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivateMember(item.id)" title="deactivate or suspend this member">
-                                <i class="fa fa-unlock"></i></button>
-                              <button class="btn btn-success btn-sm" *ngIf="item.status != 1" (click)="activateMember(item.id)" title="activate this member"><i class="fa fa-unlock"></i></button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <div class="media stream load-more">
-                     <a  (click)="loadMore()" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
-                  </div>
-                    </div>
+                      </div>
+                     <div class="row">
+                        <div class="card" *ngIf="searching" style="width:100%;">
+                            <div class="card-body"><i class="fa fa-spinner" style="margin: auto auto 0 400px;"></i></div>
+                          </div>
+                     </div>
+                      <div class="row">
+                        <table *ngIf="!searching" class="table table-responsive-sm table-hover table-outline mb-0">
+                          <thead class="thead-light">
+                            <tr>
+                              <th class="text-center"><i class="icon-people"></i></th>
+                              <th>Name</th>
+                              <th class="text-center">Email</th>
+                              <th>(&#8358;)Contribution</th>
+                              <th>status</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <!-- search result -->
+                            <tr *ngFor="let item of results">
+                              <td class="text-center">
+                                <div class="avatar">
+                                  <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
+                                  <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(item.passport)" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" class="img-avatar">
+                                  <span class="avatar-status badge-success"></span>
+                                </div>
+                              </td>
+                              <td>
+                                <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
+                                <div class="small text-muted">
+                                  <span>{{item?.gender}}</span> | {{item?.phone1 || 'nil'}}
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                {{item.email}}
+                              </td>
+                              <td class="text-center">
+                                <span class="label label-sm label-primary">{{ item?.contribution}}</span>
+                              </td>
+                              <td>
+                                <small *ngIf="item.status == 1" class="muted pull-right">
+                                   <h4><span class="label label-sm label-success">Active</span></h4>
+                                </small>
+                                <small *ngIf="item.status == 2" class="muted pull-right">
+                                   <h4><span class="label label-sm label-warning">Blocked</span></h4>
+                                </small>
+                                <small *ngIf="item.status == 0" class="muted pull-right">
+                                   <h4><span class="label label-sm label-danger">Inactive</span></h4>
+                                </small>
+                              </td>
+                              <td>
+                                <a class="btn btn-primary btn-sm" [routerLink]="['/app/members/', item.id,'view']" title="edit member details">
+                                  <i class="fa fa-sliders"> </i></a>
+                                <button class="btn btn-success btn-sm" (click)="editPassword(item)" title="reset member password: this sends a password reset link"><i class="fa fa-key"></i></button>
+                                <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivateMember(item.id)" title="deactivate or suspend this member">
+                                  <i class="fa fa-unlock"></i></button>
+                                <button class="btn btn-success btn-sm" *ngIf="item.status != 1" (click)="activateMember(item.id)" title="activate this member"><i class="fa fa-unlock"></i></button>
+                              </td>
+                            </tr>
+                            <!-- staff list -->
+                            <tr *ngFor="let item of membersList">
+                              <td class="text-center">
+                                <div class="avatar">
+                                  <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
+                                  <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(item.passport)" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" class="img-avatar">
+                                  <span class="avatar-status badge-success"></span>
+                                </div>
+                              </td>
+                              <td>
+                                <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
+                                <div class="small text-muted">
+                                  <span>{{item?.gender}}</span> | {{item?.phone1 || 'nil'}}
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                {{item.email}}
+                              </td>
+                              <td class="text-center">
+                                <span class="label label-sm label-primary">{{ item?.contribution}}</span>
+                              </td>
+                              <td>
+                                <small *ngIf="item.status == 1" class="muted pull-right">
+                                   <h4><span class="label label-sm label-success">Approved</span></h4>
+                                </small>
+                                <small *ngIf="item.status == 2" class="muted pull-right">
+                                   <h4><span class="label label-sm label-warning">Blocked</span></h4>
+                                </small>
+                                <small *ngIf="item.status == 0" class="muted pull-right">
+                                   <h4><span class="label label-sm label-danger">Inactive</span></h4>
+                                </small>
+                              </td>
+                              <td>
+                                <a class="btn btn-primary btn-sm" [routerLink]="['/app/members/', item.id,'view']" title="edit member details">
+                                  <i class="fa fa-sliders"> </i></a>
+                                <button class="btn btn-success btn-sm" (click)="editPassword(item)" title="reset member password: this sends a password reset link"><i class="fa fa-lock"></i></button>
+                                <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivateMember(item.id)" title="deactivate or suspend this member">
+                                  <i class="fa fa-unlock"></i></button>
+                                <button class="btn btn-success btn-sm" *ngIf="item.status != 1" (click)="activateMember(item.id)" title="activate this member"><i class="fa fa-unlock"></i></button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="row">
+                        <div class="media stream load-more p-2">
+                         <button class="btn btn-success btm-sm"  (click)="loadMore()" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </button>
+                        </div>
+                      </div>
                 </div>
             </tab>
             <tab heading="New Member">

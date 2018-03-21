@@ -38,7 +38,7 @@ export class SigninComponent implements OnInit {
 	    auth.then(response => {
           if(response.success === 1){
             this.submitPending = false;
-            //this.localService.showSuccess('Login Successful, you will be redirected in a moment', 'Operation Successfull')
+            this.localService.showSuccess('Login Successful, you will be redirected in a moment', 'Operation Successfull')
             this.localService.setToken(response.token);
             //this.user = response.user;
             this.localService.setUser(JSON.stringify(response.user));
@@ -50,7 +50,7 @@ export class SigninComponent implements OnInit {
               // if user login fails, trigger toastr error here with
               // response.error
             // this.localService.notify(response.error, 'invalid login credentials', 'error');
-            //this.localService.showError(response.error, "Invalid Login Credentials");
+            this.localService.showError(response.error, "Invalid Login Credentials");
             this.submitPending = false;
             //this.router.navigate(['/'])
           }

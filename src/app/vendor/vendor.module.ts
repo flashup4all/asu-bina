@@ -17,7 +17,7 @@ import { ModalModule } from 'ngx-bootstrap';
     FormsModule,
     ReactiveFormsModule,
     ModalModule.forRoot(),
-    NgbModule.forRoot(),
+    NgbModule,
   ],
   declarations: [
   	ManageVendorComponent,

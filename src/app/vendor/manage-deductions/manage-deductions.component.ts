@@ -9,6 +9,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LocalService } from '../../storage/local.service';
 import { DeductionsService } from './deductions.service';
 import { MembersService } from '../membership/members.service';
+import { LoanSettingsService } from '../loans/loan-settings/loan-settings.service';
 import * as moment from 'moment';
 
 @Component({
@@ -61,6 +62,7 @@ export class ManageDeductionsComponent implements OnInit {
   	loader;
   	current_year = moment().format('YYYY');
   	monthList;
+    loanTypeList
   	searching = false;
   	searchFailed = false;
   	hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
@@ -68,12 +70,14 @@ export class ManageDeductionsComponent implements OnInit {
 	constructor(
 		private localService : LocalService,
   		private _fb : FormBuilder,
-      	private memberService : MembersService,
+      private loanSettingsService : LoanSettingsService,
+      private memberService : MembersService,
   		private deductionService : DeductionsService
   		) {
 		this.adv_filter = false;
 		this.vendor = JSON.parse(this.localService.getVendor());
 		this.getLoanDeductions();
+    this.getLoanType()
 		this.monthList = this.localService.yearjson();
 
   		}
@@ -99,7 +103,7 @@ export class ManageDeductionsComponent implements OnInit {
       .distinctUntilChanged()
       .do(() => this.searching = true)
       .switchMap(term =>
-        this.memberService.queryMember(term)
+        this.memberService.filterMembers(term)
           .do(() => this.searchFailed = false)
           .catch(() => {
             this.searchFailed = true;
@@ -107,7 +111,7 @@ export class ManageDeductionsComponent implements OnInit {
           }))
       .do(() => this.searching = false)
       .merge(this.hideSearchingWhenUnsubscribed);
-      formatter = (x: {name: string}) => x.name;
+      formatter = (x: {first_name: string, middle_name: string, last_name: string, passport: string}) => x.first_name;
 
       /*searchStaff = (text$: Observable<string>) =>
     text$
@@ -115,7 +119,7 @@ export class ManageDeductionsComponent implements OnInit {
       .distinctUntilChanged()
       .do(() => this.searching = true)
       .switchMap(sterm =>
-        this.staffService.filterStaff(sterm)
+        this.memberService.filterMembers(sterm)
           .do(() => this.searchFailed = false)
           .catch(() => {
             this.searchFailed = true;
@@ -123,7 +127,7 @@ export class ManageDeductionsComponent implements OnInit {
           }))
       .do(() => this.searching = false)
       .merge(this.hideSearchingWhenUnsubscribed);
-      st_formatter = (x: {name: string}) => x.name;
+      st_formatter = (x: {first_name: string}) => x.first_name;
 */
 
 	/**
@@ -197,10 +201,32 @@ export class ManageDeductionsComponent implements OnInit {
     filterDeduction(filterValues)
     {
       this.submitPending = true;
-      filterValues['vendor_id'] = parseInt(this.vendor.id);
-      this.deductionService.filterDeduction(filterValues).subscribe((response) => {
+      let data = {
+        from : filterValues.from,
+        to : filterValues.to,
+        id : filterValues.id,
+        member_id : filterValues.member_id.id,
+        loan_type_id : filterValues.loan_type_id,
+        loan_request_id : filterValues.loan_request_id,
+        vendor_id: parseInt(this.vendor.id)
+      }
+      this.deductionService.filterDeduction(data).subscribe((response) => {
         this.deductionsList = response
         this.submitPending = false;
       })
+    }
+
+    /**
+     * @method getLoanType
+     * creates a new loan type  resource
+     * @return data
+     */
+    getLoanType()
+    {
+        this.loanSettingsService.getLoanType().subscribe((response) => {
+         
+           this.loanTypeList = response.data
+           //this.total_loan_type = response.data.length;
+       })
     }
 }

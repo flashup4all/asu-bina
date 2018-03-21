@@ -52,28 +52,38 @@
                                             <input type="date" formControlName = "to" class="form-control" name="">
                                           </div>
                                         </div>
-                                        <div class="col-md-3">
+                                         <div class="col-md-3">
+                                          <div class="form-group">
+					                        <label for="typeahead-http">Filter Member <small>[name/phone no.]</small></label>
+					                        <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="searchFailed"formControlName="member_id" [ngbTypeahead]="search" placeholder="Filter Member" [inputFormatter]="formatter" [resultTemplate]="rt"/>
+					                        <span *ngIf="searching">searching...</span>
+					                        <ng-template #rt let-r="result" let-t="term">
+					                        	<img [src]="r.passport" style="width:30px; height:30px;">
+					                           {{ r.first_name}} {{ r.middle_name}} {{ r.last_name}}
+					                        </ng-template>
+					                      </div>
+                                        </div>
+                                        
+                                        
+                                      </div>
+                                      <div class="row">
+                                      	<div class="col-md-3">
+                                        	<label>Loan Type</label>
+	                                       	<select class="form-control" formControlName="loan_type_id">
+	                                       		<option value="">none</option>
+	                                       		<option value="{{ item.id }}" *ngFor="let item of loanTypeList">{{ item?.loan_type }}</option>
+	                                       	</select>
+	                                    </div>
+	                                     <div class="col-md-3">
                                           <div class="form-group">
                                             <!-- <button type="button" class="btn btn-primary" style="margin-top: 30px;" (click)="show_adv_form()"><i class="fa fa-filter"></i></button> -->
-                                            <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+                                            <button type="submit" class="btn btn-primary btn-block" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
                                               <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
                                               <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
                                               <span *ngIf="!submitPending">Filter</span>
                                             </button>
                                           </div>
                                         </div>
-                                      </div>
-                                      <div class="row">
-                                        <!-- <div class="col-md-3">
-                                          <div class="form-group">
-					                        <label for="typeahead-http">Filter Member <small>[name/phone no./email]</small>:</label>
-					                        <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="searchFailed"formControlName="member_id" [ngbTypeahead]="search" placeholder="Filter Member" [inputFormatter]="formatter" [resultTemplate]="rt"/>
-					                        <span *ngIf="searching">searching...</span>
-					                        <ng-template #rt let-r="result" let-t="term">
-					                          {{ r.name}}
-					                        </ng-template>
-					                      </div>
-                                        </div> -->
                                       </div>
                                   </form>
 			            	</div>

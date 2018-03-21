@@ -82,8 +82,10 @@ searchFailed: boolean;
 		    	.subscribe( result => { 
 		    		if (result.status === 400)
 		    		{ 
+		    			this.searching = false
 		    			return; 
 		    		}else {  
+		    			this.searching = false
 		    			this.results = result; 
 		    		}
 		  		});

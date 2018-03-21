@@ -21,9 +21,9 @@ err(error: Response){
         case 401:
           let user = JSON.parse(window.localStorage.getItem('userProfile'))
           window.localStorage.clear()
-          let password = window.confirm('your session has expired please enter your password to login');
+          let password = window.confirm('your session has expired please login again to renew session');
           this.router.navigate(['auth']);
-          return Observable.throw(error.json().message);
+          //return Observable.throw(error.json().message);
         case 501:
           return Observable.throw(error.json().message);
         case 422:

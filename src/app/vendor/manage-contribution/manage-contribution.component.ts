@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { trigger, style, animate, transition } from '@angular/animations';
+import { Observable } from 'rxjs/Observable';
+import {of} from 'rxjs/observable/of';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LocalService } from '../../storage/local.service';
 import { ContributionService } from './contribution.service';
 import { XlsxToJsonService } from '../../shared/xls/index'
+import { MembersService } from '../membership/members.service';
 //import * as FileSaver from 'file-saver';
 import * as moment from 'moment';
 
@@ -21,18 +24,6 @@ import * as moment from 'moment';
         animate('200ms ease-in', style({transform: 'translateY(-100%)'}))
       ])
     ])
-    /*trigger(
-      'enterAnimation', [
-        transition(':enter', [
-          style({transform: 'translateX(100%)', opacity: 0}),
-          animate('500ms', style({transform: 'translateX(0)', opacity: 1}))
-        ]),
-        transition(':leave', [
-          style({transform: 'translateX(0)', opacity: 1}),
-          animate('500ms', style({transform: 'translateX(100%)', opacity: 0}))
-        ])
-      ]
-    )*/
   ],
   styles: [
     `.fa-spinner {
@@ -65,16 +56,20 @@ export class ManageContributionComponent implements OnInit {
     adv_filter: boolean;
   	public changeContibutionsRequestList;
   	current_year = moment().format('YYYY');
+    searching = false;
+    searchFailed = false;
+    hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
+  
 	constructor(
 		private localService : LocalService,
   		private _fb : FormBuilder,
+      private memberService : MembersService,
   		private contributionService : ContributionService
   		) {
 		this.vendor = JSON.parse(this.localService.getVendor());
 		this.getContributions();
 		this.get_contribution_type()
 		this.monthList = this.localService.yearjson();
-		console.log(this.monthList)
 		this.adv_filter = false;
 		//this.getChangeContributionRequest();
   		}
@@ -88,10 +83,30 @@ export class ManageContributionComponent implements OnInit {
        this.filterForm = this._fb.group({
 	        from : '',
 	        to : '',
-	        id : ''
+	        id : '',
+          member_id:'',
+          type:''
 	      })
 
 	  }
+
+    search = (text$: Observable<string>) =>
+    text$
+      .debounceTime(300)
+      .distinctUntilChanged()
+      .do(() => this.searching = true)
+      .switchMap(term =>
+        this.memberService.filterMembers(term)
+          .do(() => this.searchFailed = false)
+          .catch(() => {
+            this.searchFailed = true;
+            return of([]);
+          }))
+      .do(() => this.searching = false)
+      .merge(this.hideSearchingWhenUnsubscribed);
+      formatter = (x: {first_name: string, middle_name: string, last_name: string, passport: string}) => x.first_name;
+
+      
 
 	  handleFile(event) {
 	    let file = event.target.files[0];
@@ -229,7 +244,6 @@ export class ManageContributionComponent implements OnInit {
 		 if (this.file !== undefined) {
 			data['type'] = 'contribution';
 			data['file'] = this.file;
-		 	console.log('true')
        		this.contributionService.uploadExcelContributionFormat(this.file)
             .map(response => {
                console.log(response)
@@ -238,7 +252,6 @@ export class ManageContributionComponent implements OnInit {
                 this.alertClosed = true;
             }, 5000);*/
         } else {
-		 	console.log('false')
             //show error
         }
 	}
@@ -247,9 +260,15 @@ export class ManageContributionComponent implements OnInit {
     filterContribution(filterValues)
     {
       this.submitPending = true;
-      filterValues['vendor_id'] = parseInt(this.vendor.id);
-      console.log(filterValues)
-      this.contributionService.filterContribution(filterValues).subscribe((response) => {
+      let data = {
+        from : filterValues.from,
+        to : filterValues.to,
+        id : filterValues.id,
+        member_id : filterValues.member_id.id,
+        type : filterValues.type,
+        vendor_id: parseInt(this.vendor.id)
+      }
+      this.contributionService.filterContribution(data).subscribe((response) => {
         this.contibutionsList = response.data
         this.submitPending = false;
       })

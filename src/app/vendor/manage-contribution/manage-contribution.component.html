@@ -50,6 +50,28 @@
                                             <input type="date" formControlName = "to" class="form-control" name="">
                                           </div>
                                         </div>
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+					                        <label for="typeahead-http">Filter Member <small>[name/phone no.]</small></label>
+					                        <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="searchFailed"formControlName="member_id" [ngbTypeahead]="search" placeholder="Filter Member" [inputFormatter]="formatter" [resultTemplate]="rt"/>
+					                        <span *ngIf="searching">searching...</span>
+					                        <ng-template #rt let-r="result" let-t="term">
+					                        	<img [src]="r.passport" style="width:30px; height:30px;">
+					                           {{ r.first_name}} {{ r.middle_name}} {{ r.last_name}}
+					                        </ng-template>
+					                      </div>
+                                        </div>
+                                        
+                                        
+                                      </div>
+                                      <div class="row">
+                                      	<div class="col-md-3">
+                                        	<label>Type</label>
+	                                       	<select class="form-control" placeholder="Filter by name..." formControlName = "type">
+	                                       		<option value="">None</option>
+						                        <option value="{{ item.id }}" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
+						                    </select>
+	                                    </div>
                                         <div class="col-md-4">
                                           <div class="form-group">
                                             <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
@@ -110,26 +132,26 @@
 					                        {{item?.period}} 
 					                    </td>
 					                    <td>
-					                        {{item?.created_at}} 
+					                        {{item?.created_at | date: 'shortDate'}} 
 					                    </td>
 					                    <td class="center">
-					                        <div class="btn-group">
-					                          <!-- <button class="btn btn-mini">Action</button> -->
+					                        <!-- <div class="btn-group">
+					                         
 					                          <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
 					                            <span><i class="fa fa-ellipsis-v"></i></span>
 					                          </button>
 					                          <ul class="dropdown-menu" style="min-width:1px;">
 					                            
-					                            <!-- <li><a tabindex="-1" (click)="deleteMember(item.id)">Another action</a></li>
+					                            <li><a tabindex="-1" (click)="deleteMember(item.id)">Another action</a></li>
 					                             <li class="divider"></li>
 					                            <li>
 					                                <button class="btn btn-small" (click)="deleteMember(item.id)" title="delete member">
 					                                    <i class="fa fa-trash-o"></i>
 					                                </button>
-					                            </li> -->
+					                            </li>
 					                             <li class="divider"></li>
 					                          </ul>
-					                        </div>
+					                        </div> -->
 					                    </td>
 					                </tr>
 					            </tbody>
