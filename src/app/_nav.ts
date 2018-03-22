@@ -33,6 +33,11 @@ export const navigation = [
         icon: 'icon-star'
       },
       {
+        name: 'Manage Target Savings',
+        url: '/app/target-savings',
+        icon: 'icon-star'
+      },
+      {
         name: 'Manage Deductions',
         url: '/app/deductions',
         icon: 'icon-star'

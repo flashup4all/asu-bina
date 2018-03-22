@@ -28,6 +28,19 @@ export class WidthdrawalsService {
     }
 
     /**
+     * @method getMemberWidthdrawals
+     * get member widthdrawals
+     * @return data
+     */
+    getMemberWidthdrawals(id)
+    {
+      return this.http.get(environment.api.url+'CoopManagement/widthdrawal/get/'+
+                    JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+
+    /**
      * @method approveWidthdrawalRequest
      * update widrawal request
      * @return data
@@ -45,6 +58,13 @@ export class WidthdrawalsService {
     cancelWidthdrawalRequest(data)
     {
       return this.http.post(environment.api.url+'CoopManagement/widthdrawal/cancel',JSON.stringify(data), this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    getActualBalance(id)
+    {
+      return this.http.get(environment.api.url+'CoopManagement/actual-balance/'+
+                    JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 }

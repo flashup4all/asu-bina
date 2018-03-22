@@ -24,9 +24,15 @@
         "scss/style.scss"
       ],
       "scripts": [
+        "../bow/jquery/index.js",
         "../node_modules/chart.js/dist/Chart.bundle.min.js",
-        "../node_modules/ng2-toastr/bundles/ng2-toastr.min.js",
-        "../node_modules/chart.js/dist/Chart.min.js"
+        "../node_modules/chart.js/dist/Chart.min.js",
+
+        "../bow/table-export/tableExport.js",
+        "../bow/table-export/jquery.base64.js",
+        "../bow/table-export/jspdf/libs/sprintf.js",
+        "../bow/table-export/jspdf/jspdf.js",
+        "../bow/table-export/jspdf/libs/base64.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

@@ -24,6 +24,8 @@ import { MessageService } from './vendor/message-center/message.service';
 import { ContributionService } from './vendor/manage-contribution/contribution.service';
 import { DeductionsService } from './vendor/manage-deductions/deductions.service';
 import { WidthdrawalsService } from './vendor/manage-widthdrawals/widthdrawals.service';
+import { TargetSavingsService } from './vendor/target-savings/target-savings.service';
+import { TableExportService } from './shared/services/index';
 
 
 // Import containers
@@ -126,7 +128,9 @@ import { SigninComponent } from './auth/signin/signin.component';
   ContributionService,
   WidthdrawalsService,
   DeductionsService,
-  handleErrors
+  TargetSavingsService,
+  handleErrors,
+  TableExportService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   bootstrap: [ AppComponent ]

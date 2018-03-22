@@ -1,0 +1,68 @@
+<div class="card">
+  	<div class="card-body">
+    	<div class="row">
+      		<div class="col">
+		        <tabset>
+		          <tab heading="Target Savings">
+		          	<table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+				                <thead>
+				                    <tr>
+				                        <th>#</th>
+				                        <th>Name</th>
+				                        <th>Amount</th>
+				                        <th>Payment Method</th>
+				                        <th>Date</th>
+				                        <!-- <th>Actions</th> -->
+				                    </tr>
+				                </thead>
+				                <tbody>
+				                    <tr class="" *ngFor="let item of targetList">
+				                        <td><input type="checkbox" name=""></td>
+				                        <td>
+		                                  {{item.member.first_name}} 
+		                                  {{item.member.last_name}} 
+		                                  {{item.member?.middle_name}} 
+		                                </td>
+				                        <td>
+				                            {{item?.amount}} 
+				                        </td>
+				                        <td>
+				                            {{item?.payment_method?.name}} 
+				                        </td>
+				                        <td>
+				                            {{item?.date | date: "shortDate" }} 
+				                        </td>
+				                       <!--  <td class="center">
+				                         <div class="btn-group">
+					                          <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+					                            <span><i class="fa fa-ellipsis-v"></i></span>
+					                          </button>
+					                          <ul class="dropdown-menu" style="min-width:1px;     left: -66px;">
+			                                      <li>
+			                                        <a *ngIf="item.status != 'Approved'" (click)="approveWidthdrawalRequest(item.id)">
+			                                          <i class="fa fa-check"> Approve Request</i>
+			                                        </a>
+			                                        <a *ngIf="item.status === 'Approved'">
+			                                          <i class="fa fa-check"> Approved Already</i>
+			                                        </a>
+			                                      </li>
+			                                      <li>
+			                                        <a *ngIf="item.status != 'Approved'" (click)="cancelWidthdrawalRequest(item.id)">
+			                                          <i class="fa fa-times"> Cancel Request</i>
+			                                        </a>
+			                                      </li>
+			                                    </ul>
+					                        </div>
+				                        </td> -->
+				                    </tr>
+				                </tbody>
+				            </table>
+				            <div class="col-md-12 load-more">
+	                           <a  (click)="loadMore()" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
+	                        </div>
+		          </tab>
+		      </tabset>
+		  </div>
+		</div>
+	</div>
+</div>

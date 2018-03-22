@@ -52,6 +52,10 @@ const routes: Routes = [
 	        loadChildren: './manage-contribution/manage-contribution.module#ManageContributionModule',
 	      },
 	      {
+	        path: 'target-savings',
+	        loadChildren: './target-savings/target-savings.module#TargetSavingsModule',
+	      },
+	      {
 	        path: 'loan-request',
 	        loadChildren: './manage-loanrequest/manage-loanrequest.module#ManageLoanrequestModule',
 	      },

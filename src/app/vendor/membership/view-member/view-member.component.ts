@@ -9,7 +9,10 @@ import { LoanRequestService } from '../../manage-loanrequest/loan-request.servic
 import { LoanSettingsService } from '../../loans/loan-settings/loan-settings.service';
 import { ContributionService } from '../../manage-contribution/contribution.service';
 import { DeductionsService } from '../../manage-deductions/deductions.service';
+import { TargetSavingsService } from '../../target-savings/target-savings.service';
+import { WidthdrawalsService } from '../../manage-widthdrawals/widthdrawals.service';
 import * as moment from 'moment';
+import { TableExportService } from '../../../shared/services/index';
 
 @Component({
   selector: 'app-view-member',
@@ -36,6 +39,9 @@ export class ViewMemberComponent implements OnInit {
     public memberContributionList;
     public membersFormPoolList;
     public contribution_type_list;
+    withdrawal_list;
+    actual_balance
+    public target_list;
     loanTypeList;
     total_contribution;
     total_deduction;
@@ -44,27 +50,37 @@ export class ViewMemberComponent implements OnInit {
     public addDeductionForm : FormGroup;
     public runContributionForm : FormGroup;
     public newMemberForm: FormGroup;
+    public targetSavingForm: FormGroup;
     filterForm: FormGroup;
+    deductionFilterForm: FormGroup;
+    contributionFilterForm: FormGroup;
     submitPending:boolean;
     public loanRequestForm : FormGroup;
     files;
     current_year = moment().format('YYYY');
 
+    total_target_amount;
+    total_contribution_amount;
+    total_deduction_amount;
     @ViewChild('newLoanRequestModal') public newLoanRequestModal : ModalDirective;
     @ViewChild('newContributionModal') public newContributionModal : ModalDirective;
     @ViewChild('newRepaymentModal') public newRepaymentModal : ModalDirective;
+    @ViewChild('newTargetSavingModal') public newTargetSavingModal : ModalDirective;
 
     constructor(
       private route : ActivatedRoute, 
     	private localService : LocalService,
       private contributionService : ContributionService,
       private deductionService : DeductionsService,
+      private withdrawalService : WidthdrawalsService,
+      private exportService: TableExportService,
       private router : Router,
       private sanitizer:DomSanitizer,
   	  private _fb : FormBuilder,
       private memberService : MembersService,
       private loanRequestService : LoanRequestService,
-    	private loanSettingsService : LoanSettingsService
+      private loanSettingsService : LoanSettingsService,
+    	private targetService : TargetSavingsService
     	) {
         this.vendor = JSON.parse(this.localService.getVendor());
         this.user = JSON.parse(this.localService.getUser());
@@ -79,6 +95,9 @@ export class ViewMemberComponent implements OnInit {
         this. getFormFields();
         this.getLoanType();
         this.get_contribution_type()
+        this.getMemberTargetSavings()
+        this.getMemberWithdrawal();
+        this.getActualBalance();
        }
 
     ngOnInit() {
@@ -108,9 +127,34 @@ export class ViewMemberComponent implements OnInit {
         from : '',
         to : '',
         id : ''
-      })
+      });
+       this.contributionFilterForm = this._fb.group({
+        from : '',
+        to : '',
+        id : '',
+        type:''
+      });
+       this.deductionFilterForm = this._fb.group({
+        from : '',
+        to : '',
+        loan_request_id : '',
+        repayment_method:'',
+        id : ''
+      });
+
+       this.targetSavingForm = this._fb.group({
+        payment_method : [null, Validators.compose([Validators.required])],
+        amount : [null, Validators.compose([Validators.required])],
+        date: '',
+      });
 
     }
+
+    exportTable(format, tableId)
+    {
+      this.exportService.exportTo(format, tableId);
+    }
+
     /**
      * @method getMemberProfile
      * get member profile resource
@@ -124,6 +168,8 @@ export class ViewMemberComponent implements OnInit {
         this.total_deduction = response.total_deduction
       })
     }
+
+
     /**
      * @method getMemberLoanRequest
      * get member loan request resource
@@ -306,9 +352,9 @@ export class ViewMemberComponent implements OnInit {
       this.submitPending = true;
       filterValues['vendor_id'] = parseInt(this.vendor.id);
       filterValues['member_id'] = parseInt(this.memberId);
-      console.log(filterValues)
       this.contributionService.filterContribution(filterValues).subscribe((response) => {
         this.memberContributionList = response.data
+        this.total_contribution_amount = response.total;
         this.submitPending = false;
       })
     }
@@ -319,7 +365,8 @@ export class ViewMemberComponent implements OnInit {
       filterValues['vendor_id'] = parseInt(this.vendor.id);
       filterValues['member_id'] = parseInt(this.memberId);
       this.deductionService.filterDeduction(filterValues).subscribe((response) => {
-        this.memberLoanDeductionsList = response
+        this.memberLoanDeductionsList = response.data
+        this.total_deduction_amount = response.total;
         this.submitPending = false;
       })
     }
@@ -357,5 +404,136 @@ export class ViewMemberComponent implements OnInit {
         this.submitPending = false;
               this.localService.showError(error,'Operation Unsuccessfull');
       });
+    }
+
+    //target
+    /**
+     * @method getMemberTargetSavings
+     * get member target savings resource
+     * @return data
+     */
+    getMemberTargetSavings()
+    {
+      this.targetService.getMemberTargetSavings(this.memberId).subscribe((response) => {
+        this.target_list = response.data
+        //this.total_target_amount = response.total;
+      })
+    }
+
+    filterTargetSavings(filterValues)
+    {
+      this.submitPending = true;
+      filterValues['vendor_id'] = parseInt(this.vendor.id);
+      filterValues['member_id'] = parseInt(this.memberId);
+      this.targetService.filterTargetSavings(filterValues).subscribe((response) => {
+        this.target_list = response.data;
+        this.total_target_amount = response.total
+        this.submitPending = false;
+      })
+    }
+
+    make_a_target_saving(formValues)
+    {
+      formValues['vendor_id'] = this.vendor.id
+      formValues['member_id'] = parseInt(this.memberId);
+      formValues['amount'] = parseInt(formValues.amount);
+      formValues['target_type_id'] = 1;
+      formValues['staff_id'] = this.user.id
+      this.submitPending = true;
+      this.targetService.createTargerSavings(formValues).subscribe((response) => {
+        if (response.success) {
+          this.submitPending = false;
+          this.getMemberTargetSavings();
+          this.newTargetSavingModal.hide();
+          this.targetSavingForm.reset()
+          this.localService.showSuccess(response.message,'Operation Successfull');
+        }else{
+          this.submitPending = false;
+                this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      }, (error) => {
+        this.submitPending = false;
+              this.localService.showError(error,'Operation Unsuccessfull');
+      });
+    }
+
+     printReciept(id): void {
+      let printContents, popupWin;
+
+      printContents = document.getElementById(id).outerHTML;
+      popupWin = window.open('', '_blank', 'width=auto');
+      popupWin.document.open();
+      popupWin.document.write(`
+        <html>
+          <head>
+            <title>Print tab</title>
+            <style>
+              body{font-size:14px; text-align: center;}
+                table {
+                    margin: 5px;
+                  
+              }
+
+              .center{
+                text-align:center;
+              }
+              .full{
+                width:100%;
+              }
+              .row{
+                display: block;
+              }
+
+              .border, tr, th, td {
+                  border: 1px solid black;
+                  padding:2px;
+                  border-collapse: collapse;
+                   }
+                   
+              .no-border{ 
+                  border: none !important;
+                  }
+                  
+               .print-full{ 
+                 width: 100%      
+               }
+
+               .print-half{ 
+                 width: 48%;   
+               }
+               
+               .left{ float: left;}
+               
+               .right{float: right;}
+               
+               
+               .margin{ 5px;}
+               .row{width:100%;}
+            </style>
+          </head>
+      <body onload="window.print();window.close()">${printContents}</body>
+        </html>`
+      );
+      popupWin.document.close();
+  }
+
+
+  //withdrawals
+  /**
+     * @method getMemberWithdrawal
+     * get member profile resource
+     * @return data
+     */
+    getMemberWithdrawal()
+    {
+      this.withdrawalService.getMemberWidthdrawals(this.memberId).subscribe((response) => {
+        this.withdrawal_list = response.data;
+      })
+    }
+    getActualBalance()
+    {
+      this.withdrawalService.getActualBalance(this.memberId).subscribe((response) => {
+        this.actual_balance = response;
+      })
     }
 }
