@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Router} from '@angular/router';
+
 import { Subject } from 'rxjs/Rx';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of'
@@ -38,7 +40,9 @@ export class ManageMembersComponent implements OnInit {
 	items;
 	passwordFormCheck: boolean;
 	searching: boolean;
-searchFailed: boolean;
+	searchFailed: boolean;
+  	hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
+  
 	submitPending;
 	public passport;
 	public model;
@@ -54,7 +58,7 @@ searchFailed: boolean;
 	 
 	public debug_size_after: string[] = [];
 	questions = [];
-	queryField: FormControl = new FormControl();
+	filterMemberForm: FormGroup;
 	results: any[] = [];
 	@ViewChild('passwordModal') public passwordModal : ModalDirective;
 	constructor(
@@ -62,13 +66,14 @@ searchFailed: boolean;
   		private _fb : FormBuilder,
   		private manageMemberService : MembersService,
   		private sanitizer:DomSanitizer,
+  		private router : Router,
   		private changeDetectorRef: ChangeDetectorRef
 		) {
 			this.getFormFields();
 			this.getMembers()
 			this.vendor = JSON.parse(this.localService.getVendor());
 			
-			this.queryField.valueChanges
+			/*this.queryField.valueChanges
 				.debounceTime(200)
 				.distinctUntilChanged()
 				.do(() => this.searching = true)
@@ -88,9 +93,26 @@ searchFailed: boolean;
 		    			this.searching = false
 		    			this.results = result; 
 		    		}
-		  		});
+		  		});*/
+
 
 		 }
+
+		  search = (text$: Observable<string>) =>
+    text$
+      .debounceTime(300)
+      .distinctUntilChanged()
+      .do(() => this.searching = true)
+      .switchMap(term =>
+        this.manageMemberService.filterMembers(term)
+          .do(() => this.searchFailed = false)
+          .catch(() => {
+            this.searchFailed = true;
+            return of([]);
+          }))
+      .do(() => this.searching = false)
+      .merge(this.hideSearchingWhenUnsubscribed);
+      formatter = (x: {first_name: string, middle_name: string, last_name: string}) => x.first_name+'  '+ x.last_name;
 
 	ngOnInit() {
 		/*this.queryField.valueChanges
@@ -107,18 +129,30 @@ searchFailed: boolean;
 			phone1: [null, Validators.compose([Validators.required])],
 			memberData : this._fb.array([])
 		});
-	/*password reset form*/
-	this.changePasswordForm = this._fb.group({
-		old_password:[null, Validators.compose([Validators.required])],
-		new_password:[null, Validators.compose([Validators.required])],
-		new_password_confirm:[null, Validators.compose([Validators.required])]
-	})
+		/*password reset form*/
+		this.changePasswordForm = this._fb.group({
+			old_password:[null, Validators.compose([Validators.required])],
+			new_password:[null, Validators.compose([Validators.required])],
+			new_password_confirm:[null, Validators.compose([Validators.required])]
+		})
+
+		this.filterMemberForm = this._fb.group({
+			member:[null, Validators.compose([Validators.required])]
+		})
 	}
 	initMembersForm(data) {
         return this._fb.group({
         key: '',
         id: data.id
       });
+    }
+
+    viewMember(member)
+    {
+    	if(member.member.id)
+    	{
+    		this.router.navigate(['app/members/'+member.member.id+'/view']);
+    	}
     }
 
      handleFile(event) {

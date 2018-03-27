@@ -79,4 +79,36 @@ export class DeductionsService {
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
+    /**
+     * @method addrepaymentType
+     * filter contribution
+     * @return data
+     */
+    addRepaymentType(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/deductions-repaymeen-types/create', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+    /**
+     * @method getrepayment_type
+     * filter contribution
+     * @return data
+     */
+    get_repayment_type()
+    {
+      return this.http.get(environment.api.url+'CoopManagement/deductions-repaymeen-types/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method getContribution_type
+     * filter contribution
+     * @return data
+     */
+    delete_repayment_type(id)
+    {
+      return this.http.get(environment.api.url+'CoopManagement/deductions-repaymeen-types/delete/'+id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
 }

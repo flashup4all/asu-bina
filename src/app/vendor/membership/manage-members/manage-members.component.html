@@ -35,13 +35,23 @@
             <tab heading="Members">
                 <div class="col-md-12">
                   <div class="row">
-                    <form style=" width:100%;">
-                        <div class="form-group">
-                            <input type="text" [formControl]="queryField" class="form-control" placeholder="Filter by name..." >
+                    <form style=" width:100%;" [formGroup]="filterMemberForm" (ngSubmit)="viewMember(filterMemberForm.value)">
+                        <div class="input-group">
+                            <input id="typeahead-http" formControlName="member" type="text" class="form-control" [class.is-invalid]="searchFailed" [ngbTypeahead]="search" placeholder="Filter Client" [inputFormatter]="formatter" [resultTemplate]="rt"/>
+                            <button class="btn btn-success" type="submit" [disabled]="filterMemberForm.invalid">Manage</button>
+                            <span *ngIf="searching">searching...</span>
+                            <ng-template #rt let-r="result" let-t="term">
+                             <div class="row">
+                                {{ r?.first_name}} {{ r?.middle_name}} {{ r?.last_name}} 
+                                <br> {{ r?.email}}
+                                <small> <i class="fa fa-phone"> </i> {{ r?.phone1 }}</small>
+                             </div>
+                            </ng-template>
                         </div>
                         <!-- <button class="btn btn-success" (click)="excelUploadModal.show()">Upload Excel Format</button> -->
                       </form>
                   </div>
+                  <br>
                     <div class="row">
                       <div class="pull-right">
                         <button class="btn btn-success pull-left" (click)="activateAllMember()">Activate All Members</button>

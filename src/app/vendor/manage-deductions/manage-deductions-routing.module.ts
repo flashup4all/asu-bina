@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { ManageDeductionsComponent } from './manage-deductions.component';
 import { RunDeductionsComponent } from './run-deductions/run-deductions.component';
+import { DeductionRepaymentTypesComponent } from './deduction-repayment-types/deduction-repayment-types.component';
 
 const routes: Routes = [
 	{
@@ -12,6 +13,10 @@ const routes: Routes = [
 	{
 		path: 'run-deductions',
 		component: RunDeductionsComponent
+	},
+	{
+		path: 'deductions-types',
+		component: DeductionRepaymentTypesComponent
 	}
 ];
 

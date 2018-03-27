@@ -7,6 +7,7 @@ import { MembershipRoutingModule } from './membership-routing.module';
 import { ManageMembersComponent } from './manage-members/manage-members.component';
 import { ViewMemberComponent } from './view-member/view-member.component';
 import { MembersService } from './members.service';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   imports: [
     CommonModule,
@@ -14,7 +15,8 @@ import { MembersService } from './members.service';
     FormsModule,
     ReactiveFormsModule,
     ModalModule.forRoot(),
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    NgbModule
 
   ],
   declarations: [ManageMembersComponent, ViewMemberComponent],

@@ -5,10 +5,13 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { LocalService } from '../../storage/local.service';
 import { environment } from '../../../environments/environment';
+import {
+    handleErrors
+} from '../../shared/helpers/index';
 @Injectable()
 export class MembersService {
 
-  	constructor(public http : Http, private localService : LocalService) { }
+  	constructor(public http : Http, private localService : LocalService, private handleErr: handleErrors) { }
   	/**
   	 * @method addMember
   	 * creates a new form field resource
@@ -17,7 +20,7 @@ export class MembersService {
   	addMember(data)
   	{
   		return this.http.post(environment.api.url+'CoopManagement/create-member',JSON.stringify(data), this.localService.header())
-  						.map((response : Response) => response.json());
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
 
      /**
@@ -28,7 +31,7 @@ export class MembersService {
     uploadMember(data)
     {
       return this.http.post(environment.api.url+'CoopManagement/member/upload-member/'+JSON.parse(this.localService.getVendor()).id, JSON.stringify(data), this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     
   	/**
@@ -39,7 +42,7 @@ export class MembersService {
   	getMember()
   	{
   		return this.http.get(environment.api.url+'CoopManagement/coop-members/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
-  						.map((response : Response) => response.json());
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
  
   	/**
@@ -50,7 +53,7 @@ export class MembersService {
   	deleteMember(id)
   	{
   		return this.http.delete(environment.api.url+'CoopManagement/delete-staff-position/'+id, this.localService.header())
-  						.map((response : Response) => response.json());
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
   	/**
 
@@ -62,7 +65,7 @@ export class MembersService {
  	  updateMember(data, id)
   	{
   		return this.http.post(environment.api.url+'CoopManagement/update-member-profile/'+JSON.parse(this.localService.getVendor()).id+'/'+id,JSON.stringify(data), this.localService.header())
-  						.map((response : Response) => response.json());
+  						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
 
     /**
@@ -73,7 +76,7 @@ export class MembersService {
      activateAllMember()
     {
       return this.http.get(environment.api.url+'CoopManagement/activate-all-coop-member/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
      * @method activateMember
@@ -83,7 +86,7 @@ export class MembersService {
      activateMember(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/activate-coop-member/'+id, this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
     /**
@@ -94,7 +97,7 @@ export class MembersService {
      deactivateMember(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/deactivate-coop-member/'+id, this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
      /**
@@ -105,7 +108,7 @@ export class MembersService {
      deactivateAllMember()
     {
       return this.http.get(environment.api.url+'CoopManagement/deactivate-all-coop-member/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
     /**
@@ -116,7 +119,7 @@ export class MembersService {
     getFormField()
     {
       return this.http.get(environment.api.url+'form/get-custom-field/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
      * @method getMemberProfile
@@ -126,7 +129,7 @@ export class MembersService {
     getMemberProfile(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/get-member-profile/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
     /**
@@ -137,7 +140,7 @@ export class MembersService {
     updateBankAcountRequest(id)
     {
       return this.http.get(environment.api.url+'member/request-update-bank-details/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
      /**
@@ -148,7 +151,7 @@ export class MembersService {
     resetPassword(data)
     {
       return this.http.post(environment.api.url+'reset-password',JSON.stringify(data), this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
      /**
@@ -159,7 +162,7 @@ export class MembersService {
     changePassword(data)
     {
       return this.http.post(environment.api.url+'member/change-password', JSON.stringify(data), this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
      * @method getMemberLoanRequest
@@ -169,7 +172,7 @@ export class MembersService {
     getMemberLoanRequest(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/loan-request/member/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
      * @method getContributions
@@ -179,7 +182,7 @@ export class MembersService {
     getMemberContributions(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/contributions/member/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
      * @method getDeductions
@@ -189,7 +192,7 @@ export class MembersService {
     getMemberDeductions(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/deductions/member/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
      /**
@@ -200,7 +203,7 @@ data   * get all member deductions
     filterMembers(data)
     {
       return this.http.get(environment.api.url+'CoopManagement/members/'+JSON.parse(this.localService.getVendor()).id+'/'+data, this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
     /**
@@ -211,6 +214,6 @@ data   * get all member deductions
      queryMember(query)
     {
       return this.http.get(environment.api.url+'CoopManagement/members/query/'+JSON.parse(this.localService.getVendor()).id+'/'+query, this.localService.header())
-              .map((response : Response) => response.json());
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 }

@@ -103,7 +103,7 @@
                                               <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
                                                 <i class="fa fa-ellipsis-v"></i><span class="caret"></span>
                                               </button>
-                                              <ul *dropdownMenu class="dropdown-menu" role="menu">
+                                              <ul *dropdownMenu class="dropdown-menu" role="menu" style="left:auto !important; right:0px !important;">
                                                 <li role="menuitem">
                                                     <a class="dropdown-item" type="button" (click)="requestHistory(item.id)">
                                                         <i class="fa fa-check">Request History</i>
@@ -224,7 +224,7 @@
                                             </div>                            
                                         </div>
                                     </div>
-                                    <div class="">
+                                    <div class="row">
                                         <div class="col-xs-7 col-md-7">
                                             <div class="form-group">
                                                 <label for="cardExpiry"><span class="hidden-xs">EXPIRATION</span><span class="visible-xs-inline">EXP</span> DATE</label>
@@ -272,7 +272,7 @@
                                             <input type="radio" (click)="chooseAccount(account)" class="option-input radio" id="radio1" name="account">
                                                 {{ account?.account_number }}<br>
                                             <span class="pull-right">{{ account?.account_name }} | {{ account?.bank_name }}
-                                                <button class="btn btn-primary btn-sm" (click)="editAccount(account)" title="Delete Loan Signatory"><i class="fa fa-edit"></i></button>
+                                                <button class="btn btn-primary btn-sm" (click)="editAccount(account)" title="edit account"><i class="fa fa-edit"></i></button>
                                            <!--  <button class="btn btn-danger btn-sm" (click)="deleteLoanSignatory(account.id)" title="Delete Loan Signatory"><i class="fa fa-trash-o"></i></button> -->
                                             </span>
                                           </label>

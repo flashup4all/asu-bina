@@ -10,6 +10,7 @@ import { ManageDeductionsRoutingModule } from './manage-deductions-routing.modul
 import { ManageDeductionsComponent } from './manage-deductions.component';
 import { DeductionsService } from './deductions.service';
 import { RunDeductionsComponent } from './run-deductions/run-deductions.component';
+import { DeductionRepaymentTypesComponent } from './deduction-repayment-types/deduction-repayment-types.component';
 
 
 @NgModule({
@@ -22,7 +23,7 @@ import { RunDeductionsComponent } from './run-deductions/run-deductions.componen
     TabsModule,
     NgbModule
   ],
-  declarations: [ManageDeductionsComponent, RunDeductionsComponent],
+  declarations: [ManageDeductionsComponent, RunDeductionsComponent, DeductionRepaymentTypesComponent],
   providers: [DeductionsService]
 })
 export class ManageDeductionsModule { }

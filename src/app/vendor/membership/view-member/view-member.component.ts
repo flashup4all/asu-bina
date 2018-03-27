@@ -56,16 +56,20 @@ export class ViewMemberComponent implements OnInit {
     contributionFilterForm: FormGroup;
     submitPending:boolean;
     public loanRequestForm : FormGroup;
+    public loanrequestFilterForm : FormGroup;
+    public withdrawalForm : FormGroup;
     files;
     current_year = moment().format('YYYY');
 
     total_target_amount;
     total_contribution_amount;
     total_deduction_amount;
+    deduction_type_list;
     @ViewChild('newLoanRequestModal') public newLoanRequestModal : ModalDirective;
     @ViewChild('newContributionModal') public newContributionModal : ModalDirective;
     @ViewChild('newRepaymentModal') public newRepaymentModal : ModalDirective;
     @ViewChild('newTargetSavingModal') public newTargetSavingModal : ModalDirective;
+    @ViewChild('newWithdrawalModal') public newWithdrawalModal : ModalDirective;
 
     constructor(
       private route : ActivatedRoute, 
@@ -95,6 +99,7 @@ export class ViewMemberComponent implements OnInit {
         this. getFormFields();
         this.getLoanType();
         this.get_contribution_type()
+        this.get_deduction_type()
         this.getMemberTargetSavings()
         this.getMemberWithdrawal();
         this.getActualBalance();
@@ -122,6 +127,12 @@ export class ViewMemberComponent implements OnInit {
         repayment_amount: '',
       });
 
+      this.withdrawalForm = this._fb.group({
+        payment_method : '',
+        amount : [null, Validators.compose([Validators.required])],
+        description: '',
+      });
+
         /*filter form*/
        this.filterForm = this._fb.group({
         from : '',
@@ -135,6 +146,13 @@ export class ViewMemberComponent implements OnInit {
         type:''
       });
        this.deductionFilterForm = this._fb.group({
+        from : '',
+        to : '',
+        loan_request_id : '',
+        repayment_method:'',
+        id : ''
+      });
+       this.loanrequestFilterForm = this._fb.group({
         from : '',
         to : '',
         loan_request_id : '',
@@ -243,6 +261,12 @@ export class ViewMemberComponent implements OnInit {
         this.memberLoanDeductionsList = response.data.data
       })
     }
+    get_deduction_type()
+    {
+      this.deductionService.get_repayment_type().subscribe((response) => {
+        this.deduction_type_list = response.data;
+      })
+    }
      /**
      * @method getMemberContributions
      * get member loan deductions resource
@@ -331,6 +355,7 @@ export class ViewMemberComponent implements OnInit {
           if (response.success) {
             this.submitPending = false;
           this.getMemberContributions();
+          this.getActualBalance();
           this.runContributionForm.reset()
             this.newContributionModal.hide();
             this.localService.showSuccess(response.message,'Operation Successfull');
@@ -530,6 +555,32 @@ export class ViewMemberComponent implements OnInit {
         this.withdrawal_list = response.data;
       })
     }
+
+    make_a_withdrawal(formValues)
+    {
+      formValues['user_id'] = this.memberId
+      formValues['vendor_id'] = this.vendor.id
+      formValues['approved_by'] = this.user.id
+      console.log(formValues)
+      this.submitPending = true;
+      this.withdrawalService.make_a_withdrawal(formValues).subscribe((response) => {
+        if (response.success) {
+          this.submitPending = false;
+          this.getMemberWithdrawal();
+          this.newWithdrawalModal.hide();
+          this.withdrawalForm.reset()
+          this.localService.showSuccess(response.message,'Operation Successfull');
+        }else{
+          this.submitPending = false;
+                this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      }, (error) => {
+        this.submitPending = false;
+              this.localService.showError(error,'Operation Unsuccessfull');
+      });
+    }
+
+
     getActualBalance()
     {
       this.withdrawalService.getActualBalance(this.memberId).subscribe((response) => {
