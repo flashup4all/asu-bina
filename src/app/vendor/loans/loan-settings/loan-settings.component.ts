@@ -87,8 +87,8 @@ export class LoanSettingsComponent implements OnInit {
   		this.newLoanTypeForm =this._fb.group({
   			loan_type : [null, Validators.compose([Validators.required])],
   			interest : [null, Validators.compose([Validators.required])],
-  			minimum_amount : '',
-  			maximum_amount : '',
+  			//minimum_amount : '',
+  			//maximum_amount : '',
   			description : '',
   			requirements : '',
   			duration : [null, Validators.compose([Validators.required])],
@@ -346,6 +346,8 @@ export class LoanSettingsComponent implements OnInit {
       console.log(data)
       this.loanTypeCheck = true;
       data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;
+      data['minimum_amount'] = 0;
+      data['maximum_amount'] = 0;
       this.loanSettingsService.addLoanType(data).subscribe((response) => {
          if(response.success)
         {

@@ -435,14 +435,14 @@
                     <small [hidden]="(newLoanTypeForm.controls.interest.valid ) || (newLoanTypeForm.controls.interest.pristine )" class="text-danger">Percentage Interest Required</small>
                 </div>
                
-                    <div class="form-group"  *ngIf="!percentage">
+                <!-- <div class="form-group"  *ngIf="!percentage">
                     <label>Minimum Amount <small>[ NGN ]</small></label>
                     <input type="number" formControlName="minimum_amount" placeholder="minimum loan amount" class="form-control" required="">
                 </div>
                 <div class="form-group"  *ngIf="!percentage">
                     <label>maximun Amount <small>[ NGN ]</small></label>
                     <input type="number" formControlName="maximum_amount" placeholder="maximun loan amount" class="form-control" required="">
-                </div>
+                </div> -->
                 <div class="form-group">
                     <label>Description</label>
                     <textarea class="form-control" formControlName="description" placeholder="loan details"></textarea>
@@ -477,7 +477,7 @@
                         </div> Level {{item.signatory_type}} Signatory</label>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-success btn-block" [disabled]="newLoanTypeForm.invalid || loanTypeCheck ">
+                <button type="submit" class="btn btn-success btn-block" [disabled]="newLoanTypeForm.invalid ">
                     <span *ngIf="!loanTypeCheck">Create</span>
                     <span *ngIf="loanTypeCheck && newLoanTypeForm.valid">Please Wait...</span>
                     <span *ngIf="loanTypeCheck && newLoanTypeForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
@@ -511,14 +511,14 @@
                     <input type="number" [ngModel]="editLoanTypeData?.interest" formControlName="interest" placeholder="percentage interest: eg.3%" class="form-control" required="">
                     <small [hidden]="(newLoanTypeForm.controls.interest.valid ) || (newLoanTypeForm.controls.interest.pristine )" class="text-danger">Loan Interest is Required</small>
                 </div>
-                <div class="form-group" *ngIf="!percentage">
+                <!-- <div class="form-group" *ngIf="!percentage">
                     <label>Minimum Amount <small>[ NGN ]</small></label>
                     <input type="number" [ngModel]="editLoanTypeData?.minimum_amount" formControlName="minimum_amount" placeholder="minimum loan amount" class="form-control" required="">
                 </div>
                 <div class="form-group" *ngIf="!percentage">
                     <label>maximun Amount <small>[ NGN ]</small></label>
                     <input type="number" [ngModel]="editLoanTypeData?.maximum_amount" formControlName="maximum_amount" placeholder="maximun loan amount" class="form-control" required="">
-                </div>
+                </div> -->
                 <div class="form-group">
                     <label>Description</label>
                         <textarea class="form-control" [ngModel]="editLoanTypeData?.description" formControlName="description" placeholder="loan details"></textarea>
