@@ -260,26 +260,31 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	addMember(data) : void
 	{
+	    this.submitPending = true;
 		// this.items = this.newMemberForm.get('memberData') as FormArray;
   		//this.items.push(this.initAddress());
 		data['vendor_id'] = this.vendor.id;
 		data['approved_by'] = JSON.parse(this.localService.getUser()).id;
 		data['passport'] = this.passport;
-		data['phone1'] = '234'+data.phone1.substr(1);
-		console.log(data)
+		//data['phone1'] = '234'+data.phone1.substr(1);
+		//console.log(data)
 		this.manageMemberService.addMember(data).subscribe((response) => {
 			if(response.success = true)
 	      	{
 	        	this.submitPending = false;
 	        	this.newMemberForm.reset();
 	        	this.getMembers();
-	        	this.membersList.push(data)
+	        	this.file_srcs[0] = null
+	        	this.passport = null
+	        	//this.membersList.push(data)
 	        	this.localService.showSuccess(response.message,'Operation Successfull');
 		      }
 		      else{
 		        this.submitPending = false;
 		        this.localService.showError(response.message,'Operation Unsuccessfull');
 		    }
+	        	this.submitPending = false;
+
 		}, (error) => {
 			this.submitPending = false;
 		    this.localService.showError(error,'Operation Unsuccessfull');
@@ -311,7 +316,9 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	getMembers()
 	{
+		this.submitPending=true;
 		this.manageMemberService.getMember().subscribe((response) => {
+			this.submitPending=false;
 			this.membersList = response.data.data;
 			this.total_members = response.total_members;
 			this.total_active_members = response.total_active_members;
@@ -320,6 +327,8 @@ export class ManageMembersComponent implements OnInit {
          {
            this.membersList.push(response.data.data[i])
          }*/
+		}, (error) => {
+			console.log(error)
 		});
 	}
 
@@ -488,7 +497,7 @@ export class ManageMembersComponent implements OnInit {
      
     this.passport=reader.result;
      
-    console.log(reader.result);
+    //console.log(reader.result);
      
     }
  

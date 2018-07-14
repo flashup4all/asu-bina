@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Router} from '@angular/router';
+import { ActivatedRoute, Params, Router} from '@angular/router';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { LocalService } from '../../storage/local.service';
+import { Title } from '@angular/platform-browser';
+import { environment } from '../../../environments/environment';
+import { DomainService } from '../../shared/services/domain.service';
 
 @Component({
   selector: 'app-signin',
@@ -12,15 +15,33 @@ import { LocalService } from '../../storage/local.service';
 export class SigninComponent implements OnInit {
 
  	public signinForm : FormGroup;
+    isDataAvailable: boolean = false;
 	submitPending : boolean;
+  vendor
   	constructor( 
-  		private _fb : FormBuilder, 
-  		private signinService : AuthService,
+  		 private route : ActivatedRoute,
+        private _fb : FormBuilder, 
+      private signinService : AuthService,
+  		private domainService : DomainService,
   		private localService : LocalService,
+        private titleService: Title,
   		private router : Router
   		  ) { }
 
 	ngOnInit() {
+    this.route.data
+        .subscribe((data) => {
+          console.log(data)
+           if(!data.school){
+            this.titleService.setTitle(`${ environment.application_name }`);
+            this.isDataAvailable = false;
+            //this.router.navigate(['/domain-does-not-exist']);
+          }else{
+            this.vendor = data.school;
+            this.titleService.setTitle(`${ (this.vendor.name) ? this.vendor.name : 'ASUSU'} ( ${ environment.application_name } ) Login`);
+            this.isDataAvailable = true;
+          }
+        });
 	  	this.signinForm = this._fb.group({
 	  		email : [null, Validators.compose([Validators.required, Validators.email])],
 	  		password : [null, Validators.compose([Validators.required])]

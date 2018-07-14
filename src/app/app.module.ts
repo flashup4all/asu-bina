@@ -10,6 +10,7 @@ import{ ToastModule } from 'ng2-toastr/ng2-toastr';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from './shared/shared.module';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
+import { DomainService } from './shared/services/index';
 
 import { AuthRoutesResolver } from './shared/resolvers/index';
 import { AuthService } from './auth/auth.service';
@@ -137,7 +138,8 @@ import { SigninComponent } from './auth/signin/signin.component';
   TargetSavingsService,
   handleErrors,
   TableExportService,
-  InvestmentService
+  InvestmentService,
+  DomainService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   bootstrap: [ AppComponent ]

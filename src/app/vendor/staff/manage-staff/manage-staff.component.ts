@@ -336,7 +336,7 @@ export class ManageStaffComponent implements OnInit {
       data['id'] = this.editStaffData.id
       data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;
       data['passport'] = this.passport;
-      this.manageStaffService.updateStaff(data, id).subscribe((response) => {
+      this.manageStaffService.updateStaff(data, this.editStaffData.id).subscribe((response) => {
         if(response.success = true)
         {
           this.submitPending = false;
