@@ -60,7 +60,7 @@ export class ViewMemberComponent implements OnInit {
     public withdrawalForm : FormGroup;
     files;
     current_year = moment().format('YYYY');
-
+    member_plan_list;
     total_target_amount;
     total_contribution_amount;
     total_deduction_amount;
@@ -103,6 +103,7 @@ export class ViewMemberComponent implements OnInit {
         this.getMemberTargetSavings()
         this.getMemberWithdrawal();
         this.getActualBalance();
+        this.get_member_contribution_plan();
        }
 
     ngOnInit() {
@@ -129,6 +130,7 @@ export class ViewMemberComponent implements OnInit {
 
       this.withdrawalForm = this._fb.group({
         payment_method : '',
+        plan_id : [null, Validators.compose([Validators.required])],
         amount : [null, Validators.compose([Validators.required])],
         description: '',
       });
@@ -171,6 +173,16 @@ export class ViewMemberComponent implements OnInit {
     exportTable(format, tableId)
     {
       this.exportService.exportTo(format, tableId);
+    }
+
+    get_member_contribution_plan()
+    {
+      this.submitPending = true;
+      this.contributionService.get_member_contribution_plan(this.memberId).subscribe((response) => {
+        this.member_plan_list = response.data;
+        console.log(this.member_plan_list)
+        this.submitPending = false;
+      })
     }
 
     /**

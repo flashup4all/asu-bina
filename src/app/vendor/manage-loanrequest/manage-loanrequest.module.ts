@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../../shared/shared.module';
 import { ModalModule } from 'ngx-bootstrap';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BsDropdownModule } from 'ngx-bootstrap';
@@ -17,7 +18,8 @@ import { ViewRequestHistoryComponent } from './view-request-history/view-request
     ReactiveFormsModule,
     ModalModule.forRoot(),
     BsDropdownModule.forRoot(),
-    TabsModule
+    TabsModule,
+    SharedModule
   ],
   declarations: [ManageLoanrequestComponent, ViewRequestHistoryComponent],
   providers: [LoanRequestService]

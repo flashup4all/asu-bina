@@ -34,7 +34,8 @@ export class ContributionTypeComponent implements OnInit {
 
   	ngOnInit() {
   		this.contribution_type_form = this._fb.group({
-  			name: '',
+        name: [null, Validators.compose([Validators.required])],
+  			code: [null, Validators.compose([Validators.required])],
   			description: ''
   		})
   	}
@@ -76,7 +77,11 @@ export class ContributionTypeComponent implements OnInit {
           		this.localService.showError(response.message,'Operation Successfull');
           		this.localService.showError(response,'Operation Successfull');
   			}
-  		})
+  		}, (error) => {
+          this.submitPending = false;
+          this.localService.showError('Error!','Server Error, try again later or contact admin');
+
+      })
   	}
   	get_contribution_type()
   	{

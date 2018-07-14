@@ -51,7 +51,27 @@ export class LocalService {
     public showError(message, title) {
         this.toastrService.error(message, title);
     }
-
+    public GetSubDomain(url: any) {
+      let parts = url.split('.');
+      let subdomain = parts[0];
+      return subdomain;
+    }
+    check_posting_cash_role(amount)
+    {
+      let user = JSON.parse(this.getUser());
+      if(user.role_id == 2)
+      {
+        return true;
+      } else if(user.role_id == 3 || user.role_id == 4)
+      {
+        if(user.user_position.max_post_amount > amount)
+        {
+          return true;
+        } else{
+          return false;
+        }
+      }
+    }
 	header(){
         let headers = new Headers();
             headers.append('content-type', 'application/json');
@@ -63,12 +83,50 @@ export class LocalService {
         return request 
     }
 
+     duration()
+     {
+       return [ 
+         {name: 'any', value: "any"},
+         {name: 'daily', value: "daily"},
+         {name: 'weekly', value: "weekly"},
+         {name: 'monthly', value: "monthly"},
+         {name: 'bi-anually', value: "bi-anually"},
+         {name: 'anually', value: "anually"},
+       ]
+     }
+
+     amount_type()
+     {
+       return [ 
+         {name: 'any  [ variable or any amount ]', value: "any"},
+         {name: 'fixed', value: "fixed"},
+         {name: 'range', value: "range"}
+       ]
+     }
+
+     account_status()
+     {
+       return [ 
+         {name: 'Activate', value: 1},
+         {name: 'De-Activate', value: 0},
+         {name: 'Suspend/Block', value: 2}
+       ]
+     }
+     return_on_investment_type()
+     {
+       return [ 
+         {value: '1', name: "Re-Invest /Roll Over Interest", description:"This option forces that the interest be applied back into the investment until the investment duration is covered / matured"},
+         {value: '2', name: "Pay Interest to My Account/Savings", description:"This option forces that the interest be paid into your account / contributions or you make request for it in cash at any of our branches by the time the interest period cycles"},
+         //{value: '3', name: "Wallet", description:"This option transfer the ROI to your wallet where you can withdraw it or perform any other online transaction using the ASUSU mobile app or USSD code for any transactions"},
+       ]
+     }
+
     token_expired(status){
         console.log(status)
     }
 
     /*clear storage*/
-    public ClearStorage(){
+    ClearStorage(){
         window.localStorage.removeItem('token');
         window.localStorage.removeItem('userProfile');
         window.localStorage.removeItem('vendorProfile');

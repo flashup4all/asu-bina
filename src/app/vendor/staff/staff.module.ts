@@ -6,6 +6,7 @@ import { ModalModule } from 'ngx-bootstrap';
 import { ManageStaffComponent } from './manage-staff/manage-staff.component';
 import { StaffService } from './staff.service';
 import { StaffRoutingModule } from './staff-routing.module';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { StaffRoutingModule } from './staff-routing.module';
     StaffRoutingModule,
     ModalModule.forRoot(),
      FormsModule, ReactiveFormsModule,
-     TabsModule.forRoot()
+     TabsModule.forRoot(),
+     SharedModule,
   ],
   declarations: [
   	ManageStaffComponent,

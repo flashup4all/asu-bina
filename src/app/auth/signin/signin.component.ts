@@ -64,19 +64,19 @@ export class SigninComponent implements OnInit {
         this.router.navigate(['/dashboard']);
 
         break;
-      case '2':
+      case 3:
         // code...
         // if(user.flag !=1)
         // {
         //   this.router.navigate(['/coorp/setup']);
         // }else{
-          this.router.navigate(['/coorp/dashboard']);
+          this.router.navigate(['/dashboard']);
         //}
 
         break;
-        case '6':
+        case 4:
         // code...
-        this.router.navigate(['/member/dashboard']);
+        this.router.navigate(['/app/members']);
 
         break;
       default:

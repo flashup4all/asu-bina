@@ -33,6 +33,11 @@ export const navigation = [
         icon: 'icon-star'
       },
       {
+        name: 'Manage Investments',
+        url: '/app/investment/history',
+        icon: 'icon-star'
+      },
+      {
         name: 'Manage Target Savings',
         url: '/app/target-savings',
         icon: 'icon-star'
@@ -72,6 +77,11 @@ export const navigation = [
       {
         name: 'Contribution Settings',
         url: '/app/contributions/contribution-types',
+        icon: 'icon-star'
+      },
+      {
+        name: 'Investment Settings',
+        url: '/app/investment/manage',
         icon: 'icon-star'
       },
       {

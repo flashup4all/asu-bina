@@ -7,6 +7,7 @@ import { LoanRequestService } from './loan-request.service';
 import { MembersService } from '../membership/members.service';
 import { VendorService } from '../vendor.service';
 import { LoanSettingsService } from '../loans/loan-settings/loan-settings.service';
+import { TableExportService } from '../../shared/services/index';
 
 @Component({
   selector: 'app-manage-loanrequest',
@@ -25,6 +26,7 @@ import { LoanSettingsService } from '../loans/loan-settings/loan-settings.servic
 export class ManageLoanrequestComponent implements OnInit {
 
 	public vendor;
+  user
 	public loanRequestList= [] ;
   toPage;
   loader;
@@ -49,6 +51,7 @@ export class ManageLoanrequestComponent implements OnInit {
 	constructor(
 	private localService : LocalService,
 	private _fb : FormBuilder,
+  private exportService: TableExportService,
   private route: Router,
   private loanrequestService : LoanRequestService,
   private loanSettingsService : LoanSettingsService,
@@ -56,6 +59,7 @@ export class ManageLoanrequestComponent implements OnInit {
 	private memberService : MembersService
 	) {
 	this.vendor = JSON.parse(this.localService.getVendor());
+  this.user = JSON.parse(this.localService.getUser());
 	this.getLoanRequest();
   this.getAccountNumbers();
   //this.getBankList()
@@ -421,5 +425,70 @@ export class ManageLoanrequestComponent implements OnInit {
         this.submitPending = false;
         this.localService.showError(error,'Operation Unsuccessfull');
       });
+    }
+
+    exportTable(format, tableId)
+    {
+      this.exportService.exportTo(format, tableId);
+    }
+
+    printReciept(id): void {
+      let printContents, popupWin;
+
+      printContents = document.getElementById(id).outerHTML;
+      popupWin = window.open('', '_blank', 'width=auto');
+      popupWin.document.open();
+      popupWin.document.write(`
+        <html>
+          <head>
+            <title>Print tab</title>
+            <style>
+              body{font-size:14px; text-align: center;}
+                table {
+                    margin: 5px;
+                  
+              }
+
+              .center{
+                text-align:center;
+              }
+              .full{
+                width:100%;
+              }
+              .row{
+                display: block;
+              }
+
+              .border, tr, th, td {
+                  border: 1px solid black;
+                  padding:2px;
+                  border-collapse: collapse;
+                   }
+                   
+              .no-border{ 
+                  border: none !important;
+                  }
+                  
+               .print-full{ 
+                 width: 100%      
+               }
+
+               .print-half{ 
+                 width: 48%;   
+               }
+               
+               .left{ float: left;}
+               
+               .right{float: right;}
+               
+               
+               .margin{ 5px;}
+               .row{width:100%;}
+            </style>
+          </head>
+      <body onload="window.print();window.close()">${printContents}</body>
+        </html>`
+      );
+      popupWin.document.close();
     }
 }

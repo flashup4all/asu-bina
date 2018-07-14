@@ -540,7 +540,7 @@ export class LoanSettingsComponent implements OnInit {
           {
             this.eligibilitycheck = true;
             this.loanEligibilityData = response.data 
-            this.percentage = this.loanEligibilityData.percentage
+            //this.percentage = this.loanEligibilityData.percentage
             console.log(this.loanEligibilityData)
           }else{
             this.eligibilitycheck = false;

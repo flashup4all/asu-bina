@@ -3,14 +3,15 @@
     	<div class="row">
       		<div class="col">
 		        <tabset>
-		        	<tab heading="Contribution Types">
+		        	<tab heading="REPAYMENT TYPES">
 		        		<button type="button" class="btn btn-success pull-right" (click)="new_type()"style="margin-top:30px" >
                             <i class="fa fa-plus"></i> Add Type</button>
                         <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
 			                <thead>
 				                <tr>
 				                    <th>#</th>
-				                    <th>Name</th>
+                            <th>Name</th>
+				                    <th>Code Name</th>
 				                    <th>Description</th>
 				                    <th>Actions</th>
 				                </tr>
@@ -20,7 +21,10 @@
 				                    <td>#</td>
 				                    <td>
 				                        {{item?.name}} 
-				                        </td>
+				                    </td>
+                            <td>
+                                {{item?.code}} 
+                            </td>
 				                    <td>
 				                        {{ item?.description }} 
 				                    </td>
@@ -47,7 +51,7 @@
      <div class="modal-dialog modal-md">
        <div class="modal-content">
          <div class="modal-header">
-           <h4 class="modal-title pull-left">Make A Contribution</h4>
+           <h4 class="modal-title pull-left">Add Repayment Type</h4>
            <button type="button" class="close pull-right" aria-label="Close" (click)="newContributionTypeModal.hide()">
              <span aria-hidden="true">&times;</span>
            </button>
@@ -58,9 +62,16 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Type</label>
-                                        <input type="text" name="" value="{{editData?.name}}" formControlName = "name" placeholder="Name" class="form-control">
-                                        <small [hidden]="(contribution_type_form.controls.name.valid ) || (contribution_type_form.controls.name.pristine )" class="text-danger">Name is Required</small>
+                                        <label>Type Name</label>
+                                        <input type="text" name="" [ngModel]="editData?.name" formControlName = "name" placeholder="Name" class="form-control">
+                                        <small [hidden]="(contribution_type_form.controls.name.valid ) || (contribution_type_form.controls.name.pristine )" class="text-danger">Type Name is Required</small>
+                                    </div>
+                                </div> 
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Code Name</label>
+                                        <input type="text" name="" [ngModel]="editData?.code" formControlName = "code" placeholder="Code Name" class="form-control">
+                                        <small [hidden]="(contribution_type_form.controls.code.valid ) || (contribution_type_form.controls.code.pristine )" class="text-danger">Code Name is Required</small>
                                     </div>
                                 </div>
                                 <div class="col-md-12">

@@ -17,6 +17,16 @@ export class ContributionService {
 
   	constructor(public http : Http, private localService : LocalService, private handleErr: handleErrors) { }
   	
+    /**
+     * @method approveChangeContribution
+     * get all vendor loan request
+     * @return data
+     */
+    create_contribution(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/contribution-history', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
   	/**
      * @method getContributions
      * get all vendor loan request
@@ -142,6 +152,117 @@ export class ContributionService {
     delete_contribution_type(id)
     {
       return this.http.get(environment.api.url+'CoopManagement/contribution-types/delete/'+id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /*contribution plan */
+    /**
+     * @method getContributionPlan
+     * get all vendor contribution plan
+     * @return data
+     */
+    getContributionPlan()
+    {
+      return this.http.get(environment.api.url+'contribution-plan'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method addContributionType
+     * filter contribution
+     * @return data
+     */
+    addContributionPlan(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/contribution-plan', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method addContributionType
+     * filter contribution
+     * @return data
+     */
+    update_contribution_plan(data, id)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/contribution-plan/'+id, data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+    /**
+     * @method getContribution_type
+     * filter contribution
+     * @return data
+     */
+    get_contribution_plan()
+    {
+      return this.http.get(environment.api.url+'CoopManagement/contribution-plan/vendor/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method getContribution_type
+     * filter contribution
+     * @return data
+     */
+    delete_contribution_plan(id)
+    {
+      return this.http.delete(environment.api.url+'CoopManagement/contribution-plan/delete/'+id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /*member contribution plan*/
+    /**
+     * @method create_member_contribution_plan
+     * filter contribution
+     * @return data
+     */
+    create_member_contribution_plan(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/member-contribution-plan', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method approve_contribution
+     * get member contribution history
+     * @return data
+     */
+    approve_contribution(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/approve-contribution-plan', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method cancel_contribution
+     * get member contribution history
+     * @return data
+     */
+    cancel_contribution(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/cancel-contribution-plan', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method get_member_contribution_plan
+     * filter contribution
+     * @return data
+     */
+    get_member_contribution_plan(member_id)
+    {
+      return this.http.get(environment.api.url+'CoopManagement/member-contribution-plan/'+JSON.parse(this.localService.getVendor()).id+'/'+member_id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method post_contribution_history
+     * get member investment history
+     * @return data
+     */
+    post_contribution_history(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/post-contribution-history', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 }

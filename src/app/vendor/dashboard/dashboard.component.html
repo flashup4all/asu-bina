@@ -1,4 +1,4 @@
-<div class="card">
+<div *ngIf="user.role_id == 2" class="card">
     <div class="card-footer">
       <ul>
         <li>
@@ -25,7 +25,7 @@
       </ul>
     </div>
   </div>
-<div class="animated fadeIn">
+<div class="animated fadeIn" *ngIf="user.role_id == 2">
   <div class="row">
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-primary">
@@ -81,7 +81,7 @@
     <div class="row">
       <div class="col">
         <tabset>
-          <tab heading="Notifications">
+          <!-- <tab heading="Notifications">
             <div class="row">
               <div class="col-md-6">
                   Mails
@@ -141,9 +141,6 @@
                             <td class="cell-title">
                                 {{ messages?.subject }}
                             </td>
-                            <!-- <td class="cell-icon hidden-phone hidden-tablet">
-                                <i class="icon-paper-clip"></i>
-                            </td> -->
                             <td class="cell-time align-right">
                                 {{ messages?.created_at}}
                             </td>
@@ -159,7 +156,7 @@
                 </div>
               </div>
             </div>
-          </tab>
+          </tab> -->
           <tab heading="Loan Request">
               <table class="table table-responsive-sm table-hover table-outline mb-0">
                 <thead>

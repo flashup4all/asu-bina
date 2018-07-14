@@ -1,5 +1,5 @@
 <div class="card">
-  	<div class="card-body">
+  	<div class="card-body" style="padding:0px;">
     	<div class="row">
       		<div class="col">
 		        <tabset>
@@ -87,7 +87,11 @@
                                       </div>
                                   </form>
 			            	</div>
-			            	<table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+			            	<div style="margin-bottom: 4px">
+			            		<button style="margin-left:5px;" (click)="exportTable('xls', 'deductions_table')" class="btn btn-outline btn-success">Export table</button>
+                        		<button class="btn btn-outline btn-success" (click)="printReciept('deductions_table')">Print</button>
+			            	</div>
+			            	<table id="deductions_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
 				                <thead>
 					                <tr>
 					                    <th>#</th>

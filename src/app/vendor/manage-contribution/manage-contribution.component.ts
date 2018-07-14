@@ -6,8 +6,9 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LocalService } from '../../storage/local.service';
 import { ContributionService } from './contribution.service';
-import { XlsxToJsonService } from '../../shared/xls/index'
+// import { XlsxToJsonService } from '../../shared/xls/index'
 import { MembersService } from '../membership/members.service';
+import { TableExportService } from '../../shared/services/index';
 //import * as FileSaver from 'file-saver';
 import * as moment from 'moment';
 
@@ -39,7 +40,7 @@ import * as moment from 'moment';
 })
 export class ManageContributionComponent implements OnInit {
 
-	public xlsxToJsonService: XlsxToJsonService = new XlsxToJsonService();
+	// public xlsxToJsonService: XlsxToJsonService = new XlsxToJsonService();
 	public vendor;
 	public contibutionsList = [];
 	public runContributionForm : FormGroup;
@@ -55,6 +56,7 @@ export class ManageContributionComponent implements OnInit {
     filterForm: FormGroup;
     adv_filter: boolean;
   	public changeContibutionsRequestList;
+    contribution_plan_list;
   	current_year = moment().format('YYYY');
     searching = false;
     searchFailed = false;
@@ -62,6 +64,7 @@ export class ManageContributionComponent implements OnInit {
   
 	constructor(
 		private localService : LocalService,
+      private exportService: TableExportService,
   		private _fb : FormBuilder,
       private memberService : MembersService,
   		private contributionService : ContributionService
@@ -69,6 +72,8 @@ export class ManageContributionComponent implements OnInit {
 		this.vendor = JSON.parse(this.localService.getVendor());
 		this.getContributions();
 		this.get_contribution_type()
+    this.get_contribution_plan()
+
 		this.monthList = this.localService.yearjson();
 		this.adv_filter = false;
 		//this.getChangeContributionRequest();
@@ -76,7 +81,8 @@ export class ManageContributionComponent implements OnInit {
 
 	  ngOnInit() {
 	  	this.runContributionForm = this._fb.group({
-  			repayment_method : [null, Validators.compose([Validators.required])],
+        plan_id : [null, Validators.compose([Validators.required])],
+  			type : [null, Validators.compose([Validators.required])],
   			period : [null, Validators.compose([Validators.required])]
   		});
   		 /*filter form*/
@@ -110,10 +116,10 @@ export class ManageContributionComponent implements OnInit {
 
 	  handleFile(event) {
 	    let file = event.target.files[0];
-	    this.xlsxToJsonService.processFileToJson({}, file).subscribe(data => {
+	    /*this.xlsxToJsonService.processFileToJson({}, file).subscribe(data => {
 	    this.result = JSON.stringify(data['sheets'].Sheet1);
 	    console.log(data['sheets'].Sheet1);
-	    });
+	    });*/
 	  }
 
 	get_contribution_type()
@@ -140,6 +146,80 @@ export class ManageContributionComponent implements OnInit {
 		});
 	}
 
+  get_contribution_plan()
+    {
+      this.submitPending = true;
+      this.contributionService.get_contribution_plan().subscribe((response) => {
+        this.contribution_plan_list = response;
+        this.submitPending = false;
+      })
+    }
+
+  exportTable(format, tableId)
+  {
+    this.exportService.exportTo(format, tableId);
+  }
+
+  printReciept(id): void {
+    let printContents, popupWin;
+
+    printContents = document.getElementById(id).outerHTML;
+    popupWin = window.open('', '_blank', 'width=auto');
+    popupWin.document.open();
+    popupWin.document.write(`
+      <html>
+        <head>
+          <title>Print tab</title>
+          <style>
+            body{font-size:14px; text-align: center;}
+              table {
+                  margin: 5px;
+                
+            }
+
+            .center{
+              text-align:center;
+            }
+            .full{
+              width:100%;
+            }
+            .row{
+              display: block;
+            }
+
+            .border, tr, th, td {
+                border: 1px solid black;
+                padding:2px;
+                border-collapse: collapse;
+                 }
+                 
+            .no-border{ 
+                border: none !important;
+                }
+                
+             .print-full{ 
+               width: 100%      
+             }
+
+             .print-half{ 
+               width: 48%;   
+             }
+             
+             .left{ float: left;}
+             
+             .right{float: right;}
+             
+             
+             .margin{ 5px;}
+             .row{width:100%;}
+          </style>
+        </head>
+    <body onload="window.print();window.close()">${printContents}</body>
+      </html>`
+    );
+    popupWin.document.close();
+  }
+  
 	manageContribution()
 	{
 		

@@ -6,7 +6,19 @@
 			        <tab heading="Manage Contributions">
                       	<form [formGroup]="runContributionForm" (ngSubmit)="runContribution(runContributionForm.value)">
                       		<div class="row">
-                      			<div class="col-md-4">
+                      			<div class="col-md-3">
+                      				<div class="form-group">
+		                                <label>Contribution Plan</label>
+		                                <select class="form-control" placeholder="type" formControlName = "plan_id">
+		                                    <option selected="false">Type</option>
+		                                    <option [value]="item.id" *ngFor="let item of contribution_plan_list">
+		                                    	{{item?.name }}
+		                                    </option>
+		                                </select>
+		                                <small [hidden]="(runContributionForm.controls.plan_id.valid ) || (runContributionForm.controls.plan_id.pristine )" class="text-danger">Period Method is Required</small>
+		                            </div>
+                      			</div>
+                      			<div class="col-md-3">
 	                      			<div class="form-group">
 		                      			<label>Type</label>
 		                      			<select class="form-control" placeholder="type" formControlName = "type">
@@ -16,7 +28,7 @@
 					                    <small [hidden]="(runContributionForm.controls.type.valid ) || (runContributionForm.controls.type.pristine )" class="text-danger">Period Method is Required</small>
 		                      		</div>
 	                      		</div>
-	                      		<div class="col-md-4">
+	                      		<div class="col-md-3">
 	                      			<div class="form-group">
 		                      			<label>Period</label>
 		                      			<select class="form-control" placeholder="Period" formControlName = "period">
@@ -26,7 +38,7 @@
 					                    <small [hidden]="(runContributionForm.controls.period.valid ) || (runContributionForm.controls.period.pristine )" class="text-danger">Period  is Required</small>
 		                      		</div>
 	                      		</div>
-	                      		<div class="col-md-4">
+	                      		<div class="col-md-3">
 	                      			<div class="form-group">
 		                      			<label>Date</label> <small>Date Contribution was made</small>
 		                      			<input type="date" name="" formControlName = "date" class="form-control">

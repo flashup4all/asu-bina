@@ -29,7 +29,10 @@ export class ManageStaffComponent implements OnInit {
 	public staffList = [];
   public editStaffData
   public staffPositionList;
+  edit_staff_position_data;
 	public userRolesList;
+  user;
+  vendor;
 	submitPending : boolean;
 	public newStaffForm : FormGroup;
 	public newStaffPositionForm : FormGroup;
@@ -44,7 +47,8 @@ export class ManageStaffComponent implements OnInit {
  editMemberData;
  passwordFormCheck:boolean;
  searching: boolean;
-searchFailed: boolean;
+  searchFailed: boolean;
+  account_status;
 	public file_srcs: string[] = [];
 	 
 	public debug_size_before: string[] = [];
@@ -68,6 +72,9 @@ searchFailed: boolean;
   		) { 
   		this.getStaffPosition();
       this.getStaff();
+      this.account_status = this.localService.account_status();
+      this.vendor = JSON.parse(this.localService.getVendor());
+        this.user = JSON.parse(this.localService.getUser());
       //this.getUserRoles();
        this.queryField.valueChanges
         .debounceTime(200)
@@ -93,26 +100,28 @@ searchFailed: boolean;
   	ngOnInit() {
 
   		this.newStaffForm = this._fb.group({
-  			  member_id : '',
+  			  staff_id : '',
 	        first_name  : [null, Validators.compose([Validators.required])],
 	        middle_name  : '',
 	        last_name  : [null, Validators.compose([Validators.required])],
-	        mobile_phone  : [null],
-	        contact_phone  : [null],
+	        mobile_phone  : '',
+	        contact_phone  : '',
 	        email: [null, Validators.compose([Validators.required, Validators.email])],
 	        dob:[null],  
 	        //password : [null, Validators.compose([Validators.required])],
 	        information_pool :[],
 	        gender :[null],
-	        role_id :[null, Validators.compose([Validators.required])],
-	        status :[null],
+	        user_position_id :[null, Validators.compose([Validators.required])],
+	        status :'',
 	        //passport: '',
 	        //approved_by :JSON.parse(this.localService.getUser()).id,
 	        //vendor_id :JSON.parse(this.localService.getVendor()).id
 	  		});
   		this.newStaffPositionForm = this._fb.group({
   			name : [null, Validators.compose([Validators.required])],
-  			role : [null, Validators.compose([Validators.required])]
+        role : [null, Validators.compose([Validators.required])],
+        post_min_amount : [null, Validators.compose([Validators.required])],
+  			post_max_amount : [null, Validators.compose([Validators.required])],
   		});
       /*password reset form*/
       this.changePasswordForm = this._fb.group({
@@ -130,6 +139,12 @@ searchFailed: boolean;
   	{
   		this.submitPending = true;
   		data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;
+
+      if(this.edit_staff_position_data != null)
+      {
+        this.update_staff_position(data);
+      }
+
   		this.manageStaffService.addStaffPosition(data).subscribe((response) => {
   	 		if(response.success = true)
 			{
@@ -149,6 +164,45 @@ searchFailed: boolean;
        });
   	}
 
+    update_staff_position(data)
+    {
+      this.submitPending = true;
+      data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;
+      this.manageStaffService.updateStaffPosition(data, this.edit_staff_position_data.id).subscribe((response) => {
+         if(response.success = true)
+      {
+        this.submitPending = false;
+        this.edit_staff_position_data = null;
+        this.getStaffPosition()
+        this.newStaffPositionForm.reset();
+        this.newStaffPositionModal.hide();
+        this.localService.showSuccess(response.message,'Operation Successfull');
+      }
+      else{
+        this.submitPending = false;
+        this.localService.showError(response.message,'Operation Unsuccessfull');
+      }
+       }, (error) => {
+         this.submitPending = false;
+        this.localService.showError(error,'Operation Unsuccessfull');
+       });
+    }
+
+    edit_staff_position(data)
+    {
+      this.edit_staff_position_data = data
+      this.newStaffPositionModal.show()
+    }
+    new_staff_position()
+    {
+      this.edit_staff_position_data = null;
+      this.newStaffPositionModal.show()
+    }
+    new_staff_modal()
+    {
+      this.editStaffData = null;
+      this.newStaffModal.show()
+    }
   	/**
   	 * @method getStaffPosition
   	 * creates a new staff position resource
@@ -172,7 +226,9 @@ searchFailed: boolean;
           this.manageStaffService.deleteStaffPosition(id).subscribe((response) => {
           this.getStaffPosition();
           this.localService.showSuccess('Deleted','Operation Unsuccessfull');
-       })
+         }, (error) => {
+          this.localService.showError('Error',error);
+         })
         }
   	 }
   	/**
@@ -182,6 +238,14 @@ searchFailed: boolean;
   	 */
   	addStaff(data)
   	{
+      if(data.mobile_phone != null)
+      {
+        data.mobile_phone = '234'+(data.mobile_phone.substr(1));
+      }
+      if(data.contact_phone != null)
+      {
+        data.contact_phone = '234'+(data.contact_phone.substr(1));
+      }
   		data['passport'] = this.passport;
       data['approved_by'] = JSON.parse(this.localService.getUser()).id
       data['vendor_id'] = JSON.parse(this.localService.getVendor()).id
@@ -191,8 +255,8 @@ searchFailed: boolean;
 			{
 				this.submitPending = false;
 	 			//this.getStaff();
-         this.staffList.push(data)
-         this.newStaffForm.reset();
+        this.staffList.push(data)
+        this.newStaffForm.reset();
 	 			this.newStaffModal.hide();
 				this.localService.showSuccess(response.message,'Operation Successfull');
 			}
@@ -207,6 +271,10 @@ searchFailed: boolean;
 
   	}
     
+    format_mobile_no(phone)
+    {
+      return '0'+(phone.substr(3));
+    }
   	/**
   	 * @method getStaff
   	 * creates a new staff  resource
@@ -214,10 +282,12 @@ searchFailed: boolean;
   	 */
   	getStaff()
   	{
+      this.submitPending = true;
         this.manageStaffService.getStaff().subscribe((response) => {
          this.toPage = response.data.next_page_url;
          this.staffList = response.data.data;
          this.total_staff = response.total;
+         this.submitPending = false;
          /*for(var i=0; i < response.data.length; i++)
          {
            this.staffList.push(response.data[i])
@@ -270,11 +340,11 @@ searchFailed: boolean;
         if(response.success = true)
         {
           this.submitPending = false;
-           //this.getStaff();
+           this.getStaff();
            this.file_srcs = [];
            this.editStaffModal.hide();
           this.localService.showSuccess(response.message,'Operation Successfull');
-          window.location.reload();
+          //window.location.reload();
         }
        }, (error) => {
          this.submitPending = false;
@@ -337,7 +407,7 @@ searchFailed: boolean;
     this.passwordFormCheck = true;
     data = {
       vendor_id: JSON.parse(this.localService.getVendor()).id,
-      user_id: data.id,
+      user_id: data.user_id,
       email: data.email
     }
     this.manageMemberService.resetPassword(data).subscribe((response) => {

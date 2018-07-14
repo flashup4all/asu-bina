@@ -24,6 +24,16 @@ export class StaffService {
   		return this.http.post(environment.api.url+'CoopManagement/staff-position',JSON.stringify(data), this.localService.header())
   						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
+    /**
+     * @method updateStaffPosition
+     * creates a update staff position resource
+     * @return data
+     */
+    updateStaffPosition(data, id)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/staff-position/'+id,JSON.stringify(data), this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
   	/**
   	 * @method getStaffPosition
   	 * get staff position resource
@@ -62,7 +72,7 @@ export class StaffService {
   	 */
   	updateStaff(data, id)
   	{
-  		return this.http.post(environment.api.url+'CoopManagement/update-staff', JSON.stringify(data), this.localService.header())
+  		return this.http.post(environment.api.url+'CoopManagement/update-staff/'+id, JSON.stringify(data), this.localService.header())
   						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
 

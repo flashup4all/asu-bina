@@ -2,8 +2,8 @@
     <div class="card-body" >
         <div class="profile-head media" style="padding-bottom: 20px;">
             <a href="#" class="col-md-3 pull-left">
-                <img *ngIf="!member.passport" class="rounded-circle" src="assets/images/avata.png">
-                <img *ngIf="member.passport" class="rounded-circle" style="width: 150px; height: 150px;" [src]="sanitizer.bypassSecurityTrustUrl(member.passport) || assets/images/avata.png">
+                <img *ngIf="!member?.passport" class="rounded-circle" src="assets/images/avata.png">
+                <img *ngIf="member?.passport" class="rounded-circle" style="width: 150px; height: 150px;" [src]="sanitizer.bypassSecurityTrustUrl(member.passport) || assets/images/avata.png">
             </a>
             <div class="col-md-9">
                 <h2>
@@ -74,6 +74,10 @@
                         </tab>
                         <tab heading="Edit Profile">
                             <div class="col-md-8 col-offset-md-2">
+                              <div class="form-group">
+                                  <label>Account_no:</label>
+                                  
+                              </div>
                                 <form #form="ngForm" (ngSubmit)="updateMember(form.value, member.id)">
                                       <div class="form-group">
                                           <label>Surname:</label>
@@ -97,7 +101,18 @@
                                       </div>
                                       <div class="form-group">
                                         <label>Mobile Number:</label>
-                                      <input type="text" class="form-control" [ngModel]="member?.phone1" value="" name="phone1" ngModel>
+                                        <input type="text" class="form-control" [ngModel]="member?.phone1" value="" name="phone1" ngModel>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Gender:</label>
+                                        <select class="form-control" [ngModel]="member?.gender" value="" name="gender" ngModel>
+                                          <option value="Male">Male</option>
+                                          <option value="Female">Female</option>
+                                        </select>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Date of Birth:</label>
+                                        <input type="date" class="form-control" [ngModel]="member?.date_of_birth" value="" name="date_of_birth" ngModel>
                                       </div>
                                     <h4>Custom Form Field</h4>
                                     <div ngModelGroup="member_details" class="control-group" *ngFor="let item of membersFormPoolList;  let i = index; ">
@@ -119,116 +134,7 @@
                             </div>
                         </tab>
                         <tab heading="CONTRIBUTIONS">
-                            <p>Generate Report by Date</p>
-                            <div class="row">
-                                  <form [formGroup] = "contributionFilterForm" (ngSubmit) = "filterContribution(contributionFilterForm.value)" style="width: 100%;">
-                                    <div class="row p-1">
-                                        <div class="col-md-3">
-                                          <div class="form-group">
-                                            <label>From</label>
-                                            <input type="date" formControlName = "from" class="form-control" name=""> 
-                                          </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                          <div class="form-group">
-                                            <label>To</label>
-                                            <input type="date" formControlName = "to" class="form-control" name="">
-                                          </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                          <div class="form-group">
-                                            <label>Type</label>
-                                            <select class="form-control" placeholder="type" formControlName = "type">
-                                                <option value="">Type</option>
-                                                <option value="{{item.id}}" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
-                                            </select>
-                                          </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                          <div class="form-group">
-                                            <!-- <button type="button" class="btn btn-primary" style="margin-top: 30px;" (click)="show_adv_form()"><i class="fa fa-filter"></i></button> -->
-                                            <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="contributionFilterForm.invalid && !submitPending">
-                                              <span *ngIf="submitPending && contributionFilterForm.valid">Please Wait...</span>
-                                              <span *ngIf="submitPending && contributionFilterForm.valid"><i class="fa fa-spinner"></i></span>
-                                              <span *ngIf="!submitPending">Filter</span>
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <!-- <div class="row" *ngIf="adv_filter">
-                                        <div class="col-md-3">
-                                          <div class="form-group">
-                                            <label>Trans. ID:</label>
-                                            <input type="text" class="form-control" formControlName="id" placeholder="Invoice Number"/>
-                                            <span *ngIf="searching">searching...</span>
-                                            <ng-template #st let-s="result" let-t="sterm">
-                                              
-                                              {{ s.name}}
-                                            </ng-template>
-                                          </div>
-                                        </div>
-                                      </div> -->
-                                  </form>
-                               <div class="container p-2">
-                                   <button (click)="exportTable('xls', 'contribution_table')" class="btn btn-outline btn-success">Export table</button>
-                                   <button class="btn btn-outline btn-success" (click)="printReciept('contribution_table')">Print</button>
-                                   <button type="button" class="btn btn-primary pull-right" (click)="newContributionModal.show()"> Make a Contribution</button>
-                               </div>
-                                <table id="contribution_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Trans ID</th>
-                                            <th>Name</th>
-                                            <th> &#8358; Contribution</th>
-                                            <th>&#8358; Contributed</th>
-                                            <th>Type</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="" *ngFor="let item of memberContributionList">
-                                            <td>#00{{ item?.id }}</td>
-                                            <td>
-                                                {{item.member?.first_name}} 
-                                                {{item.member?.last_name}} 
-                                                {{item.member?.middle_name}} 
-                                            </td>
-                                            <td>
-                                               {{item?.member?.contribution  | number }} 
-                                            </td>
-                                            <td>
-                                               {{ item?.amount  | number }}  
-                                            </td>
-                                            <td>
-                                               {{item?.type?.name}}  
-                                            </td>
-                                              <td>
-                                                <p *ngIf="item?.status == 1">
-                                                    Paid
-                                                </p> 
-                                                <p *ngIf="item?.status != 1">
-                                                    Pending
-                                                </p> 
-                                            </td>
-                                            <td>
-                                                {{item?.created_at | date: 'shortDate'}} 
-                                            </td>
-                                            <td class="center">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="3">Total</td>
-                                            <td>{{ total_contribution_amount | number }}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                          <app-member-contributions></app-member-contributions>
                         </tab>
                         <tab heading="WITHDRAWAL">
                             <div class="container p-2">
@@ -482,6 +388,9 @@
                                 </table>
                             </div>
                         </tab>
+                        <tab heading="INVESTMENTS">
+                          <app-member-investments></app-member-investments>
+                        </tab>
                         <tab heading="TARGET SAVINGS">
                             <div class="row">
                                 <div class="col-md-12">
@@ -653,66 +562,6 @@
      </div>
 </div>
 
-<div bsModal #newContributionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-     <div class="modal-dialog modal-md">
-       <div class="modal-content">
-         <div class="modal-header">
-           <h4 class="modal-title pull-left">Make A Contribution</h4>
-           <button type="button" class="close pull-right" aria-label="Close" (click)="newContributionModal.hide()">
-             <span aria-hidden="true">&times;</span>
-           </button>
-         </div>
-         <div class="modal-body">
-           <div class="new session form">
-                <form [formGroup]="runContributionForm" (ngSubmit)="runContribution(runContributionForm.value)">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Type</label>
-                                <select class="form-control" placeholder="type" formControlName = "type">
-                                    <option selected="false">Type</option>
-                                    <option value="{{item.id}}" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
-                                </select>
-                                <small [hidden]="(runContributionForm.controls.type.valid ) || (runContributionForm.controls.type.pristine )" class="text-danger">Period Method is Required</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Period</label>
-                                <select class="form-control" placeholder="Period" formControlName = "period">
-                                    <option selected="false">Period</option>
-                                    <option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
-                                </select>
-                                <small [hidden]="(runContributionForm.controls.period.valid ) || (runContributionForm.controls.period.pristine )" class="text-danger">Period  is Required</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Date</label> <small>Date Contribution was made</small>
-                                <input type="date" name="" formControlName = "date" class="form-control">
-                                <small [hidden]="(runContributionForm.controls.date.valid ) || (runContributionForm.controls.date.pristine )" class="text-danger">Date you contribution was made is Required</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Amount</label>
-                                <input type="text" name="" formControlName = "contribution" class="form-control">
-                                <small [hidden]="(runContributionForm.controls.contribution.valid ) || (runContributionForm.controls.contribution.pristine )" class="text-danger">contribution Amount Required</small>
-                            </div>
-                        </div>
-
-                    </div>
-                       <button type="submit" class="btn btn-success" [disabled]="runContributionForm.invalid || submitPending">
-                            <span *ngIf="!submitPending">Run Contribution</span>
-                            <span *ngIf="submitPending && runContributionForm.valid">Please Wait...</span>
-                            <span *ngIf="submitPending && runContributionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
-                        </button>
-                </form>
-            </div>
-         </div>
-       </div>
-     </div>
-</div>
 <div bsModal #newRepaymentModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
      <div class="modal-dialog modal-md">
        <div class="modal-content">
@@ -849,6 +698,16 @@
                 <form [formGroup]="withdrawalForm" (ngSubmit)="make_a_withdrawal(withdrawalForm.value)">
                     <div class="row">
                         <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Contribution Plan</label>
+                                <select class="form-control" placeholder="type" formControlName = "plan_id">
+                                    <option selected="false">Type</option>
+                                    <option [value]="item.contribution_plan.id" *ngFor="let item of member_plan_list">
+                                      {{item?.contribution_plan?.name }}
+                                    </option>
+                                </select>
+                                <small [hidden]="(runContributionForm.controls.type.valid ) || (runContributionForm.controls.type.pristine )" class="text-danger">Period Method is Required</small>
+                            </div>
                             <div class="form-group">
                                 <label>Amount</label>
                                 <input type="text" name="" formControlName = "amount" class="form-control">

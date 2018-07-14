@@ -4,6 +4,7 @@ import { ManageContributionComponent } from './manage-contribution.component';
 import { CollectionsComponent } from './collections/collections.component';
 import { RunContributionComponent } from './run-contribution/run-contribution.component';
 import { ContributionTypeComponent } from './contribution-type/contribution-type.component';
+import { ContributionPlanComponent } from './contribution-plan/contribution-plan.component';
 
 const routes: Routes = [
 	{
@@ -21,7 +22,11 @@ const routes: Routes = [
 	{
 		path: 'contribution-types',
 		component: ContributionTypeComponent
-	}
+	},
+	/*{
+		path: 'contribution-plan',
+		component: ContributionPlanComponent
+	}*/
 ];
 
 @NgModule({

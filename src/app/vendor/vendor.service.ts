@@ -104,4 +104,59 @@ export class VendorService {
       return this.http.post('https://moneywave.herokuapp.com/v1/merchant/verify', JSON.stringify(environment.api.payment_key), this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
+
+    /*sms-settings*/
+    /**
+     * @method update_sms_settings
+     * updates a sms settings  resource
+     * @return data
+     */
+    update_sms_settings(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/sms-settings',data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method update_birthday_sms_settings
+     * updates a sms settings  resource
+     * @return data
+     */
+    update_birthday_sms_settings(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/birthday-sms-settings',data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method send_notification
+     * updates a sms settings  resource
+     * @return data
+     */
+    send_notification(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/send-notification',data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+    /**
+     * @method get_sms_settings
+     * updates a sms settings  resource
+     * @return data
+     */
+    get_sms_settings()
+    {
+      return this.http.get(environment.api.url+'CoopManagement/sms-settings/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method get_sms_messages
+     * updates a sms settings  resource
+     * @return data
+     */
+    get_sms_messages()
+    {
+      return this.http.post(environment.api.url+'CoopManagement/sms-notifications/',JSON.parse(this.localService.getVendor()).id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
 }

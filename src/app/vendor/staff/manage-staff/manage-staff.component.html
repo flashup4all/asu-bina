@@ -19,7 +19,7 @@
             <div class="col-md-12">
               <div class="row">
                 <div class="col-md-6">
-                  <button type="button" class="btn btn-success" (click)="newStaffModal.show()"> New Staff</button>
+                  <button type="button" class="btn btn-success" (click)="new_staff_modal()"> New Staff</button>
                 </div>
                 <div class="col-md-6">
                     <form>
@@ -34,6 +34,7 @@
                 </div>
               </div>
             </div>
+            <mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
             <table class="table table-responsive-sm table-hover table-outline mb-0">
               <thead class="thead-light">
                 <tr>
@@ -41,6 +42,7 @@
                   <th>Name</th>
                   <th class="text-center">Email</th>
                   <th>Role</th>
+                  <th>Position</th>
                   <th>status</th>
                   <th>Action</th>
                 </tr>
@@ -67,12 +69,13 @@
                   <td class="text-center">
                     <span class="label label-sm label-primary">{{ item?.role?.name}}</span>
                   </td>
+                  <td class="text-center">{{ item?.user_position?.name}}</td>
                   <td>
                     <small *ngIf="item.status == 1" class="muted pull-right">
                        <h4><span class="label label-sm label-success">Approved</span></h4>
                     </small>
                     <small *ngIf="item.status == 2" class="muted pull-right">
-                       <h4><span class="label label-sm label-warning">Blocked</span></h4>
+                       <h4><span class="label label-sm label-warning">Suspended/Blocked</span></h4>
                     </small>
                     <small *ngIf="item.status == 0" class="muted pull-right">
                        <h4><span class="label label-sm label-danger">Inactive</span></h4>
@@ -105,6 +108,7 @@
                   <td class="text-center">
                     <span class="label label-sm label-primary">{{ item?.role?.name}}</span>
                   </td>
+                  <td class="text-center">{{ item?.user_position?.name}}</td>
                   <td>
                     <small *ngIf="item.status == 1" class="muted pull-right">
                        <h4><span class="label label-sm label-success">Approved</span></h4>
@@ -119,7 +123,7 @@
                   <td>
                     <button class="btn btn-primary btn-sm" (click)="editStaff(item)" title="edit staff details"><i class="fa fa-edit"></i></button>
                     <button class="btn btn-danger btn-sm" (click)="editPassword(item)" title="reset password: this sends a password reset link"><i class="fa fa-key"></i></button>
-                    <button class="btn btn-danger btn-sm" (click)="deleteStaff(item.id)" title="edit staff details"><i class="fa fa-trash-o"></i></button>
+                    <button *ngIf="user?.role_id == 2" class="btn btn-danger btn-sm" (click)="deleteStaff(item.id)" title="edit staff details"><i class="fa fa-trash-o"></i></button>
                   </td>
                 </tr>
               </tbody>
@@ -128,7 +132,7 @@
           <tab heading="Staff Position/Roles">
             <div class="col-md-12">
               <div class="row">
-                <button type="button" class="btn btn-success" (click)="newStaffPositionModal.show()"> New Staff Position</button>
+                <button type="button" class="btn btn-success" (click)="new_staff_position()"> New Staff Position</button>
               </div>
             </div>
             <table class="table table-responsive-sm table-hover table-outline mb-0">
@@ -137,6 +141,8 @@
                   <th>#</th>
                   <th>Position</th>
                   <th>Role</th>
+                  <th>Min Amount</th>
+                  <th>Max. Amount</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -145,8 +151,11 @@
                   <td><input type="checkbox" name=""></td>
                   <td>{{item?.name}}</td>
                   <td>{{item?.user_role?.name}}</td>
+                  <td>{{item?.post_min_amount}}</td>
+                  <td>{{item?.post_max_amount}}</td>
                   <td class="center">
-                      <button class="btn btn-default" (click)="deleteStaffPosition(item.id)"><i class="fa fa-trash-o"></i></button>
+                      <button class="btn btn-primary" (click)="edit_staff_position(item)"><i class="fa fa-edit"></i></button>
+                      <button class="btn btn-danger" (click)="deleteStaffPosition(item.id)"><i class="fa fa-trash-o"></i></button>
                   </td>
                 </tr>
               </tbody>
@@ -174,7 +183,7 @@
                 <div class="form-group">
                   <label>Staff ID [optional]</label>
                   <div class="controls">
-                    <input type="text" id="basicinput" formControlName="member_id" placeholder="Staff ID" class="form-control">
+                    <input type="text" id="basicinput" formControlName="staff_id" placeholder="Staff ID" class="form-control">
                     
                   </div>
                 </div>
@@ -206,7 +215,7 @@
                   <label>Mobile Phone</label>
                   <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                    <input type="text" formControlName="mobile_phone" type="text" placeholder="eg:  8094500000">
+                    <input type="text" class="form-control" formControlName="mobile_phone" type="text" placeholder="08094500000" maxlength="11">
                      <small [hidden]="(newStaffForm.controls.mobile_phone.valid ) || (newStaffForm.controls.mobile_phone.pristine)" class="text-danger">Mobile Phone is Required</small> 
                   </div>
                 </div>
@@ -214,7 +223,7 @@
                   <label>Contact Phone</label>
                   <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                    <input type="text" formControlName="contact_phone" type="text" placeholder="eg:  8094500000">
+                    <input type="text" class="form-control" maxlength="11" formControlName="contact_phone" type="text" placeholder="08094500000">
                     <small [hidden]="(newStaffForm.controls.contact_phone.valid ) || (newStaffForm.controls.contact_phone.pristine)" class="text-danger">Contact Phone is Required</small> 
                   </div>
                 </div>
@@ -233,8 +242,14 @@
                 
                 <div class="form-group">
                   <label >Position</label>
-                    <select tabindex="1" formControlName="role_id" data-placeholder="Staff Position" class="form-control">
-                      <option *ngFor="let item of staffPositionList" value="{{item.role}}">{{item?.name}}</option>
+                    <select tabindex="1" formControlName="user_position_id" data-placeholder="Staff Position" class="form-control">
+                      <option *ngFor="let item of staffPositionList" value="{{item.id}}">{{item?.name}}</option>
+                    </select>
+                </div>
+                <div class="form-group" *ngIf="user?.role_id != 4">
+                  <label >Account Status</label>
+                    <select tabindex="1" formControlName="status" data-placeholder="Staff Position" class="form-control">
+                      <option *ngFor="let item of account_status" value="{{item.value}}">{{item?.name}}</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -273,7 +288,7 @@
                 <div class="form-group">
             <label class="control-label" for="basicinput">Staff ID</label>
             <div class="controls">
-              <input type="text" id="basicinput" [ngModel]="editStaffData?.member_id" formControlName="member_id" placeholder="Staff ID" class="form-control">
+              <input type="text" id="basicinput" [ngModel]="editStaffData?.staff_id" formControlName="staff_id" placeholder="Staff ID" class="form-control">
               
             </div>
           </div>
@@ -350,11 +365,17 @@
           <div class="form-group">
             <label class="control-label" for="basicinput">Position</label>
             <div class="controls">
-              <select tabindex="1" [ngModel]="editStaffData?.role_id" formControlName="role_id" data-placeholder="Staff Position" class="form-control">
-                <option *ngFor="let item of staffPositionList" value="{{item.role}}">{{item.name}}</option>
+              <select tabindex="1" [ngModel]="editStaffData?.user_position_id" formControlName="user_position_id" data-placeholder="Staff Position" class="form-control">
+                <option *ngFor="let item of staffPositionList" value="{{item.id}}">{{item.name}}</option>
               </select>
             </div>
           </div>
+          <div class="form-group" *ngIf="user?.role_id != 4">
+                  <label >Account Status</label>
+                    <select tabindex="1" [ngModel]="editStaffData?.status" formControlName="status" data-placeholder="Staff Position" class="form-control">
+                      <option *ngFor="let item of account_status" value="{{item.value}}">{{item?.name}}</option>
+                    </select>
+                </div>
           <div class="form-group">
             <label class="control-label" for="basicinput">Passport</label>
             <div class="controls">
@@ -395,17 +416,35 @@
             <div class="col-md-12">
               <div class="form-group">
                 <label >Staff Position</label>
-                <input type="text" class="form-control" formControlName="name" placeholder="Position : General Manager">
+                <input type="text" [ngModel]="edit_staff_position_data?.name" class="form-control" formControlName="name" placeholder="Position : General Manager">
                 <small [hidden]="(newStaffPositionForm.controls.name.valid ) || (newStaffPositionForm.controls.name.pristine)" class="text-danger">Payment Title is Required</small>
               </div>
               <div class="form-group">
                 <label>Role</label>
-                <select tabindex="1" formControlName="role" data-placeholder="Level" class="form-control">
+                <select tabindex="1" [ngModel]="edit_staff_position_data?.role" formControlName="role" data-placeholder="Level" class="form-control">
                   <option value="2">Super Admin</option>
                   <option value="3">Management</option>
                   <!-- <option value="4">Sub-Management</option> -->
                   <option value="4">Staff</option>
                 </select>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                   <div class="form-group">
+                    <label >Post Min. Amount</label>
+                    <small>Minimum Ammount this Staff Role can Post</small>
+                    <input type="number" min="0" [ngModel]="edit_staff_position_data?.post_min_amount" class="form-control" formControlName="post_min_amount" placeholder="0">
+                    <small [hidden]="(newStaffPositionForm.controls.post_min_amount.valid ) || (newStaffPositionForm.controls.post_min_amount.pristine)" class="text-danger">Minimum Ammount this Staff Role can Post is Required</small>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                   <div class="form-group">
+                    <label >Post Max. Amount</label>
+                    <small>Maximum Ammount this Staff Role can Post</small>
+                    <input type="number" [ngModel]="edit_staff_position_data?.post_max_amount" class="form-control" min="0" formControlName="post_max_amount" placeholder="100000">
+                    <small [hidden]="(newStaffPositionForm.controls.post_max_amount.valid ) || (newStaffPositionForm.controls.post_max_amount.pristine)" class="text-danger">Payment Title is Required</small>
+                  </div>
+                </div>
               </div>
               <div class="form-group">
                 <button type="submit" class="btn btn-primary" [disabled]="newStaffPositionForm.invalid || submitPending ">

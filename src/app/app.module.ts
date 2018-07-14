@@ -8,8 +8,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {HttpModule, Http} from '@angular/http';
 import{ ToastModule } from 'ng2-toastr/ng2-toastr';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { SharedModule } from './shared/shared.module';
+import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 
-
+import { AuthRoutesResolver } from './shared/resolvers/index';
 import { AuthService } from './auth/auth.service';
 import { AppComponent } from './app.component';
 import { LocalService } from './storage/local.service';
@@ -25,6 +27,7 @@ import { ContributionService } from './vendor/manage-contribution/contribution.s
 import { DeductionsService } from './vendor/manage-deductions/deductions.service';
 import { WidthdrawalsService } from './vendor/manage-widthdrawals/widthdrawals.service';
 import { TargetSavingsService } from './vendor/target-savings/target-savings.service';
+import { InvestmentService } from './vendor/manage-investments/investment.service';
 import { TableExportService } from './shared/services/index';
 
 
@@ -102,6 +105,8 @@ import { SigninComponent } from './auth/signin/signin.component';
     FormsModule,
     ReactiveFormsModule,
     NgbModule.forRoot(),
+    SharedModule,
+    SweetAlert2Module.forRoot(),
 
   ],
   declarations: [
@@ -116,6 +121,7 @@ import { SigninComponent } from './auth/signin/signin.component';
     provide: LocationStrategy,
     useClass: HashLocationStrategy
   },
+  AuthRoutesResolver,
   AuthService,
   LocalService, 
   AuthGuardService, 
@@ -130,7 +136,8 @@ import { SigninComponent } from './auth/signin/signin.component';
   DeductionsService,
   TargetSavingsService,
   handleErrors,
-  TableExportService
+  TableExportService,
+  InvestmentService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   bootstrap: [ AppComponent ]

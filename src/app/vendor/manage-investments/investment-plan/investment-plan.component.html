@@ -1,0 +1,230 @@
+<div class="card">
+  	<div class="card-body">
+    	<div class="row">
+      		<div class="col">
+		        <tabset>
+	              <tab heading="Investment Plan">
+	              	<div class="row">
+	<div class="col">
+    <p>Investment Plan are plans or packages that ara available for member to Invest/save for a period of time.
+		<button type="button" class="btn btn-success pull-right" (click)="new_plan()"style="margin-top:30px; margin-bottom: 5px">
+      <i class="fa fa-plus"></i> Add Investment Plan
+    </button>
+     <button style="margin-left:5px; margin-top:30px" (click)="exportTable('xls', 'inv_plan_table')" class="btn btn-outline btn-success">Export table</button>
+      <button class="btn btn-outline btn-success" style="margin-top:30px" (click)="printReciept('inv_plan_table')">Print</button>
+    <!-- <div>
+      <mat-progress-spinner *ngIf="submitPending" style="margin:auto; top: 50px;" mode="indeterminate" value="65"></mat-progress-spinner>
+    </div> -->
+    <mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
+    <table *ngIf="!submitPending" id="inv_plan_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+      <thead>
+        <tr>
+            <th>S/N</th>
+            <th>Name</th>
+            <th>Amount Type</th>
+            <th>Created By</th>
+            <th>Approved By</th>
+            <th>Created</th>
+            <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="" *ngFor="let item of contribution_plan_list; let i=index">
+            <td>{{ i + 1 }}</td>
+            <td>
+                {{item?.name}} 
+                </td>
+            <td>
+                {{ item?.amount_type }} 
+                <small *ngIf="item?.amount_type =='fixed'"> {{ vendor_curency }} {{item?.min_amount}}</small> 
+                <small *ngIf="item?.amount_type =='range'"> {{ vendor_curency }} {{item?.min_amount}} - {{item?.max_amount}}</small> 
+            </td>
+            <td>
+                 <mat-chip-list>
+                    <mat-chip *ngIf="item?.status" color="primary" selected="true">Activated</mat-chip>
+                    <mat-chip *ngIf="!item?.status" color="warn" selected="true">Not Active</mat-chip>
+                </mat-chip-list>
+            </td>
+            <td>
+                {{ item?.staff?.first_name }} 
+                {{ item?.staff?.last_name }} 
+                {{ item?.staff?.middle_name }} 
+            </td>
+            <td>
+                {{ item?.created_at | date }} 
+            </td>
+            <td class="center">
+                  <button class="btn btn-sm btn-primary" (click)="edit(item)">
+                    <span><i class="fa fa-edit"></i></span>
+                  </button>
+                   <button class="btn btn-sm btn-danger" (click)="delete(item.id)">
+                    <span><i class="fa fa-trash-o"></i></span>
+                  </button>
+            </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div bsModal #newInvestmentPlanModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-lg">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">{{ button }} Investment Plans</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="newInvestmentPlanModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+          <div class="new session form">
+            <form [formGroup]="investment_plan_form" (ngSubmit)="save_contribution_plan(investment_plan_form.value)">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label>Name</label>
+                      <input type="text" name="" [ngModel]="editData?.name" formControlName = "name" placeholder="Name" class="form-control">
+                      <small [hidden]="(investment_plan_form.controls.name.valid ) || (investment_plan_form.controls.name.pristine )" class="text-danger">Plan Name is Required</small>
+                    </div>
+                  </div>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Duration in Weeks 
+                          <p>
+                            <small>[ How long is this plan suppose to operate. <span style="color:red;">enter zero (0)</span> if optional ]</small>
+                          </p>
+                        </label>
+                        <input type="number" name="" [ngModel]="editData?.duration" formControlName = "duration" min="0" placeholder="Duration" class="form-control" value="0">
+                        <mat-error [hidden]="(investment_plan_form.controls.duration.valid ) || (investment_plan_form.controls.duration.pristine )" class="text-danger">Duration  is Required</mat-error>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Contribution Type </label>
+                        <small>[ set the payment period for members subscribing for this plan ]</small>
+                        <select class="form-control" [ngModel]="editData?.contribution_type" formControlName="contribution_type">
+                          <option *ngFor="let type of duration_list" [value]="type.value">
+                            {{ type?.name }}
+                          </option>
+                        </select>
+                        <small [hidden]="(investment_plan_form.controls.contribution_type.valid ) || (investment_plan_form.controls.contribution_type.pristine )" class="text-danger">Contribution Type is Required</small>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Further Description</label>
+                          	<textarea class="form-control" [ngModel]="editData?.description" formControlName = "description" placeholder="Description"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Terms & Conditions</label>
+                            <textarea class="form-control" [ngModel]="editData?.terms_conditions" formControlName = "terms_conditions" placeholder="Terms & Conditions"></textarea>
+                        </div>
+                    </div>
+                    <mat-divider></mat-divider>
+                    <div class="col-md-12">
+                      <mat-expansion-panel>
+                      	<mat-expansion-panel-header>
+                              <mat-panel-title>Amount Settings</mat-panel-title>
+                          </mat-expansion-panel-header> 
+                          <div class="form-group">
+                            <label>Amount Type</label>
+                            <p><small>what kind or how much amount is necessary for this investment</small></p>
+                             <select [ngModel]="editData?.amount_type" class="form-control" (ngModelChange)="amount_type_setting($event)" formControlName="amount_type">
+                            <option [value]="item.value" *ngFor="let item of amount_type_list"> {{ item?.name }}</option>
+                          </select>
+                            <small [hidden]="(investment_plan_form.controls.amount_type.valid ) || (investment_plan_form.controls.amount_type.pristine )" class="text-danger">Amount Type is Required</small>
+                        </div>
+
+                        <div class="row">
+                        	<div class="col-md-6" *ngIf="min_amount_check">
+                        		<div class="form-group">
+		                            <label>{{ min_amount_label }}</label>
+		                            <input type="number" [ngModel]="editData?.min_amount" formControlName = "min_amount" placeholder="0" min="0" max="100" class="form-control">
+		                        </div>
+                        	</div>
+                        	<div class="col-md-6" *ngIf="max_amount_check">
+                        		<div class="form-group">
+		                            <label>{{ max_amount_label }}</label>
+		                            <input type="number" [ngModel]="editData?.max_amount" formControlName = "max_amount" placeholder="0" min="0" max="100" class="form-control">
+		                            <small [hidden]="(investment_plan_form.controls.max_amount.valid ) || (investment_plan_form.controls.max_amount.pristine )" class="text-danger">Interest Duration is Required</small>
+		                        </div>
+                        	</div>
+                        </div>
+                      </mat-expansion-panel>
+                      <mat-expansion-panel>
+                          <mat-expansion-panel-header>
+                              <mat-panel-title>Interest Settings</mat-panel-title>
+                              <mat-panel-description [hidden]="(investment_plan_form.controls.interest.valid ) || (investment_plan_form.controls.interest.pristine )" fxLayoutAlign="space-between center">Interest Settings has Validations</mat-panel-description>
+                          </mat-expansion-panel-header> 
+                          <div class="form-group">
+                            <label>Interest</label>
+                            <p><small>Set the interest to be applied to this type of contribution per period [note: Interest is in percentage(%)]</small></p>
+                            <input type="number" [ngModel]="editData?.interest" formControlName = "interest" placeholder="0" min="0" value="0" max="100" class="form-control">
+                            <small [hidden]="(investment_plan_form.controls.interest.valid ) || (investment_plan_form.controls.interest.pristine )" class="text-danger">Interest is Required</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Interest Duration <small>[ In number of days ]</small></label>
+                            <small>
+                              <p>
+                                if Interest rate is applied. Set the duration <span style="color:red;">(In No. of Days)</span> that this interest is to be applied on the investment operating under this Investment plan
+                              </p>
+                            </small>
+                            <input type="number" [ngModel]="editData?.interest_duration" formControlName = "interest_duration" placeholder="0" min="0" max="100" class="form-control">
+                            <small [hidden]="(investment_plan_form.controls.interest_duration.valid ) || (investment_plan_form.controls.interest_duration.pristine )" class="text-danger">Interest Duration is Required</small>
+                        </div>
+                      </mat-expansion-panel>
+                      
+                    </div>
+                    <div class="col-md-12">
+                       <mat-expansion-panel>
+                          <mat-expansion-panel-header>
+                              <mat-panel-title>Withdrawals Settings</mat-panel-title>
+                              <mat-panel-description [hidden]="(investment_plan_form.controls.withdrawal_limit.valid ) || (investment_plan_form.controls.withdrawal_limit.pristine )" fxLayoutAlign="space-between center">Widthdrawal Limit</mat-panel-description>
+                          </mat-expansion-panel-header>  
+                          <div class="form-group">
+                            <label>Withdrawal Permit</label>
+                            <p><small>A member who belong to this plan can withdraw from his savings/investment</small></p>
+                            <select [ngModel]="editData?.withdrawal_permit" class="form-control" formControlName="withdrawal_permit">
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                          </select>
+                            <small [hidden]="(investment_plan_form.controls.withdrawal_permit.valid ) || (investment_plan_form.controls.withdrawal_permit.pristine )" class="text-danger">Withdrawal Permit is Required</small>
+                        </div>                  
+                          <div class="form-group">
+                            <label>Withdrawal Limit</label>
+                            <p><small>No. of withdrawals that cancels application of interest for that period on a members savings/contribution</small></p>
+                            <input type="number" [ngModel]="editData?.withdrawal_limit" formControlName = "withdrawal_limit" placeholder="0" min="0" value="0" max="100" class="form-control">
+                            <small [hidden]="(investment_plan_form.controls.withdrawal_limit.valid ) || (investment_plan_form.controls.withdrawal_limit.pristine )" class="text-danger">Widthdrawal Limit is Required</small>
+                        </div>
+                      </mat-expansion-panel>                                  
+                    </div>
+                  <div class="col-md-12">
+                    <div class="form-group">
+                          <label>Plan Status</label>
+                          <p><small>[activate or deactivate this plan]</small></p>
+                          <select [ngModel]="editData?.status" class="form-control" formControlName="status">
+                          <option value="1">Activate</option>
+                          <option value="0">De-Activate</option>
+                        </select>
+                          <small [hidden]="(investment_plan_form.controls.status.valid ) || (investment_plan_form.controls.status.pristine )" class="text-danger">Plan Status is Required</small>
+                      </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-success">{{ button }}</button>
+                <mat-progress-bar *ngIf="form_loader" mode="indeterminate"></mat-progress-bar>
+
+            </form>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+	              </tab>
+          		</tabset>
+      		</div>
+  		</div>
+	</div>
+</div>

@@ -23,6 +23,7 @@ export class RunContributionComponent implements OnInit {
 	public result: any;
 	submitPending: boolean;
   	monthList;
+  	contribution_plan_list;
   	current_year = moment().format('YYYY');
 	constructor(
 		private localService : LocalService,
@@ -35,12 +36,14 @@ export class RunContributionComponent implements OnInit {
 		this.get_contribution_type()
 		this.monthList = this.localService.yearjson();
 		//this.getChangeContributionRequest();
+		this.get_contribution_plan()
   	}
   	ngOnInit() {
   		this.runContributionForm = this._fb.group({
 			period : [null, Validators.compose([Validators.required])],
 			type : [null, Validators.compose([Validators.required])],
 			date : [null, Validators.compose([Validators.required])],
+			plan_id : [null, Validators.compose([Validators.required])],
 			contributions : this._fb.array([])
 		});
   	}
@@ -93,6 +96,14 @@ export class RunContributionComponent implements OnInit {
 		});
 	}
 
+	get_contribution_plan()
+    {
+      this.submitPending = true;
+      this.contributionService.get_contribution_plan().subscribe((response) => {
+        this.contribution_plan_list = response;
+        this.submitPending = false;
+      })
+    }
 	checkAll(event)
 	{
 		console.log(event)

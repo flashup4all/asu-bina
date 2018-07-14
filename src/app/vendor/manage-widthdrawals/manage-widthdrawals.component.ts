@@ -4,6 +4,8 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LocalService } from '../../storage/local.service';
 import { WidthdrawalsService } from './widthdrawals.service';
+import { TableExportService } from '../../shared/services/index';
+
 @Component({
   selector: 'app-manage-widthdrawals',
   templateUrl: './manage-widthdrawals.component.html',
@@ -26,6 +28,7 @@ export class ManageWidthdrawalsComponent implements OnInit {
   	loader;
 	constructor(
 		private localService : LocalService,
+      	private exportService: TableExportService,
   		private _fb : FormBuilder,
   		private widthdrawalService : WidthdrawalsService
   		) {
@@ -121,4 +124,69 @@ export class ManageWidthdrawalsComponent implements OnInit {
 			}
   	 	});
 	}
+
+	exportTable(format, tableId)
+	  {
+	    this.exportService.exportTo(format, tableId);
+	  }
+
+	  printReciept(id): void {
+	    let printContents, popupWin;
+
+	    printContents = document.getElementById(id).outerHTML;
+	    popupWin = window.open('', '_blank', 'width=auto');
+	    popupWin.document.open();
+	    popupWin.document.write(`
+	      <html>
+	        <head>
+	          <title>Print tab</title>
+	          <style>
+	            body{font-size:14px; text-align: center;}
+	              table {
+	                  margin: 5px;
+	                
+	            }
+
+	            .center{
+	              text-align:center;
+	            }
+	            .full{
+	              width:100%;
+	            }
+	            .row{
+	              display: block;
+	            }
+
+	            .border, tr, th, td {
+	                border: 1px solid black;
+	                padding:2px;
+	                border-collapse: collapse;
+	                 }
+	                 
+	            .no-border{ 
+	                border: none !important;
+	                }
+	                
+	             .print-full{ 
+	               width: 100%      
+	             }
+
+	             .print-half{ 
+	               width: 48%;   
+	             }
+	             
+	             .left{ float: left;}
+	             
+	             .right{float: right;}
+	             
+	             
+	             .margin{ 5px;}
+	             .row{width:100%;}
+	          </style>
+	        </head>
+	    <body onload="window.print();window.close()">${printContents}</body>
+	      </html>`
+	    );
+	    popupWin.document.close();
+	  }
 }

@@ -9,7 +9,8 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { LocalService } from '../../../storage/local.service';
 import { MembersService } from '../members.service';
-import { XlsxToJsonService } from '../../../shared/xls/index'
+import { TableExportService } from '../../../shared/services/index';
+//import { XlsxToJsonService } from '../../../shared/xls/index'
 
 @Component({
   selector: 'app-manage-members',
@@ -28,7 +29,7 @@ import { XlsxToJsonService } from '../../../shared/xls/index'
 })
 export class ManageMembersComponent implements OnInit {
 
-	private xlsxToJsonService: XlsxToJsonService = new XlsxToJsonService();
+	//private xlsxToJsonService: XlsxToJsonService = new XlsxToJsonService();
 	public result: any;
 	public newMemberForm: FormGroup;
 	public changePasswordForm:FormGroup;
@@ -42,7 +43,7 @@ export class ManageMembersComponent implements OnInit {
 	searching: boolean;
 	searchFailed: boolean;
   	hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
-  
+  	user
 	submitPending;
 	public passport;
 	public model;
@@ -51,6 +52,7 @@ export class ManageMembersComponent implements OnInit {
   	loader;
   	total_members;
   	total_active_members
+  	phone1;
  
 	public file_srcs: string[] = [];
 	 
@@ -67,11 +69,13 @@ export class ManageMembersComponent implements OnInit {
   		private manageMemberService : MembersService,
   		private sanitizer:DomSanitizer,
   		private router : Router,
+      private exportService: TableExportService,
   		private changeDetectorRef: ChangeDetectorRef
 		) {
 			this.getFormFields();
 			this.getMembers()
 			this.vendor = JSON.parse(this.localService.getVendor());
+		    this.user = JSON.parse(this.localService.getUser());
 			
 			/*this.queryField.valueChanges
 				.debounceTime(200)
@@ -125,6 +129,9 @@ export class ManageMembersComponent implements OnInit {
 			last_name:[null],
 			contribution:[null],
 			gender:[null],
+			date_of_birth:'',
+			account_number:'',
+			membership_date:[null],
 			email:[null, Validators.compose([Validators.required, Validators.email])],
 			phone1: [null, Validators.compose([Validators.required])],
 			memberData : this._fb.array([])
@@ -147,6 +154,70 @@ export class ManageMembersComponent implements OnInit {
       });
     }
 
+    exportTable(format, tableId)
+    {
+      this.exportService.exportTo(format, tableId);
+    }
+
+    printReciept(id): void {
+      let printContents, popupWin;
+
+      printContents = document.getElementById(id).outerHTML;
+      popupWin = window.open('', '_blank', 'width=auto');
+      popupWin.document.open();
+      popupWin.document.write(`
+        <html>
+          <head>
+            <title>Print tab</title>
+            <style>
+              body{font-size:14px; text-align: center;}
+                table {
+                    margin: 5px;
+                  
+              }
+
+              .center{
+                text-align:center;
+              }
+              .full{
+                width:100%;
+              }
+              .row{
+                display: block;
+              }
+
+              .border, tr, th, td {
+                  border: 1px solid black;
+                  padding:2px;
+                  border-collapse: collapse;
+                   }
+                   
+              .no-border{ 
+                  border: none !important;
+                  }
+                  
+               .print-full{ 
+                 width: 100%      
+               }
+
+               .print-half{ 
+                 width: 48%;   
+               }
+               
+               .left{ float: left;}
+               
+               .right{float: right;}
+               
+               
+               .margin{ 5px;}
+               .row{width:100%;}
+            </style>
+          </head>
+      <body onload="window.print();window.close()">${printContents}</body>
+        </html>`
+      );
+      popupWin.document.close();
+  }
     viewMember(member)
     {
     	if(member.member.id)
@@ -155,7 +226,7 @@ export class ManageMembersComponent implements OnInit {
     	}
     }
 
-     handleFile(event) {
+     /*handleFile(event) {
 	    if(window.confirm('are you sure you want to upload this members?, please note this process cannot be reversed.'))
 	    {
 	    	let file = event.target.files[0];
@@ -180,7 +251,7 @@ export class ManageMembersComponent implements OnInit {
 				})
 		    });
 	    }
-	  }
+	  }*/
 
 	/**
 	 * @method addMember
@@ -194,6 +265,7 @@ export class ManageMembersComponent implements OnInit {
 		data['vendor_id'] = this.vendor.id;
 		data['approved_by'] = JSON.parse(this.localService.getUser()).id;
 		data['passport'] = this.passport;
+		data['phone1'] = '234'+data.phone1.substr(1);
 		console.log(data)
 		this.manageMemberService.addMember(data).subscribe((response) => {
 			if(response.success = true)
@@ -226,7 +298,6 @@ export class ManageMembersComponent implements OnInit {
 	{
 		this.manageMemberService.getFormField().subscribe((response) => {
 			this.membersFormPoolList = response.data
-			console.log(this.membersFormPoolList)
 			//create form controls for the fee items
 	      this.membersFormPoolList.forEach((fields)=> 
 	            (<FormArray>this.newMemberForm.controls['memberData']).push(this.initMembersForm(fields))
@@ -415,7 +486,7 @@ export class ManageMembersComponent implements OnInit {
     callback(reader.result);
       
      
-    this.model.passport=reader.result;
+    this.passport=reader.result;
      
     console.log(reader.result);
      

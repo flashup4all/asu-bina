@@ -49,7 +49,7 @@
             <div class="row p-2">
                 <div class="col">
                     <tabset>
-                        <tab heading="Update">
+                        <tab heading="MANAGE DETAILS">
                             <form method="POST" [formGroup] = "editVendorForm" (ngSubmit) = "updateVendor(editVendorForm.value)" class="form-horizontal row-fluid">
                                 <div class="col-md-8">
                                     <div class="control-group">
@@ -63,6 +63,26 @@
                                         <input type="text" [ngModel]="editVendorData?.email" formControlName="email" placeholder="Name" title="Vendor Email" class="form-control" value="">
                                         <small [hidden]="(editVendorForm.controls.email.valid ) || (editVendorForm.controls.email.pristine)" class="text-danger">Vendor Email is Required. please ensure it is valid</small>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Country</label>
+                                        <select placeholder="Country" class="form-control" (ngModelChange)="filter_states($event)" [ngModel]="editVendorData?.country_id" formControlName = "country_id" required>
+                                            <option>-- None --</option>
+                                            <option *ngFor="let item of countries" [value]="item.id">{{ item.name }}</option>
+                                        </select>
+                                        <span [hidden]="editVendorForm.controls.country_id.valid || (editVendorForm.controls.country_id.pristine)" class="text-danger">Country is required.
+                                        </span>
+                                    </div >
+                                            <!-- <mat-progress-bar *ngIf="state_loader" mode="indeterminate"></mat-progress-bar> -->
+                                    <div class="form-group">
+                                        <label>State</label>
+                                        <select placeholder="State/Province" class="form-control" (ngModelChange)="filter_cities($event)" [ngModel]="editVendorData?.state_province" formControlName = "state_province" required>
+                                            <option>-- None --</option>
+                                            <option *ngFor="let item of state_list" [value]="item.id">{{ item.name }}</option>
+                                        </select>
+                                        <span [hidden]="editVendorForm.controls.state_province.valid || (editVendorForm.controls.state_province.pristine)" class="text-danger">State is required.
+                                        </span>
+                                    </div>
+                                            <!-- <mat-progress-bar *ngIf="city_loader" mode="indeterminate"></mat-progress-bar> -->
                                     <div class="form-group">
                                         <label>Address</label>
                                         <input type="text" [ngModel]="editVendorData?.address" formControlName="address" placeholder="Address" title="vendor head address" class="form-control">
@@ -96,8 +116,20 @@
                                         <small [hidden]="(editVendorForm.controls.charge_duration.valid ) || (editVendorForm.controls.charge_duration.pristine)" class="text-danger">Charge Duration is Required</small>
                                     </div>
                                     <div class="form-group">
+                                        <label>Currency</label>
+                                        <select class="form-control" [ngModel]="editVendorData?.currency_id" formControlName = "currency_code" required>
+                                            <option *ngFor="let item of currencies" [value]="item.code">{{ item.symbol }}</option>
+                                        </select>
+                                        <span [hidden]="editVendorForm.controls.state_province.valid || (editVendorForm.controls.state_province.pristine)" class="text-danger">State is required.
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
                                         <label>Description</label>
                                         <textarea class="form-control" title="Vendor description: full details" [ngModel]="editVendorData?.description" formControlName="description" placeholder="Vendor details"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Privary Policy / Terms & Conditions</label>
+                                        <textarea class="form-control" title="Vendor privacy policy: full details" [ngModel]="editVendorData?.privacy_policy" formControlName="privacy_policy" placeholder="Vendor details"></textarea>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label" for="basicinput">Logo</label>
@@ -117,7 +149,7 @@
                                 
                             </form>
                         </tab>
-                        <tab heading="BanK Settings">
+                        <tab heading="BANK SETTINGS">
                             <button type="submit" class="btn btn-success pull-right" (click)="newAccount()"><i class="fa fa-plus"></i> Add Bank Account</button>
                             <p>this will enable you perform transactions with any of this the account added</p>
                             <div class="col-md-12">
@@ -145,6 +177,9 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </tab>
+                        <tab heading="NOTIFICATION SETTINGS">
+                            <app-sms-settings></app-sms-settings>
                         </tab>
                     </tabset>
                 </div>

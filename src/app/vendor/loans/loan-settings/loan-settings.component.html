@@ -174,7 +174,8 @@
                                         <label>
                                         Membership Duration (in months)
                                         </label>
-                                        <select class="form-control" [ngModel]="loanEligibilityData?.membership_duration" formControlName="membership_duration">
+                                        <input type="number" min="0" class="form-control" [ngModel]="loanEligibilityData?.membership_duration" formControlName="membership_duration">
+                                        <!-- <select class="form-control" [ngModel]="loanEligibilityData?.membership_duration" formControlName="membership_duration">
                                             <option value="0">None</option>
                                             <option value="1">1 months</option>
                                             <option value="2">2 months</option>
@@ -190,7 +191,7 @@
                                             <option value="12">1 Year</option>
                                             <option value="18">1 &#189; Year</option>
                                             <option value="24">2 Years</option>
-                                        </select>
+                                        </select> -->
                                     </div>
                                     <button type="submit" class="btn btn-success btn-block" [disabled]="eligibilityForm.invalid || submitPending ">
                                         <span *ngIf="!submitPending">Update</span>
@@ -452,8 +453,9 @@
                     <textarea class="form-control" formControlName="requirements" placeholder="loan requirement"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Duration</label>
-                    <select class="form-control" formControlName="duration" required="">
+                    <label>Duration in Months</label>
+                    <input type="number" class="form-control" formControlName="duration" required="">
+                    <!-- <select class="form-control" formControlName="duration" required="">
                         <option value="3">3 Months</option>
                         <option value="6">6 Months</option>
                         <option value="12">1 Year</option>
@@ -462,7 +464,7 @@
                         <option value="48">4 Years</option>
                         <option value="60">5 Years</option>
                         <option value="72">6 Years</option>
-                    </select>
+                    </select> -->
                      <small [hidden]="(newLoanTypeForm.controls.duration.valid ) || (newLoanTypeForm.controls.duration.pristine )" class="text-danger">Loan Duration is Required</small>
                 </div>
                 <hr>
@@ -471,10 +473,10 @@
                 <small>Please Set Loan Siignatories before Submission</small>
                 <div class="form-group">
                     <div>
-                        <label class="checkbox-inline" *ngFor="let item of loanSignatoryList">
+                        <label class="checkbox-inline" *ngFor="let item of loanSignatoryList" style="padding-right:25px">
                         <div class="icheckbox_minimal-grey" style="position: relative;">
-                            <input type="checkbox" name="loan_signatories[]" value="{{item.signatory_type}}">
-                        </div> Level {{item.signatory_type}} Signatory</label>
+                            <input type="checkbox" class="form-control" name="loan_signatories[]" value="{{item.signatory_type}}">
+                        </div> Level {{item.signatory_type}}</label>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-success btn-block" [disabled]="newLoanTypeForm.invalid ">
@@ -530,15 +532,16 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Duration</label>
-                    <select class="form-control" [ngModel]="editLoanTypeData?.duration" formControlName="duration" required="">
+                    <label>Duration In Months</label>
+                    <input type="number" class="form-control" [ngModel]="editLoanTypeData?.duration" formControlName="duration" required="">
+                    <!-- <select class="form-control" [ngModel]="editLoanTypeData?.duration" formControlName="duration" required="">
                         <option value="3">3 Months</option>
                         <option value="6">6 Months</option>
                         <option value="12">1 Year</option>
                         <option value="24">2 Years</option>
                         <option value="36">3 Years</option>
                         <option value="48">4 Years</option>
-                    </select>
+                    </select> -->
                      <small [hidden]="(newLoanTypeForm.controls.duration.valid ) || (newLoanTypeForm.controls.duration.pristine )" class="text-danger">Loan Duration is Required</small>
                 </div>
                 <hr>
@@ -546,10 +549,10 @@
                 <small>Please Choose  Signatories that must approve this loan type</small>
                 <small>Please Set Loan Siignatories before Submission</small>
                 <div class="form-group">
-                    <label class="checkbox-inline" *ngFor="let item of loanSignatoryList">
+                    <label class="checkbox-inline" *ngFor="let item of loanSignatoryList" style="padding-right:25px">
                         <div class="icheckbox_minimal-grey" style="position: relative;">
-                            <input type="checkbox" name="loan_signatories[]" value="{{item.signatory_type}}">
-                        </div> Level {{item.signatory_type}} Signatory
+                            <input type="checkbox" class="form-control" name="loan_signatories[]" value="{{item.signatory_type}}">
+                        </div> Level {{item.signatory_type}}
                     </label>
                 </div>
                 <button type="submit" class="btn btn-success btn-block" [disabled]="newLoanTypeForm.invalid || updateloanTypeCheck ">

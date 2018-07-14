@@ -1,11 +1,14 @@
 import { Component, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
+import { LocalService } from '../../storage/local.service';
 
 // Import navigation elements
 import { navigation } from './../../_nav';
 
 @Component({
   selector: 'app-sidebar-nav',
-  template: `
+  templateUrl: './app-sidebar-nav.component.html'
+
+  /*template: `
     <nav class="sidebar-nav" style="width:250px !important;">
       <ul class="nav" style="width:250px !important;">
         <ng-template ngFor let-navitem [ngForOf]="navigation">
@@ -18,12 +21,13 @@ import { navigation } from './../../_nav';
           </ng-template>
         </ng-template>
       </ul>
-    </nav>`
+    </nav>`*/
 })
 export class AppSidebarNavComponent {
 
   public navigation = navigation;
-
+  vendor
+  user
   public isDivider(item) {
     return item.divider ? true : false
   }
@@ -32,7 +36,289 @@ export class AppSidebarNavComponent {
     return item.title ? true : false
   }
 
-  constructor() { }
+  constructor(
+    private localService : LocalService,
+
+    ) {
+      this.vendor = JSON.parse(this.localService.getVendor());
+        this.user = JSON.parse(this.localService.getUser());
+    //console.log(this.navigation)
+     this.navigation = this.getNav()
+     }
+
+  getNav()
+  {
+    let group;
+    if(this.user.role_id == 2)
+    {
+      group = [
+      {
+        name: 'Dashboard',
+        url: '/dashboard',
+        icon: 'icon-speedometer',
+        badge: {
+          variant: 'info',
+          text: 'NEW'
+        }
+      },
+      {
+        name: 'Members Activity',
+        url: '/members',
+        icon: 'icon-star',
+        children: [
+          {
+            name: 'Manage Members',
+            url: '/app/members/manage-members',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Widthdrawals',
+            url: '/app/widthdrawals',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Contributions',
+            url: '/app/contributions',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Investments',
+            url: '/app/investment/history',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Target Savings',
+            url: '/app/target-savings',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Deductions',
+            url: '/app/deductions',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Loan Request',
+            url: '/app/loan-request',
+            icon: 'icon-star'
+          },
+        ]
+      },
+      {
+        title: true,
+        name: 'Manage'
+      },
+      {
+        name: 'Settings',
+        url: '/settings',
+        icon: 'icon-star',
+        children: [
+          {
+            name: 'Coorperative Profile',
+            url: '/app/manage-vendor',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Staff Settings',
+            url: '/app/staff',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Loan Settings',
+            url: '/app/loan/settings',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Contribution Settings',
+            url: '/app/contributions/contribution-types',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Investment Settings',
+            url: '/app/investment/manage',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Repayment Settings',
+            url: '/app/deductions/deductions-types',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Member Form Settings',
+            url: '/app/form-settings/members',
+            icon: 'icon-star'
+          }
+        ]
+      },
+    ]
+    }else if(this.user.role_id == 3)
+    {
+      group = [
+      {
+        name: 'Dashboard',
+        url: '/dashboard',
+        icon: 'icon-speedometer',
+        /*badge: {
+          variant: 'info',
+          text: 'NEW'
+        }*/
+      },
+      {
+        name: 'Manage Members',
+        url: '/app/members/manage-members',
+        icon: 'icon-star'
+      },
+      {
+        name: 'Manage Widthdrawals',
+        url: '/app/widthdrawals',
+        icon: 'icon-star'
+      },
+      {
+        name: 'Manage Contributions',
+        url: '/app/contributions',
+        icon: 'icon-star'
+      },
+      {
+        name: 'Manage Investments',
+        url: '/app/investment/history',
+        icon: 'icon-star'
+      },
+      {
+        name: 'Manage Target Savings',
+        url: '/app/target-savings',
+        icon: 'icon-star'
+      },
+      {
+        name: 'Manage Deductions',
+        url: '/app/deductions',
+        icon: 'icon-star'
+      },
+      {
+        name: 'Manage Loan Request',
+        url: '/app/loan-request',
+        icon: 'icon-star'
+      },
+      /*{
+        name: 'Members Activity',
+        url: '/members',
+        icon: 'icon-star',
+        children: [
+          {
+            name: 'Manage Members',
+            url: '/app/members/manage-members',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Widthdrawals',
+            url: '/app/widthdrawals',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Contributions',
+            url: '/app/contributions',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Investments',
+            url: '/app/investment/history',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Target Savings',
+            url: '/app/target-savings',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Deductions',
+            url: '/app/deductions',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Loan Request',
+            url: '/app/loan-request',
+            icon: 'icon-star'
+          },
+        ]
+      },*/
+]
+      
+    }else if(this.user.role_id == 4)
+    {
+      group = [
+     /* {
+        name: 'Dashboard',
+        url: '/dashboard',
+        icon: 'icon-speedometer',
+        badge: {
+          variant: 'info',
+          text: 'NEW'
+        }
+      },*/
+      {
+        name: 'Manage Members',
+        url: '/app/members/manage-members',
+        icon: 'icon-star'
+      },
+      /*{
+        name: 'Members Activity',
+        url: '/members',
+        icon: 'icon-star',
+        children: [
+          {
+            name: 'Manage Members',
+            url: '/app/members/manage-members',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Widthdrawals',
+            url: '/app/widthdrawals',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Contributions',
+            url: '/app/contributions',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Investments',
+            url: '/app/investment/history',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Target Savings',
+            url: '/app/target-savings',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Deductions',
+            url: '/app/deductions',
+            icon: 'icon-star'
+          },
+          {
+            name: 'Manage Loan Request',
+            url: '/app/loan-request',
+            icon: 'icon-star'
+          },
+        ]
+      }*/
+    ]
+  }
+
+    
+    
+    /*for(let i=0; i < nav.length; i++){
+      if(this.user.user_level == 'Admin')
+      {
+        group.push(nav[i])
+      }else if(this.user.user_level == 'Manager' && this.user.module_id == 1){
+        if(nav[i].name == "Booking Manager")
+        group.push(nav[i])
+
+      }
+    }*/
+      //console.log(group)
+      return group;
+  }
+
 }
 
 import { Router } from '@angular/router';

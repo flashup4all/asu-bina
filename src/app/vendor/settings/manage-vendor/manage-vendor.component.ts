@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { LocalService } from '../../../storage/local.service';
 import { VendorService } from '../../vendor.service';
+import { countries, LocalService, states, cities, currency } from '../../../storage/index';
 
 export interface Vendor {
 	name:string;
@@ -43,6 +43,12 @@ export class ManageVendorComponent implements OnInit {
     window;
     bank_list;
     editAccountData;
+    countries = countries;
+    currencies = currency;
+    state_list;
+    city_list;
+    state_loader
+    city_loader
     @ViewChild('accountModal') public accountModal :ModalDirective;
     @ViewChild('accountUpdateModal') public accountUpdateModal :ModalDirective;
 
@@ -66,8 +72,12 @@ export class ManageVendorComponent implements OnInit {
 			phone: [null, Validators.compose([Validators.required])],
 			email: [null, Validators.compose([Validators.required, Validators.email])],
 			administrative_charge: '',
+            currency_code: '',
+			country_id: '',
+			state_province: '',
 			charge_duration: '',
-			description: ''
+            description: '',
+			privacy_policy: ''
 		});
         /*bank account form*/
         this.bankAccountForm = this._fb.group({
@@ -91,7 +101,6 @@ export class ManageVendorComponent implements OnInit {
 	      	this.manageVendorService.updateVendor(data).subscribe((response) => {
 	      	if(response.success = true)
 	      	{
-                  console.log(response)
 	        	this.submitPending = false;
 
 	         	this.localService.setVendor(JSON.stringify(response.data));
@@ -213,6 +222,67 @@ export class ManageVendorComponent implements OnInit {
             }
         }
     }
+
+    filter_states(country_id)
+    {
+        this.state_loader = true;
+        let array = [];
+        for (var i in states) {
+            if(states[i].country_id == country_id)
+            {
+                array.push(states[i])
+            }
+        }
+        this.state_loader = false;
+        this.state_list=  array;
+    }
+
+    filter_cities(state_id)
+    {
+        this.city_loader = true;
+        let array = [];
+        for (var i in cities) {
+            if(cities[i].state_id == state_id)
+            {
+                array.push(cities[i])
+            }
+        }
+
+        this.city_loader = false;
+        this.city_list =  array;
+    }
+    cities_check(event)
+    {
+        console.log(event)
+    }
+
+    get_state(state_id)
+    {
+      for (var i in states) {
+        if(states[i].id == state_id)
+        {
+          return states[i].name;
+        }
+      }
+    }
+    get_country(country_id)
+    {
+      for (var i in countries) {
+        if(countries[i].id == country_id)
+        {
+          return countries[i].name;
+        }
+      }
+    }
+    // get_institution_type(type_id)
+    // {
+    //   for (var i in this.institution_types) {
+    //     if(this.institution_types[i].id == type_id)
+    //     {
+    //       return this.institution_types[i].name;
+    //     }
+    //   }
+    // }
 
 	fileChange(input){
  

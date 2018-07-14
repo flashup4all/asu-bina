@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-body">
+    <div class="card-body" style="padding:0px;">
         <div class="row">
             <div class="col">
                 <tabset>
@@ -27,10 +27,10 @@
                                       <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
                                       <span *ngIf="!submitPending">Filter</span>
                                     </button>
-                                    <button type="button" class="btn btn-success pull-right" (click)="newLoanRequestModal.show()"style="margin-top:30px" >
+                                   <!--  <button type="button" class="btn btn-success pull-right" (click)="newLoanRequestModal.show()"style="margin-top:30px" >
                                         <i class="fa fa-plus"></i> 
                                     Make A Loan Request
-                                    </button>
+                                    </button> -->
                                   </div>
                                 </div>
                               </div>
@@ -50,7 +50,11 @@
                           </form>
                         </div>
                         <div class="col-md-12">
-                            <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+                            <div style="margin-bottom: 4px">
+                                <button style="margin-left:5px;" (click)="exportTable('xls', 'loan_request_table')" class="btn btn-outline btn-success">Export table</button>
+                                <button class="btn btn-outline btn-success" (click)="printReciept('loan_request_table')">Print</button>
+                            </div>
+                            <table id="loan_request_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -99,7 +103,18 @@
                                             {{item.status}} 
                                         </td>
                                         <td class="center">
-                                            <div class="btn-group" dropdown>
+                                            <mat-menu #appM="matMenu">
+                                              <button mat-menu-item (click)="requestHistory(item.id)">Request History</button>
+                                              <button mat-menu-item (click)="approveLoanRequest(item.id)">Approve Request</button>
+                                              <button mat-menu-item (click)="loadPaymentModal(item)">Pay Now</button>
+                                              <button *ngIf="item.status != 'cancelled'" mat-menu-item>Cancel Request</button>
+                                              <button mat-menu-item (click)="deleteLoanRequest(item.id)" >Delete</button>
+                                            </mat-menu>
+
+                                <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
+                                  <mat-icon>more_vert</mat-icon>
+                                </button>
+                                            <!-- <div class="btn-group" dropdown>
                                               <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
                                                 <i class="fa fa-ellipsis-v"></i><span class="caret"></span>
                                               </button>
@@ -128,7 +143,7 @@
                                                     </a>
                                                 </li>
                                               </ul>
-                                            </div>
+                                            </div> -->
                                         </td>
                                     </tr>
                                 </tbody>
