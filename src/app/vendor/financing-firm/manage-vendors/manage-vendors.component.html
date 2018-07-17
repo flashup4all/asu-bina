@@ -1,0 +1,345 @@
+<div class="animated fadeIn" *ngIf="user?.role_id == 2">
+  <div class="row">
+    <div class="col-sm-12 col-lg-4">
+      <div class="card text-white bg-primary">
+        <div class="card-body pb-0">
+          <h4 class="mb-0">{{ total_members }}</h4>
+          <p>Total Members</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-lg-4">
+      <div class="card text-white bg-success">
+        <div class="card-body pb-0">
+          <h4 class="mb-0"> {{ total_active_members }}</h4>
+          <p>Active Members
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-lg-4">
+      <div class="card text-white bg-warning">
+        <div class="card-body pb-0">
+          <h4 class="mb-0"> {{ total_members - total_active_members }}</h4>
+          <p>Inactive Members/Suspended
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <tabset>
+            <tab heading="Members">
+                <div class="col-md-12">
+                  <div class="row">
+                    <form style=" width:100%;" [formGroup]="filterMemberForm" (ngSubmit)="viewMember(filterMemberForm.value)">
+                        <div class="input-group">
+                          <label>Filter Members</label>
+                            <input id="typeahead-http" formControlName="member" type="text" class="form-control" [class.is-invalid]="searchFailed" [ngbTypeahead]="search" placeholder="Filter Client" [inputFormatter]="formatter" [resultTemplate]="rt"/>
+                            <button class="btn btn-success" type="submit" [disabled]="filterMemberForm.invalid">Manage</button>
+                            <span *ngIf="searching">searching...</span>
+                            <ng-template #rt let-r="result" let-t="term">
+                             <div class="row">
+                                {{ r?.first_name}} {{ r?.middle_name}} {{ r?.last_name}} 
+                                <br> {{ r?.email}}
+                                <small> <i class="fa fa-phone"> </i> {{ r?.phone1 }}</small>
+                             </div>
+                            </ng-template>
+                        </div>
+                        <!-- <button class="btn btn-success" (click)="excelUploadModal.show()">Upload Excel Format</button> -->
+                      </form>
+                  </div>
+                  <br>
+                    <div class="row">
+                      <div class="pull-right">
+                        <button class="btn btn-success pull-left" (click)="activateAllMember()">Activate All Members</button>
+                        <button style="margin-left:5px;" class="btn btn-danger" (click)="deactivateAllMember()">Deactivate All Members</button>
+                         <button style="margin-left:5px;" (click)="exportTable('xls', 'members_table')" class="btn btn-outline btn-success">Export table</button>
+                        <button class="btn btn-outline btn-success" (click)="printReciept('members_table')">Print</button>
+                      </div>
+                      </div>
+                     <div class="row">
+                        <div class="card" *ngIf="searching" style="width:100%;">
+                            <div class="card-body"><i class="fa fa-spinner" style="margin: auto auto 0 400px;"></i></div>
+                          </div>
+                     </div>
+                      <div class="row">
+      <!-- <mat-progress-bar  mode="indeterminate"></mat-progress-bar> -->
+            <mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
+                        
+                        <table *ngIf="!searching" id="members_table" class="table table-responsive-sm table-hover table-outline mb-0">
+                          <thead class="thead-light">
+                            <tr>
+                              <th class="text-center"><i class="icon-people"></i></th>
+                              <th>Name</th>
+                              <th class="text-center">Email</th>
+                              <th>(&#8358;)Contribution</th>
+                              <th>status</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <!-- search result -->
+                            <tr *ngFor="let item of results">
+                              <td class="text-center">
+                                <div class="avatar">
+                                  <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
+                                  <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(item.passport)" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" class="img-avatar">
+                                  <span class="avatar-status badge-success"></span>
+                                </div>
+                              </td>
+                              <td>
+                                <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
+                                <div class="small text-muted">
+                                  <span>{{item?.gender}}</span> | {{item?.account_number || item?.phone1 }}
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                {{item.email}}
+                              </td>
+                              <td class="text-center">
+                                <span class="label label-sm label-primary">{{ item?.contribution}}</span>
+                              </td>
+                              <td>
+                                <small *ngIf="item.status == 1" class="muted pull-right">
+                                   <h4><span class="label label-sm label-success">Active</span></h4>
+                                </small>
+                                <small *ngIf="item.status == 2" class="muted pull-right">
+                                   <h4><span class="label label-sm label-warning">Blocked</span></h4>
+                                </small>
+                                <small *ngIf="item.status == 0" class="muted pull-right">
+                                   <h4><span class="label label-sm label-danger">Inactive</span></h4>
+                                </small>
+                              </td>
+                              <td>
+                                <a class="btn btn-primary btn-sm" [routerLink]="['/app/members/', item.id,'view']" title="edit member details">
+                                  <i class="fa fa-sliders"> </i></a>
+                                <button class="btn btn-success btn-sm" (click)="editPassword(item)" title="reset member password: this sends a password reset link"><i class="fa fa-key"></i></button>
+                                <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivateMember(item.id)" title="deactivate or suspend this member">
+                                  <i class="fa fa-unlock"></i></button>
+                                <button class="btn btn-success btn-sm" *ngIf="item.status != 1" (click)="activateMember(item.id)" title="activate this member"><i class="fa fa-unlock"></i></button>
+                              </td>
+                            </tr>
+                            <!-- staff list -->
+                            <tr *ngFor="let item of membersList">
+                              <td class="text-center">
+                                <div class="avatar">
+                                  <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
+                                  <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(item.passport)" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" class="img-avatar">
+                                  <span class="avatar-status badge-success"></span>
+                                </div>
+                              </td>
+                              <td>
+                                <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
+                                <div class="small text-muted">
+                                  <span>{{item?.gender}}</span> | {{item?.phone1 || 'nil'}}
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                {{item.email}}
+                              </td>
+                              <td class="text-center">
+                                <span class="label label-sm label-primary">{{ item?.contribution}}</span>
+                              </td>
+                              <td>
+                                <small *ngIf="item.status == 1" class="muted pull-right">
+                                   <h4><span class="label label-sm label-success">Approved</span></h4>
+                                </small>
+                                <small *ngIf="item.status == 2" class="muted pull-right">
+                                   <h4><span class="label label-sm label-warning">Blocked</span></h4>
+                                </small>
+                                <small *ngIf="item.status == 0" class="muted pull-right">
+                                   <h4><span class="label label-sm label-danger">Inactive</span></h4>
+                                </small>
+                              </td>
+                              <td>
+                                <a class="btn btn-primary btn-sm" [routerLink]="['/app/members/', item.id,'view']" title="edit member details">
+                                  <i class="fa fa-sliders"> </i></a>
+                                <button class="btn btn-success btn-sm" (click)="editPassword(item)" title="reset member password: this sends a password reset link"><i class="fa fa-lock"></i></button>
+                                <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivateMember(item.id)" title="deactivate or suspend this member">
+                                  <i class="fa fa-unlock"></i></button>
+                                <button class="btn btn-success btn-sm" *ngIf="item.status != 1" (click)="activateMember(item.id)" title="activate this member"><i class="fa fa-unlock"></i></button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="row">
+                        <div class="media stream load-more p-2">
+                         <button class="btn btn-success btm-sm"  (click)="loadMore()" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </button>
+                        </div>
+                      </div>
+                </div>
+            </tab>
+            <tab heading="New Member">
+                <div class="col-md-12">
+                    <div class="row">
+                      <form [formGroup]="newMemberForm" (ngSubmit)="addMember(newMemberForm.value)">
+                        <div class="form-group">
+                          <label>Account Number:</label>
+                          <input type="text" name="account_number" class="form-control" formControlName="account_number">
+                        </div>
+                        <div class="form-group">
+                          <label>Surname:</label>
+                          <input type="text" name="first_name" class="form-control" formControlName="first_name">
+                        </div>
+                         <div class="form-group">
+                          <label>Lastname:</label>
+                          <input type="text" class="form-control" name="last_name" formControlName="last_name">
+                        </div>
+                        <div class="form-group">
+                          <label>Other Names:</label>
+                          <input type="text" class="form-control" name="middle_name" formControlName="middle_name">
+                        </div>
+                        <div class="form-group">
+                          <label>Email:</label>
+                          <input type="text" name="email" class="form-control" formControlName="email">
+                        </div>
+                        <div class="form-group">
+                          <label>Contribution:</label>
+                          <input type="number" min="0" class="form-control" name="contribution" formControlName="contribution">
+                        </div>
+                        <div class="form-group">
+                          <label>Mobile Number:</label>
+                        <input type="number" [ngModel]="phone1" class="form-control" placeholder="08090090090" name="phone1" formControlName="phone1">
+                        <small>Note: this number will serve as the authentication number</small>
+                        </div>
+                        <div class="form-group">
+                          <label>Gender:</label>
+                          <select class="form-control" name="gender" formControlName="gender">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label>Date of Birth:</label>
+                          <input type="date" class="form-control" formControlName="date_of_birth" name="date_of_birth">
+                        </div>
+                        <div class="form-group">
+                          <label>Membership Date:</label>
+                        <input type="date" class="form-control" name="membership_date" formControlName="membership_date">
+                        <small>Date this member was registered</small>
+                        </div>
+                        <div class="form-group">
+                          <label class="control-label" for="basicinput">Passport</label>
+                              <img *ngIf="!file_srcs[0]" src="assets/images/avata.png">
+                              <img [attr.src]='file_srcs[0]' *ngIf="file_srcs[0]" alt="" width="250px" height="250px" />
+                              <input type="file" name="" (change)="fileChange(input)" #input>
+                        </div>
+                        
+                        <!-- <label>Street:</label>
+                        <input type="text" name="street" ngModel> -->
+                       <div class="control-group">
+                          
+                      </div>
+                      <h4>Custom Form Field</h4>
+                      <div *ngFor="let fields of newMemberForm
+                      ['controls'].memberData['controls']; let i=index">
+                        <div class="form-group">
+                          <label>{{ membersFormPoolList[i].label }}</label>
+                          <input type="text" *ngIf="membersFormPoolList[i].type =='text'" placeholder="{{membersFormPoolList[i].placeholder}}" [formControl]="fields.controls.key" class="form-control">
+                          <textarea class="form-control"  [formControl]="fields.controls.key"  *ngIf="membersFormPoolList[i].type =='textarea'"  placeholder="{{membersFormPoolList[i].placeholder}}" ></textarea>
+                      </div>
+                    </div>
+                        <button type="submit" class="btn btn-primary btn-block" [disabled]="submitPending">
+                        <span *ngIf="!submitPending">Submit</span>
+                        <span *ngIf="submitPending">Please Wait...</span>
+                        <span *ngIf="submitPending" class="fa fa-spinner" aria-hidden="true"></span>
+                    </button>
+                  </form>
+                    </div>
+                </div>
+            </tab>
+        </tabset>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- new staff modal -->
+<div bsModal #passwordModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	 <div class="modal-dialog modal-md">
+	   <div class="modal-content">
+	     <div class="modal-header">
+	       <h4 class="modal-title pull-left">Change Password or Send a Password Reset Link</h4>
+	       <button type="button" class="close pull-right" aria-label="Close" (click)="passwordModal.hide()">
+	         <span  (click)="passwordModal.hide()" aria-hidden="true">&times;</span>
+	       </button>
+	     </div>
+	     <div class="modal-body">
+	       <div class="new session form">
+	       		<div class="password-rest">
+	       			<h4>
+						<button type="submit"  (click)="resetPassword(editMemberData)" class="btn btn-primary btn-block" title="send a password reset link to this member">Send Password Reset Link</button>
+						<br>
+						<!-- Or fill the form below -->
+	       			</h4>
+	       		</div>
+		       <!-- <form [formGroup] = "changePasswordForm" (ngSubmit) = "changePassword(changePasswordForm.value, editMemberData.id)" class="form-horizontal row-fluid">
+					<div class="control-group">
+						<label class="control-label" for="basicinput">Old Password</label>
+						<div class="controls">
+							<input type="password" id="basicinput" formControlName="old_password" placeholder="Old Password" class="span8">
+							
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="basicinput">New Password</label>
+						<div class="controls">
+							<input type="password" id="basicinput" formControlName="new_password" placeholder="New Password" class="span8">
+							
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="basicinput">New Password Again</label>
+						<div class="controls">
+							<input type="password" id="basicinput" formControlName="new_password_confirm" placeholder="New Password" class="span8">
+							
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="controls">
+							<button type="submit" class="btn btn-primary btn-block" [disabled]="changePasswordForm.invalid || submitPending ">
+			                	<span *ngIf="!passwordFormCheck">Change Password</span>
+			                	<span *ngIf="passwordFormCheck && changePasswordForm.valid">Please Wait...</span>
+			                	<span *ngIf="passwordFormCheck && changePasswordForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+			            	</button>
+						</div>
+					</div>
+				</form> -->
+			</div>
+	     </div>
+	   </div>
+	 </div>
+</div>
+<div bsModal #excelUploadModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Upload Excel Format</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="excelUploadModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+          <!-- <button class="btn btn-success"><a href="http://localhost:8000/excels/contributions-format.xls" target="_blank">generate Excel format</a></button> -->
+            <div class="new session form">
+                <form>
+                  <div class="form-group">
+                    please ensure it's the generated excel format you used else it wont upload
+                  </div>
+                  <div class="form-group">
+                    <label>Members File</label>
+                    <input id="fileChooseAFile" #data type="file" class="form-control"  name="fileChooseAFile" accept=".csv, .xlsx">
+                  </div>
+                  <div class="form-group">
+                    <button class="btn btn-success">Upload</button>
+                  </div>
+                </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>

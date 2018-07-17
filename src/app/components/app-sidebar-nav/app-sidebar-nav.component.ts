@@ -326,7 +326,7 @@ export class AppSidebarNavComponent {
           children: [
             {
               name: 'Manage Vendors',
-              url: '/app/vendor/manage-coorps',
+              url: '/app/finance/manage-coorps',
               icon: 'icon-star'
             },
             {
