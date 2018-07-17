@@ -7,7 +7,7 @@
         	<div class="container p-2">
 	           <button (click)="exportTable('xls', 'member_contribution_table')" class="btn btn-outline btn-success">Export table</button>
 	           <button class="btn btn-outline btn-success" (click)="printReciept('member_contribution_table')">Print</button>
-	           <button type="button" class="btn btn-primary pull-right" (click)="newContributionPlanModal.show()"> Add Investment Plan</button>
+	           <button type="button" class="btn btn-primary pull-right" (click)="newContributionPlanModal.show()"> Add Contribution Plan</button>
 	       	</div>
 		        <table *ngIf="!submitPending" id="member_contribution_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
 		            <thead>
@@ -352,7 +352,7 @@
 
                     </div>
                        <button type="submit" class="btn btn-success" [disabled]="runContributionForm.invalid">
-                            <span *ngIf="!submitPending">Run Contribution</span>
+                            <span *ngIf="!submitPending">Make Contribution</span>
                             <span *ngIf="submitPending && runContributionForm.valid">Please Wait...</span>
                             <span *ngIf="submitPending && runContributionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
                         </button>

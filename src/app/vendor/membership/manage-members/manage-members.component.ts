@@ -116,7 +116,7 @@ export class ManageMembersComponent implements OnInit {
           }))
       .do(() => this.searching = false)
       .merge(this.hideSearchingWhenUnsubscribed);
-      formatter = (x: {first_name: string, middle_name: string, last_name: string}) => x.first_name+'  '+ x.last_name;
+      formatter = (x: {first_name: string, middle_name: string, last_name: string}) => x.first_name+'  '+ x.middle_name+'  '+ x.last_name;
 
 	ngOnInit() {
 		/*this.queryField.valueChanges

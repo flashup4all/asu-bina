@@ -393,6 +393,7 @@ export class MemberContributionsComponent implements OnInit {
       this.contributionService.post_contribution_history(data).subscribe((response) => {
         if (response.success) {
             this.getMemberContributions();
+            this.view_member_component.getActualBalance();
             this.localService.showSuccess(response.message,'Operation Successfull');
           }else{
             this.localService.showError(response.message,'Operation Unsuccessfull');

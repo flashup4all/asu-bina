@@ -180,7 +180,6 @@ export class ViewMemberComponent implements OnInit {
       this.submitPending = true;
       this.contributionService.get_member_contribution_plan(this.memberId).subscribe((response) => {
         this.member_plan_list = response.data;
-        console.log(this.member_plan_list)
         this.submitPending = false;
       })
     }

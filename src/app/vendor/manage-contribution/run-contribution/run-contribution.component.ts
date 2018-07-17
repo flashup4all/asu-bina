@@ -82,6 +82,8 @@ export class RunContributionComponent implements OnInit {
 	{
 		formValues['vendor_id'] = this.vendor.id
 		formValues['approved_by'] = this.user.id
+        formValues.transaction_type = 'credit';
+		
 		this.submitPending = true;
 		this.contributionService.runEditedContributions(formValues).subscribe((response) => {
 			if (response.success) {

@@ -37,6 +37,7 @@
                   <div class="row">
                     <form style=" width:100%;" [formGroup]="filterMemberForm" (ngSubmit)="viewMember(filterMemberForm.value)">
                         <div class="input-group">
+                          <label>Filter Members</label>
                             <input id="typeahead-http" formControlName="member" type="text" class="form-control" [class.is-invalid]="searchFailed" [ngbTypeahead]="search" placeholder="Filter Client" [inputFormatter]="formatter" [resultTemplate]="rt"/>
                             <button class="btn btn-success" type="submit" [disabled]="filterMemberForm.invalid">Manage</button>
                             <span *ngIf="searching">searching...</span>

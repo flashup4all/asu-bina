@@ -269,15 +269,33 @@
                               {{c_request.amount}} 
                           </td>
                           <td>
-                              <span *ngIf="c_request.status =='Pending'" class="badge badge-warning">{{c_request.status}} </span>
-                              <span *ngIf="c_request.status =='Approved'" class="badge badge-success">{{c_request.status}} </span>
+                              <span *ngIf="c_request.status ==0" class="badge badge-warning">Pending </span>
+                              <span *ngIf="c_request.status ==2" class="badge badge-warning">Canceled </span>
+                              <span *ngIf="c_request.status" class="badge badge-success">Approve </span>
 
                           </td>
                             <td>
                               {{c_request.created_at}} 
                           </td>
                           <td class="center">
-                            <div class="btn-group" dropdown>
+                            <mat-menu #appMenu="matMenu">
+                              <button *ngIf="!c_request.status" [swal]="post_contri_trans" mat-menu-item>Approve Request</button>
+                              <swal
+                                #post_contri_trans
+                                title="Are You Sure You want to Approve this Request?"
+                                text="This cannot be undone"
+                                type="warning"
+                                [showCancelButton]="true"
+                                [focusCancel]="true"
+                                (confirm)="approveChangeContribution(c_request)">
+                              </swal>
+                            </mat-menu>
+
+                            <button mat-icon-button *ngIf="user?.role_id != 4" [matMenuTriggerFor]="appMenu">
+                              <mat-icon>more_vert</mat-icon>
+                            </button>
+
+                            <!-- <div class="btn-group" dropdown>
                             <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
                               <i class="fa fa-ellipsis-v"></i><span class="caret"></span>
                             </button>
@@ -291,7 +309,7 @@
                                   </a>
                               </li>
                             </ul>
-                          </div>
+                          </div> -->
                           </td>
                       </tr>
                   </tbody>
@@ -332,8 +350,34 @@
                                 {{item?.created_at}} 
                             </td>
                             <td class="center">
+                              <mat-menu #withdraw_menu="matMenu">
+                              <button *ngIf="!item.status" [swal]="post_width_trans" mat-menu-item>Approve Request</button>
+                              <swal
+                                #post_width_trans
+                                title="Are You Sure You want to Approve this Withdrawal Request?"
+                                text="This cannot be undone"
+                                type="warning"
+                                [showCancelButton]="true"
+                                [focusCancel]="true"
+                                (confirm)="approveWidthdrawalRequest(item.id)">
+                              </swal>
+                              <button *ngIf="!item.status" [swal]="cancel_contri_trans" mat-menu-item>Cancel Request</button>
+                              <swal
+                                #cancel_width_trans
+                                title="Are You Sure You want to Cancel this Withdrawal Request?"
+                                text="This cannot be undone"
+                                type="warning"
+                                [showCancelButton]="true"
+                                [focusCancel]="true"
+                                (confirm)="cancelWidthdrawalRequest(item.id)">
+                              </swal>
 
-                              <div class="btn-group" dropdown>
+                            </mat-menu>
+
+                            <button mat-icon-button *ngIf="user?.role_id != 4" [matMenuTriggerFor]="withdraw_menu">
+                              <mat-icon>more_vert</mat-icon>
+                            </button>
+                              <!-- <div class="btn-group" dropdown>
                                 <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
                                   Inbox<span class="caret"></span>
                                 </button>
@@ -352,7 +396,7 @@
                                     </a>
                                   </li>
                                 </ul>
-                              </div>
+                              </div> -->
                             </td>
                         </tr>
                     </tbody>
