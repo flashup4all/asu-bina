@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -13,6 +13,7 @@ import { TargetSavingsService } from '../../target-savings/target-savings.servic
 import { WidthdrawalsService } from '../../manage-widthdrawals/widthdrawals.service';
 import * as moment from 'moment';
 import { TableExportService } from '../../../shared/services/index';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-view-member',
@@ -65,6 +66,10 @@ export class ViewMemberComponent implements OnInit {
     total_contribution_amount;
     total_deduction_amount;
     deduction_type_list;
+    image_url;
+    passport;
+   @ViewChild('fileInput') fileInput: ElementRef;
+
     @ViewChild('newLoanRequestModal') public newLoanRequestModal : ModalDirective;
     @ViewChild('newContributionModal') public newContributionModal : ModalDirective;
     @ViewChild('newRepaymentModal') public newRepaymentModal : ModalDirective;
@@ -86,6 +91,7 @@ export class ViewMemberComponent implements OnInit {
       private loanSettingsService : LoanSettingsService,
     	private targetService : TargetSavingsService
     	) {
+        this.image_url = environment.api.imageUrl+'profile/member/';
         this.vendor = JSON.parse(this.localService.getVendor());
         this.user = JSON.parse(this.localService.getUser());
         //this.router.events.subscribe((val) => {
@@ -332,6 +338,7 @@ export class ViewMemberComponent implements OnInit {
     updateMember(data, id)
     {
       this.submitPending = true;
+      data = this.prepareSave(data);
       this.memberService.updateMember(data, id).subscribe((response) => {
         if(response.success)
         {
@@ -348,6 +355,36 @@ export class ViewMemberComponent implements OnInit {
         this.localService.showError(error,'Operation Unsuccessfull');
       });
     }
+
+    onFileChange(event) {
+      if(event.target.files.length > 0) {
+        let file = event.target.files[0];
+        this.passport = file;
+      }
+    }
+
+    clearFile() {
+      //this.newMemberForm.get('passport').setValue(null);
+      this.fileInput.nativeElement.value = '';
+    }
+
+    private prepareSave(data): any {
+      let input = new FormData();
+      input.append('first_name', data.first_name);
+      input.append('last_name', data.last_name);
+      input.append('middle_name', data.middle_name);
+      input.append('contribution', data.contribution);
+      input.append('gender', data.gender);
+      input.append('date_of_birth', data.date_of_birth);
+      input.append('account_number', data.account_number);
+      input.append('membership_date', data.membership_date);
+      input.append('email', data.email);
+      input.append('phone1', data.phone1);
+      input.append('passport', this.passport);
+      input.append('vendor_id', this.vendor.id);
+      input.append('approved_by', JSON.parse(this.localService.getUser()).id);
+      return input;
+  }
 
     runContribution(formValues)
     {

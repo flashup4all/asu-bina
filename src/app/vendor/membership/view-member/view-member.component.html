@@ -2,8 +2,9 @@
     <div class="card-body" >
         <div class="profile-head media" style="padding-bottom: 20px;">
             <a href="#" class="col-md-3 pull-left">
-                <img *ngIf="!member?.passport" class="rounded-circle" src="assets/images/avata.png">
-                <img *ngIf="member?.passport" class="rounded-circle" style="width: 150px; height: 150px;" [src]="sanitizer.bypassSecurityTrustUrl(member.passport) || assets/images/avata.png">
+                <img *ngIf="member?.passport ==''" class="rounded-circle" src="assets/images/avata.png">
+                <img *ngIf="member?.passport != ''" title="{{member?.first_name}} {{member?.middle_name}} {{member?.last_name}}" src="{{image_url}}{{member?.passport}}" class="img-avatar" style="width: 150px; height: 150px;">
+                <!-- <img *ngIf="member?.passport" class="rounded-circle" style="width: 150px; height: 150px;" [src]="sanitizer.bypassSecurityTrustUrl(member.passport) || assets/images/avata.png"> -->
             </a>
             <div class="col-md-9">
                 <h2>
@@ -113,6 +114,14 @@
                                       <div class="form-group">
                                         <label>Date of Birth:</label>
                                         <input type="date" class="form-control" [ngModel]="member?.date_of_birth" value="" name="date_of_birth" ngModel>
+                                      </div>
+                                      <div class="form-group">
+                                        <label class="control-label" for="basicinput">Passport</label>
+                                            <!-- <img *ngIf="!file_srcs[0]" src="assets/images/avata.png">
+                                            <img [attr.src]='file_srcs[0]' *ngIf="file_srcs[0]" alt="" width="250px" height="250px" /> -->
+                                            <!-- <input type="file" name="" (change)="fileChange(input)" #input> -->
+                                            <input type="file" id="avatar" (change)="onFileChange($event)" #fileInput>
+                                            <button type="button" class="btn btn-sm btn-default" (click)="clearFile()">clear file</button>
                                       </div>
                                     <h4>Custom Form Field</h4>
                                     <div ngModelGroup="member_details" class="control-group" *ngFor="let item of membersFormPoolList;  let i = index; ">

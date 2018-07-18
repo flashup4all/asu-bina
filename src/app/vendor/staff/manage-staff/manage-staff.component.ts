@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { Subject } from 'rxjs/Rx';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of'
@@ -7,6 +7,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { LocalService } from '../../../storage/local.service';
 import { StaffService } from '../staff.service';
 import { MembersService } from '../../membership/members.service';
+import { environment } from '../../../../environments/environment';
 
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -54,9 +55,10 @@ export class ManageStaffComponent implements OnInit {
 	public debug_size_before: string[] = [];
 	 
 	public debug_size_after: string[] = [];
+  image_url
   queryField: FormControl = new FormControl();
   results: any[] = [];
-
+  @ViewChild('fileInput') fileInput: ElementRef;
 	@ViewChild('newStaffModal') public newStaffModal :ModalDirective;
 	@ViewChild('editStaffModal') public editStaffModal :ModalDirective;
 	@ViewChild('newStaffPositionModal') public newStaffPositionModal :ModalDirective;
@@ -70,6 +72,7 @@ export class ManageStaffComponent implements OnInit {
       private manageMemberService : MembersService,
       private changeDetectorRef: ChangeDetectorRef
   		) { 
+        this.image_url = environment.api.imageUrl+'profile/staff/';
   		this.getStaffPosition();
       this.getStaff();
       this.account_status = this.localService.account_status();
@@ -113,7 +116,7 @@ export class ManageStaffComponent implements OnInit {
 	        gender :[null],
 	        user_position_id :[null, Validators.compose([Validators.required])],
 	        status :'',
-	        //passport: '',
+	        passport: '',
 	        //approved_by :JSON.parse(this.localService.getUser()).id,
 	        //vendor_id :JSON.parse(this.localService.getVendor()).id
 	  		});
@@ -246,10 +249,11 @@ export class ManageStaffComponent implements OnInit {
       {
         data.contact_phone = '234'+(data.contact_phone.substr(1));
       }
-  		data['passport'] = this.passport;
-      data['approved_by'] = JSON.parse(this.localService.getUser()).id
-      data['vendor_id'] = JSON.parse(this.localService.getVendor()).id
+  		// data['passport'] = this.passport;
+    //   data['approved_by'] = JSON.parse(this.localService.getUser()).id
+    //   data['vendor_id'] = JSON.parse(this.localService.getVendor()).id
   		this.submitPending = true;
+      data = this.prepareSave();
   		this.manageStaffService.addStaff(data).subscribe((response) => {
   	 	if(response.success = true)
 			{
@@ -257,6 +261,7 @@ export class ManageStaffComponent implements OnInit {
 	 			//this.getStaff();
         this.staffList.push(data)
         this.newStaffForm.reset();
+        this.clearFile()
 	 			this.newStaffModal.hide();
 				this.localService.showSuccess(response.message,'Operation Successfull');
 			}
@@ -333,14 +338,16 @@ export class ManageStaffComponent implements OnInit {
     updateStaff(data, id)
     {
       this.submitPending = true;
-      data['id'] = this.editStaffData.id
-      data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;
-      data['passport'] = this.passport;
+      // data['id'] = this.editStaffData.id
+      // data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;
+      // data['passport'] = this.passport;
+      data = this.prepareSave();
       this.manageStaffService.updateStaff(data, this.editStaffData.id).subscribe((response) => {
         if(response.success = true)
         {
           this.submitPending = false;
            this.getStaff();
+          this.clearFile()
            this.file_srcs = [];
            this.editStaffModal.hide();
           this.localService.showSuccess(response.message,'Operation Successfull');
@@ -451,160 +458,34 @@ export class ManageStaffComponent implements OnInit {
        });
   }
 
+  private prepareSave(): any {
+      let input = new FormData();
+      input.append('first_name', this.newStaffForm.get('first_name').value);
+      input.append('last_name', this.newStaffForm.get('last_name').value);
+      input.append('middle_name', this.newStaffForm.get('middle_name').value);
+      input.append('gender', this.newStaffForm.get('gender').value);
+      input.append('dob', this.newStaffForm.get('dob').value);
+      input.append('user_position_id', this.newStaffForm.get('user_position_id').value);
+      input.append('status', this.newStaffForm.get('status').value);
+      input.append('email', this.newStaffForm.get('email').value);
+      input.append('mobile_phone', this.newStaffForm.get('mobile_phone').value);
+      input.append('contact_phone', this.newStaffForm.get('contact_phone').value);
+      input.append('passport', this.newStaffForm.get('passport').value);
+      input.append('vendor_id', this.vendor.id);
+      input.append('approved_by', JSON.parse(this.localService.getUser()).id);
+      return input;
+  }
 
-  	fileChange(input){
- 
-    this.readFiles(input.files);
-     
-    }
-     
-    readFile(file, reader, callback){
-    reader.onload = () => {
-       
-       //this.passport = file;
-       this.passport = reader.result;
-    callback(reader.result);
-      
-     
-    this.model.passport=reader.result;
-     
-    console.log(reader.result);
-     
-    }
- 
- 
-    reader.readAsDataURL(file);
-     
-    }
- 
-    readFiles(files, index=0){
-     
-    // Create the file reader
-     
-    let reader = new FileReader();
-     
-     
-    // If there is a file
-     
-    if(index in files){
-     
-    // Start reading this file
-     
-    this.readFile(files[index], reader, (result) =>{
-     
-    // Create an img element and add the image file data to it
-     
-    var img = document.createElement("img");
-     
-    img.src = result;
-     
-     
-    // Send this img to the resize function (and wait for callback)
-     
-    this.resize(img, 250, 250, (resized_jpeg, before, after)=>{
-     
-    // For debugging (size in bytes before and after)
-     
-    this.debug_size_before.push(before);
-     
-    this.debug_size_after.push(after);
-     
-     
-    // Add the resized jpeg img source to a list for preview
-     
-    // This is also the file you want to upload. (either as a
-     
-    // base64 string or img.src = resized_jpeg if you prefer a file).
-     
-    this.file_srcs.push(resized_jpeg);
-     
-     
-    // Read the next file;
-     
-    this.readFiles(files, index+1);
-     
-    });
-     
-    });
-     
-    }else{
-     
-    // When all files are done This forces a change detection
-     
-    this.changeDetectorRef.detectChanges();
-     
-    }
-     
-    }
-     
-    resize(img, MAX_WIDTH:number, MAX_HEIGHT:number, callback){
-     
-    // This will wait until the img is loaded before calling this function
-     
-    return img.onload = () => {
-     
-     
-    // Get the images current width and height
-     
-    var width = img.width;
-     
-    var height = img.height;
-     
-     
-    // Set the WxH to fit the Max values (but maintain proportions)
-     
-    if (width > height) {
-     
-    if (width > MAX_WIDTH) {
-     
-    height *= MAX_WIDTH / width;
-     
-    width = MAX_WIDTH;
-     
-    }
-     
-    } else {
-     
-    if (height > MAX_HEIGHT) {
-     
-    width *= MAX_HEIGHT / height;
-     
-    height = MAX_HEIGHT;
-     
-    }
-     
-    }
-     
-    // create a canvas object
-     
-    var canvas = document.createElement("canvas");
-     
-     
-    // Set the canvas to the new calculated dimensions
-     
-    canvas.width = width;
-     
-    canvas.height = height;
-     
-    var ctx = canvas.getContext("2d");
-     
-     
-    ctx.drawImage(img, 0, 0,  width, height);
-     
-     
-    // Get this encoded as a jpeg
-     
-    // IMPORTANT: 'jpeg' NOT 'jpg'
-     
-    var dataUrl = canvas.toDataURL('image/jpeg');
-     
-     
-    // callback with the results
-     
-    callback(dataUrl, img.src.length, dataUrl.length);
-     
-    };
-     
+  onFileChange(event) {
+      if(event.target.files.length > 0) {
+        let file = event.target.files[0];
+        this.newStaffForm.get('passport').setValue(file);
+      }
     }
 
+    clearFile() {
+      this.newStaffForm.get('passport').setValue(null);
+      this.fileInput.nativeElement.value = '';
+    }
+  	
 }

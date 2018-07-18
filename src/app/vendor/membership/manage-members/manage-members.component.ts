@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { Router} from '@angular/router';
 
 import { Subject } from 'rxjs/Rx';
@@ -10,6 +10,8 @@ import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@ang
 import { LocalService } from '../../../storage/local.service';
 import { MembersService } from '../members.service';
 import { TableExportService } from '../../../shared/services/index';
+import { environment } from '../../../../environments/environment';
+
 //import { XlsxToJsonService } from '../../../shared/xls/index'
 
 @Component({
@@ -39,6 +41,7 @@ export class ManageMembersComponent implements OnInit {
 	public editMemberData;
 	public vendor;
 	items;
+	image_url;
 	passwordFormCheck: boolean;
 	searching: boolean;
 	searchFailed: boolean;
@@ -62,6 +65,7 @@ export class ManageMembersComponent implements OnInit {
 	questions = [];
 	filterMemberForm: FormGroup;
 	results: any[] = [];
+	 @ViewChild('fileInput') fileInput: ElementRef;
 	@ViewChild('passwordModal') public passwordModal : ModalDirective;
 	constructor(
 		private localService : LocalService,
@@ -76,7 +80,7 @@ export class ManageMembersComponent implements OnInit {
 			this.getMembers()
 			this.vendor = JSON.parse(this.localService.getVendor());
 		    this.user = JSON.parse(this.localService.getUser());
-			
+			this.image_url = environment.api.imageUrl+'profile/member/';
 			/*this.queryField.valueChanges
 				.debounceTime(200)
 				.distinctUntilChanged()
@@ -124,12 +128,13 @@ export class ManageMembersComponent implements OnInit {
  */
 
 		this.newMemberForm = this._fb.group({
-			first_name:[null, Validators.compose([Validators.required, Validators.email])],
-			middle_name:[null, Validators.compose([Validators.required, Validators.email])],
+			first_name:[null, Validators.compose([Validators.required])],
+			middle_name:[null, Validators.compose([Validators.required])],
 			last_name:[null],
 			contribution:[null],
 			gender:[null],
 			date_of_birth:'',
+			passport:'',
 			account_number:'',
 			membership_date:[null],
 			email:[null, Validators.compose([Validators.required, Validators.email])],
@@ -260,12 +265,15 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	addMember(data) : void
 	{
+    console.log(data)
 	    this.submitPending = true;
+	     data = this.prepareSave();
+    console.log(data)
 		// this.items = this.newMemberForm.get('memberData') as FormArray;
   		//this.items.push(this.initAddress());
-		data['vendor_id'] = this.vendor.id;
-		data['approved_by'] = JSON.parse(this.localService.getUser()).id;
-		data['passport'] = this.passport;
+		// data['vendor_id'] = this.vendor.id;
+		// data['approved_by'] = JSON.parse(this.localService.getUser()).id;
+		//data['passport'] = this.passport;
 		//data['phone1'] = '234'+data.phone1.substr(1);
 		//console.log(data)
 		this.manageMemberService.addMember(data).subscribe((response) => {
@@ -273,11 +281,10 @@ export class ManageMembersComponent implements OnInit {
 	      	{
 	        	this.submitPending = false;
 	        	this.newMemberForm.reset();
-	        	this.getMembers();
-	        	this.file_srcs[0] = null
-	        	this.passport = null
-	        	//this.membersList.push(data)
-	        	this.localService.showSuccess(response.message,'Operation Successfull');
+	        	//this.getMembers();
+	        	this.clearFile();
+	        	this.membersList.unshift(data)
+	        	// this.localService.showSuccess(response.message,'Operation Successfull');
 		      }
 		      else{
 		        this.submitPending = false;
@@ -290,6 +297,25 @@ export class ManageMembersComponent implements OnInit {
 		    this.localService.showError(error,'Operation Unsuccessfull');
 		})
 	}
+
+	private prepareSave(): any {
+	    let input = new FormData();
+	    input.append('first_name', this.newMemberForm.get('first_name').value);
+	    input.append('last_name', this.newMemberForm.get('last_name').value);
+	    input.append('middle_name', this.newMemberForm.get('middle_name').value);
+	    input.append('contribution', this.newMemberForm.get('contribution').value);
+	    input.append('gender', this.newMemberForm.get('gender').value);
+	    input.append('date_of_birth', this.newMemberForm.get('date_of_birth').value);
+	    input.append('account_number', this.newMemberForm.get('account_number').value);
+	    input.append('membership_date', this.newMemberForm.get('membership_date').value);
+	    input.append('email', this.newMemberForm.get('email').value);
+	    input.append('phone1', this.newMemberForm.get('phone1').value);
+	    input.append('passport', this.newMemberForm.get('passport').value);
+	    input.append('vendor_id', this.vendor.id);
+	    input.append('approved_by', JSON.parse(this.localService.getUser()).id);
+	    return input;
+	}
+
 	logForm(data){
 		console.log(data)
 
@@ -481,158 +507,29 @@ export class ManageMembersComponent implements OnInit {
 			}
 		});
 	}
-	fileChange(input){
- 
-    this.readFiles(input.files);
-     
+	
+	onFileChange(event) {
+    if(event.target.files.length > 0) {
+      let file = event.target.files[0];
+      this.newMemberForm.get('passport').setValue(file);
     }
-     
-    readFile(file, reader, callback){
-    reader.onload = () => {
-       
-       //this.passport = file;
-       this.passport = reader.result;
-    callback(reader.result);
-      
-     
-    this.passport=reader.result;
-     
-    //console.log(reader.result);
-     
-    }
- 
- 
-    reader.readAsDataURL(file);
-     
-    }
- 
-    readFiles(files, index=0){
-     
-    // Create the file reader
-     
-    let reader = new FileReader();
-     
-     
-    // If there is a file
-     
-    if(index in files){
-     
-    // Start reading this file
-     
-    this.readFile(files[index], reader, (result) =>{
-     
-    // Create an img element and add the image file data to it
-     
-    var img = document.createElement("img");
-     
-    img.src = result;
-     
-     
-    // Send this img to the resize function (and wait for callback)
-     
-    this.resize(img, 250, 250, (resized_jpeg, before, after)=>{
-     
-    // For debugging (size in bytes before and after)
-     
-    this.debug_size_before.push(before);
-     
-    this.debug_size_after.push(after);
-     
-     
-    // Add the resized jpeg img source to a list for preview
-     
-    // This is also the file you want to upload. (either as a
-     
-    // base64 string or img.src = resized_jpeg if you prefer a file).
-     
-    this.file_srcs.push(resized_jpeg);
-     
-     
-    // Read the next file;
-     
-    this.readFiles(files, index+1);
-     
-    });
-     
-    });
-     
-    }else{
-     
-    // When all files are done This forces a change detection
-     
-    this.changeDetectorRef.detectChanges();
-     
-    }
-     
-    }
-     
-    resize(img, MAX_WIDTH:number, MAX_HEIGHT:number, callback){
-     
-    // This will wait until the img is loaded before calling this function
-     
-    return img.onload = () => {
-     
-     
-    // Get the images current width and height
-     
-    var width = img.width;
-     
-    var height = img.height;
-     
-     
-    // Set the WxH to fit the Max values (but maintain proportions)
-     
-    if (width > height) {
-     
-    if (width > MAX_WIDTH) {
-     
-    height *= MAX_WIDTH / width;
-     
-    width = MAX_WIDTH;
-     
-    }
-     
-    } else {
-     
-    if (height > MAX_HEIGHT) {
-     
-    width *= MAX_HEIGHT / height;
-     
-    height = MAX_HEIGHT;
-     
-    }
-     
-    }
-     
-    // create a canvas object
-     
-    var canvas = document.createElement("canvas");
-     
-     
-    // Set the canvas to the new calculated dimensions
-     
-    canvas.width = width;
-     
-    canvas.height = height;
-     
-    var ctx = canvas.getContext("2d");
-     
-     
-    ctx.drawImage(img, 0, 0,  width, height);
-     
-     
-    // Get this encoded as a jpeg
-     
-    // IMPORTANT: 'jpeg' NOT 'jpg'
-     
-    var dataUrl = canvas.toDataURL('image/jpeg');
-     
-     
-    // callback with the results
-     
-    callback(dataUrl, img.src.length, dataUrl.length);
-     
-    };
-     
-    }
+  }
+
+  onSubmit() {
+    const formModel = this.prepareSave();
+    console.log(formModel)
+    this.submitPending = true;
+    // In a real-world app you'd have a http request / service call here like
+    // this.http.post('apiUrl', formModel)
+    setTimeout(() => {
+      // FormData cannot be inspected (see "Key difference"), hence no need to log it here
+      alert('done!');
+      this.submitPending = false;
+    }, 1000);
+  }
+
+  clearFile() {
+    this.newMemberForm.get('passport').setValue(null);
+    this.fileInput.nativeElement.value = '';
+  }
 }

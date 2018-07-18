@@ -19,7 +19,15 @@ export class MembersService {
   	 */
   	addMember(data)
   	{
-  		return this.http.post(environment.api.url+'CoopManagement/create-member',JSON.stringify(data), this.localService.header())
+       let headers = new Headers();
+            //headers.append('content-type', 'application/json');
+            headers.set('Accept', 'application/json');
+        let token = this.localService.getToken();
+            if(token) {
+                headers.append('Authorization', 'Bearer ' + token);      
+            }
+        let request       = new RequestOptions({ headers: headers });
+  		return this.http.post(environment.api.url+'CoopManagement/create-member',data, request)
   						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
 
@@ -64,7 +72,15 @@ export class MembersService {
   	 */
  	  updateMember(data, id)
   	{
-  		return this.http.post(environment.api.url+'CoopManagement/update-member-profile/'+JSON.parse(this.localService.getVendor()).id+'/'+id,JSON.stringify(data), this.localService.header())
+      let headers = new Headers();
+            //headers.append('content-type', 'application/json');
+            headers.set('Accept', 'application/json');
+        let token = this.localService.getToken();
+            if(token) {
+                headers.append('Authorization', 'Bearer ' + token);      
+            }
+        let request       = new RequestOptions({ headers: headers });
+  		return this.http.post(environment.api.url+'CoopManagement/update-member-profile/'+JSON.parse(this.localService.getVendor()).id+'/'+id, data, request)
   						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
 
