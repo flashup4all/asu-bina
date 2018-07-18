@@ -281,9 +281,9 @@ export class ManageMembersComponent implements OnInit {
 	      	{
 	        	this.submitPending = false;
 	        	this.newMemberForm.reset();
-	        	//this.getMembers();
+	        	this.getMembers();
 	        	this.clearFile();
-	        	this.membersList.unshift(data)
+	        	//this.membersList.unshift(data)
 	        	// this.localService.showSuccess(response.message,'Operation Successfull');
 		      }
 		      else{
