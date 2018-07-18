@@ -258,8 +258,8 @@ export class ManageStaffComponent implements OnInit {
   	 	if(response.success = true)
 			{
 				this.submitPending = false;
-	 			//this.getStaff();
-        this.staffList.push(data)
+	 			this.getStaff();
+        //this.staffList.push(data)
         this.newStaffForm.reset();
         this.clearFile()
 	 			this.newStaffModal.hide();
