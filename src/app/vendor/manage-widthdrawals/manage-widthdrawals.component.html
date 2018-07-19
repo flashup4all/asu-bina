@@ -36,20 +36,47 @@
 				                            {{item?.payment_method}} 
 				                        </td> -->
 				                        <td>
-				                            <span *ngIf="item.status == 'Cancelled'" class="badge badge-danger">{{item?.status}} </span>
-                                    		<span *ngIf="item.status == 'Approved'" class="badge badge-success">{{item?.status}} </span>
+				                        	<span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
+				                            <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
+                                    		<span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
 				                        </td>
 				                        <td>
 				                            {{item?.created_at}} 
 				                        </td>
 				                        <td class="center">
-				                         <div class="btn-group">
+				                        	<mat-menu #appMenu="matMenu">
+											  <button [swal]="approve_request" mat-menu-item *ngIf="item.status==0">Approve Request</button>
+											  <button [swal]="cancel_request" mat-menu-item *ngIf="item.status == 0 ">Cancel Request</button>
+											  <swal
+												  #approve_request
+												  title="Are You Sure You want to Approve this Withdrawal?"
+												  text="This cannot be undone"
+												  type="warning"
+												  [showCancelButton]="true"
+												  [focusCancel]="true"
+												  (confirm)="approveWidthdrawalRequest(item.id)">
+												</swal>
+												<swal
+												  #cancel_request
+												  title="Are You Sure You want to Cancel this Withdrawal?"
+												  text="This cannot be undone"
+												  type="warning"
+												  [showCancelButton]="true"
+												  [focusCancel]="true"
+												  (confirm)="cancelWidthdrawalRequest(item.id)">
+												</swal>
+											</mat-menu>
+
+											<button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appMenu">
+											  <mat-icon>more_vert</mat-icon>
+											</button>
+				                         <!-- <div class="btn-group">
 					                          <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
 					                            <span><i class="fa fa-ellipsis-v"></i></span>
 					                          </button>
 					                          <ul class="dropdown-menu" style="min-width:1px;     left: -66px;">
 			                                      <li>
-			                                        <a *ngIf="item.status != 'Approved'" (click)="approveWidthdrawalRequest(item.id)">
+			                                        <a >
 			                                          <i class="fa fa-check"> Approve Request</i>
 			                                        </a>
 			                                        <a *ngIf="item.status === 'Approved'">
@@ -57,12 +84,12 @@
 			                                        </a>
 			                                      </li>
 			                                      <li>
-			                                        <a *ngIf="item.status != 'Approved'" (click)="cancelWidthdrawalRequest(item.id)">
+			                                        <a >
 			                                          <i class="fa fa-times"> Cancel Request</i>
 			                                        </a>
 			                                      </li>
 			                                    </ul>
-					                        </div>
+					                        </div> -->
 				                        </td>
 				                    </tr>
 				                </tbody>

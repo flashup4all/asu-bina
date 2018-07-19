@@ -4,6 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalModule } from 'ngx-bootstrap';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 
+import { SharedModule } from '../../shared/shared.module';
+import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
+
 import { ManageWidthdrawalsRoutingModule } from './manage-widthdrawals-routing.module';
 import { ManageWidthdrawalsComponent } from './manage-widthdrawals.component';
 import { WidthdrawalsService } from './widthdrawals.service';
@@ -15,7 +18,9 @@ import { WidthdrawalsService } from './widthdrawals.service';
     FormsModule,
     ReactiveFormsModule,
     ModalModule.forRoot(),
-    TabsModule
+    TabsModule,
+    SharedModule,
+    SweetAlert2Module
   ],
   declarations: [ManageWidthdrawalsComponent],
   providers: [WidthdrawalsService]

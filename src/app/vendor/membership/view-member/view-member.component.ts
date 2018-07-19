@@ -56,6 +56,7 @@ export class ViewMemberComponent implements OnInit {
     deductionFilterForm: FormGroup;
     contributionFilterForm: FormGroup;
     submitPending:boolean;
+    btn_loader: boolean = false;
     public loanRequestForm : FormGroup;
     public loanrequestFilterForm : FormGroup;
     public withdrawalForm : FormGroup;
@@ -628,7 +629,66 @@ export class ViewMemberComponent implements OnInit {
       });
     }
 
+    /**
+   * @method approveWidthdrawalRequest
+   * approve widthdrawal requests
+   *  @return true/false
+   */
+  approveWidthdrawalRequest(id)
+  {
+    this.btn_loader = true;
+    let data = {
+      id : id,
+      vendor_id: this.vendor.id,
+      status: 'Approved',
+      approved_by: JSON.parse(this.localService.getUser()).id
+    }
+    this.withdrawalService.approveWidthdrawalRequest(data).subscribe((response) => {
+         if(response.success = true)
+      {
+        this.btn_loader = false;
+         this.getMemberWithdrawal()
+         this.getActualBalance();
+        this.localService.showSuccess(response.message,'Operation Successfull');
+      }
+      else{
+        this.localService.showError(response.message,'Operation Unsuccessfull');
+      }
+       }, (error) => {
+         this.btn_loader = false;
+         this.localService.showError('Error while performing this action, please try again later', 'Server Error')
+       });
+  }
 
+  /**
+   * @method cancelWidthdrawalRequest
+   * cancel widthdrawal requests
+   *  @return true/false
+   */
+  cancelWidthdrawalRequest(id)
+  {
+    this.btn_loader = true;
+    let data = {
+      id : id,
+      vendor_id: this.vendor.id,
+      status: 'Cancelled',
+      approved_by: JSON.parse(this.localService.getUser()).id
+    }
+    this.withdrawalService.cancelWidthdrawalRequest(data).subscribe((response) => {
+         if(response.success = true)
+      {
+        this.btn_loader = false;
+         this.getMemberWithdrawal()
+        this.localService.showSuccess(response.message,'Operation Successfull');
+      }
+      else{
+        this.localService.showError(response.message,'Operation Unsuccessfull');
+      }
+       }, (error) => {
+         this.btn_loader = false;
+         this.localService.showError('Error while performing this action, please try again later', 'Server Error')
+       });
+  }
     getActualBalance()
     {
       this.withdrawalService.getActualBalance(this.memberId).subscribe((response) => {

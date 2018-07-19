@@ -277,7 +277,7 @@ export class ManageMembersComponent implements OnInit {
 		//data['phone1'] = '234'+data.phone1.substr(1);
 		//console.log(data)
 		this.manageMemberService.addMember(data).subscribe((response) => {
-			if(response.success = true)
+			if(response.success)
 	      	{
 	        	this.submitPending = false;
 	        	this.newMemberForm.reset();

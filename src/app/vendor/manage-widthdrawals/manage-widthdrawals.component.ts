@@ -23,6 +23,7 @@ import { TableExportService } from '../../shared/services/index';
 export class ManageWidthdrawalsComponent implements OnInit {
 
 	public vendor;
+	user;
 	public widthdrawalsList = [];
 	toPage;
   	loader;
@@ -33,6 +34,7 @@ export class ManageWidthdrawalsComponent implements OnInit {
   		private widthdrawalService : WidthdrawalsService
   		) {
 		this.vendor = JSON.parse(this.localService.getVendor());
+        this.user = JSON.parse(this.localService.getUser());
 		this.getWidthdrawals();
   		}
 
@@ -97,6 +99,8 @@ export class ManageWidthdrawalsComponent implements OnInit {
 			else{
 				this.localService.showError(response.message,'Operation Unsuccessfull');
 			}
+  	 	}, (error) => {
+  	 		this.localService.showError('Error while performing this action, please try again later', 'Server Error')
   	 	});
 	}
 
@@ -122,6 +126,8 @@ export class ManageWidthdrawalsComponent implements OnInit {
 			else{
 				this.localService.showError(response.message,'Operation Unsuccessfull');
 			}
+  	 	}, (error) => {
+  	 		this.localService.showError('Error while performing this action, please try again later', 'Server Error')
   	 	});
 	}
 
