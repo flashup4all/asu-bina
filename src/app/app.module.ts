@@ -6,6 +6,7 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { HttpEvent, HttpErrorResponse, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {HttpModule, Http} from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import{ ToastModule } from 'ng2-toastr/ng2-toastr';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from './shared/shared.module';
@@ -99,6 +100,7 @@ import { SigninComponent } from './auth/signin/signin.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     HttpModule,
     BrowserAnimationsModule,
     BsDropdownModule.forRoot(),
