@@ -33,6 +33,17 @@ export class LocalService {
     {
         return window.localStorage.getItem('vendorProfile');
     }
+
+    /*set session*/
+    setSessionData(session_data): void
+    {
+        return window.localStorage.setItem('session_data', session_data);
+    }
+      /*get agency profile*/
+    getSessionData()
+    {
+        return window.localStorage.getItem('session_data');
+    }
       /*set user profile*/
     setUser(userProfile)
     {
@@ -58,16 +69,21 @@ export class LocalService {
     }
     check_posting_cash_role(amount)
     {
+      console.log(amount)
       let user = JSON.parse(this.getUser());
+      let position = user.user_position;
+      console.log(position)
       if(user.role_id == 2)
       {
         return true;
       } else if(user.role_id == 3 || user.role_id == 4)
       {
-        if(user.user_position.max_post_amount > amount)
+        if(position.post_max_amount >= amount)
         {
+          console.log('true')
           return true;
         } else{
+          console.log('fase')
           return false;
         }
       }

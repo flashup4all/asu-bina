@@ -36,15 +36,15 @@
                 <div class="col-md-12">
                   <div class="row">
                     <form style=" width:100%;" [formGroup]="filterMemberForm" (ngSubmit)="viewMember(filterMemberForm.value)">
+                        <label>Filter Members</label>
                         <div class="input-group">
-                          <label>Filter Members</label>
                             <input id="typeahead-http" formControlName="member" type="text" class="form-control" [class.is-invalid]="searchFailed" [ngbTypeahead]="search" placeholder="Filter Client" [inputFormatter]="formatter" [resultTemplate]="rt"/>
                             <button class="btn btn-success" type="submit" [disabled]="filterMemberForm.invalid">Manage</button>
                             <span *ngIf="searching">searching...</span>
                             <ng-template #rt let-r="result" let-t="term">
                              <div class="row">
                                 {{ r?.first_name}} {{ r?.middle_name}} {{ r?.last_name}} 
-                                <br> {{ r?.email}}
+                                <br> {{ r?.account_number}}
                                 <small> <i class="fa fa-phone"> </i> {{ r?.phone1 }}</small>
                              </div>
                             </ng-template>
@@ -75,6 +75,7 @@
                             <tr>
                               <th class="text-center"><i class="icon-people"></i></th>
                               <th>Name</th>
+                              <th>Acc No.</th>
                               <th class="text-center">Email</th>
                               <th>(&#8358;)Contribution</th>
                               <th>status</th>
@@ -131,7 +132,6 @@
                                 <div class="avatar">
                                   <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
                                   <img *ngIf="item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="{{image_url}}{{item.passport}}" class="img-avatar">
-                                  <!-- <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(item.passport)" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" class="img-avatar"> -->
                                   <span class="avatar-status badge-success"></span>
                                 </div>
                               </td>
@@ -140,6 +140,9 @@
                                 <div class="small text-muted">
                                   <span>{{item?.gender}}</span> | {{item?.phone1 || 'nil'}}
                                 </div>
+                              </td>
+                              <td>
+                                {{item?.account_number}}
                               </td>
                               <td class="text-center">
                                 {{item.email}}
@@ -354,3 +357,7 @@
        </div>
      </div>
 </div>
+
+<style type="text/css">
+  .dropdown-menu.show {width: 100%;}
+</style>

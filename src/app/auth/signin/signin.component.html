@@ -7,6 +7,7 @@
     			<form role="form" [formGroup]="signinForm" method="POST" (ngSubmit)="auth(signinForm.value)">
 		            <div class="card-body">
 		              <h1>Login</h1>
+		              <p class="alert alert-danger" *ngIf="device_info">Can't Login in because you are already login in on a different device. {{ device_info?.browser }} browser, {{ device_info?.os }} OS</p>
 		              <p class="text-muted">Sign In to your account</p>
 		              <div class="input-group mb-3">
 		                <span class="input-group-addon"><i class="icon-user"></i></span>

@@ -52,6 +52,8 @@ export class MemberContributionsComponent implements OnInit {
     contributionFilterForm: FormGroup;
     submitPending:boolean;
     form_loader: boolean = false;
+    btn_loader : boolean = false;
+    approve_btn_loader : boolean = false;
     files;
     current_year = moment().format('YYYY');
 
@@ -361,6 +363,7 @@ export class MemberContributionsComponent implements OnInit {
 
     approve_contribution(id, status)
     {
+      this.approve_btn_loader = true;
       let data = {
         id: id,
         approved_by: this.user.id,
@@ -370,35 +373,42 @@ export class MemberContributionsComponent implements OnInit {
       
       this.contributionService.approve_contribution(data).subscribe((response) => {
         if (response.success) {
+      this.approve_btn_loader = false;
             this.get_member_contribution_plan();
             this.localService.showSuccess(response.message,'Operation Successfull');
           }else{
+      this.approve_btn_loader = false;
             this.localService.showError(response.message,'Operation Unsuccessfull');
           }
         }, (error) => {
+      this.approve_btn_loader = false;
           this.form_loader = false;
                 this.localService.showError(error,'Operation Unsuccessfull');
         });
     }
 
-    post_transaction(transaction_id)
+    post_transaction(transaction_id, status)
     {
+      this.btn_loader = true;
       let data = {
         id: transaction_id,
         approved_by: this.user.id,
         vendor_id: this.vendor.id,
-        status: 1
+        status: status
       }
       
       this.contributionService.post_contribution_history(data).subscribe((response) => {
         if (response.success) {
+            this.btn_loader = false;
             this.getMemberContributions();
             this.view_member_component.getActualBalance();
             this.localService.showSuccess(response.message,'Operation Successfull');
           }else{
+            this.btn_loader = false;
             this.localService.showError(response.message,'Operation Unsuccessfull');
           }
         }, (error) => {
+            this.btn_loader = false;
           this.form_loader = false;
                 this.localService.showError(error,'Operation Unsuccessfull');
         });

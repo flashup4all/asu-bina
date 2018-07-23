@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalService } from '../../storage/local.service';
+import { AuthService } from '../../auth/auth.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-header',
@@ -10,15 +12,34 @@ export class AppHeaderComponent {
 
 	user;
   vendor;
-	constructor(private localService: LocalService, private router: Router) {
+  session_data;
+	constructor(
+    private localService: LocalService, 
+    private router: Router,
+    private authService : AuthService,
+    ) {
 
     this.user = JSON.parse(this.localService.getUser());
-		this.vendor = JSON.parse(this.localService.getVendor());
-	}
+    this.vendor = JSON.parse(this.localService.getVendor());
+		this.session_data = JSON.parse(this.localService.getSessionData());
+	  //console.log(this.session_data)
+  }
 	logout()
-  	{
-      window.localStorage.clear()
-  		// this.localService.clearStorage();
-  		this.router.navigate(['auth'])
-  	}
+	{
+		// this.localService.clearStorage();
+    this.authService.logout(this.session_data.id).subscribe((response) => {
+      if(response.success)
+      {
+        window.localStorage.clear()
+        this.router.navigate(['auth'])
+      }
+    }, (error) => {
+        window.localStorage.clear()
+        this.router.navigate(['auth'])
+    })
+	}
+  format_date(date)
+  {
+    return moment(date)
+  }
 }

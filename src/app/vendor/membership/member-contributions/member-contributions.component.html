@@ -47,7 +47,8 @@
 		                    </td>
 		                    <td class="center">
 		                    	<mat-menu #appM="matMenu">
-								  <button [swal]="approve_contri" mat-menu-item>Approve Plan</button>
+                        		<mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
+								  <button *ngIf="!item.status" [swal]="approve_contri" mat-menu-item>Approve Plan</button>
 								  <button [swal]="cancel_contri" mat-menu-item>Cancel Plan</button>
 								  <swal
 									  #approve_contri
@@ -154,8 +155,9 @@
 		                </td>
 		                  <td>
 		                    <mat-chip-list>
-			                    <mat-chip *ngIf="item.status" color="primary" selected="true">Posted</mat-chip>
-			                    <mat-chip *ngIf="!item.status" color="accent" selected="true">Pending</mat-chip>
+			                    <mat-chip *ngIf="item.status == 1 " color="primary" selected="true">Posted</mat-chip>
+			                     <mat-chip *ngIf="item.status == 2" color="warn" selected="true">Canceled</mat-chip>
+			                    <mat-chip *ngIf="item.status == 0" color="accent" selected="true">Pending</mat-chip>
 			                </mat-chip-list>
 		                </td>
 		                <td>
@@ -172,7 +174,8 @@
                         </td>
                         <td>
                         	<mat-menu #appMenu="matMenu">
-							  <button *ngIf="!item.status" [swal]="post_contri_trans" mat-menu-item>Post Transaction</button>
+                        		<mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
+							  <button [hidden]="item.status > 0" [swal]="post_contri_trans" mat-menu-item>Post Transaction</button>
 							  <swal
 								  #post_contri_trans
 								  title="Are You Sure You want to Approve this Transaction?"
@@ -180,7 +183,17 @@
 								  type="warning"
 								  [showCancelButton]="true"
 								  [focusCancel]="true"
-								  (confirm)="post_transaction(item.id)">
+								  (confirm)="post_transaction(item.id, 1)">
+								</swal>
+								 <button *ngIf="item.status != 2" [swal]="cancel_contri_trans" mat-menu-item>Cancel Transaction</button>
+							  <swal
+								  #cancel_contri_trans
+								  title="Are You Sure You want to Cancel this Transaction?"
+								  text="This cannot be undone"
+								  type="warning"
+								  [showCancelButton]="true"
+								  [focusCancel]="true"
+								  (confirm)="post_transaction(item.id, 2)">
 								</swal>
 							</mat-menu>
 

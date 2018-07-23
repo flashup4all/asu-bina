@@ -6,6 +6,7 @@ import { LocalService } from '../../storage/local.service';
 import { Title } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';
 import { DomainService } from '../../shared/services/domain.service';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'app-signin',
@@ -15,9 +16,10 @@ import { DomainService } from '../../shared/services/domain.service';
 export class SigninComponent implements OnInit {
 
  	public signinForm : FormGroup;
-    isDataAvailable: boolean = false;
+  isDataAvailable: boolean = false;
 	submitPending : boolean;
-  vendor
+  vendor;
+  device_info;
   	constructor( 
   		 private route : ActivatedRoute,
         private _fb : FormBuilder, 
@@ -25,8 +27,11 @@ export class SigninComponent implements OnInit {
   		private domainService : DomainService,
   		private localService : LocalService,
         private titleService: Title,
-  		private router : Router
-  		  ) { }
+  		private router : Router,
+      private deviceService: DeviceDetectorService
+  		  ) { 
+       
+    }
 
 	ngOnInit() {
     this.route.data
@@ -55,6 +60,7 @@ export class SigninComponent implements OnInit {
 	auth(data)
 	{
 		this.submitPending = true;
+    data['device_info'] = this.deviceService.getDeviceInfo();
 	    let auth = this.signinService.authenticate(data);
 	    auth.then(response => {
           if(response.success === 1){
@@ -64,15 +70,20 @@ export class SigninComponent implements OnInit {
             //this.user = response.user;
             this.localService.setUser(JSON.stringify(response.user));
             this.localService.setVendor(JSON.stringify(response.vendor));
+            this.localService.setSessionData(JSON.stringify(response.session_data));
             //this.jwt(response);
             this.authNavigate(response.user);
           }
           else{
               // if user login fails, trigger toastr error here with
               // response.error
+              this.device_info = JSON.parse(response.session_data.device_info)
+              console.log(this.device_info)
             // this.localService.notify(response.error, 'invalid login credentials', 'error');
             this.localService.showError(response.error, "Invalid Login Credentials");
             this.submitPending = false;
+            // this.device_info = JSON.parse(JSON.parse(this.localService.getSessionData()).device_info);
+            // console.log(this.device_info)
             //this.router.navigate(['/'])
           }
         })

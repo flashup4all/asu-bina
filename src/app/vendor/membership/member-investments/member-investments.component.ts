@@ -39,6 +39,8 @@ export class MemberInvestmentsComponent implements OnInit {
   currencies = currency;
   min_amount_check: boolean = false;
   max_amount_check: boolean = false;
+  btn_loader : boolean = false;
+  approve_btn_loader : boolean = false;
   min_amount_label;
   max_amount_label;
   member_id;
@@ -219,6 +221,7 @@ export class MemberInvestmentsComponent implements OnInit {
 
     approve_investment(id, status)
     {
+      this.approve_btn_loader = true;
       let data = {
         id: id,
         approved_by: this.user.id,
@@ -228,13 +231,16 @@ export class MemberInvestmentsComponent implements OnInit {
       
       this.investmentService.approve_investment(data).subscribe((response) => {
         if (response.success) {
+            this.approve_btn_loader = false;
             this.get_member_investment_plan();
             this.localService.showSuccess(response.message,'Operation Successfull');
           }else{
+            this.approve_btn_loader = false;
             this.localService.showError(response.message,'Operation Unsuccessfull');
           }
         }, (error) => {
-          this.investment_history_form_loader = false;
+            this.approve_btn_loader = false;
+            this.investment_history_form_loader = false;
                 this.localService.showError(error,'Operation Unsuccessfull');
         });
     }
@@ -375,23 +381,27 @@ export class MemberInvestmentsComponent implements OnInit {
         // code...
       }
     }
-    post_transaction(transaction_id)
+    post_transaction(transaction_id, status)
     {
+      this.btn_loader = true;
       let data = {
         id: transaction_id,
         approved_by: this.user.id,
         vendor_id: this.vendor.id,
-        status: 1
+        status: status
       }
       
       this.investmentService.post_investment_history(data).subscribe((response) => {
         if (response.success) {
+          this.btn_loader = false;
             this.get_member_investment_history();
             this.localService.showSuccess(response.message,'Operation Successfull');
           }else{
+            this.btn_loader = false;
             this.localService.showError(response.message,'Operation Unsuccessfull');
           }
         }, (error) => {
+          this.btn_loader = false;
           this.investment_history_form_loader = false;
                 this.localService.showError(error,'Operation Unsuccessfull');
         });

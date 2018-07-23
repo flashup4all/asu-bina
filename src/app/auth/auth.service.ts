@@ -48,5 +48,10 @@ export class AuthService {
 	    }
    	}
 
+   	logout(id)
+	{
+		return this.http.get(this.url+'auth/logout/'+id, this.localService.header())
+            .map((response: Response) => response.json()).catch(this.handleErrors);
+	}
 
 }
