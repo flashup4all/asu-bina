@@ -12,6 +12,7 @@ import { SharedModule } from './shared/shared.module';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 import { DomainService } from './shared/services/index';
 import { DeviceDetectorModule } from 'ngx-device-detector';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive'; 
 
 import { AuthRoutesResolver } from './shared/resolvers/index';
 import { AuthService } from './auth/auth.service';
@@ -110,6 +111,7 @@ import { SigninComponent } from './auth/signin/signin.component';
     SharedModule,
     SweetAlert2Module.forRoot(),
     DeviceDetectorModule.forRoot(),
+    NgIdleKeepaliveModule.forRoot(),
 
   ],
   declarations: [
