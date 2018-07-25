@@ -73,4 +73,10 @@ export class WidthdrawalsService {
       return this.http.post(environment.api.url+'CoopManagement/widthdrawal/create', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
+
+    filter_withdrawal(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/widthdrawal/filter', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
 }

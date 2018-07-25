@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalModule } from 'ngx-bootstrap';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -20,7 +21,8 @@ import { WidthdrawalsService } from './widthdrawals.service';
     ModalModule.forRoot(),
     TabsModule,
     SharedModule,
-    SweetAlert2Module
+    SweetAlert2Module,
+    NgbModule,
   ],
   declarations: [ManageWidthdrawalsComponent],
   providers: [WidthdrawalsService]

@@ -8,22 +8,74 @@
 			            	<div style="margin-bottom: 4px">
 			            		<button style="margin-left:5px;" (click)="exportTable('xls', 'withdrawal_table')" class="btn btn-outline btn-success">Export table</button>
                         		<button class="btn btn-outline btn-success" (click)="printReciept('withdrawal_table')">Print</button>
+                        		<button class="btn btn-success" style="margin-left:5px" (click)="show_adv_form = !show_adv_form">Show Search</button>
 			            	</div>
+			            	<div class="row" *ngIf="show_adv_form">
+			            		<form [formGroup] = "filterForm" (ngSubmit) = "filter_withdrawal(filterForm.value)" style="width: 100%;">
+                                    <div class="row p-1">
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <label>Transaction ID</label>
+                                            <input type="text" formControlName = "transaction_id" class="form-control" name=""> 
+                                          </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <label>From</label>
+                                            <input type="date" formControlName = "from" class="form-control" name=""> 
+                                          </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <label>To</label>
+                                            <input type="date" formControlName = "to" class="form-control" name="">
+                                          </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+					                        <label for="typeahead-http">Filter Member <small>[name/phone no.]</small></label>
+					                        <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="searchFailed"formControlName="member_id" [ngbTypeahead]="search" placeholder="Filter Member" [inputFormatter]="formatter" [resultTemplate]="rt"/>
+					                        <span *ngIf="searching">searching...</span>
+					                        <ng-template #rt let-r="result" let-t="term">
+					                        	<img [src]="r.passport" style="width:30px; height:30px;">
+					                           {{ r.first_name}} {{ r.middle_name}} {{ r.last_name}}
+					                           <br>
+					                           {{ r.account_number}}
+					                        </ng-template>
+					                      </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+                                              <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
+                                              <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
+                                              <span *ngIf="!submitPending">Filter</span>
+                                            </button>
+                                             <!-- <button type="button" class="btn btn-primary" (click)="newContributionModal.show()" style="margin-top: 30px;"> Make a Contribution</button> -->
+                                          </div>
+                                        </div>
+                                        
+                                      </div>
+                                  </form>
+			            	</div>
+            				<mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
 			            	<table id="withdrawal_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
 				                <thead>
 				                    <tr>
-				                        <th>#</th>
+				                        <th>S/N</th>
 				                        <th>Name</th>
 				                        <th>Amount</th>
 				                        <!-- <th>Payment Method</th> -->
 				                        <th>Status</th>
-				                        <th>Date</th>
+				                        <th>Created</th>
+				                        <th>Created By</th>
+				                        <th>Approved</th>
 				                        <th>Actions</th>
 				                    </tr>
 				                </thead>
 				                <tbody>
-				                    <tr class="" *ngFor="let item of widthdrawalsList">
-				                        <td><input type="checkbox" name=""></td>
+				                    <tr class="" *ngFor="let item of widthdrawalsList; let i=index">
+				                        <td>{{ i + 1 }}</td>
 				                        <td>
 		                                  {{item.member.first_name}} 
 		                                  {{item.member.last_name}} 
@@ -41,7 +93,17 @@
                                     		<span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
 				                        </td>
 				                        <td>
-				                            {{item?.created_at}} 
+				                            {{item?.created_at | date: 'shortDate'}} 
+				                        </td>
+				                        <td>
+				                        	{{ item?.staff?.first_name}} 
+				                        	{{ item?.staff?.last_name}} 
+				                        	{{ item?.staff?.middle_name}}
+				                        </td>
+				                        <td>
+				                        	{{ item?.approved_by?.first_name}} 
+				                        	{{ item?.approved_by?.last_name}} 
+				                        	{{ item?.approved_by?.middle_name}}
 				                        </td>
 				                        <td class="center">
 				                        	<mat-menu #appMenu="matMenu">

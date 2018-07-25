@@ -211,7 +211,7 @@
                                                 </swal>
                                               </mat-menu>
 
-                                              <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appMenu">
+                                              <button *ngIf="item.status != 2 && localService.check_posting_cash_role(item.amount)" mat-icon-button [matMenuTriggerFor]="appMenu">
                                                 <mat-icon>more_vert</mat-icon>
                                               </button>
                                           </td>

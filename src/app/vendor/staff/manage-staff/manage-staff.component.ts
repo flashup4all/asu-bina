@@ -107,15 +107,15 @@ export class ManageStaffComponent implements OnInit {
 	        first_name  : [null, Validators.compose([Validators.required])],
 	        middle_name  : '',
 	        last_name  : [null, Validators.compose([Validators.required])],
-	        mobile_phone  : '',
+	        mobile_phone  : [null, Validators.compose([Validators.required])],
 	        contact_phone  : '',
 	        email: [null, Validators.compose([Validators.required, Validators.email])],
 	        dob:[null],  
 	        //password : [null, Validators.compose([Validators.required])],
 	        information_pool :[],
-	        gender :[null],
+	        gender :[null, Validators.compose([Validators.required])],
 	        user_position_id :[null, Validators.compose([Validators.required])],
-	        status :'',
+	        status :[null, Validators.compose([Validators.required])],
 	        passport: '',
 	        //approved_by :JSON.parse(this.localService.getUser()).id,
 	        //vendor_id :JSON.parse(this.localService.getVendor()).id
@@ -140,6 +140,13 @@ export class ManageStaffComponent implements OnInit {
   	 */
   	addStaffPosition(data)
   	{
+      this.newStaffForm.updateValueAndValidity();
+    if (this.newStaffForm.invalid) {
+      Object.keys(this.newStaffForm.controls).forEach(key => {
+        this.newStaffForm.get(key).markAsDirty();
+      });
+      return;
+    }
   		this.submitPending = true;
   		data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;
 

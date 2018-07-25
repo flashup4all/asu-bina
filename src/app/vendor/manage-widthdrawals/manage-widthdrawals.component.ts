@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-
+import { Observable } from 'rxjs/Observable';
+import {of} from 'rxjs/observable/of';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LocalService } from '../../storage/local.service';
 import { WidthdrawalsService } from './widthdrawals.service';
 import { TableExportService } from '../../shared/services/index';
+import { MembersService } from '../membership/members.service';
 
 @Component({
   selector: 'app-manage-widthdrawals',
@@ -27,10 +29,18 @@ export class ManageWidthdrawalsComponent implements OnInit {
 	public widthdrawalsList = [];
 	toPage;
   	loader;
+  	show_adv_form: boolean = false;
+  	submitPending: boolean = false;
+    filterForm: FormGroup;
+    searching = false;
+    searchFailed = false;
+    hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
+  
 	constructor(
 		private localService : LocalService,
       	private exportService: TableExportService,
   		private _fb : FormBuilder,
+      	private memberService : MembersService,
   		private widthdrawalService : WidthdrawalsService
   		) {
 		this.vendor = JSON.parse(this.localService.getVendor());
@@ -39,7 +49,34 @@ export class ManageWidthdrawalsComponent implements OnInit {
   		}
 
 	ngOnInit() {
+		/*filter form*/
+       this.filterForm = this._fb.group({
+	        transaction_id : '',
+	        from : '',
+	        to : '',
+	        id : '',
+          	member_id:'',
+          	staff_id:'',
+          	type:''
+	      })
 	}
+	search = (text$: Observable<string>) =>
+    text$
+      .debounceTime(300)
+      .distinctUntilChanged()
+      .do(() => this.searching = true)
+      .switchMap(term =>
+        this.memberService.filterMembers(term)
+          .do(() => this.searchFailed = false)
+          .catch(() => {
+            this.searchFailed = true;
+            return of([]);
+          }))
+      .do(() => this.searching = false)
+      .merge(this.hideSearchingWhenUnsubscribed);
+      formatter = (x: {first_name: string, middle_name: string, last_name: string, passport: string}) => x.first_name;
+
+      
 
 	/**
 	 * @method getWidthdrawals
@@ -195,4 +232,24 @@ export class ManageWidthdrawalsComponent implements OnInit {
 	    );
 	    popupWin.document.close();
 	  }
+	filter_withdrawal(filterValues)
+	{
+		let data = {
+	        from : filterValues.from,
+	        to : filterValues.to,
+	        id : filterValues.id,
+	        member_id : filterValues.member_id.id,
+	        staff_id : filterValues.staff_id.id,
+	        transaction_id : filterValues.transaction_id,
+	        vendor_id: parseInt(this.vendor.id)
+	      }
+	      this.submitPending = true;
+		this.widthdrawalService.filter_withdrawal(data).subscribe((response) => {
+			this.widthdrawalsList = response.data;
+			this.submitPending = false;
+  	 	}, (error) => {
+  	 		this.submitPending = false;
+  	 		this.localService.showError('Error while performing this action, please try again later', 'Server Error')
+  	 	});
+	}
 }

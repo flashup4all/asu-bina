@@ -17,7 +17,9 @@
 		                    <th>Type</th>
 		                    <th>Status</th>
 		                    <th>Start Date</th>
-		                    <th>Date</th>
+		                    <th>Created</th>
+		                    <th>Created By</th>
+		                    <th>Approved</th>
 		                    <th>Actions</th>
 		                </tr>
 		            </thead>
@@ -44,6 +46,16 @@
 		                    </td>
 		                    <td>
 		                        {{item?.created_at | date: 'shortDate'}} 
+		                    </td>
+		                    <td>
+		                    	{{ item?.staff?.first_name}} 
+		                    	{{ item?.staff?.last_name}} 
+		                    	{{ item?.staff?.middle_name}}
+		                    </td>
+		                    <td>
+		                    	{{ item?.approved_by?.first_name}} 
+		                    	{{ item?.approved_by?.last_name}} 
+		                    	{{ item?.approved_by?.middle_name}}
 		                    </td>
 		                    <td class="center">
 		                    	<mat-menu #appM="matMenu">

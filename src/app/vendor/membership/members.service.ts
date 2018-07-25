@@ -52,6 +52,16 @@ export class MembersService {
   		return this.http.get(environment.api.url+'CoopManagement/coop-members/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
   						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
+    /**
+     * @method getMember
+     * get form field resource
+     * @return data
+     */
+    filter_member(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/member/filter', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
  
   	/**
   	 * @method deleteMember

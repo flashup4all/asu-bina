@@ -40,10 +40,12 @@
                 <tr>
                   <th class="text-center"><i class="icon-people"></i></th>
                   <th>Name</th>
+                  <th>Gender</th>
                   <th class="text-center">Email</th>
                   <th>Role</th>
                   <th>Position</th>
                   <th>status</th>
+                  <th>Created</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -53,17 +55,14 @@
                   <td class="text-center">
                     <div class="avatar">
                       <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
-                      <!-- <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(item.passport)" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" class="img-avatar"> -->
                       <img *ngIf="item?.passport != ''" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="{{image_url}}{{item?.passport}}" class="img-avatar">
                       <span class="avatar-status badge-success"></span>
                     </div>
                   </td>
                   <td>
                     <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
-                    <div class="small text-muted">
-                      <span>{{item?.gender}}</span> | {{item?.phone1 || 'nil'}}
-                    </div>
                   </td>
+                  <td>{{item?.gender}}</td>
                   <td class="text-center">
                     {{item.email}}
                   </td>
@@ -72,16 +71,12 @@
                   </td>
                   <td class="text-center">{{ item?.user_position?.name}}</td>
                   <td>
-                    <small *ngIf="item.status == 1" class="muted pull-right">
-                       <h4><span class="label label-sm label-success">Approved</span></h4>
-                    </small>
-                    <small *ngIf="item.status == 2" class="muted pull-right">
-                       <h4><span class="label label-sm label-warning">Suspended/Blocked</span></h4>
-                    </small>
-                    <small *ngIf="item.status == 0" class="muted pull-right">
-                       <h4><span class="label label-sm label-danger">Inactive</span></h4>
-                    </small>
+                    <div *ngIf="item.status == 1" class="muted pull-right">Approved</div>
+                    <div *ngIf="item.status == 2" class="muted pull-right">Blocked</div>
+                    <div *ngIf="item.status == 0" class="muted pull-right">Inactive
+                    </div>
                   </td>
+                  <td>{{ item?.created_at | date:'shortDate' }}</td>
                   <td>
                     <button class="btn btn-primary btn-sm" (click)="editStaff(item)" title="edit staff details"><i class="fa fa-edit"></i></button>
                     <button class="btn btn-danger btn-sm" (click)="editPassword(item)" title="reset password: this sends a password reset link"><i class="fa fa-key"></i></button>
@@ -94,15 +89,13 @@
                     <div class="avatar">
                       <img *ngIf="item.passport==''" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
                      <img *ngIf="item?.passport != ''" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="{{image_url}}{{item?.passport}}" class="img-avatar">
-                      <span class="avatar-status badge-success"></span>
+                      <!-- <span class="avatar-status badge-success"></span> -->
                     </div>
                   </td>
                   <td>
                     <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
-                    <div class="small text-muted">
-                      <span>{{item?.gender}}</span> | {{item?.phone1 || 'nil'}}
-                    </div>
                   </td>
+                  <td>{{item?.gender}}</td>
                   <td class="text-center">
                     {{item.email}}
                   </td>
@@ -111,16 +104,12 @@
                   </td>
                   <td class="text-center">{{ item?.user_position?.name}}</td>
                   <td>
-                    <small *ngIf="item.status == 1" class="muted pull-right">
-                       <h4><span class="label label-sm label-success">Approved</span></h4>
-                    </small>
-                    <small *ngIf="item.status == 2" class="muted pull-right">
-                       <h4><span class="label label-sm label-warning">Blocked</span></h4>
-                    </small>
-                    <small *ngIf="item.status == 0" class="muted pull-right">
-                       <h4><span class="label label-sm label-danger">Inactive</span></h4>
-                    </small>
+                    <div *ngIf="item.status == 1" class="muted pull-right">Approved</div>
+                    <div *ngIf="item.status == 2" class="muted pull-right">Blocked</div>
+                    <div *ngIf="item.status == 0" class="muted pull-right">Inactive
+                    </div>
                   </td>
+                  <td>{{ item?.created_at | date:'shortDate' }}</td>
                   <td>
                     <button class="btn btn-primary btn-sm" (click)="editStaff(item)" title="edit staff details"><i class="fa fa-edit"></i></button>
                     <button class="btn btn-danger btn-sm" (click)="editPassword(item)" title="reset password: this sends a password reset link"><i class="fa fa-key"></i></button>

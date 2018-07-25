@@ -35,6 +35,7 @@ export class ManageMembersComponent implements OnInit {
 	public result: any;
 	public newMemberForm: FormGroup;
 	public changePasswordForm:FormGroup;
+    filterForm: FormGroup;
 	public membersList =[];
 	public membersFormPoolList = [];
 	public arrayData;
@@ -48,6 +49,8 @@ export class ManageMembersComponent implements OnInit {
   	hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
   	user
 	submitPending;
+	member_form_loader: boolean = false;
+	show_adv_form: boolean = false;
 	public passport;
 	public model;
   	path='';
@@ -106,8 +109,8 @@ export class ManageMembersComponent implements OnInit {
 
 		 }
 
-		  search = (text$: Observable<string>) =>
-    text$
+		search = (text$: Observable<string>) =>
+    	text$
       .debounceTime(300)
       .distinctUntilChanged()
       .do(() => this.searching = true)
@@ -129,15 +132,15 @@ export class ManageMembersComponent implements OnInit {
 
 		this.newMemberForm = this._fb.group({
 			first_name:[null, Validators.compose([Validators.required])],
-			middle_name:[null, Validators.compose([Validators.required])],
-			last_name:[null],
+			middle_name:'',
+			last_name:[null, Validators.compose([Validators.required])],
 			contribution:[null],
-			gender:[null],
-			date_of_birth:'',
+			gender:[null, Validators.compose([Validators.required])],
+			date_of_birth:[null, Validators.compose([Validators.required])],
 			passport:'',
 			account_number:'',
-			membership_date:[null],
-			email:[null, Validators.compose([Validators.required, Validators.email])],
+			membership_date:[null, Validators.compose([Validators.required])],
+			email:[null/*, Validators.compose([Validators.required, Validators.email])*/],
 			phone1: [null, Validators.compose([Validators.required])],
 			memberData : this._fb.array([])
 		});
@@ -151,6 +154,13 @@ export class ManageMembersComponent implements OnInit {
 		this.filterMemberForm = this._fb.group({
 			member:[null, Validators.compose([Validators.required])]
 		})
+
+		/*filter form*/
+       this.filterForm = this._fb.group({
+	        from : '',
+	        to : '',
+	        gender : '',
+	      })
 	}
 	initMembersForm(data) {
         return this._fb.group({
@@ -265,10 +275,15 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	addMember(data) : void
 	{
-    console.log(data)
-	    this.submitPending = true;
+		this.newMemberForm.updateValueAndValidity();
+		if (this.newMemberForm.invalid) {
+		  Object.keys(this.newMemberForm.controls).forEach(key => {
+		    this.newMemberForm.get(key).markAsDirty();
+		  });
+		  return;
+		}
+	    this.member_form_loader = true;
 	     data = this.prepareSave();
-    console.log(data)
 		// this.items = this.newMemberForm.get('memberData') as FormArray;
   		//this.items.push(this.initAddress());
 		// data['vendor_id'] = this.vendor.id;
@@ -279,21 +294,19 @@ export class ManageMembersComponent implements OnInit {
 		this.manageMemberService.addMember(data).subscribe((response) => {
 			if(response.success)
 	      	{
-	        	this.submitPending = false;
+	        	this.member_form_loader = false;
 	        	this.newMemberForm.reset();
-	        	this.getMembers();
+	        	//this.getMembers();
 	        	this.clearFile();
-	        	//this.membersList.unshift(data)
-	        	// this.localService.showSuccess(response.message,'Operation Successfull');
+	        	this.membersList.unshift(response.data)
+	        	this.localService.showSuccess(response.message,'Operation Successfull');
 		      }
 		      else{
-		        this.submitPending = false;
+		        this.member_form_loader = false;
 		        this.localService.showError(response.message,'Operation Unsuccessfull');
 		    }
-	        	this.submitPending = false;
-
 		}, (error) => {
-			this.submitPending = false;
+			this.member_form_loader = false;
 		    this.localService.showError(error,'Operation Unsuccessfull');
 		})
 	}
@@ -316,8 +329,17 @@ export class ManageMembersComponent implements OnInit {
 	    return input;
 	}
 
-	logForm(data){
-		console.log(data)
+	filter_member(data){
+		data['vendor_id'] = this.vendor.id;
+		this.submitPending=true;
+		this.manageMemberService.filter_member(data).subscribe((response) => {
+			console.log(response)
+			this.submitPending = false;
+			this.membersList = response.data;
+		}, (error) => {
+			this.submitPending = false;
+			console.log(error)
+		});
 
 	}
 	/**

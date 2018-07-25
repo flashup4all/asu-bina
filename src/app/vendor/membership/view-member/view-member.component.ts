@@ -607,9 +607,9 @@ export class ViewMemberComponent implements OnInit {
 
     make_a_withdrawal(formValues)
     {
-      formValues['user_id'] = this.memberId
+      formValues['member_id'] = this.memberId
       formValues['vendor_id'] = this.vendor.id
-      formValues['approved_by'] = this.user.id
+      formValues['staff_id'] = this.user.id
       console.log(formValues)
       this.submitPending = true;
       this.withdrawalService.make_a_withdrawal(formValues).subscribe((response) => {

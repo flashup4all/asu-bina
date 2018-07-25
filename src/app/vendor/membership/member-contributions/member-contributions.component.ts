@@ -348,6 +348,7 @@ export class MemberContributionsComponent implements OnInit {
         {
           this.form_loader = false;
           this.get_member_contribution_plan()
+          this.view_member_component.get_member_contribution_plan();
           this.newContributionPlanModal.hide();
           this.localService.showSuccess(response.message,'Operation Successfull');
         }else{
