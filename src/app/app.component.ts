@@ -35,9 +35,9 @@ export class AppComponent {
    		this.session_data = JSON.parse(this.localService.getSessionData());
 		this.toastr.setRootViewContainerRef(vRef);
 		idle.watch()
-      idle.setIdle(500);
+      idle.setIdle(90);
     // sets a timeout period of 5 seconds. after 10 seconds of inactivity, the user will be considered timed out.
-      idle.setTimeout(100);
+      idle.setTimeout(10);
 
       idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
 

@@ -111,9 +111,9 @@
                                               <button mat-menu-item (click)="deleteLoanRequest(item.id)" >Delete</button>
                                             </mat-menu>
 
-                                <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
-                                  <mat-icon>more_vert</mat-icon>
-                                </button>
+                                            <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
+                                              <mat-icon>more_vert</mat-icon>
+                                            </button>
                                             <!-- <div class="btn-group" dropdown>
                                               <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
                                                 <i class="fa fa-ellipsis-v"></i><span class="caret"></span>
