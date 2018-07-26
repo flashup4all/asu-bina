@@ -16,7 +16,8 @@
                         <div class="row">
                             <div class="col-md-2">
                                 <img *ngIf="!vendor.logo" class="rounded-circle" src="assets/images/avata.png" alt="image" />
-                                <img *ngIf="vendor.logo" class="rounded-circle" src="{{vendor.logo}}" width="130" height="130" alt="image" />
+                                
+                                <img *ngIf="vendor.logo" class="rounded-circle" src="{{image_url}}{{vendor.logo}}" width="130" height="130" alt="image" />
                             </div>
                             <div class="col-md-10">
                                 <h5>{{ vendor.name }}</h5>
@@ -90,11 +91,9 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Mobile Number</label>
-                                            <div class="input-prepend">
-                                            <span class="add-on">+234</span><input class="span8" formControlName="phone" [ngModel]="editVendorData?.phone" type="text" pattern="[0-9]*"
-                                            minlength="10" maxlength="10" class="form-control" placeholder="eg:  8094500000">
-                                            <small [hidden]="(editVendorForm.controls.phone.valid ) || (editVendorForm.controls.phone.pristine)" class="text-danger">Vendor Mobile Phone is Required</small>       
-                                        </div>
+                                            <input class="span8" formControlName="phone" [ngModel]="editVendorData?.phone" type="text" pattern="[0-9]*"
+                                             maxlength="11" class="form-control" placeholder="eg:  8094500000">
+                                            <small [hidden]="(editVendorForm.controls.phone.valid ) || (editVendorForm.controls.phone.pristine)" class="text-danger">Vendor Mobile Phone is Required</small>
                                     </div>
                                     <div class="form-group">
                                         <label>Administrative Charge</label>
@@ -117,7 +116,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Currency</label>
-                                        <select class="form-control" [ngModel]="editVendorData?.currency_id" formControlName = "currency_code" required>
+                                        <select class="form-control" [ngModel]="editVendorData?.currency_code" formControlName = "currency_code" required>
                                             <option *ngFor="let item of currencies" [value]="item.code">{{ item.symbol }}</option>
                                         </select>
                                         <span [hidden]="editVendorForm.controls.state_province.valid || (editVendorForm.controls.state_province.pristine)" class="text-danger">State is required.
@@ -134,8 +133,10 @@
                                     <div class="form-group">
                                         <label class="control-label" for="basicinput">Logo</label>
                                         <div class="controls">
-                                            <img *ngIf="!file_srcs[0]" src="{{vendor.logo}}" width="200px" height="200px">
-                                            <input type="file" name="" (change)="fileChange(input)" #input>
+                                            <img *ngIf="vendor.logo" class="rounded-circle" src="{{image_url}}{{vendor.logo}}" width="130" height="130" alt="image" />
+                                            <!-- <input type="file" name="" (change)="fileChange(input)" #input> -->
+                                            <input type="file" id="avatar" (change)="onFileChange($event)" #fileInput>
+                                            <button type="button" class="btn btn-sm btn-default" (click)="clearFile()">clear file</button>
                                         </div>
                                     </div>
                                     <div class="form-group mbn">

@@ -74,7 +74,7 @@
                             </div>
                         </tab>
                         <tab heading="Edit Profile">
-                            <div class="col-md-8 col-offset-md-2">
+                            <div class="col-md-6">
                               <div class="form-group">
                                   <label>Account_no:</label>
                                   
@@ -140,6 +140,9 @@
                                         <span *ngIf="submitPending && form.valid" class="fa fa-spinner" aria-hidden="true"></span>
                                     </button>
                                 </form>
+                            </div>
+                            <div class="col-md-6">
+                              <app-member-account-officer></app-member-account-officer>
                             </div>
                         </tab>
                         <tab heading="CONTRIBUTIONS">

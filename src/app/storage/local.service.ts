@@ -69,10 +69,8 @@ export class LocalService {
     }
     check_posting_cash_role(amount)
     {
-      console.log(amount)
       let user = JSON.parse(this.getUser());
       let position = user.user_position;
-      console.log(position)
       if(user.role_id == 2)
       {
         return true;

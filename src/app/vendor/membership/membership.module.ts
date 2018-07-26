@@ -9,6 +9,7 @@ import { ManageMembersComponent } from './manage-members/manage-members.componen
 import { ViewMemberComponent } from './view-member/view-member.component';
 import { MemberInvestmentsComponent } from './member-investments/member-investments.component';
 import { MemberContributionsComponent } from './member-contributions/member-contributions.component';
+import { MemberAccountOfficerComponent } from './member-account-officer/member-account-officer.component';
 import { MembersService } from './members.service';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '../../shared/shared.module';
@@ -34,7 +35,13 @@ export const members_routes = [
     SweetAlert2Module
 
   ],
-  declarations: [ManageMembersComponent, ViewMemberComponent, MemberInvestmentsComponent, MemberContributionsComponent],
+  declarations: [
+    MemberAccountOfficerComponent,
+    ManageMembersComponent, 
+    ViewMemberComponent, 
+    MemberInvestmentsComponent, 
+    MemberContributionsComponent,
+  ],
   providers: [MembersService]
 })
 export class MembershipModule { }

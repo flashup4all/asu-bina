@@ -31,6 +31,8 @@ export class ManageStaffComponent implements OnInit {
   public editStaffData
   public staffPositionList;
   edit_staff_position_data;
+  reset_password_data;
+  reset_password_check;
 	public userRolesList;
   user;
   vendor;
@@ -103,7 +105,7 @@ export class ManageStaffComponent implements OnInit {
   	ngOnInit() {
 
   		this.newStaffForm = this._fb.group({
-  			  staff_id : '',
+  			  staff_no : '',
 	        first_name  : [null, Validators.compose([Validators.required])],
 	        middle_name  : '',
 	        last_name  : [null, Validators.compose([Validators.required])],
@@ -418,6 +420,7 @@ export class ManageStaffComponent implements OnInit {
    */
   resetPassword(data)
   {
+    this.reset_password_check = false;
     this.passwordFormCheck = true;
     data = {
       vendor_id: JSON.parse(this.localService.getVendor()).id,
@@ -427,6 +430,8 @@ export class ManageStaffComponent implements OnInit {
     this.manageMemberService.resetPassword(data).subscribe((response) => {
       if(response.success)
       {
+        this.reset_password_data = response;
+        this.reset_password_check = true;
         this.passwordFormCheck = false;
         this.localService.showSuccess(response.message,'Operation Successfull');
       }else{
@@ -434,6 +439,7 @@ export class ManageStaffComponent implements OnInit {
         this.localService.showError(response.message,'Operation UnsSuccessfull');
       }
     }, (error) => {
+        this.reset_password_check = false;
          this.submitPending = false;
         this.localService.showError(error,'Operation Unsuccessfull');
        });
@@ -467,6 +473,7 @@ export class ManageStaffComponent implements OnInit {
 
   private prepareSave(): any {
       let input = new FormData();
+      input.append('staff_no', this.newStaffForm.get('staff_no').value);
       input.append('first_name', this.newStaffForm.get('first_name').value);
       input.append('last_name', this.newStaffForm.get('last_name').value);
       input.append('middle_name', this.newStaffForm.get('middle_name').value);

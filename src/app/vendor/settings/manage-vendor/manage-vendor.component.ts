@@ -1,9 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { VendorService } from '../../vendor.service';
 import { countries, LocalService, states, cities, currency } from '../../../storage/index';
+import { environment } from '../../../../environments/environment';
 
 export interface Vendor {
 	name:string;
@@ -28,7 +29,8 @@ export interface Vendor {
   ]
 })
 export class ManageVendorComponent implements OnInit {
-	public vendor;
+	image_url;
+    public vendor;
 	public editVendorData;
     public editVendorForm : FormGroup;
 	public bankAccountForm : FormGroup;
@@ -48,7 +50,9 @@ export class ManageVendorComponent implements OnInit {
     state_list;
     city_list;
     state_loader
-    city_loader
+    city_loader;
+     @ViewChild('fileInput') fileInput: ElementRef;
+
     @ViewChild('accountModal') public accountModal :ModalDirective;
     @ViewChild('accountUpdateModal') public accountUpdateModal :ModalDirective;
 
@@ -58,6 +62,7 @@ export class ManageVendorComponent implements OnInit {
   		private manageVendorService : VendorService,
   		private changeDetectorRef: ChangeDetectorRef
 		) {
+            this.image_url = environment.api.imageUrl+'logo/';
 			this.vendor = JSON.parse(this.localService.getVendor());
 			this.editVendorData = JSON.parse(this.localService.getVendor());
             this.getAccountNumbers();
@@ -77,7 +82,8 @@ export class ManageVendorComponent implements OnInit {
 			state_province: '',
 			charge_duration: '',
             description: '',
-			privacy_policy: ''
+			privacy_policy: '',
+            logo: ''
 		});
         /*bank account form*/
         this.bankAccountForm = this._fb.group({
@@ -95,17 +101,17 @@ export class ManageVendorComponent implements OnInit {
 	 */
 	updateVendor(data)
 	{
-		data['vendor_id'] = this.editVendorData.id;
-		data['logo'] = this.logo ?this.logo : null;
-			this.submitPending = true;
-	      	this.manageVendorService.updateVendor(data).subscribe((response) => {
+        const formModel = this.prepareSave(data);
+        console.log(data)
+        console.log(formModel)
+		this.submitPending = true;
+	    this.manageVendorService.updateVendor(formModel).subscribe((response) => {
 	      	if(response.success = true)
 	      	{
 	        	this.submitPending = false;
-
+                this.vendor = response.data;
 	         	this.localService.setVendor(JSON.stringify(response.data));
 	        	this.localService.showSuccess(response.message,'Operation Successfull');
-                window.location.reload();
 		      }
 		      else{
 		        this.submitPending = false;
@@ -115,8 +121,40 @@ export class ManageVendorComponent implements OnInit {
             this.submitPending = false;
             //this.localService.showError(response.message,'Operation Unsuccessfull');
         });
+            this.submitPending = false;
+
 	}
 
+    onFileChange(event) {
+    if(event.target.files.length > 0) {
+      let file = event.target.files[0];
+      this.logo = file;
+    }
+  }
+
+  private prepareSave(data): any {
+        let input = new FormData();
+        input.append('name', data.name);
+        input.append('address', data.address);
+        input.append('phone', data.phone);
+        input.append('email', data.email);
+        input.append('administrative_charge', data.administrative_charge);
+        input.append('currency_code', data.currency_code);
+        input.append('country_id', data.country_id);
+        input.append('state_province', data.state_province);
+        input.append('charge_duration', data.charge_duration);
+        input.append('description', data.description);
+        input.append('privacy_policy', data.privacy_policy);
+        input.append('logo', this.logo);
+        input.append('vendor_id', this.vendor.id);
+        return input;
+    }
+
+
+  clearFile() {
+    this.editVendorForm.get('logo').setValue(null);
+    this.fileInput.nativeElement.value = '';
+  }
 
     /*account number*/
     addAccountNumber(data)
@@ -274,6 +312,7 @@ export class ManageVendorComponent implements OnInit {
         }
       }
     }
+
     // get_institution_type(type_id)
     // {
     //   for (var i in this.institution_types) {

@@ -22,7 +22,15 @@ export class VendorService {
   	 */
   	updateVendor(data)
   	{
-  		return this.http.post(environment.api.url+'CoopManagement/update',JSON.stringify(data), this.localService.header())
+      let headers = new Headers();
+            //headers.append('content-type', 'application/json');
+            headers.set('Accept', 'application/json');
+        let token = this.localService.getToken();
+            if(token) {
+                headers.append('Authorization', 'Bearer ' + token);      
+            }
+        let request       = new RequestOptions({ headers: headers });
+  		return this.http.post(environment.api.url+'CoopManagement/update',data, request)
   						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
 

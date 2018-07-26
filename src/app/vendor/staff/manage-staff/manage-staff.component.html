@@ -171,9 +171,9 @@
             <form [formGroup] = "newStaffForm" (ngSubmit) = "addStaff(newStaffForm.value)" class="form-horizontal row-fluid">
               <div class="col-md-12">
                 <div class="form-group">
-                  <label>Staff ID [optional]</label>
+                  <label>Staff ID/No. [optional]</label>
                   <div class="controls">
-                    <input type="text" id="basicinput" formControlName="staff_id" placeholder="Staff ID" class="form-control">
+                    <input type="text" id="basicinput" formControlName="staff_no" placeholder="Staff ID" class="form-control">
                     
                   </div>
                 </div>
@@ -278,9 +278,9 @@
            <form [formGroup] = "newStaffForm" (ngSubmit) = "updateStaff(newStaffForm.value, editStaffData.id)" class="form-horizontal row-fluid">
               <div class="col-md-12">
                 <div class="form-group">
-            <label class="control-label" for="basicinput">Staff ID</label>
+            <label class="control-label" for="basicinput">Staff ID/No.</label>
             <div class="controls">
-              <input type="text" id="basicinput" [ngModel]="editStaffData?.staff_id" formControlName="staff_id" placeholder="Staff ID" class="form-control">
+              <input type="text" id="basicinput" [ngModel]="editStaffData?.staff_no" formControlName="staff_no" placeholder="Staff ID" class="form-control">
               
             </div>
           </div>
@@ -322,19 +322,15 @@
           <div class="form-group">
             <label class="control-label" for="basicinput">Mobile Phone</label>
             <div class="controls">
-              <div class="input-prepend">
-                <span class="add-on">+234</span><input class="form-control" formControlName="mobile_phone"[ngModel]="editStaffData?.phone1" type="text" placeholder="eg:  8094500000">
+                <input class="form-control" formControlName="mobile_phone"[ngModel]="editStaffData?.phone1" type="text" placeholder="eg:  08094500000" maxlength="11">
                 <small [hidden]="(newStaffForm.controls.mobile_phone.valid ) || (newStaffForm.controls.mobile_phone.pristine )" class="text-danger">Mobile Phone is Required</small>       
-              </div>
             </div>
           </div>
           <div class="form-group">
             <label class="control-label" for="basicinput">Contact Phone</label>
             <div class="controls">
-              <div class="input-prepend">
-                <span class="add-on">+234</span><input class="form-control" [ngModel]="editStaffData?.phone2" formControlName="contact_phone" type="text" placeholder="eg:  8094500000">
-                <small [hidden]="(newStaffForm.controls.contact_phone.valid ) || (newStaffForm.controls.contact_phone.pristine )" class="text-danger">Contact Phone is Required</small>       
-              </div>
+               <input class="form-control" [ngModel]="editStaffData?.phone2" formControlName="contact_phone" type="text" placeholder="eg:  08094500000" maxlength="11">
+                <small [hidden]="(newStaffForm.controls.contact_phone.valid ) || (newStaffForm.controls.contact_phone.pristine )" class="text-danger">Contact Phone is Required</small>
             </div>
           </div>
           <div class="form-group">
@@ -476,6 +472,10 @@
                         <br>
                         
                     </h4>
+                    <div *ngIf="reset_password_check">
+                      <p>Username/Email :  {{ reset_password_data?.data?.email }}</p>
+                    <p>Password :  {{ reset_password_data?.otp }}</p>
+                    </div>
                 </div>
                
             </div>

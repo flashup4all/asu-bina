@@ -51,7 +51,17 @@ export class AuthService {
    	logout(id)
 	{
 		return this.http.get(this.url+'auth/logout/'+id, this.localService.header())
-            .map((response: Response) => response.json()).catch(this.handleErrors);
+            .map((response: Response) => response.json());
 	}
 
+	/**
+  	 * @method getStaffPosition
+  	 * get staff position resource
+  	 * @return data
+  	 */
+  	verify_domain(domain)
+  	{
+  		return this.http.get(environment.api.url+'verify-vendor/'+domain, this.localService.header())
+  						.map((response : Response) => response.json())
+  	}
 }
