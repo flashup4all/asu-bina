@@ -16,6 +16,7 @@ export class MemberAccountOfficerComponent implements OnInit {
   member_id;
   show_add_form_check: boolean = false;
   public acc_oficer_form : FormGroup;
+  account_officers
 
   constructor(
 		private localService : LocalService,
@@ -35,6 +36,7 @@ export class MemberAccountOfficerComponent implements OnInit {
         member_id: '',
         approved_by: '',
         status: '',
+        description:''
       });
 
   	}

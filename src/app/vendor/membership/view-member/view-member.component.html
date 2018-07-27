@@ -85,12 +85,11 @@
                                   </div>
                               </div>
                           </div>
-                          <div class="col-md-6">
-                              <app-member-account-officer></app-member-account-officer>
-                            </div>
+                         
                           </div>
                         </tab>
                         <tab heading="Edit Profile">
+                          <div class="row">
                             <div class="col-md-6">
                                 <form #form="ngForm" (ngSubmit)="updateMember(form.value, member.id)">
                                   <div class="form-group">
@@ -166,6 +165,10 @@
                                     </button>
                                 </form>
                             </div>
+                             <div class="col-md-6">
+                              <!-- <app-member-account-officer></app-member-account-officer> -->
+                            </div>
+                          </div>
                         </tab>
                         <tab heading="CONTRIBUTIONS">
                           <app-member-contributions></app-member-contributions>

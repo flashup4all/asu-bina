@@ -4,29 +4,31 @@
             <mat-expansion-panel-header>
                 <mat-panel-title>Account Officers</mat-panel-title>
             </mat-expansion-panel-header>
-            <button type="button" class="close pull-right"  (click)="acct_officer_modal.show()">Add Account Officer</button>
-            <!-- <table class="table table-responsive-sm table-hover table-outline mb-0 p-2" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Name</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="" *ngFor="let account of bank_accounts">
-                                            <td><input type="checkbox" name=""></td>
-                                            <td>{{account?.bank_name}}</td>
-                                            <td>
-                                                {{account?.account_number}} 
-                                            </td>
-                                            <td class="center">
-                                                <button class="btn btn-primary btn-sm" (click)="editAccount(account)" title="Delete Loan Signatory"><i class="fa fa-edit"></i></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table> -->
+            <br>
+            <button type="button" class="btn btn-primary pull-right"  (click)="acct_officer_modal.show()">Add Account Officer</button>
+            <br>
+            <table class="table table-responsive-sm table-hover table-outline mb-0 p-2" width="100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="" *ngFor="let account of account_officers">
+                        <td><input type="checkbox" name=""></td>
+                        <td>{{account?.bank_name}}</td>
+                        <td>
+                            {{account?.account_number}} 
+                        </td>
+                        <td class="center">
+                            <button class="btn btn-primary btn-sm" (click)="editAccount(account)" title="Delete Loan Signatory"><i class="fa fa-edit"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </mat-expansion-panel>
     </mat-accordion>
 
