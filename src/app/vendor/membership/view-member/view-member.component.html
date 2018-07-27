@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-body" >
         <div class="profile-head media" style="padding-bottom: 20px;">
-            <a href="#" class="col-md-3 pull-left">
+            <a class="col-md-3 pull-left">
                 <img *ngIf="member?.passport ==''" class="rounded-circle" src="assets/images/avata.png">
                 <img *ngIf="member?.passport != ''" title="{{member?.first_name}} {{member?.middle_name}} {{member?.last_name}}" src="{{image_url}}{{member?.passport}}" class="img-avatar" style="width: 150px; height: 150px;">
                 <!-- <img *ngIf="member?.passport" class="rounded-circle" style="width: 150px; height: 150px;" [src]="sanitizer.bypassSecurityTrustUrl(member.passport) || assets/images/avata.png"> -->
@@ -19,7 +19,7 @@
                     Description
                 </p> -->
                 <div class="profile-details muted">
-                    <h3><a class="btn pull-left"><i class="fa fa-money shaded"></i> Contribution : &#8358;  {{member?.contribution | number }} </a></h3>
+                    <h3 *ngIf="member?.contribution > 0"><a class="btn pull-left"><i class="fa fa-money shaded"></i> Contribution : &#8358;  {{member?.contribution | number }} </a></h3>
                     <h3><a class="btn"><i class="fa fa-phone shaded"></i> {{member?.phone1}}, {{member?.phone2}} </a></h3>
                 </div>
                 <div class="profile-details muted">
@@ -28,58 +28,83 @@
                         Total Deduction: <span class="label label-sm label-danger"> &#8358; {{ total_deduction || 0 }} </span></a></h3>
                      <h3><a class="btn"><i class="fa fa-phone shaded"></i> {{member?.phone2}} </a></h3>  -->
                 </div>
+                <div class="profile-details muted">
+                    <h3 *ngIf="member?.account_number != ''"><a class="btn pull-left"><i class="fa fa-money shaded"></i> Account No. : {{ member?.account_number }} </a></h3>
+                </div>
             </div>
         </div>
         <div class="row">
                 <div class="col">
                     <tabset>
                         <tab heading="Profile">
-                            <div class="row">
-                                <label class="col-sm-3">First Name</label>
-                                <div class="col-sm-9">
-                                    <p>{{member?.first_name}}</p>
-                                </div>
+                          <div class="row">
+                            <div class="col-md-6">
+
+                              <div class="row">
+                                  <label class="col-sm-3">Account Number</label>
+                                  <div class="col-sm-9">
+                                      <p>{{member?.account_number}}</p>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <label class="col-sm-3">First Name</label>
+                                  <div class="col-sm-9">
+                                      <p>{{member?.first_name}}</p>
+                                  </div>
+                              </div>
+                               <div class="row">
+                                  <label class="col-sm-3">Middle Name</label>
+                                  <div class="col-sm-9">
+                                      <p>{{member?.middle_name ? member?.middle_name : ''}}</p>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <label class="col-sm-3">Last Name</label>
+                                  <div class="col-sm-9">
+                                      <p>{{member?.last_name}}</p>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <label class="col-sm-3">Email</label>
+                                  <div class="col-sm-9">
+                                      <p>{{member?.email}}</p>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <label class="col-sm-3">Contribution</label>
+                                  <div class="col-sm-9">
+                                      <p>{{member?.contribution  | number }}</p>
+                                  </div>
+                              </div>
+                               <h4>Custom</h4>
+                              <hr>
+                              <div class="row" *ngFor="let item of member?.members">
+                                  <label class="col-sm-3">{{item?.key}}</label>
+                                  <div class="col-sm-9">
+                                      <p>{{item?.information}}</p>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-md-6">
+                              <app-member-account-officer></app-member-account-officer>
                             </div>
-                             <div class="row">
-                                <label class="col-sm-3">Middle Name</label>
-                                <div class="col-sm-9">
-                                    <p>{{member?.middle_name ? member?.middle_name : ''}}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <label class="col-sm-3">Last Name</label>
-                                <div class="col-sm-9">
-                                    <p>{{member?.last_name}}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <label class="col-sm-3">Email</label>
-                                <div class="col-sm-9">
-                                    <p>{{member?.email}}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <label class="col-sm-3">Contribution</label>
-                                <div class="col-sm-9">
-                                    <p>{{member?.contribution  | number }}</p>
-                                </div>
-                            </div>
-                             <h4>Custom</h4>
-                            <hr>
-                            <div class="row" *ngFor="let item of member?.members">
-                                <label class="col-sm-3">{{item?.key}}</label>
-                                <div class="col-sm-9">
-                                    <p>{{item?.information}}</p>
-                                </div>
-                            </div>
+                          </div>
                         </tab>
                         <tab heading="Edit Profile">
                             <div class="col-md-6">
-                              <div class="form-group">
-                                  <label>Account_no:</label>
-                                  
-                              </div>
                                 <form #form="ngForm" (ngSubmit)="updateMember(form.value, member.id)">
+                                  <div class="form-group">
+                                      <label *ngIf="user?.role_id == 2">Account No: {{ member?.account_number }} 
+                                      </label>
+                                      <p class="pull-right" style="
+     cursor: pointer; color: blue;">
+                                          <i class="fa fa-edit" (click)="allow_edit_acc_no = !allow_edit_acc_no">edit</i>
+                                        </p>
+                                  </div>
+                                  <div class="form-group" *ngIf="allow_edit_acc_no">
+                                    <label>Account_no:</label>
+                                    <input  type="text" class="form-control" [ngModel]="member?.account_number" name="account_number" ngModel>
+                                  </div>
                                       <div class="form-group">
                                           <label>Surname:</label>
                                         <input type="text" class="form-control" [ngModel]="member?.first_name" name="first_name" ngModel>
@@ -140,9 +165,6 @@
                                         <span *ngIf="submitPending && form.valid" class="fa fa-spinner" aria-hidden="true"></span>
                                     </button>
                                 </form>
-                            </div>
-                            <div class="col-md-6">
-                              <app-member-account-officer></app-member-account-officer>
                             </div>
                         </tab>
                         <tab heading="CONTRIBUTIONS">

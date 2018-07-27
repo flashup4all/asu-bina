@@ -37,6 +37,7 @@ export class ManageStaffComponent implements OnInit {
   user;
   vendor;
 	submitPending : boolean;
+  btn_loader:boolean = false;
 	public newStaffForm : FormGroup;
 	public newStaffPositionForm : FormGroup;
   public changePasswordForm:FormGroup;
@@ -285,6 +286,48 @@ export class ManageStaffComponent implements OnInit {
 
   	}
     
+   /**
+   * @method activate_staff
+   * activate staff
+   * @return data
+   */
+  activate_staff(id)
+  {
+    this.btn_loader = true;
+    this.manageStaffService.activate_staff(id).subscribe((response) => {
+      if(response.success == true)
+      {
+        this.btn_loader = false;
+        this.getStaff()
+        this.localService.showSuccess(response.message,'Operation Successfull');
+      }else{
+        this.btn_loader = false;
+        this.localService.showError(response.message,'Operation UnsSuccessfull');
+      }
+    }, (error) => {
+      this.btn_loader = false;
+      this.localService.showError("Please contact Adminitrator", "Opps! Server Error!")
+    });
+  }
+
+  deactivate_staff(id)
+  {
+    this.btn_loader = true;
+    this.manageStaffService.deactivate_staff(id).subscribe((response) => {
+      if(response.success == true)
+      {
+        this.btn_loader = false;
+        this.getStaff()
+        this.localService.showSuccess(response.message,'Operation Successfull');
+      }else{
+        this.btn_loader = false;
+        this.localService.showError(response.message,'Operation UnsSuccessfull');
+      }
+    }, (error) => {
+      this.btn_loader = false;
+      this.localService.showError("Please contact Adminitrator", "Opps! Server Error!")
+    });
+  }
     format_mobile_no(phone)
     {
       return '0'+(phone.substr(3));
@@ -378,10 +421,13 @@ export class ManageStaffComponent implements OnInit {
      {
        if(window.confirm('Are you sure you want to delete this item'))
        {
+         this.btn_loader = true;
          this.manageStaffService.deleteStaff(id).subscribe((response) => {
-         this.getStaff();
-      this.localService.showSuccess('Deleted','Operation USuccessfull');
+           this.btn_loader = false;
+           this.getStaff();
+           this.localService.showSuccess('Deleted','Operation USuccessfull');
        }, (error) => {
+           this.btn_loader = false;
            this.submitPending = false;
           this.localService.showError(error,'Operation Unsuccessfull');
        })

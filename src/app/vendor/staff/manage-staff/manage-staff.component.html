@@ -54,8 +54,8 @@
                 <tr *ngFor="let item of results">
                   <td class="text-center">
                     <div class="avatar">
-                      <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
-                      <img *ngIf="item?.passport != ''" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="{{image_url}}{{item?.passport}}" class="img-avatar">
+                      <img *ngIf="!item.passport" src="assets/images/avata.png" class="img-avatar">
+                      <img *ngIf="item?.passport != ''" src="{{image_url}}{{item?.passport}}" class="img-avatar">
                       <span class="avatar-status badge-success"></span>
                     </div>
                   </td>
@@ -79,6 +79,11 @@
                   <td>{{ item?.created_at | date:'shortDate' }}</td>
                   <td>
                     <button class="btn btn-primary btn-sm" (click)="editStaff(item)" title="edit staff details"><i class="fa fa-edit"></i></button>
+
+                    <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivate_staff(item.id)" title="deactivate or suspend this staff">
+                    <i class="fa fa-unlock"></i></button>
+                    <button class="btn btn-success btn-sm" *ngIf="item.status == 0" (click)="activate_staff(item.id)" title="activate this staff"><i class="fa fa-unlock"></i></button>
+
                     <button class="btn btn-danger btn-sm" (click)="editPassword(item)" title="reset password: this sends a password reset link"><i class="fa fa-key"></i></button>
                     <button class="btn btn-danger btn-sm" (click)="editStaff(item)" title="edit staff details"><i class="fa fa-trash-o"></i></button>
                   </td>
@@ -87,8 +92,8 @@
                 <tr *ngFor="let item of staffList">
                   <td class="text-center">
                     <div class="avatar">
-                      <img *ngIf="item.passport==''" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
-                     <img *ngIf="item?.passport != ''" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="{{image_url}}{{item?.passport}}" class="img-avatar">
+                      <img *ngIf="item.passport==''" src="assets/images/avata.png" class="img-avatar">
+                     <img *ngIf="item?.passport != ''" src="{{image_url}}{{item?.passport}}" class="img-avatar">
                       <!-- <span class="avatar-status badge-success"></span> -->
                     </div>
                   </td>
@@ -111,9 +116,58 @@
                   </td>
                   <td>{{ item?.created_at | date:'shortDate' }}</td>
                   <td>
-                    <button class="btn btn-primary btn-sm" (click)="editStaff(item)" title="edit staff details"><i class="fa fa-edit"></i></button>
+                    <mat-menu #appMenu="matMenu">
+                    <mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
+                    <button mat-menu-item (click)="editStaff(item)" title="edit staff details"><i class="fa fa-edit"></i> Edit</button>
+                    <button mat-menu-item (click)="editPassword(item)" title="reset password: this sends a password reset link"><i class="fa fa-key"></i>Reset Password</button>
+
+                    <button [swal]="deact_staff" mat-menu-item *ngIf="item.status == 1" title="deactivate or suspend this staff">
+                    <i class="fa fa-unlock"></i> De-Activate</button>
+                     <swal
+                    #deact_staff
+                    title="Are You Sure You want to De-Activate this Staff?"
+                    text="Staff wont have access to this app"
+                    type="warning"
+                    [showCancelButton]="true"
+                    [focusCancel]="true"
+                    (confirm)="deactivate_staff(item.id)">
+                  </swal>
+
+                    <button [swal]="act_staff" mat-menu-item *ngIf="item.status == 0" title="activate this staff"><i class="fa fa-unlock"></i> Activate</button>
+                    <swal
+                    #act_staff
+                    title="Are You Sure You want to Activate this Staff?"
+                    text="Staff wont have access to this app"
+                    type="warning"
+                    [showCancelButton]="true"
+                    [focusCancel]="true"
+                    (confirm)="activate_staff(item.id)">
+                  </swal>
+
+                    <button [swal]="delete_staff" mat-menu-item *ngIf="user?.role_id == 2" title="edit staff details"><i class="fa fa-trash-o"></i> Delete Staff</button>
+                    <swal
+                    #delete_staff
+                    title="Are You Sure You want to Delete this Staff?"
+                    text="This cannot be undone"
+                    type="warning"
+                    [showCancelButton]="true"
+                    [focusCancel]="true"
+                    (confirm)="deleteStaff(item.id)">
+                  </swal>
+                </mat-menu>
+
+                <button mat-icon-button [matMenuTriggerFor]="appMenu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                    <!-- <button class="btn btn-primary btn-sm" (click)="editStaff(item)" title="edit staff details"><i class="fa fa-edit"></i></button>
                     <button class="btn btn-danger btn-sm" (click)="editPassword(item)" title="reset password: this sends a password reset link"><i class="fa fa-key"></i></button>
-                    <button *ngIf="user?.role_id == 2" class="btn btn-danger btn-sm" (click)="deleteStaff(item.id)" title="edit staff details"><i class="fa fa-trash-o"></i></button>
+
+                    <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivate_staff(item.id)" title="deactivate or suspend this staff">
+                    <i class="fa fa-unlock"></i></button>
+
+                    <button class="btn btn-success btn-sm" *ngIf="item.status == 0" (click)="activate_staff(item.id)" title="activate this staff"><i class="fa fa-unlock"></i></button>
+
+                    <button *ngIf="user?.role_id == 2" class="btn btn-danger btn-sm" (click)="deleteStaff(item.id)" title="edit staff details"><i class="fa fa-trash-o"></i></button> -->
                   </td>
                 </tr>
               </tbody>

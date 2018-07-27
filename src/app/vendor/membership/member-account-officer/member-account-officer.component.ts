@@ -14,6 +14,9 @@ export class MemberAccountOfficerComponent implements OnInit {
 	vendor;
 	user;
   member_id;
+  show_add_form_check: boolean = false;
+  public acc_oficer_form : FormGroup;
+
   constructor(
 		private localService : LocalService,
     private exportService: TableExportService,
@@ -27,7 +30,17 @@ export class MemberAccountOfficerComponent implements OnInit {
     }
 
   	ngOnInit() {
+      this.acc_oficer_form = this._fb.group({
+        staff_id : [null, Validators.compose([Validators.required])],
+        member_id: '',
+        approved_by: '',
+        status: '',
+      });
 
   	}
 
+    save_acct_officer_form(form_values)
+    {
+      console.log(form_values)
+    }
 }

@@ -7,6 +7,7 @@ import { ManageStaffComponent } from './manage-staff/manage-staff.component';
 import { StaffService } from './staff.service';
 import { StaffRoutingModule } from './staff-routing.module';
 import { SharedModule } from '../../shared/shared.module';
+import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { SharedModule } from '../../shared/shared.module';
      FormsModule, ReactiveFormsModule,
      TabsModule.forRoot(),
      SharedModule,
+     SweetAlert2Module,
   ],
   declarations: [
   	ManageStaffComponent,

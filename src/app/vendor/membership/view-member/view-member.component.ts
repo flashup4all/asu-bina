@@ -57,6 +57,7 @@ export class ViewMemberComponent implements OnInit {
     contributionFilterForm: FormGroup;
     submitPending:boolean;
     btn_loader: boolean = false;
+    allow_edit_acc_no : boolean = false;
     public loanRequestForm : FormGroup;
     public loanrequestFilterForm : FormGroup;
     public withdrawalForm : FormGroup;
@@ -371,6 +372,7 @@ export class ViewMemberComponent implements OnInit {
 
     private prepareSave(data): any {
       let input = new FormData();
+      input.append('account_number', data.account_number);
       input.append('first_name', data.first_name);
       input.append('last_name', data.last_name);
       input.append('middle_name', data.middle_name);

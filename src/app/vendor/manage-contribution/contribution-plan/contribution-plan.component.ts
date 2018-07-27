@@ -65,7 +65,7 @@ export class ContributionPlanComponent implements OnInit {
   	new_plan()
   	{
       this.form_loader = false;
-  		this.editData = null;
+  		//this.editData = null;
   		this.button = 'New';
       this.contribution_plan_form.reset()
   		this.newContributionPlanModal.show()

@@ -34,6 +34,18 @@ export class StaffService {
       return this.http.post(environment.api.url+'CoopManagement/staff-position/'+id,JSON.stringify(data), this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
+
+    deactivate_staff(id)
+    {
+      return this.http.get(environment.api.url+'CoopManagement/staff/staff-deactivate/'+id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    activate_staff(id)
+    {
+      return this.http.get(environment.api.url+'CoopManagement/staff/staff-activate/'+id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
   	/**
   	 * @method getStaffPosition
   	 * get staff position resource
