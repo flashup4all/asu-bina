@@ -245,6 +245,17 @@ export class ContributionService {
     }
 
     /**
+     * @method delete_contribution
+     * get member contribution history
+     * @return data
+     */
+    delete_contribution(id)
+    {
+      return this.http.delete(environment.api.url+'CoopManagement/member-contribution-plan/delete/'+id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
      * @method get_member_contribution_plan
      * filter contribution
      * @return data

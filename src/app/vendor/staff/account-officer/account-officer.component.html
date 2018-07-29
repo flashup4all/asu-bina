@@ -1,0 +1,121 @@
+<mat-card>
+	<br>
+<div *ngIf="user.role_id < 4 ">
+    <form [formGroup]="acc_oficer_form" (ngSubmit)="save_acct_officer_form(acc_oficer_form.value)">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="typeahead-http">Filter Member <small>[name/Account no.]</small></label>
+                    <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="searchFailed"formControlName="member_id" [ngbTypeahead]="search" placeholder="Filter Member" [inputFormatter]="formatter" [resultTemplate]="rt"/>
+                    <span *ngIf="searching">searching...</span>
+                    <ng-template #rt let-r="result" let-t="term">
+                    	<img [src]="r.passport" style="width:30px; height:30px;">
+                       {{ r.first_name}} {{ r.middle_name}} {{ r.last_name}}
+                    </ng-template>
+                  </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Set Default</label>
+                    <select class="form-control" formControlName="status">
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                    <mat-error [hidden]="(acc_oficer_form.controls.status.valid ) || (acc_oficer_form.controls.status.pristine )" class="text-danger">Unique Identifier Required</mat-error>
+                </div>
+            </div>
+            <!-- <div class="form-group">
+                <label>Description <small>[ optional]</small></label>
+               <textarea formControlName="description"></textarea>
+            </div> -->
+            <div class="col-md-4">
+                <button mat-raised-button [disabled]="acc_oficer_form.invalid" color="primary" class="btn btn-success" block style="margin-top: 27px;">Add</button>
+                <button mat-raised-button [disabled]="acc_oficer_form.invalid" color="primary" type="button" class="btn btn-success" (click)="clear_acct_form()" block style="margin-top: 27px;">Clear</button>
+            </div>
+            
+        </div>
+    </form>
+</div>
+
+<mat-progress-bar *ngIf="save_acct_officer_form_check" mode="indeterminate"></mat-progress-bar>
+                        
+<table *ngIf="!searching" id="members_table" class="table table-responsive-sm table-hover table-outline mb-0">
+  <thead class="thead-light">
+    <tr>
+      <th class="text-center"><i class="icon-people"></i></th>
+      <th>Name</th>
+      <th>Gender</th>
+      <th>Acc No.</th>
+      <th class="text-center">Phone</th>
+      <th>Status</th>
+      <th>Account Manager</th>
+      <th>Created</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+   <tr *ngFor="let item of account_officers">
+      <td>
+        {{item?.member?.account_number}}
+      </td>
+      <td class="text-center">
+        <div class="avatar">
+          <img *ngIf="!item.passport" src="assets/images/avata.png" class="img-avatar">
+          <img *ngIf="item.passport" src="{{ member_image_url}}{{item.member.passport}}" class="img-avatar">
+          <span class="avatar-status badge-success"></span>
+        </div>
+      </td>
+      <td>
+        <div>{{ item?.member?.first_name }}
+                {{ item?.member?.last_name }}
+                {{ item?.member?.middle_name }}</div>
+      </td>
+      <td>{{item?.member?.gender}}</td>
+      <td class="text-center">
+        <!-- {{item.email}} -->
+          {{item?.member?.phone1 || 'nil'}}
+      </td>
+      <td>
+        <div *ngIf="item.member?.status == 1">
+           Approved
+        </div>
+        <div *ngIf="item.member?.status == 2">
+           Blocked
+        </div>
+        <div *ngIf="item.member?.status == 0">
+          Inactivediv
+        </div>
+      </td>
+      <td>
+        {{ item?.staff?.first_name }}
+                {{ item?.staff?.last_name }}
+                {{ item?.staff?.middle_name }}
+    </td>
+      <td class="text-center">
+        <span class="label label-sm label-primary">{{  item?.created_at | date: 'shortDate' }}</span>
+      </td>
+      <td>
+      	<div *ngIf="user.role_id < 4">
+      		<mat-menu #appMenu="matMenu">
+      			<a  mat-menu-item [routerLink]="['/app/members/', item.member.id,'view']" title="edit member details"><i class="fa fa-sliders"> </i></a>
+      			<button mat-menu-item *ngIf="!item?.status" (click)="set_default_acc_officer(item.id, 1)" title="Set Defualt"><i class="fa fa-edit"></i> Activate</button>
+            	<button mat-menu-item *ngIf="item?.status" (click)="set_default_acc_officer(item.id, 0)" title="Set Defualt"><i class="fa fa-edit"></i> De-Activate</button>
+			</mat-menu>
+
+			<button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appMenu">
+				<mat-icon>more_vert</mat-icon>
+			</button>
+      	</div>
+        
+       <!--  <button class="btn btn-success btn-sm" (click)="editPassword(item)" title="reset member password: this sends a password reset link"><i class="fa fa-lock"></i></button>
+        <div *ngIf="user.role_id < 4">
+          <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivateMember(item.id)" title="deactivate or suspend this member">
+          <i class="fa fa-unlock"></i></button>
+        <button class="btn btn-success btn-sm" *ngIf="item.status != 1" (click)="activateMember(item.id)" title="activate this member"><i class="fa fa-unlock"></i></button>
+        </div> -->
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+</mat-card>

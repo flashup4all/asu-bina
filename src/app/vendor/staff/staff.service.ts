@@ -114,6 +114,16 @@ export class StaffService {
   		return this.http.get(environment.api.url+'CoopManagement/staff/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
   						.map((response: Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
+    /**
+     * @method getStaff
+     * get staff resource
+     * @return data
+     */
+    get_single_staff(id)
+    {
+      return this.http.get(environment.api.url+'CoopManagement/get-single-staff/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
+              .map((response: Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
   	/**
   	 * @method getUserRoles
   	 * get user roles resource

@@ -111,19 +111,19 @@ export class ManageMembersComponent implements OnInit {
 
 		search = (text$: Observable<string>) =>
     	text$
-      .debounceTime(300)
-      .distinctUntilChanged()
-      .do(() => this.searching = true)
-      .switchMap(term =>
-        this.manageMemberService.filterMembers(term)
-          .do(() => this.searchFailed = false)
-          .catch(() => {
-            this.searchFailed = true;
-            return of([]);
-          }))
-      .do(() => this.searching = false)
-      .merge(this.hideSearchingWhenUnsubscribed);
-      formatter = (x: {first_name: string, middle_name: string, last_name: string}) => x.first_name+'  '+ x.middle_name+'  '+ x.last_name;
+	      .debounceTime(300)
+	      .distinctUntilChanged()
+	      .do(() => this.searching = true)
+	      .switchMap(term =>
+	        this.manageMemberService.filterMembers(term)
+	          .do(() => this.searchFailed = false)
+	          .catch(() => {
+	            this.searchFailed = true;
+	            return of([]);
+	          }))
+	      .do(() => this.searching = false)
+	      .merge(this.hideSearchingWhenUnsubscribed);
+	      formatter = (x: {first_name: string, middle_name: string, last_name: string}) => x.first_name+'  '+ x.middle_name+'  '+ x.last_name;
 
 	ngOnInit() {
 		/*this.queryField.valueChanges
@@ -275,6 +275,7 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	addMember(data) : void
 	{
+		console.log(data)
 		this.newMemberForm.updateValueAndValidity();
 		if (this.newMemberForm.invalid) {
 		  Object.keys(this.newMemberForm.controls).forEach(key => {
@@ -284,13 +285,6 @@ export class ManageMembersComponent implements OnInit {
 		}
 	    this.member_form_loader = true;
 	     data = this.prepareSave();
-		// this.items = this.newMemberForm.get('memberData') as FormArray;
-  		//this.items.push(this.initAddress());
-		// data['vendor_id'] = this.vendor.id;
-		// data['approved_by'] = JSON.parse(this.localService.getUser()).id;
-		//data['passport'] = this.passport;
-		//data['phone1'] = '234'+data.phone1.substr(1);
-		//console.log(data)
 		this.manageMemberService.addMember(data).subscribe((response) => {
 			if(response.success)
 	      	{

@@ -329,7 +329,7 @@ export class MemberContributionsComponent implements OnInit {
       return;
     }
       for (var i in this.member_plan_list) {
-        if(this.member_plan_list[i].investmentplan_id == contribution.id)
+        if(this.member_plan_list[i].contributionplan_id == contribution.id)
         {
           this.errorMessage = 'This member already have this plan active as part of his contribution';
           return this.localService.showError('This member already have this plan active as part of his contribution','Operation Successfull');
@@ -373,6 +373,24 @@ export class MemberContributionsComponent implements OnInit {
       }
       
       this.contributionService.approve_contribution(data).subscribe((response) => {
+        if (response.success) {
+      this.approve_btn_loader = false;
+            this.get_member_contribution_plan();
+            this.localService.showSuccess(response.message,'Operation Successfull');
+          }else{
+      this.approve_btn_loader = false;
+            this.localService.showError(response.message,'Operation Unsuccessfull');
+          }
+        }, (error) => {
+      this.approve_btn_loader = false;
+          this.form_loader = false;
+                this.localService.showError(error,'Operation Unsuccessfull');
+        });
+    }
+
+    delete_contribution_plan(id)
+    {
+      this.contributionService.delete_contribution(id).subscribe((response) => {
         if (response.success) {
       this.approve_btn_loader = false;
             this.get_member_contribution_plan();

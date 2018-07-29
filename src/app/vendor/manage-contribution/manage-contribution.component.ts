@@ -8,6 +8,7 @@ import { LocalService } from '../../storage/local.service';
 import { ContributionService } from './contribution.service';
 // import { XlsxToJsonService } from '../../shared/xls/index'
 import { MembersService } from '../membership/members.service';
+import { StaffService } from '../staff/staff.service';
 import { TableExportService } from '../../shared/services/index';
 //import * as FileSaver from 'file-saver';
 import * as moment from 'moment';
@@ -47,12 +48,14 @@ export class ManageContributionComponent implements OnInit {
 	file;
 	public result: any;
 	submitPending: boolean;
+  btn_loader: boolean = false;
 	contribution_type_list;
 	successAlert;
 	toPage;
   	loader;
   	toRequestPage;
   	monthList;
+    user;
     filterForm: FormGroup;
     adv_filter: boolean;
   	public changeContibutionsRequestList;
@@ -61,14 +64,20 @@ export class ManageContributionComponent implements OnInit {
     searching = false;
     searchFailed = false;
     hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
+    
+    staff_searchFailed = false;
+    staff_searching = false;
+    staff_hideSearchingWhenUnsubscribed  = new Observable(() => () => this.searching = false);
   
 	constructor(
 		private localService : LocalService,
-      private exportService: TableExportService,
-  		private _fb : FormBuilder,
-      private memberService : MembersService,
-  		private contributionService : ContributionService
+    private exportService: TableExportService,
+		private _fb : FormBuilder,
+    private memberService : MembersService,
+    private staffService : StaffService,
+		private contributionService : ContributionService
   		) {
+    this.user = JSON.parse(this.localService.getUser());
 		this.vendor = JSON.parse(this.localService.getVendor());
 		this.getContributions();
 		this.get_contribution_type()
@@ -87,11 +96,15 @@ export class ManageContributionComponent implements OnInit {
   		});
   		 /*filter form*/
        this.filterForm = this._fb.group({
+          transaction_id : '',
 	        from : '',
 	        to : '',
 	        id : '',
           member_id:'',
-          type:''
+          staff_id:'',
+          plan_id:'',
+          type:'',
+          status:''
 	      })
 
 	  }
@@ -110,9 +123,24 @@ export class ManageContributionComponent implements OnInit {
           }))
       .do(() => this.searching = false)
       .merge(this.hideSearchingWhenUnsubscribed);
-      formatter = (x: {first_name: string, middle_name: string, last_name: string, passport: string}) => x.first_name;
+      formatter = (x: {first_name: string, middle_name: string, last_name: string, passport: string}) => x.first_name+'  '+ x.middle_name+'  '+ x.last_name;
 
-      
+    search_staff = (text$: Observable<string>) =>
+    text$
+      .debounceTime(300)
+      .distinctUntilChanged()
+      .do(() => this.staff_searching = true)
+      .switchMap(sterm =>
+        this.staffService.filterStaff(sterm)
+          .do(() => this.staff_searchFailed = false)
+          .catch(() => {
+            this.staff_searchFailed = true;
+            return of([]);
+          }))
+      .do(() => this.staff_searching = false)
+      .merge(this.staff_hideSearchingWhenUnsubscribed);
+      staff_formatter = (y: {first_name: string, middle_name: string, last_name: string, passport: string, staff_id: string}) => y.first_name+'  '+ y.middle_name+'  '+ y.last_name;
+
 
 	  handleFile(event) {
 	    let file = event.target.files[0];
@@ -342,20 +370,52 @@ export class ManageContributionComponent implements OnInit {
       this.submitPending = true;
       let data = {
         from : filterValues.from,
+        transaction_id : filterValues.transaction_id,
+        plan_id : filterValues.plan_id,
         to : filterValues.to,
         id : filterValues.id,
+        staff_id : filterValues.staff_id.id,
         member_id : filterValues.member_id.id,
         type : filterValues.type,
+        status : filterValues.status,
         vendor_id: parseInt(this.vendor.id)
       }
       this.contributionService.filterContribution(data).subscribe((response) => {
         this.contibutionsList = response.data
         this.submitPending = false;
+      },(error) => {
+        this.submitPending = false;
+        this.localService.showError('Oops! Server Error!','Server Error Please contact Administrator');
       })
     }
     show_adv_form()
     {
       this.adv_filter =!this.adv_filter
+    }
+
+    post_transaction(transaction_id, status)
+    {
+      this.btn_loader = true;
+      let data = {
+        id: transaction_id,
+        approved_by: this.user.id,
+        vendor_id: this.vendor.id,
+        status: status
+      }
+      
+      this.contributionService.post_contribution_history(data).subscribe((response) => {
+        if (response.success) {
+            this.btn_loader = false;
+            this.getContributions();
+            this.localService.showSuccess(response.message,'Operation Successfull');
+          }else{
+            this.btn_loader = false;
+            this.localService.showError(response.message,'Operation Unsuccessfull');
+          }
+        }, (error) => {
+            this.btn_loader = false;
+                this.localService.showError(error,'Operation Unsuccessfull');
+        });
     }
 
 }

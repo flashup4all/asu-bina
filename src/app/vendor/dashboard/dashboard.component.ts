@@ -10,6 +10,7 @@ import { MessageService } from '../message-center/message.service';
 import { LoanRequestService } from '../manage-loanrequest/loan-request.service';
 import { ContributionService } from '../manage-contribution/contribution.service';
 import { WidthdrawalsService } from '../manage-widthdrawals/widthdrawals.service';
+import { environment } from '../../../environments/environment';
 declare let d3: any;
 @Component({
   selector: 'app-dashboard',
@@ -56,7 +57,7 @@ export class DashboardComponent implements OnInit {
     totalActiveMembers;
     toRequestPage;
     totalWidthdrawal;
-    
+    member_image_url
   	constructor(
   		private localService : LocalService,
       	private sanitizer:DomSanitizer,
@@ -71,6 +72,7 @@ export class DashboardComponent implements OnInit {
   		this.getMembers();
       this.vendor = JSON.parse(this.localService.getVendor());
   		this.user = JSON.parse(this.localService.getUser());
+        this.member_image_url = environment.api.imageUrl+'profile/member/';
       	this.getVendorMessages('inbox');
   		this.getLoanRequest();
       this.getChangeContributionRequest();

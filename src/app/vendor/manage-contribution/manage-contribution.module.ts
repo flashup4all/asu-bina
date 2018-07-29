@@ -6,6 +6,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalModule } from 'ngx-bootstrap';
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 
 import { ManageContributionRoutingModule } from './manage-contribution-routing.module';
 import { ManageContributionComponent } from './manage-contribution.component';
@@ -25,6 +26,7 @@ import { ContributionPlanComponent } from './contribution-plan/contribution-plan
     TabsModule,
     NgbModule,
     SharedModule,
+    SweetAlert2Module,
   ],
   declarations: [
     ManageContributionComponent, 

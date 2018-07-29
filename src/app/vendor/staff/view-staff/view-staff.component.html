@@ -1,0 +1,40 @@
+<div class="card">
+    <div class="card-body" >
+        <div class="profile-head media" style="padding-bottom: 20px;">
+            <a class="col-md-3 pull-left">
+                <img *ngIf="staff?.passport ==''" class="rounded-circle" src="assets/images/avata.png">
+                <img *ngIf="staff?.passport != ''" src="{{image_url}}{{staff?.passport}}" class="img-avatar" style="width: 150px; height: 150px;">
+            </a>
+            <div class="col-md-9">
+                <h2>
+                    {{staff?.first_name}} 
+                    {{staff?.last_name}} 
+                    {{staff?.middle_name}} 
+                </h2>
+                <mat-chip-list style="float: right">
+                    <mat-chip *ngIf="staff?.status == '1'" color="primary" selected="true">Activated</mat-chip>
+                    <mat-chip *ngIf="staff?.status == '0'" color="warn" selected="true">Not Active</mat-chip>
+                    <mat-chip *ngIf="staff?.status == '2'" color="warn" selected="true">Suspended</mat-chip>
+                    <mat-chip color="primary" selected="true">{{ staff?.user_position?.name }}</mat-chip>
+                </mat-chip-list>
+                <p class="profile-brief">
+                   Staff ID:  {{ staff?.staff_no }} 
+                   <a class="btn"><i class="fa fa-user shaded"></i> {{staff?.gender}} </a>
+                </p>
+                <p class="profile-brief">
+                    {{staff?.email}} 
+                    <a class="btn"><i class="fa fa-phone shaded"></i> {{staff?.phone1}}, {{staff?.phone2}} </a>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <tabset>
+                    <tab heading="ASSIGNED ACCOUNTS">
+                        <app-account-officer></app-account-officer>
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+</div>

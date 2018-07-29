@@ -8,7 +8,12 @@
 			            	<div style="margin-bottom: 4px">
 			            		<button style="margin-left:5px;" (click)="exportTable('xls', 'withdrawal_table')" class="btn btn-outline btn-success">Export table</button>
                         		<button class="btn btn-outline btn-success" (click)="printReciept('withdrawal_table')">Print</button>
-                        		<button class="btn btn-success" style="margin-left:5px" (click)="show_adv_form = !show_adv_form">Show Search</button>
+                        		<button *ngIf="!show_adv_form" class="btn btn-success" style="margin-left:5px" (click)="show_adv_filter_form()">
+                        			Show Search
+                        		</button>
+                        		<button *ngIf="show_adv_form" class="btn btn-success" style="margin-left:5px" (click)="show_adv_filter_form()">
+                        			Hide Search
+                        		</button>
 			            	</div>
 			            	<div class="row" *ngIf="show_adv_form">
 			            		<form [formGroup] = "filterForm" (ngSubmit) = "filter_withdrawal(filterForm.value)" style="width: 100%;">
@@ -19,7 +24,7 @@
                                             <input type="text" formControlName = "transaction_id" class="form-control" name=""> 
                                           </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                           <div class="form-group">
                                             <label>From</label>
                                             <input type="date" formControlName = "from" class="form-control" name=""> 
@@ -32,18 +37,55 @@
                                           </div>
                                         </div>
                                         <div class="col-md-3">
+		                      				<div class="form-group">
+				                                <label>Contribution Plan</label>
+				                                <select class="form-control" placeholder="type" formControlName = "contributionplan_id">
+				                                    <option selected="" value="">None</option>
+				                                    <option [value]="item.id" *ngFor="let item of contribution_plan_list">
+				                                    	{{item?.name }}
+				                                    </option>
+				                                </select>
+				                            </div>
+		                      			</div>
+                                        <div class="col-md-3">
                                           <div class="form-group">
-					                        <label for="typeahead-http">Filter Member <small>[name/phone no.]</small></label>
+					                        <label for="typeahead-http">Filter Member <small>[name/Account no.]</small></label>
 					                        <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="searchFailed"formControlName="member_id" [ngbTypeahead]="search" placeholder="Filter Member" [inputFormatter]="formatter" [resultTemplate]="rt"/>
 					                        <span *ngIf="searching">searching...</span>
 					                        <ng-template #rt let-r="result" let-t="term">
-					                        	<img [src]="r.passport" style="width:30px; height:30px;">
-					                           {{ r.first_name}} {{ r.middle_name}} {{ r.last_name}}
+					                        	<img *ngIf="!r.passport" src="assets/images/avata.png" class="img-avatar" width='39px'>
+                                  				<img *ngIf="r.passport" src="{{member_image_url}}{{r.passport}}" class="img-avatar" width='39px'>
+					                           {{ r.first_name}} {{ r.last_name}} {{ r.middle_name}}
 					                           <br>
 					                           {{ r.account_number}}
 					                        </ng-template>
 					                      </div>
                                         </div>
+                                         <div class="col-md-3">
+                                          <div class="form-group">
+					                        <label for="typeahead-http">Filter By Staff <small>[Name/Staff ID]</small></label>
+					                        <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="staff_searchFailed"formControlName="staff_id" [ngbTypeahead]="search_staff" placeholder="Filter By Staff" [inputFormatter]="staff_formatter" [resultTemplate]="st"/>
+					                        <span *ngIf="staff_searching">searching...</span>
+					                        <ng-template #st let-r="result" let-t="term">
+					                        	<img *ngIf="!r.passport" src="assets/images/avata.png" class="img-avatar" width='39px'>
+                                  				<img *ngIf="r.passport" src="{{staff_image_url}}{{r.passport}}" class="img-avatar" width='39px'>
+					                           {{ r.first_name}} {{ r.last_name}} {{ r.middle_name}}
+					                           <br>
+					                           {{ r.staff_id}}
+					                        </ng-template>
+					                      </div>
+                                        </div>
+                                        <div class="col-md-3">
+		                      				<div class="form-group">
+				                                <label>Status</label>
+				                                <select class="form-control" formControlName = "status">
+				                                    <option selected="" value="">None</option>
+				                                    <option value="1">Approve/Posted</option>
+				                                    <option value="0">Pending/Pre-Posted</option>
+				                                    <option value="2">Cancelled</option>
+				                                </select>
+				                            </div>
+		                      			</div>
                                         <div class="col-md-3">
                                           <div class="form-group">
                                             <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
@@ -62,10 +104,10 @@
 			            	<table id="withdrawal_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
 				                <thead>
 				                    <tr>
-				                        <th>S/N</th>
+				                        <th>Trans ID</th>
 				                        <th>Name</th>
 				                        <th>Amount</th>
-				                        <!-- <th>Payment Method</th> -->
+				                        <th>Plan</th>
 				                        <th>Status</th>
 				                        <th>Created</th>
 				                        <th>Created By</th>
@@ -74,8 +116,8 @@
 				                    </tr>
 				                </thead>
 				                <tbody>
-				                    <tr class="" *ngFor="let item of widthdrawalsList; let i=index">
-				                        <td>{{ i + 1 }}</td>
+				                    <tr class="" *ngFor="let item of widthdrawalsList">
+				                        <td>{{ item?.transaction_id }}</td>
 				                        <td>
 		                                  {{item.member.first_name}} 
 		                                  {{item.member.last_name}} 
@@ -84,9 +126,9 @@
 				                        <td>
 				                            {{item?.amount}} 
 				                        </td>
-				                        <!-- <td>
-				                            {{item?.payment_method}} 
-				                        </td> -->
+				                        <td>
+				                            {{item?.plan?.name }} 
+				                        </td> 
 				                        <td>
 				                        	<span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
 				                            <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
@@ -107,6 +149,7 @@
 				                        </td>
 				                        <td class="center">
 				                        	<mat-menu #appMenu="matMenu">
+				                        	<mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
 											  <button [swal]="approve_request" mat-menu-item *ngIf="item.status==0">Approve Request</button>
 											  <button [swal]="cancel_request" mat-menu-item *ngIf="item.status == 0 ">Cancel Request</button>
 											  <swal

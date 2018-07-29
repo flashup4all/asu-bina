@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Router} from '@angular/router';
 import { Subject } from 'rxjs/Rx';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of'
@@ -73,6 +74,7 @@ export class ManageStaffComponent implements OnInit {
   		private manageStaffService : StaffService,
   		private sanitizer:DomSanitizer,
       private manageMemberService : MembersService,
+      private router : Router,
       private changeDetectorRef: ChangeDetectorRef
   		) { 
         this.image_url = environment.api.imageUrl+'profile/staff/';
@@ -445,6 +447,13 @@ export class ManageStaffComponent implements OnInit {
        })
     }
 
+    viewStaff(id)
+    {
+      if(id)
+      {
+        this.router.navigate(['app/staff/'+id+'/view']);
+      }
+    }
 
     /**
    * @method editPassword

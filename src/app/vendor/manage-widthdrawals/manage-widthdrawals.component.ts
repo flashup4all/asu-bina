@@ -7,6 +7,9 @@ import { LocalService } from '../../storage/local.service';
 import { WidthdrawalsService } from './widthdrawals.service';
 import { TableExportService } from '../../shared/services/index';
 import { MembersService } from '../membership/members.service';
+import { StaffService } from '../staff/staff.service';
+import { ContributionService } from '../manage-contribution/contribution.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-manage-widthdrawals',
@@ -27,37 +30,51 @@ export class ManageWidthdrawalsComponent implements OnInit {
 	public vendor;
 	user;
 	public widthdrawalsList = [];
+	contribution_plan_list;
 	toPage;
   	loader;
+  	staff_image_url
+	member_image_url
   	show_adv_form: boolean = false;
   	submitPending: boolean = false;
+  	approve_btn_loader: boolean = false;
     filterForm: FormGroup;
     searching = false;
     searchFailed = false;
     hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
-  
+  	
+  	staff_searchFailed = false;
+	staff_searching = false;
+	staff_hideSearchingWhenUnsubscribed  = new Observable(() => () => this.searching = false);
 	constructor(
 		private localService : LocalService,
       	private exportService: TableExportService,
   		private _fb : FormBuilder,
       	private memberService : MembersService,
+      	private staffService : StaffService,
+		private contributionService : ContributionService,
   		private widthdrawalService : WidthdrawalsService
   		) {
+        this.staff_image_url = environment.api.imageUrl+'profile/staff/';
+		this.member_image_url = environment.api.imageUrl+'profile/member/';
 		this.vendor = JSON.parse(this.localService.getVendor());
         this.user = JSON.parse(this.localService.getUser());
 		this.getWidthdrawals();
+		this.get_contribution_plan();
   		}
 
 	ngOnInit() {
 		/*filter form*/
        this.filterForm = this._fb.group({
 	        transaction_id : '',
+	        contributionplan_id : '',
 	        from : '',
 	        to : '',
 	        id : '',
           	member_id:'',
           	staff_id:'',
-          	type:''
+          	type:'',
+          	status: ''
 	      })
 	}
 	search = (text$: Observable<string>) =>
@@ -74,7 +91,23 @@ export class ManageWidthdrawalsComponent implements OnInit {
           }))
       .do(() => this.searching = false)
       .merge(this.hideSearchingWhenUnsubscribed);
-      formatter = (x: {first_name: string, middle_name: string, last_name: string, passport: string}) => x.first_name;
+      formatter = (x: {first_name: string, middle_name: string, last_name: string, passport: string}) => x.first_name+'  '+ x.middle_name+'  '+ x.last_name;
+
+    search_staff = (text$: Observable<string>) =>
+    text$
+      .debounceTime(300)
+      .distinctUntilChanged()
+      .do(() => this.staff_searching = true)
+      .switchMap(sterm =>
+        this.staffService.filterStaff(sterm)
+          .do(() => this.staff_searchFailed = false)
+          .catch(() => {
+            this.staff_searchFailed = true;
+            return of([]);
+          }))
+      .do(() => this.staff_searching = false)
+      .merge(this.staff_hideSearchingWhenUnsubscribed);
+      staff_formatter = (y: {first_name: string, middle_name: string, last_name: string, passport: string, staff_id: string}) => y.first_name+'  '+ y.middle_name+'  '+ y.last_name;
 
       
 
@@ -95,6 +128,18 @@ export class ManageWidthdrawalsComponent implements OnInit {
 		})
 	}
 
+	get_contribution_plan()
+    {
+      this.submitPending = true;
+      this.contributionService.get_contribution_plan().subscribe((response) => {
+        this.contribution_plan_list = response;
+        this.submitPending = false;
+      })
+    }
+    show_adv_filter_form()
+    {
+    	this.show_adv_form = !this.show_adv_form;
+    }
 	loadMore()
     {
      this.loader = true;
@@ -127,16 +172,20 @@ export class ManageWidthdrawalsComponent implements OnInit {
 			status: 'Approved',
 			approved_by: JSON.parse(this.localService.getUser()).id
 		}
+		this.approve_btn_loader = true;
 		this.widthdrawalService.approveWidthdrawalRequest(data).subscribe((response) => {
   	 		if(response.success = true)
 			{
 	 			this.getWidthdrawals()
+	 			this.approve_btn_loader = false;
 				this.localService.showSuccess(response.message,'Operation Successfull');
 			}
 			else{
+				this.approve_btn_loader = false;
 				this.localService.showError(response.message,'Operation Unsuccessfull');
 			}
   	 	}, (error) => {
+  	 		this.approve_btn_loader = false;
   	 		this.localService.showError('Error while performing this action, please try again later', 'Server Error')
   	 	});
 	}
@@ -154,16 +203,20 @@ export class ManageWidthdrawalsComponent implements OnInit {
 			status: 'Cancelled',
 			approved_by: JSON.parse(this.localService.getUser()).id
 		}
+		this.approve_btn_loader = true;
 		this.widthdrawalService.cancelWidthdrawalRequest(data).subscribe((response) => {
   	 		if(response.success = true)
 			{
 	 			this.getWidthdrawals()
+	 			this.approve_btn_loader = false;
 				this.localService.showSuccess(response.message,'Operation Successfull');
 			}
 			else{
+				this.approve_btn_loader = false;
 				this.localService.showError(response.message,'Operation Unsuccessfull');
 			}
   	 	}, (error) => {
+  	 		this.approve_btn_loader = false;
   	 		this.localService.showError('Error while performing this action, please try again later', 'Server Error')
   	 	});
 	}
@@ -241,6 +294,8 @@ export class ManageWidthdrawalsComponent implements OnInit {
 	        member_id : filterValues.member_id.id,
 	        staff_id : filterValues.staff_id.id,
 	        transaction_id : filterValues.transaction_id,
+	        contributionplan_id : filterValues.contributionplan_id,
+	        status : filterValues.status,
 	        vendor_id: parseInt(this.vendor.id)
 	      }
 	      this.submitPending = true;

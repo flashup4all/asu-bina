@@ -30,6 +30,8 @@ import { MessageService } from './vendor/message-center/message.service';
 import { ContributionService } from './vendor/manage-contribution/contribution.service';
 import { DeductionsService } from './vendor/manage-deductions/deductions.service';
 import { WidthdrawalsService } from './vendor/manage-widthdrawals/widthdrawals.service';
+import { StaffService } from './vendor/staff/staff.service';
+import { AccountOfficerService } from './vendor/account-officer/account-officer.service';
 import { TargetSavingsService } from './vendor/target-savings/target-savings.service';
 import { InvestmentService } from './vendor/manage-investments/investment.service';
 import { TableExportService } from './shared/services/index';
@@ -145,7 +147,9 @@ import { SigninComponent } from './auth/signin/signin.component';
   handleErrors,
   TableExportService,
   InvestmentService,
-  DomainService
+  DomainService,
+  StaffService,
+  AccountOfficerService,
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   bootstrap: [ AppComponent ]

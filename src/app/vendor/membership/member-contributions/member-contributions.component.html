@@ -62,6 +62,16 @@
                         		<mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
 								  <button *ngIf="!item.status" [swal]="approve_contri" mat-menu-item>Approve Plan</button>
 								  <button [swal]="cancel_contri" mat-menu-item>Cancel Plan</button>
+								   <button *ngIf="user.role_id ==2" [swal]="delete_contri" mat-menu-item>Delete Plan</button>
+								   <swal
+									  #delete_contri
+									  title="Are You Sure You want to Delete this Contribution Plan?"
+									  text="This cannot be undone"
+									  type="warning"
+									  [showCancelButton]="true"
+									  [focusCancel]="true"
+									  (confirm)="delete_contribution_plan(item.id)">
+									</swal>
 								  <swal
 									  #approve_contri
 									  title="Are You Sure You want to Approve this Contribution Plan?"

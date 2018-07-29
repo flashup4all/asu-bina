@@ -422,9 +422,8 @@
                 <tr *ngFor="let item of membersList">
                   <td class="text-center">
                     <div class="avatar">
-                      <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
-                      <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(item.passport)" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" class="img-avatar">
-                      <span class="avatar-status badge-success"></span>
+                      <img *ngIf="!item.passport" src="assets/images/avata.png" class="img-avatar">
+                      <img *ngIf="item.passport" src="{{ member_image_url}}{{item.passport}}" class="img-avatar">
                     </div>
                   </td>
                   <td>

@@ -20,6 +20,7 @@ export class SigninComponent implements OnInit {
 	submitPending : boolean = false;
   vendor;
   device_info;
+  session_data
   image_url;
   	constructor( 
   		 private route : ActivatedRoute,
@@ -73,7 +74,6 @@ export class SigninComponent implements OnInit {
     data['device_info'] = this.deviceService.getDeviceInfo();
 	    let auth = this.signinService.authenticate(data);
 	    auth.then(response => {
-        console.log(response.error)
           if(response.success){
             this.submitPending = false;
             this.localService.showSuccess('Login Successful, you will be redirected in a moment', 'Operation Successfull')
@@ -90,6 +90,7 @@ export class SigninComponent implements OnInit {
               // response.error
               if(response['session_data'])
               {
+                this.session_data = response.session_data
                 this.device_info = JSON.parse(response.session_data.device_info)
               }
               
@@ -134,5 +135,18 @@ export class SigninComponent implements OnInit {
     }
     //this.router.navigate(['/coorp/dashboard']);
   }
-
+  logout()
+  {
+    this.signinService.logout(this.session_data.id).subscribe((response) => {
+      if(response.success)
+      {
+        this.device_info = 0
+        window.localStorage.clear()
+        this.router.navigate(['auth'])
+      }
+    }, (error) => {
+        window.localStorage.clear()
+        this.router.navigate(['auth'])
+    })
+  }
 }

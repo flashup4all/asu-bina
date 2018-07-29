@@ -1,73 +1,72 @@
 
-<mat-accordion>
-        <mat-expansion-panel hideToggle="false" style="width:100%">
-            <mat-expansion-panel-header>
-                <mat-panel-title>Account Officers</mat-panel-title>
-            </mat-expansion-panel-header>
-            <br>
-            <button type="button" class="btn btn-primary pull-right"  (click)="acct_officer_modal.show()">Add Account Officer</button>
-            <br>
-            <table class="table table-responsive-sm table-hover table-outline mb-0 p-2" width="100%">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="" *ngFor="let account of account_officers">
-                        <td><input type="checkbox" name=""></td>
-                        <td>{{account?.bank_name}}</td>
-                        <td>
-                            {{account?.account_number}} 
-                        </td>
-                        <td class="center">
-                            <button class="btn btn-primary btn-sm" (click)="editAccount(account)" title="Delete Loan Signatory"><i class="fa fa-edit"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </mat-expansion-panel>
-    </mat-accordion>
-
-<div bsModal #acct_officer_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-     <div class="modal-dialog modal-md">
-       <div class="modal-content">
-         <div class="modal-header">
-           <h4 class="modal-title pull-left">Add an Account Officer</h4>
-           <button type="button" class="close pull-right" aria-label="Close" (click)="acct_officer_modal.hide()">
-             <span  (click)="acct_officer_modal.hide()" aria-hidden="true">&times;</span>
-           </button>
-         </div>
-         <div class="modal-body">
-           <div class="new session form">
-                <form [formGroup]="acc_oficer_form" (ngSubmit)="save_acct_officer_form(acc_oficer_form.value)">
-                    <div class="row">
-                	    <div class="form-group">
-                            <label>Unique Identifier <small>[ Not more than 11 characters.. ]</small></label>
-                            <input type="text" name="" formControlName = "staff_id" class="form-control" maxlength="11">
-                            <mat-error [hidden]="(acc_oficer_form.controls.staff_id.valid ) || (acc_oficer_form.controls.staff_id.pristine )" class="text-danger">Unique Identifier Required</mat-error>
-                        </div>
-                    	<div class="col-md-12">
-                    		<label>Set Default</label>
-                    		<select class="form-control" formControlName="status">
-                    			<option value="1">Yes</option>
-                    			<option value="0">No</option>
-                    		</select>
-                    		<mat-error [hidden]="(acc_oficer_form.controls.status.valid ) || (acc_oficer_form.controls.status.pristine )" class="text-danger">Unique Identifier Required</mat-error>
-                    	</div>
-                    	<div class="form-group">
-                            <label>Description <small>[ optional]</small></label>
-                           <textarea formControlName="description"></textarea>
-                        </div>
-                        <button mat-raised-button [disabled]="acc_oficer_form.invalid" color="primary" class="btn btn-success" block>Add</button>
-					</div>
-				</form>
-               
+<!-- <button type="button" class="btn btn-primary pull-right"  (click)="acct_officer_modal.show()">Add Account Officer</button> -->
+<br>
+<div *ngIf="user.role_id < 4 ">
+    <form [formGroup]="acc_oficer_form" (ngSubmit)="save_acct_officer_form(acc_oficer_form.value)">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="typeahead-http">Filter By Staff <small>[Name/Staff ID]</small></label>
+                    <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="staff_searchFailed"formControlName="staff_id" [ngbTypeahead]="search_staff" placeholder="Filter By Staff" [inputFormatter]="staff_formatter" [resultTemplate]="st"/>
+                    <span *ngIf="staff_searching">searching...</span>
+                    <ng-template #st let-r="result" let-t="term">
+                        <img *ngIf="!r.passport" src="assets/images/avata.png" class="img-avatar" width='39px'>
+                        <img *ngIf="r.passport" src="{{staff_image_url}}{{r.passport}}" class="img-avatar" width='39px'>
+                       {{ r.first_name}} {{ r.last_name}} {{ r.middle_name}}
+                       <br>
+                       {{ r.staff_id}}
+                    </ng-template>
+                  </div>
             </div>
-         </div>
-       </div>
-     </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Set Default</label>
+                    <select class="form-control" formControlName="status">
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                    <mat-error [hidden]="(acc_oficer_form.controls.status.valid ) || (acc_oficer_form.controls.status.pristine )" class="text-danger">Unique Identifier Required</mat-error>
+                </div>
+            </div>
+            <!-- <div class="form-group">
+                <label>Description <small>[ optional]</small></label>
+               <textarea formControlName="description"></textarea>
+            </div> -->
+            <div class="col-md-4">
+                <button mat-raised-button [disabled]="acc_oficer_form.invalid" color="primary" class="btn btn-success" block style="margin-top: 27px;">Add</button>
+                <button mat-raised-button [disabled]="acc_oficer_form.invalid" color="primary" type="button" class="btn btn-success" (click)="clear_acct_form()" block style="margin-top: 27px;">Clear</button>
+            </div>
+            
+        </div>
+    </form>
 </div>
+<table class="table table-responsive-sm table-hover table-outline mb-0 p-2" width="100%">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="" *ngFor="let account of account_officers">
+            <td><input type="checkbox" name=""></td>
+            <td>
+                {{ account?.staff?.first_name }}
+                {{ account?.staff?.last_name }}
+                {{ account?.staff?.middle_name }}
+            </td>
+            <td>
+                <mat-chip-list>
+                    <mat-chip *ngIf="account?.status" color="primary" selected="true">Active</mat-chip>
+                    <!-- <mat-chip *ngIf="!account?.status" color="warn" selected="true">Not Active</mat-chip> -->
+                </mat-chip-list>
+            </td>
+            <td class="center" *ngIf="user.role_id < 4">
+                <button *ngIf="!account?.status" class="btn btn-primary btn-sm" (click)="set_default_acc_officer(account.id, 1)" title="Set Defualt"><i class="fa fa-edit"></i> Activate</button>
+                <button *ngIf="account?.status" class="btn btn-primary btn-sm" (click)="set_default_acc_officer(account.id, 0)" title="Set Defualt"><i class="fa fa-edit"></i> De-Activate</button>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -49,7 +49,6 @@
                              </div>
                             </ng-template>
                         </div>
-                        <!-- <button class="btn btn-success" (click)="excelUploadModal.show()">Upload Excel Format</button> -->
                       </form>
                   </div>
                   <br>
@@ -122,54 +121,12 @@
                             </tr>
                           </thead>
                           <tbody>
-                            <!-- search result -->
-                            <!-- <tr *ngFor="let item of results">
-                              <td class="text-center">
-                                <div class="avatar">
-                                  <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
-                                  <img *ngIf="item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="{{image_url}}{{item.passport}}" class="img-avatar">
-                                  <span class="avatar-status badge-success"></span>
-                                </div>
-                              </td>
-                              <td>
-                                <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
-                                <div class="small text-muted">
-                                  <span>{{item?.gender}}</span> | {{item?.account_number || item?.phone1 }}
-                                </div>
-                              </td>
-                              <td class="text-center">
-                                {{item.email}}
-                              </td>
-                              <td class="text-center">
-                                <span class="label label-sm label-primary">{{ item?.contribution}}</span>
-                              </td>
-                              <td>
-                                <small *ngIf="item.status == 1" class="muted pull-right">
-                                   <h4><span class="label label-sm label-success">Active</span></h4>
-                                </small>
-                                <small *ngIf="item.status == 2" class="muted pull-right">
-                                   <h4><span class="label label-sm label-warning">Blocked</span></h4>
-                                </small>
-                                <small *ngIf="item.status == 0" class="muted pull-right">
-                                   <h4><span class="label label-sm label-danger">Inactive</span></h4>
-                                </small>
-                              </td>
-                              <td>
-                                <a class="btn btn-primary btn-sm" [routerLink]="['/app/members/', item.id,'view']" title="edit member details">
-                                  <i class="fa fa-sliders"> </i></a>
-                                <button class="btn btn-success btn-sm" (click)="editPassword(item)" title="reset member password: this sends a password reset link"><i class="fa fa-key"></i></button>
-                                <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivateMember(item.id)" title="deactivate or suspend this member">
-                                  <i class="fa fa-unlock"></i></button>
-                                <button class="btn btn-success btn-sm" *ngIf="item.status != 1" (click)="activateMember(item.id)" title="activate this member"><i class="fa fa-unlock"></i></button>
-                              </td>
-                            </tr> -->
-                            <!-- staff list -->
                             <tr *ngFor="let item of membersList; let i=index">
                               <td> {{ i + 1 }}</td>
                               <td class="text-center">
                                 <div class="avatar">
-                                  <img *ngIf="!item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="assets/images/avata.png" class="img-avatar">
-                                  <img *ngIf="item.passport" title="{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}" src="{{image_url}}{{item.passport}}" class="img-avatar">
+                                  <img *ngIf="!item.passport" src="assets/images/avata.png" class="img-avatar">
+                                  <img *ngIf="item.passport" src="{{image_url}}{{item.passport}}" class="img-avatar">
                                   <span class="avatar-status badge-success"></span>
                                 </div>
                               </td>
