@@ -64,16 +64,17 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h3 class="box-heading pull-left">LOAN TYPE</h3>
-                            <button type="button" class="btn btn-success pull-right" (click)="newLoanTypeModal.show()"><i class="fa fa-plus"></i> Add Loan Type</button>
+                            <button type="button" class="btn btn-success pull-right" (click)="show_newLoanTypeModal()"><i class="fa fa-plus"></i> Add Loan Type</button>
                         </div>
                          <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
                                     <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>Type</th>
-                                            <th>Description</th>
+                                            <!-- <th>Description</th> -->
                                             <th>Duration</th>
                                             <th>Interest [%]</th>
+                                            <th>Interest Type</th>
                                             <th>Created</th>
                                             <th>Actions</th>
                                         </tr>
@@ -82,9 +83,12 @@
                                         <tr class="" *ngFor="let item of loanTypeList">
                                             <td><input type="checkbox" name=""></td>
                                             <td>{{item.loan_type}}</td>
-                                            <td>{{item.description}}</td>
+                                            <!-- <td>{{item.description}}</td> -->
                                             <td>{{item.duration}}</td>
                                             <td>{{item.interest}}</td>
+                                            <td>
+                                                {{ filter_loan_interest_type(item.interest_type) }}
+                                            </td>
                                             <td>{{item.created_at}}</td>
                                             <td class="center">
                                                 <button class="btn btn-success" (click)="manageLoanItems(item)" title="Edit Loan Type" title="Manage loan Items">
@@ -435,6 +439,12 @@
                     <input type="number" formControlName="interest" placeholder="percentage interest: eg.3%" class="form-control" required="">
                     <small [hidden]="(newLoanTypeForm.controls.interest.valid ) || (newLoanTypeForm.controls.interest.pristine )" class="text-danger">Percentage Interest Required</small>
                 </div>
+                <div class="form-group">
+                    <label> Interest Type</label>
+                    <select class="form-control"  formControlName="interest_type">
+                        <option  *ngFor="let item of interest_type" [value]="item.value">{{ item?.name }}</option>
+                    </select>
+                </div>
                
                 <!-- <div class="form-group"  *ngIf="!percentage">
                     <label>Minimum Amount <small>[ NGN ]</small></label>
@@ -455,28 +465,18 @@
                 <div class="form-group">
                     <label>Duration in Months</label>
                     <input type="number" class="form-control" formControlName="duration" required="">
-                    <!-- <select class="form-control" formControlName="duration" required="">
-                        <option value="3">3 Months</option>
-                        <option value="6">6 Months</option>
-                        <option value="12">1 Year</option>
-                        <option value="24">2 Years</option>
-                        <option value="36">3 Years</option>
-                        <option value="48">4 Years</option>
-                        <option value="60">5 Years</option>
-                        <option value="72">6 Years</option>
-                    </select> -->
                      <small [hidden]="(newLoanTypeForm.controls.duration.valid ) || (newLoanTypeForm.controls.duration.pristine )" class="text-danger">Loan Duration is Required</small>
                 </div>
                 <hr>
                 <h4>Loan Signatory Settings</h4>
                 <small>Please Choose  Signatories that must approve this loan type</small>
-                <small>Please Set Loan Siignatories before Submission</small>
+                <small>Please Set Loan Signatories before Submission</small>
                 <div class="form-group">
                     <div>
-                        <label class="checkbox-inline" *ngFor="let item of loanSignatoryList" style="padding-right:25px">
+                        <label class="checkbox-inline" *ngFor="let signatory of newLoanTypeForm.controls.signatory.controls; let i=index" style="padding-right:25px">
                         <div class="icheckbox_minimal-grey" style="position: relative;">
-                            <input type="checkbox" class="form-control" name="loan_signatories[]" value="{{item.signatory_type}}">
-                        </div> Level {{item.signatory_type}}</label>
+                            <input type="checkbox" class="form-control" [formControl]="signatory.controls.status">
+                        </div> Level {{loanSignatoryList[i].signatory_type}}</label>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-success btn-block" [disabled]="newLoanTypeForm.invalid ">
@@ -502,16 +502,22 @@
          </div>
          <div class="modal-body">
            <div class="new session form">
-              <form method="POST" [formGroup] = "newLoanTypeForm" (ngSubmit) = "updateLoanType(newLoanTypeForm.value, editLoanTypeData.id)" class="form-horizontal row-fluid">
+              <form method="POST" [formGroup] = "editLoanTypeForm" (ngSubmit) = "updateLoanType(editLoanTypeForm.value, editLoanTypeData.id)" class="form-horizontal row-fluid">
                 <div class="form-group">
                     <label>Type Name</label>
                     <input type="text" [ngModel]="editLoanTypeData?.loan_type" formControlName="loan_type" placeholder="Loan Type" class="form-control" value="" required="">
-                    <small [hidden]="(newLoanTypeForm.controls.loan_type.valid ) || (newLoanTypeForm.controls.loan_type.pristine )" class="text-danger">Loan Type Name is Required</small>
+                    <small [hidden]="(editLoanTypeForm.controls.loan_type.valid ) || (editLoanTypeForm.controls.loan_type.pristine )" class="text-danger">Loan Type Name is Required</small>
                 </div>
                 <div class="form-group">
                     <label>Interest <small>[ % ]</small></label>
                     <input type="number" [ngModel]="editLoanTypeData?.interest" formControlName="interest" placeholder="percentage interest: eg.3%" class="form-control" required="">
-                    <small [hidden]="(newLoanTypeForm.controls.interest.valid ) || (newLoanTypeForm.controls.interest.pristine )" class="text-danger">Loan Interest is Required</small>
+                    <small [hidden]="(editLoanTypeForm.controls.interest.valid ) || (editLoanTypeForm.controls.interest.pristine )" class="text-danger">Loan Interest is Required</small>
+                </div>
+                <div class="form-group">
+                    <label> Interest Type</label>
+                    <select class="form-control"  formControlName="interest_type" [ngModel]="editLoanTypeData?.interest_type">
+                        <option  *ngFor="let item of interest_type" [value]="item.value">{{ item?.name }}</option>
+                    </select>
                 </div>
                 <!-- <div class="form-group" *ngIf="!percentage">
                     <label>Minimum Amount <small>[ NGN ]</small></label>
@@ -527,38 +533,29 @@
                 </div>
                 <div class="form-group">
                     <label>Requirements</label>
-                    <div class="col-sm-7">
-                        <textarea class="form-control" [ngModel]="editLoanTypeData?.requirements" formControlName="requirements" placeholder="loan requirement"></textarea>
-                    </div>
+                    <textarea class="form-control" [ngModel]="editLoanTypeData?.requirements" formControlName="requirements" placeholder="loan requirement"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Duration In Months</label>
                     <input type="number" class="form-control" [ngModel]="editLoanTypeData?.duration" formControlName="duration" required="">
-                    <!-- <select class="form-control" [ngModel]="editLoanTypeData?.duration" formControlName="duration" required="">
-                        <option value="3">3 Months</option>
-                        <option value="6">6 Months</option>
-                        <option value="12">1 Year</option>
-                        <option value="24">2 Years</option>
-                        <option value="36">3 Years</option>
-                        <option value="48">4 Years</option>
-                    </select> -->
-                     <small [hidden]="(newLoanTypeForm.controls.duration.valid ) || (newLoanTypeForm.controls.duration.pristine )" class="text-danger">Loan Duration is Required</small>
+                     <small [hidden]="(editLoanTypeForm.controls.duration.valid ) || (editLoanTypeForm.controls.duration.pristine )" class="text-danger">Loan Duration is Required</small>
                 </div>
                 <hr>
                 <h4>Loan Signatory Settings</h4>
                 <small>Please Choose  Signatories that must approve this loan type</small>
-                <small>Please Set Loan Siignatories before Submission</small>
+                <small>Please Set Loan Signatories before Submission</small>
                 <div class="form-group">
-                    <label class="checkbox-inline" *ngFor="let item of loanSignatoryList" style="padding-right:25px">
+                   <div>
+                        <label class="checkbox-inline" *ngFor="let signatory of editLoanTypeForm.controls.signatory.controls; let i=index" style="padding-right:25px">
                         <div class="icheckbox_minimal-grey" style="position: relative;">
-                            <input type="checkbox" class="form-control" name="loan_signatories[]" value="{{item.signatory_type}}">
-                        </div> Level {{item.signatory_type}}
-                    </label>
+                            <input type="checkbox" class="form-control" [formControl]="signatory.controls.status" [checked]="edit_loan_type_approvals[i].status">
+                        </div> Level {{edit_loan_type_approvals[i].signatory_type}}</label>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-success btn-block" [disabled]="newLoanTypeForm.invalid || updateloanTypeCheck ">
+                <button type="submit" class="btn btn-success btn-block" [disabled]="editLoanTypeForm.invalid || updateloanTypeCheck ">
                     <span *ngIf="!updateloanTypeCheck">Update</span>
-                    <span *ngIf="updateloanTypeCheck && newLoanTypeForm.valid">Please Wait...</span>
-                    <span *ngIf="updateloanTypeCheck && newLoanTypeForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                    <span *ngIf="updateloanTypeCheck && editLoanTypeForm.valid">Please Wait...</span>
+                    <span *ngIf="updateloanTypeCheck && editLoanTypeForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
                 </button>
             </form>
             </div>

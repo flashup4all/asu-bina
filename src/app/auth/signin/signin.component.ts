@@ -39,10 +39,10 @@ export class SigninComponent implements OnInit {
 	ngOnInit() {
     var url = window.location.hostname;
     let domain = url.split(".")
-    console.log(window.location.hostname)
-    console.log(domain[0]);
+    //console.log(window.location.hostname)
+    //console.log(domain[0]);
     this.signinService.verify_domain(domain[0]).subscribe((response) => {
-      console.log(response)
+      //console.log(response)
       this.vendor = response.data;
     })
     /*this.route.data

@@ -5,22 +5,39 @@
                     <div class="user-profile-top">
                         <div class="row">
                             <div class="col-md-2">
-                            	<img *ngIf="!loanRequest?.member?.logo" class="rounded-circle" src="assets/images/avata.png" width="130" height="130" >
-                				<img *ngIf="loanRequest?.member?.logo" class="rounded-circle" src="{{loanRequest?.member?.logo}}">
+                            	<img *ngIf="!loanRequest?.member?.passport" class="rounded-circle" src="assets/images/avata.png" width="130" height="130" >
+                				<img *ngIf="loanRequest?.member?.passport" class="rounded-circle" src="{{ member_image_url }}{{ loanRequest?.member?.passport }}" width="150px" height="150px">
                             </div>
                             <div class="col-md-4">
                                 <h5>{{loanRequest?.member?.first_name}} 
                                 	{{loanRequest?.member?.middle_name}} 
 				                    {{loanRequest?.member?.last_name}}
+                                    <p class="pull-right">
+                                        <a class="btn btn-primary btn-sm" (click)="manage_member(loanRequest.member.id)" title="edit member details">
+                                  <i class="fa fa-sliders"> </i> Manage</a>
+                                    </p>
 				                </h5>
                                 <p>
                                     Type: {{ loanRequest?.type?.loan_type }}
                                 </p>
                                 <p>
+                                	Interest: {{ loanRequest?.interest_percent }}%
+                                </p>
+                                <p>
                                     Amount: &#8358; {{ loanRequest?.amount }}
                                 </p>
                                 <p>
-                                    Status: {{ loanRequest?.status }}
+                                	Interest Amount: &#8358; {{ loanRequest?.interest_amount }}
+                                </p>
+                                <p>
+                                    Status:
+                                    <span class="pull-right">
+                                    <mat-chip-list>
+					                    <mat-chip *ngIf="loanRequest?.status == 1" color="primary" selected="true">Approved</mat-chip>
+					                    <mat-chip *ngIf="loanRequest?.status == 0" color="accent" selected="true">Pending</mat-chip>
+					                    <mat-chip *ngIf="loanRequest?.status == 2" color="warn" selected="true">Cancelled</mat-chip>
+					                </mat-chip-list>
+                                    </span>
                                 </p>
                                 <br>
                             </div>
@@ -95,6 +112,70 @@
 				            </table>
                         </div>
                     </tab>
+                  <tab heading="Approvals">
+                  	<table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Level</th>
+                                    <th>Status</th>
+                                    <th>Staff Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="" *ngFor="let item of loanRequest?.approvals">
+                                    <td><input type="checkbox" name=""></td>
+                                    <td>{{item.signatory_type}}</td>
+                                    <td>
+                                    	<mat-chip-list>
+						                    <mat-chip *ngIf="item?.status == 1" color="primary" selected="true">Approved</mat-chip>
+						                    <mat-chip *ngIf="item?.status == 0" color="accent" selected="true">Pending</mat-chip>
+						                    <mat-chip *ngIf="item?.status == 2" color="warn" selected="true">Cancelled</mat-chip>
+						                </mat-chip-list>
+                                    </td>
+                                    <td>
+                                       <!--  {{item.staff?.first_name}} 
+                                        {{item.staff?.last_name}} 
+                                        {{item.staff?.middle_name}} -->
+                                    </td>
+                                    <td class="center">
+                                         <mat-menu #appM="matMenu">
+                                              <button mat-menu-item *ngIf="item.status == 0" (click)="approveLoanRequest(item)">Approve Request</button>
+                                              <!-- <button mat-menu-item (click)="loadPaymentModal(item)">Pay Now</button> -->
+                                              <button *ngIf="item.status != 2" (click)="cancelLoanRequest(item)" mat-menu-item>Cancel Request</button>
+                                            </mat-menu>
+
+                                            <button *ngIf="item.status != 2" mat-icon-button [matMenuTriggerFor]="appM">
+                                              <mat-icon>more_vert</mat-icon>
+                                            </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                  </tab>
+                  <tab heading="Files">
+                  	<input id="cin" name="cin" type="file" (change)="fileChangeEvent($event)" placeholder="Upload a file..." multiple/>
+					<button type="button" class="btn btn-success btn-s" (click)="upload()">
+					    <i class="glyphicon glyphicon-open-file"></i>&nbsp;Upload
+					</button>
+    				<mat-progress-bar *ngIf="uploader_check" mode="indeterminate"></mat-progress-bar>
+    				<div class="row">
+    					<div class="col-md-2" *ngFor="let file of loanRequest?.requirements">
+    						<img src="{{ loan_files_url }}{{file.requirements}}">
+    						<swal
+								  #delete_file
+								  title="Are You Sure You want to Delete this File?"
+								  text="This cannot be undone"
+								  type="warning"
+								  [showCancelButton]="true"
+								  [focusCancel]="true"
+								  (confirm)="delete_loan_request_requirement(file.id)">
+								</swal>
+    						<button class="btn btn-danger" [swal]="delete_file"><i class="fa fa-trash-o"></i></button>
+    					</div>
+    				</div>
+                  </tab>
                 </tabset>
             </div>
         </div>

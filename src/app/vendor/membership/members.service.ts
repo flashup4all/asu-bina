@@ -201,6 +201,16 @@ export class MembersService {
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
+     * @method getMemberLoanRequest
+     * get all member loan request
+     * @return data
+     */
+    getMemberActiveLoanRequest(id)
+    {
+      return this.http.get(environment.api.url+'CoopManagement/loan-request-active/member/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+    /**
      * @method getContributions
      * get all member contributions
      * @return data

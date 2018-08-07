@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
+import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 import { ModalModule } from 'ngx-bootstrap';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BsDropdownModule } from 'ngx-bootstrap';
@@ -19,7 +20,8 @@ import { ViewRequestHistoryComponent } from './view-request-history/view-request
     ModalModule.forRoot(),
     BsDropdownModule.forRoot(),
     TabsModule,
-    SharedModule
+    SharedModule,
+    SweetAlert2Module
   ],
   declarations: [ManageLoanrequestComponent, ViewRequestHistoryComponent],
   providers: [LoanRequestService]

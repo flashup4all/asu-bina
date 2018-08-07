@@ -29,6 +29,7 @@
                     		<mat-checkbox [ngModel]="sms_settings_data?.staff_email" formControlName="staff_email">Send Email Alerts and Notifications to Staff</mat-checkbox>
                     	</div>
                         <button mat-raised-button [disabled]="sms_setting_form.invalid" class="btn btn-success" block>Update</button>
+                        <mat-progress-bar *ngIf="sms_settings_loader" mode="indeterminate"></mat-progress-bar>
 					</div>
 				</form>
             </div>
@@ -74,6 +75,7 @@
                             </div>
                             <div class="col-md-12"></div>
 	                        <button mat-raised-button [disabled]="birthday_sms_setting_form.invalid" class="btn btn-success" block>Update</button>
+                            <mat-progress-bar *ngIf="birthday_sms_settings_loader" mode="indeterminate"></mat-progress-bar>
 						</div>
 					</form>
 	            </div>
@@ -89,7 +91,7 @@
             <div>
             	<form [formGroup]="anouncement_sms_setting_form" (ngSubmit)="send_anouncement_sms_setting_form(anouncement_sms_setting_form.value)">
                     <div class="row">
-                	    <div class="form-group">
+                	    <div class="col-md-12">
                             <label>Unique Identifier <small>[ Not more than 11 characters.. ]</small></label>
                             <input type="text" name="" formControlName = "identifier" class="form-control" maxlength="11">
                             <mat-error [hidden]="(anouncement_sms_setting_form.controls.identifier.valid ) || (anouncement_sms_setting_form.controls.identifier.pristine )" class="text-danger">Unique Identifier Required</mat-error>
@@ -98,6 +100,7 @@
                     		<label>Message</label>
                     		<textarea class="form-control" formControlName="message"></textarea>
                     	</div>
+                        <br>
                     	<div class="col-md-12">
                     		<mat-checkbox formControlName="all_staff">Send Notifications to all Staff</mat-checkbox>
                     	</div>
@@ -111,6 +114,7 @@
                     		<mat-checkbox formControlName="email">Send as Email Alerts</mat-checkbox>
                     	</div>
                         <button mat-raised-button [disabled]="anouncement_sms_setting_form.invalid" class="btn btn-success" block color="accent">Send</button>
+                        <mat-progress-bar *ngIf="sms_notification_loader" mode="indeterminate"></mat-progress-bar>
 					</div>
 				</form>
             </div>

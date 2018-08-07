@@ -11,6 +11,7 @@ import { ContributionService } from '../../manage-contribution/contribution.serv
 import { DeductionsService } from '../../manage-deductions/deductions.service';
 import { TargetSavingsService } from '../../target-savings/target-savings.service';
 import { WidthdrawalsService } from '../../manage-widthdrawals/widthdrawals.service';
+//import { MemberLoanRequestComponent } from '../member-loan-request/member-loan-request.component';
 import * as moment from 'moment';
 import { TableExportService } from '../../../shared/services/index';
 import { environment } from '../../../../environments/environment';
@@ -91,7 +92,8 @@ export class ViewMemberComponent implements OnInit {
       private memberService : MembersService,
       private loanRequestService : LoanRequestService,
       private loanSettingsService : LoanSettingsService,
-    	private targetService : TargetSavingsService
+    	private targetService : TargetSavingsService,
+      //private member_loan_request_component : MemberLoanRequestComponent
     	) {
         this.image_url = environment.api.imageUrl+'profile/member/';
         this.vendor = JSON.parse(this.localService.getVendor());
@@ -105,7 +107,7 @@ export class ViewMemberComponent implements OnInit {
         this.getMemberLoanDeductions();
         this.getMemberContributions();
         this. getFormFields();
-        this.getLoanType();
+        // this.getLoanType();
         this.get_contribution_type()
         this.get_deduction_type()
         this.getMemberTargetSavings()
@@ -214,7 +216,7 @@ export class ViewMemberComponent implements OnInit {
      */
     getMemberLoanRequest()
     {
-      this.memberService.getMemberLoanRequest(this.memberId).subscribe((response) => {
+      this.memberService.getMemberActiveLoanRequest(this.memberId).subscribe((response) => {
         this.memberLoanRequestList = response.data
       })
     }
@@ -226,48 +228,19 @@ export class ViewMemberComponent implements OnInit {
       })
     }
 
-    /**
-     * @method makeLoanRequest
-     * make a loan request
-     * @return true/false
-     */
-    makeLoanRequest(data)
-    {
-      data['member_id'] = this.memberId
-      data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;
-      data['requirements'] = this.files;
-      this.loanRequestService.addLoanRequest(data).subscribe((response) => {
-        if(response.success)
-        {
-          this.submitPending = false;
-           this.getMemberLoanRequest()
-           this.newLoanRequestModal.hide();
-           this.loanRequestForm.reset();
-          this.localService.showSuccess(response.message,'Operation Successfull');
-        }
-        else{
-          this.submitPending = false;
-          this.localService.showError(response.message,'Operation Unsuccessfull');
-        }
-      }, (error) => {
-        this.submitPending = false;
-        this.localService.showError(error,'Operation Unsuccessfull');
-      });
-    }
-
 
      /**
      * @method getLoanType
      * creates a new loan type  resource
      * @return data
      */
-    getLoanType()
+    /*getLoanType()
     {
         this.loanSettingsService.getLoanType().subscribe((response) => {
          
            this.loanTypeList = response.data
        })
-    }
+    }*/
 
      /**
      * @method getMemberLoanDeductions
@@ -340,8 +313,8 @@ export class ViewMemberComponent implements OnInit {
     updateMember(data, id)
     {
       this.submitPending = true;
-      data = this.prepareSave(data);
-      this.memberService.updateMember(data, id).subscribe((response) => {
+      let form_data = this.prepareSave(data);
+      this.memberService.updateMember(form_data, id).subscribe((response) => {
         if(response.success)
         {
           this.getMemberProfile();
@@ -371,6 +344,7 @@ export class ViewMemberComponent implements OnInit {
     }
 
     private prepareSave(data): any {
+      console.log(data)
       let input = new FormData();
       input.append('account_number', data.account_number);
       input.append('first_name', data.first_name);
@@ -447,16 +421,7 @@ export class ViewMemberComponent implements OnInit {
       })
     }
 
-    filterLoanRequest(filterValues)
-    {
-      this.submitPending = true;
-      filterValues['vendor_id'] = parseInt(this.vendor.id);
-      filterValues['member_id'] = parseInt(this.memberId);
-      this.loanRequestService.filterLoanRequest(filterValues).subscribe((response) => {
-        this.memberLoanRequestList = response.data;
-        this.submitPending = false;
-      })
-    }
+   
 
 
     make_a_repayment(formValues)
@@ -467,7 +432,7 @@ export class ViewMemberComponent implements OnInit {
       this.deductionService.repayment(formValues).subscribe((response) => {
         if (response.success) {
           this.submitPending = false;
-          this.getMemberLoanRequest();
+          //this.member_loan_request_component.getMemberLoanRequest();
           this.getMemberLoanDeductions();
           this.newRepaymentModal.hide();
           this.addDeductionForm.reset()

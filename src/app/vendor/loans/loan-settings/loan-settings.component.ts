@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { LocalService } from '../../../storage/local.service';
 import { LoanSettingsService } from './loan-settings.service';
 import { SettingsService } from '../../settings/settings/settings.service';
@@ -23,12 +23,14 @@ export class LoanSettingsComponent implements OnInit {
 
 	public loanSignatoryForm : FormGroup;
 	public editloanSignatoryForm : FormGroup;
-	public newLoanTypeForm : FormGroup;
+  public newLoanTypeForm : FormGroup;
+	public editLoanTypeForm : FormGroup;
   public loanThresholdForm: FormGroup;
   public eligibilityForm: FormGroup;
   public loanTypeItemForm: FormGroup;
 	public loanSignatoryList;
 	public loanTypeList;
+  interest_type;
   public editLoanSignatoryData;
 	public editLoanTypeData;
 	public managementStaffList;
@@ -52,6 +54,7 @@ export class LoanSettingsComponent implements OnInit {
   loader;
   total_loan_type;
   addItemCheck: boolean;
+  edit_loan_type_approvals;
   @ViewChild('loanSettingsItemModal') public loanSettingsItemModal :ModalDirective;
 	@ViewChild('loanSignatoryModal') public loanSignatoryModal :ModalDirective;
   @ViewChild('editLoanSignatoryModal') public editLoanSignatoryModal :ModalDirective;
@@ -71,6 +74,7 @@ export class LoanSettingsComponent implements OnInit {
         this.getThreshold();
         this.getEligibility();
         this.getSetings();
+        this.interest_type = this.localService.interest_type();
   		}
 
   	ngOnInit() {
@@ -87,6 +91,7 @@ export class LoanSettingsComponent implements OnInit {
   		this.newLoanTypeForm =this._fb.group({
   			loan_type : [null, Validators.compose([Validators.required])],
   			interest : [null, Validators.compose([Validators.required])],
+        interest_type : [null, Validators.compose([Validators.required])],
   			//minimum_amount : '',
   			//maximum_amount : '',
   			description : '',
@@ -94,6 +99,18 @@ export class LoanSettingsComponent implements OnInit {
   			duration : [null, Validators.compose([Validators.required])],
         signatory: this._fb.array([])
   		});
+
+      this.editLoanTypeForm =this._fb.group({
+        loan_type : [null, Validators.compose([Validators.required])],
+        interest : [null, Validators.compose([Validators.required])],
+        interest_type : [null, Validators.compose([Validators.required])],
+        //minimum_amount : '',
+        //maximum_amount : '',
+        description : '',
+        requirements : '',
+        duration : [null, Validators.compose([Validators.required])],
+        signatory: this._fb.array([])
+      });
 
       /*laon type item form*/
       this.loanTypeItemForm = this._fb.group({
@@ -118,6 +135,27 @@ export class LoanSettingsComponent implements OnInit {
   	}
 
    
+    /**
+     * @method createItem
+     * create new form group
+     * @return true
+     */
+    create_signatory_fields(data): FormGroup {
+      return this._fb.group({
+        signatory_id: parseInt(data.id),
+        signatory_type:data.signatory_type,
+        status: '',
+        //id: data.approval_id
+      });
+  }
+    create_edit_signatory_fields(data): FormGroup {
+      return this._fb.group({
+        signatory_id: parseInt(data.signatory_id),
+        signatory_type:data.signatory_type,
+        status: data.status,
+        id: data.id
+      });
+    }
 
   	/**
   	 * @method getManagementStaff
@@ -281,6 +319,7 @@ export class LoanSettingsComponent implements OnInit {
         this.loanSettingsService.getLoanSignatory().subscribe((response) => {
          this.loanSignatoryList = response.data
          this.total_signatories = response.data.length
+        
        })
   	}
 	
@@ -343,7 +382,6 @@ export class LoanSettingsComponent implements OnInit {
      */
     addLoanType(data)
     {
-      console.log(data)
       this.loanTypeCheck = true;
       data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;
       data['minimum_amount'] = 0;
@@ -401,6 +439,24 @@ export class LoanSettingsComponent implements OnInit {
      }
     }
 
+    show_newLoanTypeModal()
+    {
+      this.newLoanTypeModal.show()
+      this.newLoanTypeForm =this._fb.group({
+        loan_type : [null, Validators.compose([Validators.required])],
+        interest : [null, Validators.compose([Validators.required])],
+        interest_type : [null, Validators.compose([Validators.required])],
+        //minimum_amount : '',
+        //maximum_amount : '',
+        description : '',
+        requirements : '',
+        duration : [null, Validators.compose([Validators.required])],
+        signatory: this._fb.array([])
+      });
+      this.loanSignatoryList.forEach((list)=> 
+            (<FormArray>this.newLoanTypeForm.controls['signatory']).push(this.create_signatory_fields(list))
+          );
+    }
   /**
      * @method editLoanType
      * change a loan type resource
@@ -408,8 +464,23 @@ export class LoanSettingsComponent implements OnInit {
      */
     editLoanType(data)
     {
-      console.log(data)
+      this.editLoanTypeForm =this._fb.group({
+        loan_type : [null, Validators.compose([Validators.required])],
+        interest : [null, Validators.compose([Validators.required])],
+        interest_type : [null, Validators.compose([Validators.required])],
+        //minimum_amount : '',
+        //maximum_amount : '',
+        description : '',
+        requirements : '',
+        duration : [null, Validators.compose([Validators.required])],
+        signatory: this._fb.array([])
+      });
       this.editLoanTypeData = data;
+      this.edit_loan_type_approvals = data.approvals;
+      console.log(data.approvals)
+      this.edit_loan_type_approvals.forEach((list)=> 
+            (<FormArray>this.editLoanTypeForm.controls['signatory']).push(this.create_edit_signatory_fields(list))
+          );
       this.editLoanTypeModal.show()
     }
 
@@ -422,6 +493,8 @@ export class LoanSettingsComponent implements OnInit {
     {
        this.updateloanTypeCheck = true;
        data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;
+       data['minimum_amount'] = 0;
+       data['maximum_amount'] = 0;
         this.loanSettingsService.updateLoanType(data, id).subscribe((response) => {
         if(response.success = true)
         {
@@ -595,5 +668,16 @@ export class LoanSettingsComponent implements OnInit {
           this.submitPending = false;
           this.localService.showError(error,'Operation Unsuccessfull');
        });
+    }
+
+    filter_loan_interest_type(id)
+    {
+      let interest_type = this.localService.interest_type()
+      for (var i in interest_type) {
+        if(interest_type[i].value == id)
+        {
+          return interest_type[i].name;
+        }
+      }
     }
 }

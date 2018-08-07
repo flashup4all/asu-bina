@@ -78,14 +78,29 @@ export class LocalService {
       {
         if(position.post_max_amount >= amount)
         {
-          console.log('true')
           return true;
         } else{
-          console.log('fase')
           return false;
         }
       }
     }
+
+    check_approval_staff(array, id, type)
+    {
+      let user = JSON.parse(this.getUser());
+      let position = user.user_position;
+          console.log(array)
+
+      for (var i in array) {
+        if(array[i].staff_id == id){
+          console.log(array[i].signatory_type)
+          return 1;
+        }else{
+          return 0;
+        }
+      }
+    }
+
 	header(){
         let headers = new Headers();
             headers.append('content-type', 'application/json');
@@ -115,6 +130,14 @@ export class LocalService {
          {name: 'any  [ variable or any amount ]', value: "any"},
          {name: 'fixed', value: "fixed"},
          {name: 'range', value: "range"}
+       ]
+     }
+
+     interest_type()
+     {
+       return [ 
+         {name: 'Flat Rate', value: 1, desc: 'Interest is applied on principal amount and shared accross specified duration' },
+         {name: 'Interest On Reducing Balance', value: 2, desc: 'Interest is applied on each reducing balance per reducing duration'}
        ]
      }
 

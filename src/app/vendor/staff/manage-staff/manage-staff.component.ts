@@ -253,14 +253,14 @@ export class ManageStaffComponent implements OnInit {
   	 */
   	addStaff(data)
   	{
-      if(data.mobile_phone != null)
+     /* if(data.mobile_phone != null)
       {
         data.mobile_phone = '234'+(data.mobile_phone.substr(1));
       }
       if(data.contact_phone != null)
       {
         data.contact_phone = '234'+(data.contact_phone.substr(1));
-      }
+      }*/
   		// data['passport'] = this.passport;
     //   data['approved_by'] = JSON.parse(this.localService.getUser()).id
     //   data['vendor_id'] = JSON.parse(this.localService.getVendor()).id

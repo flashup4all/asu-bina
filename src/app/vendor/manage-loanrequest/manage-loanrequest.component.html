@@ -62,8 +62,8 @@
                                         <th>Loan Type (% Intr)</th>
                                         <th>&#8358; Amount</th>
                                         <th>&#8358; Interest</th>
-                                        <th>&#8358;Monthly Deductions</th>
-                                        <th>Repayment Method</th>
+                                        <!-- <th>&#8358;Monthly Deductions</th> -->
+                                        <!-- <th>Repayment Method</th> -->
                                         <th>Duration(Months)</th>
                                         <th>Date</th>
                                         <th>Status</th>
@@ -87,12 +87,12 @@
                                         <td>
                                             {{ percentage_to_amount(item.amount, item.type.interest)  | number }} 
                                         </td>
-                                        <td>
+                                        <!-- <td>
                                             {{item.monthly_deductions | number:'.2'}} 
                                         </td>
                                         <td>
                                             {{item.repayment_method}} 
-                                        </td>
+                                        </td> -->
                                         <td>
                                             {{item.type.duration}} 
                                         </td>
@@ -100,15 +100,19 @@
                                             {{item.created_at}} 
                                         </td>
                                           <td>
-                                            {{item.status}} 
+                                            <mat-chip-list>
+                                        <mat-chip *ngIf="item?.status == 1" color="primary" selected="true">Approved</mat-chip>
+                                        <mat-chip *ngIf="item?.status == 0" color="accent" selected="true">Pending</mat-chip>
+                                        <mat-chip *ngIf="item?.status == 2" color="warn" selected="true">Cancelled</mat-chip>
+                                    </mat-chip-list>
                                         </td>
-                                        <td class="center">
+                                        <td>
                                             <mat-menu #appM="matMenu">
                                               <button mat-menu-item (click)="requestHistory(item.id)">Request History</button>
-                                              <button mat-menu-item (click)="approveLoanRequest(item.id)">Approve Request</button>
+                                              <!-- <button mat-menu-item (click)="approveLoanRequest(item.id)">Approve Request</button>
                                               <button mat-menu-item (click)="loadPaymentModal(item)">Pay Now</button>
                                               <button *ngIf="item.status != 'cancelled'" mat-menu-item>Cancel Request</button>
-                                              <button mat-menu-item (click)="deleteLoanRequest(item.id)" >Delete</button>
+                                              <button mat-menu-item (click)="deleteLoanRequest(item.id)" >Delete</button> -->
                                             </mat-menu>
 
                                             <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">

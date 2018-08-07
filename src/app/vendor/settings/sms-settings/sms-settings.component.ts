@@ -77,7 +77,7 @@ export class SmsSettingsComponent implements OnInit {
 
     save_sms_setting_form(form_values)
     {
-      console.log(form_values)
+      this.sms_settings_loader = true;
       form_values.vendor_id = this.vendor.id;
       form_values.staff_id = this.user.id;
       this.vendor_service.update_sms_settings(form_values).subscribe((response) => {
@@ -98,7 +98,7 @@ export class SmsSettingsComponent implements OnInit {
     }
     save_birthday_sms_setting_form(form_values)
     {
-      console.log(form_values)
+      this.birthday_sms_settings_loader = true;
       form_values.vendor_id = this.vendor.id;
       form_values.staff_id = this.user.id;
       this.vendor_service.update_birthday_sms_settings(form_values).subscribe((response) => {
@@ -119,7 +119,7 @@ export class SmsSettingsComponent implements OnInit {
     }
     send_anouncement_sms_setting_form(form_values)
     {
-      console.log(form_values)
+      this.sms_notification_loader = true;
       form_values.vendor_id = this.vendor.id;
       form_values.staff_id = this.user.id;
       this.vendor_service.send_notification(form_values).subscribe((response) => {

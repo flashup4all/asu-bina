@@ -21,10 +21,9 @@ export class LoanRequestService {
      * cancel loan request
      * @return data
      */
-      cancelLoanRequest(id)
+      cancelLoanRequest(data)
     {
-      return this.http.get(environment.api.url+'CoopManagement/cancel-loan-request/'+
-                    JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
+      return this.http.post(environment.api.url+'CoopManagement/cancel-loan-request', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     } 
 
@@ -77,10 +76,9 @@ export class LoanRequestService {
      * approve loan request
      * @return data
      */
-      approveLoanRequest(id)
+      approveLoanRequest(data)
     {
-      return this.http.get(environment.api.url+'CoopManagement/approve-loan-request/'+
-                    JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
+      return this.http.post(environment.api.url+'CoopManagement/approve-loan-request', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
@@ -91,9 +89,48 @@ export class LoanRequestService {
      */
       addLoanRequest(data)
     {
-      return this.http.post(environment.api.url+'CoopManagement/new-loan-request',JSON.stringify(data), this.localService.header())
+      let headers = new Headers();
+            //headers.append('content-type', 'application/json');
+            headers.set('Accept', 'application/json');
+        let token = this.localService.getToken();
+            if(token) {
+                headers.append('Authorization', 'Bearer ' + token);      
+            }
+        let request       = new RequestOptions({ headers: headers });
+      return this.http.post(environment.api.url+'CoopManagement/new-loan-request',data, request)
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
+
+    /**
+     * @method addLoanRequest
+     * get member deductions
+     * @return data
+     */
+      upload_loan_request_requirements(data, request_id)
+    {
+      let headers = new Headers();
+            //headers.append('content-type', 'application/json');
+            headers.set('Accept', 'application/json');
+        let token = this.localService.getToken();
+            if(token) {
+                headers.append('Authorization', 'Bearer ' + token);      
+            }
+        let request       = new RequestOptions({ headers: headers });
+      return this.http.post(environment.api.url+'CoopManagement/upload-loan-request-requirements/'+request_id,data, request)
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method delete_loan_request_requirement
+     * get all vendor loan request
+     * @return data
+     */
+    delete_loan_request_requirement(id)
+    {
+      return this.http.delete(environment.api.url+'CoopManagement/loan-request-requirements/'+id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
 
     /**
      * @method filterLoanRequest
