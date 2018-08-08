@@ -24,10 +24,13 @@
                                 	Interest: {{ loanRequest?.interest_percent }}%
                                 </p>
                                 <p>
-                                    Amount: &#8358; {{ loanRequest?.amount }}
+                                    Interest Type: {{ filter_loan_interest_type(loanRequest?.type?.interest_type) }}
                                 </p>
                                 <p>
-                                	Interest Amount: &#8358; {{ loanRequest?.interest_amount }}
+                                    Amount: &#8358; {{ loanRequest?.amount | number }}
+                                </p>
+                                <p>
+                                	Interest Amount: &#8358; {{ loanRequest?.interest_amount | number }}
                                 </p>
                                 <p>
                                     Status:
@@ -36,6 +39,8 @@
 					                    <mat-chip *ngIf="loanRequest?.status == 1" color="primary" selected="true">Approved</mat-chip>
 					                    <mat-chip *ngIf="loanRequest?.status == 0" color="accent" selected="true">Pending</mat-chip>
 					                    <mat-chip *ngIf="loanRequest?.status == 2" color="warn" selected="true">Cancelled</mat-chip>
+                                        <mat-chip *ngIf="loanRequest?.status == 3" color="primary" selected="true">Completed/Closed</mat-chip>
+
 					                </mat-chip-list>
                                     </span>
                                 </p>
@@ -162,7 +167,7 @@
     				<mat-progress-bar *ngIf="uploader_check" mode="indeterminate"></mat-progress-bar>
     				<div class="row">
     					<div class="col-md-2" *ngFor="let file of loanRequest?.requirements">
-    						<img src="{{ loan_files_url }}{{file.requirements}}">
+    						<img src="{{ loan_files_url }}{{file.requirements}}" width="200px" height="200px">
     						<swal
 								  #delete_file
 								  title="Are You Sure You want to Delete this File?"

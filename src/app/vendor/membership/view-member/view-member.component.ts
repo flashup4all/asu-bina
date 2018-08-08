@@ -136,6 +136,8 @@ export class ViewMemberComponent implements OnInit {
         repayment_method : [null, Validators.compose([Validators.required])],
         run_date : [null, Validators.compose([Validators.required])],
         repayment_amount: '',
+        depositor: '',
+        description: '',
       });
 
       this.withdrawalForm = this._fb.group({
@@ -427,7 +429,7 @@ export class ViewMemberComponent implements OnInit {
     make_a_repayment(formValues)
     {
       formValues['vendor_id'] = this.vendor.id
-      formValues['approved_by'] = this.user.id
+      formValues['staff_id'] = this.user.id
       this.submitPending = true;
       this.deductionService.repayment(formValues).subscribe((response) => {
         if (response.success) {

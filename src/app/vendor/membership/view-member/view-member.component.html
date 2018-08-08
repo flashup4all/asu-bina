@@ -333,8 +333,11 @@
                                             <th>#</th>
                                             <th>Loan Type</th>
                                             <th>Method</th>
-                                            <th>&#8358; Deducted</th>
+                                            <th>&#8358; Previous Balance</th>
+                                            <th>&#8358; Amount Paid</th>
+                                            <th>&#8358; Current Balance</th>
                                             <th>Date</th>
+                                            <th>Created By</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -347,10 +350,21 @@
                                                 {{item?.repayment_method?.name }} 
                                             </td>
                                             <td>
+                                                {{item?.previous_balance | number }} 
+                                            </td>
+                                            <td>
                                                 {{item?.amount_deducted | number }} 
+                                            </td>
+                                            <td>
+                                                {{item?.current_balance | number }} 
                                             </td>
                                               <td>
                                                 {{item?.created_at | date : 'shortDate'}} 
+                                            </td>
+                                             <td>
+                                                {{ item?.staff?.first_name }} 
+                                                {{ item?.staff?.last_name }} 
+                                                {{ item?.staff?.middle_name }} 
                                             </td>
                                         </tr>
                                         <tr>
@@ -524,10 +538,21 @@
                                         <small [hidden]="(addDeductionForm.controls.repayment_amount.valid ) || (addDeductionForm.controls.repayment_amount.pristine )" class="text-danger">Amount Required</small>
                                     </div>
                                 </div>
-
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Depositor</label>
+                                        <input type="text" name="" formControlName = "depositor" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <input type="text" name="" formControlName = "description" class="form-control">
+                                    </div>
+                                </div>
                             </div>
                                <button type="submit" class="btn btn-success" [disabled]="addDeductionForm.invalid || submitPending">
-                                    <span *ngIf="!submitPending">Run Contribution</span>
+                                    <span *ngIf="!submitPending">Make Payment</span>
                                     <span *ngIf="submitPending && addDeductionForm.valid">Please Wait...</span>
                                     <span *ngIf="submitPending && addDeductionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
                                 </button>

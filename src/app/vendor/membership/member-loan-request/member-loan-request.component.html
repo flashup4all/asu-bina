@@ -88,7 +88,7 @@
                     {{item?.amount | number }} 
                 </td>
                 <td>
-                    {{ percentage_to_amount(item.amount, item.type.interest)  | number }} 
+                    {{ item?.interest_amount  | number }} 
                 </td>
                 <!-- <td>
                     {{ item?.monthly_deductions | number }} 
@@ -110,6 +110,7 @@
                       <mat-chip *ngIf="item?.status == 1" color="primary" selected="true">Approved</mat-chip>
                       <mat-chip *ngIf="item?.status == 0" color="accent" selected="true">Pending</mat-chip>
                       <mat-chip *ngIf="item?.status == 2" color="warn" selected="true">Cancelled</mat-chip>
+                      <mat-chip *ngIf="item?.status == 3" color="primary" selected="true">Completed/Closed</mat-chip>
                     </mat-chip-list>
                 </td>
                 <td class="center">
