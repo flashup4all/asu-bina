@@ -440,7 +440,7 @@
                     <small [hidden]="(newLoanTypeForm.controls.interest.valid ) || (newLoanTypeForm.controls.interest.pristine )" class="text-danger">Percentage Interest Required</small>
                 </div>
                 <div class="form-group">
-                    <label> Interest Type</label>
+                    <label> Interest Type<small>[flate rate | Reducing Balance]</small></label>
                     <select class="form-control"  formControlName="interest_type">
                         <option  *ngFor="let item of interest_type" [value]="item.value">{{ item?.name }}</option>
                     </select>
