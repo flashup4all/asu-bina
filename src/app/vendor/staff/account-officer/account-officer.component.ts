@@ -49,6 +49,7 @@ export class AccountOfficerComponent implements OnInit {
   show_add_form_check: boolean = false;
   save_acct_officer_form_check: boolean = false;
   account_officers
+  staffList
    @ViewChild('fileInput') fileInput: ElementRef;
 
     constructor(
@@ -165,4 +166,5 @@ export class AccountOfficerComponent implements OnInit {
   {
     this.acc_oficer_form.reset();
   }
+
 }

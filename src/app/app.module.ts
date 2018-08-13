@@ -98,6 +98,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
 import { SigninComponent } from './auth/signin/signin.component';
+//import { LoanCalculatorComponent } from './loan-calculator/loan-calculator.component';
 @NgModule({
   imports: [
     BrowserModule,
@@ -123,7 +124,8 @@ import { SigninComponent } from './auth/signin/signin.component';
     ...APP_CONTAINERS,
     ...APP_COMPONENTS,
     ...APP_DIRECTIVES,
-    SigninComponent
+    SigninComponent,
+    //LoanCalculatorComponent
   ],
   providers: [
   {

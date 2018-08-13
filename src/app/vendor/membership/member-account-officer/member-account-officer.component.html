@@ -7,7 +7,15 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="typeahead-http">Filter By Staff <small>[Name/Staff ID]</small></label>
-                    <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="staff_searchFailed"formControlName="staff_id" [ngbTypeahead]="search_staff" placeholder="Filter By Staff" [inputFormatter]="staff_formatter" [resultTemplate]="st"/>
+                    <select formControlName="staff_id" class="form-control" [ngModel]="member?.gender" value="" name="gender" ngModel>
+                      <option value="">None</option>
+                      <option [value]="staff.id" *ngFor="let staff of staffList">
+                      {{ staff?.first_name }} 
+                      {{ staff?.last_name }} 
+                      {{ staff?.middle_name }}
+                      </option>
+                    </select>
+                    <!-- <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="staff_searchFailed"formControlName="staff_id" [ngbTypeahead]="search_staff" placeholder="Filter By Staff" [inputFormatter]="staff_formatter" [resultTemplate]="st"/>
                     <span *ngIf="staff_searching">searching...</span>
                     <ng-template #st let-r="result" let-t="term">
                         <img *ngIf="!r.passport" src="assets/images/avata.png" class="img-avatar" width='39px'>
@@ -15,7 +23,7 @@
                        {{ r.first_name}} {{ r.last_name}} {{ r.middle_name}}
                        <br>
                        {{ r.staff_id}}
-                    </ng-template>
+                    </ng-template> -->
                   </div>
             </div>
             <div class="col-md-4">

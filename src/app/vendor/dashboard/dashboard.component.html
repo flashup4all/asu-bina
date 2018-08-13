@@ -24,14 +24,14 @@
         </li>
       </ul>
     </div>
-  </div>
-<div class="animated fadeIn" hidden="">
+</div>
+<div class="animated fadeIn" *ngIf="user.role_id == 2">
   <div class="row">
     <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-primary">
+      <div class="card text-white bg-success">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{totalContribution | number:'.2' || 0}}</h4>
-          <p>Total Contributions</p>
+          <h4 class="mb-0">{{total_paid_contribution | number:'.2' || 0}}</h4>
+          <p>Total Paid Contributions</p>
         </div>
         <div class="chart-wrapper px-3" style="height:70px;">
         </div>
@@ -40,14 +40,34 @@
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-warning">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{totalWidthdrawal | number:'' || 0}}</h4>
-          <p>Total Widthdrawals</p>
+          <h4 class="mb-0">{{total_pending_contribution | number:'.2' || 0}}</h4>
+          <p>Total Pending Contributions</p>
+        </div>
+        <div class="chart-wrapper px-3" style="height:70px;">
+        </div>
+      </div>
+    </div><!--/.col-->
+    <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-primary">
+        <div class="card-body pb-0">
+          <h4 class="mb-0">{{total_widthdrawals_paid | number:'' || 0}}</h4>
+          <p>Total Paid Widthdrawals</p>
         </div>
         <div class="chart-wrapper" style="height:70px;">
         </div>
       </div>
     </div><!--/.col-->
     <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-warning">
+        <div class="card-body pb-0">
+          <h4 class="mb-0">{{total_widthdrawals_pending | number:'' || 0}}</h4>
+          <p>Total Pending Widthdrawals</p>
+        </div>
+        <div class="chart-wrapper" style="height:70px;">
+        </div>
+      </div>
+    </div><!--/.col-->
+    <!-- <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-danger">
         <div class="card-body pb-0">
           <h4 class="mb-0">{{(totalContribution - totalWidthdrawal) | number:'.2' || 0}}</h4>
@@ -56,7 +76,7 @@
         <div class="chart-wrapper px-3" style="height:70px;">
         </div>
       </div>
-    </div><!--/.col-->
+    </div>
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-info">
         <div class="card-body pb-0">
@@ -69,7 +89,7 @@
         <div class="chart-wrapper px-3" style="height:70px;">
         </div>
       </div>
-    </div><!--/.col-->
+    </div> -->
   </div><!--/.row-->
 </div>
 <div class="alert alert-success" *ngIf="successAlert">

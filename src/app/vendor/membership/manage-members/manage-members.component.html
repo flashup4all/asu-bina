@@ -115,7 +115,7 @@
                               <th>Acc No.</th>
                               <th class="text-center">Phone</th>
                               <th>status</th>
-                              <th>(&#8358;)Contribution</th>
+                              <th>(&#8358;)Total Balance</th>
                               <th>Created</th>
                               <th>Action</th>
                             </tr>
@@ -149,11 +149,11 @@
                                    Blocked
                                 </div>
                                 <div *ngIf="item.status == 0">
-                                  Inactivediv
+                                  Inactive
                                 </div>
                               </td>
                               <td class="text-center">
-                                <span class="label label-sm label-primary">{{ item?.contribution}}</span>
+                                <span class="label label-sm label-primary">{{ item?.contribution_balance | number }}</span>
                               </td>
                               <td>
                                 {{ item?.created_at | date:'shortDate' }}

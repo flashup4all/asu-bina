@@ -10,6 +10,7 @@ import { ManageLoanrequestRoutingModule } from './manage-loanrequest-routing.mod
 import { ManageLoanrequestComponent } from './manage-loanrequest.component';
 import { LoanRequestService } from './loan-request.service';
 import { ViewRequestHistoryComponent } from './view-request-history/view-request-history.component';
+import { LoanCalculatorComponent } from '../../loan-calculator/loan-calculator.component';
 
 @NgModule({
   imports: [
@@ -23,7 +24,7 @@ import { ViewRequestHistoryComponent } from './view-request-history/view-request
     SharedModule,
     SweetAlert2Module
   ],
-  declarations: [ManageLoanrequestComponent, ViewRequestHistoryComponent],
+  declarations: [ManageLoanrequestComponent, ViewRequestHistoryComponent, LoanCalculatorComponent],
   providers: [LoanRequestService]
 })
 export class ManageLoanrequestModule { }

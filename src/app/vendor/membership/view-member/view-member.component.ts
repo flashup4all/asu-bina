@@ -59,6 +59,7 @@ export class ViewMemberComponent implements OnInit {
     submitPending:boolean;
     btn_loader: boolean = false;
     allow_edit_acc_no : boolean = false;
+    approve_btn_loader: boolean = false;
     public loanRequestForm : FormGroup;
     public loanrequestFilterForm : FormGroup;
     public withdrawalForm : FormGroup;
@@ -346,7 +347,6 @@ export class ViewMemberComponent implements OnInit {
     }
 
     private prepareSave(data): any {
-      console.log(data)
       let input = new FormData();
       input.append('account_number', data.account_number);
       input.append('first_name', data.first_name);
@@ -394,7 +394,6 @@ export class ViewMemberComponent implements OnInit {
                 this.localService.showError(error,'Operation Unsuccessfull');
         });
        }else{
-         console.log('not active')
             this.localService.showError('Cannot make contribution on an inactive account','Account Inactive');
        }
     }
@@ -579,7 +578,6 @@ export class ViewMemberComponent implements OnInit {
       formValues['member_id'] = this.memberId
       formValues['vendor_id'] = this.vendor.id
       formValues['staff_id'] = this.user.id
-      console.log(formValues)
       this.submitPending = true;
       this.withdrawalService.make_a_withdrawal(formValues).subscribe((response) => {
         if (response.success) {
@@ -664,4 +662,42 @@ export class ViewMemberComponent implements OnInit {
         this.actual_balance = response;
       })
     }
+
+  /**
+   * @method activateMember
+   * activate member
+   * @return data
+   */
+  activateMember(id)
+  {
+    this.memberService.activateMember(id).subscribe((response) => {
+      if(response.success == true)
+      {
+        this.getMemberProfile()
+        this.localService.showSuccess(response.message,'Operation Successfull');
+      }else{
+        this.localService.showError(response.message,'Operation UnsSuccessfull');
+      }
+    });
+  }
+
+  /**
+   * @method deactivateMember
+   * deactivate member
+   * @return data
+   */
+  deactivateMember(id)
+  {
+    this.memberService.deactivateMember(id).subscribe((response) => {
+      if(response.success == true)
+      {
+        this.getMemberProfile()
+        this.localService.showSuccess(response.message,'Operation Successfull');
+      }else{
+        this.localService.showError(response.message,'Operation UnsSuccessfull');
+      }
+    });
+  }
+
+
 }

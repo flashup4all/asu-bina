@@ -15,6 +15,7 @@
 		                    <th>S/N</th>
 		                    <th>Plan</th>
 		                    <th>Type</th>
+		                    <th>{{ vendor_curency }} Balance</th>
 		                    <th>Status</th>
 		                    <th>Start Date</th>
 		                    <th>Created</th>
@@ -34,6 +35,7 @@
 		                        <small *ngIf="item?.contribution_plan?.amount_type =='fixed'"> {{ vendor_curency }} {{item?.contribution_plan?.min_amount }}</small> 
 		                		<small *ngIf="item?.contribution_plan?.amount_type =='range'"> {{ vendor_curency }} {{item?.contribution_plan?.min_amount }} - {{item?.contribution_plan?.max_amount }}</small> 
 		                    </td>
+		                    <td>{{ item?.balance | number }}</td>
 		                    <td>
 		                        <mat-chip-list>
 				                    <mat-chip *ngIf="item.status == 1" color="primary" selected="true">Active</mat-chip>

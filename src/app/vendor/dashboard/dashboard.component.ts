@@ -31,7 +31,8 @@ export class DashboardComponent implements OnInit {
 	public loanRequestList;
 	public contibutionsList;
 	public deductionsList;
-	public totalContribution;
+  public total_paid_contribution;
+	public total_pending_contribution;
 	public totalDedutions
 	public totalMembers;
 	public runDeductionsForm : FormGroup;
@@ -56,7 +57,8 @@ export class DashboardComponent implements OnInit {
     public widthdrawalsList;
     totalActiveMembers;
     toRequestPage;
-    totalWidthdrawal;
+    total_widthdrawals_paid;
+    total_widthdrawals_pending;
     member_image_url
   	constructor(
   		private localService : LocalService,
@@ -72,8 +74,9 @@ export class DashboardComponent implements OnInit {
   		this.getMembers();
       this.vendor = JSON.parse(this.localService.getVendor());
   		this.user = JSON.parse(this.localService.getUser());
+      console.log(this.user.role_id)
         this.member_image_url = environment.api.imageUrl+'profile/member/';
-      	this.getVendorMessages('inbox');
+      	//this.getVendorMessages('inbox');
   		this.getLoanRequest();
       this.getChangeContributionRequest();
       this.getWidthdrawals();
@@ -107,11 +110,14 @@ export class DashboardComponent implements OnInit {
 	getVendorstatistics()
 	{
 		this.dashboardService.getVendorStatistics().subscribe((response) => {
-			this.totalContribution = response.data.totalContribution
+      console.log(response)
+      this.total_paid_contribution = response.data.total_paid_contribution
+			this.total_pending_contribution = response.data.total_pending_contribution
 			this.totalDedutions = response.data.totalDeduction
       this.totalMembers = response.data.totalNoMembers
       this.totalActiveMembers = response.data.totalNoActiveMembers
-			this.totalWidthdrawal = response.data.totalWidthdrawal
+      this.total_widthdrawals_paid = response.data.total_widthdrawals_paid
+			this.total_widthdrawals_pending = response.data.total_widthdrawals_pending
 
       for (var i = 0; i < this.totalMembers.length; i++) {
         console.log(this.totalMembers[i].first_name)

@@ -473,7 +473,7 @@
                 <small>Please Set Loan Signatories before Submission</small>
                 <div class="form-group">
                     <div>
-                        <label class="checkbox-inline" *ngFor="let signatory of newLoanTypeForm.controls.signatory.controls; let i=index" style="padding-right:25px">
+                        <label class="checkbox-inline" *ngFor="let signatory of newLoanTypeForm['controls'].signatory['controls']; let i=index" style="padding-right:25px">
                         <div class="icheckbox_minimal-grey" style="position: relative;">
                             <input type="checkbox" class="form-control" [formControl]="signatory.controls.status">
                         </div> Level {{loanSignatoryList[i].signatory_type}}</label>
@@ -546,7 +546,7 @@
                 <small>Please Set Loan Signatories before Submission</small>
                 <div class="form-group">
                    <div>
-                        <label class="checkbox-inline" *ngFor="let signatory of editLoanTypeForm.controls.signatory.controls; let i=index" style="padding-right:25px">
+                        <label class="checkbox-inline" *ngFor="let signatory of editLoanTypeForm['controls'].signatory['controls']; let i=index" style="padding-right:25px">
                         <div class="icheckbox_minimal-grey" style="position: relative;">
                             <input type="checkbox" class="form-control" [formControl]="signatory.controls.status" [checked]="edit_loan_type_approvals[i].status">
                         </div> Level {{edit_loan_type_approvals[i].signatory_type}}</label>

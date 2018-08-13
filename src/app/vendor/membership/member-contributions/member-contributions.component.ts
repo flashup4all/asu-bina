@@ -420,6 +420,8 @@ export class MemberContributionsComponent implements OnInit {
         if (response.success) {
             this.btn_loader = false;
             this.getMemberContributions();
+            this.get_member_contribution_plan();
+            this.view_member_component.getMemberProfile();
             this.view_member_component.getActualBalance();
             this.localService.showSuccess(response.message,'Operation Successfull');
           }else{

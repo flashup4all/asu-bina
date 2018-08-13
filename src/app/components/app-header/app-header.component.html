@@ -26,10 +26,8 @@
         <img src="assets/images/avata.png" class="img-avatar" alt="{{ user.email }}"/>
       </a>
       <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
-        <a class="dropdown-item" [routerLink]="['/app/profile']"><i class="fa fa-user"></i> Profile</a>
-
-        <a class="dropdown-item" style="cursor: pointer;" (click)="logout()"><i class="fa fa-shield"></i> Lock account</a>
-
+        <a class="dropdown-item" [routerLink]="['/app/profile']"><i class="fa fa-user"></i> Login Profile</a>
+        <a class="dropdown-item" [routerLink]="['/app/staff/'+user?.id+'/view']"><i class="fa fa-user"></i> Staff Account</a>
         <a class="dropdown-item" style="cursor: pointer;" (click)="logout()"><i class="fa fa-lock"></i> Logout</a>
         
       </div>

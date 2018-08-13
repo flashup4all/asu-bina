@@ -13,6 +13,37 @@
                     {{member?.last_name}} 
                     {{member?.middle_name}} 
                 </h2>
+                <button style="float: right" *ngIf="member?.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-chip-list style="float: right">
+                    <mat-chip *ngIf="member?.status == '1'" color="primary" selected="true">Activated</mat-chip>
+                    <mat-chip *ngIf="member?.status == '0'" color="warn" selected="true">Not Active</mat-chip>
+                    <mat-chip *ngIf="member?.status == '2'" color="warn" selected="true">Suspended</mat-chip>
+                </mat-chip-list>
+                <mat-menu #appM="matMenu">
+                            <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
+                  <button *ngIf="member?.status != 1" [swal]="approve_inv" mat-menu-item>Activate Account</button>
+                  <button [swal]="cancel_inv" *ngIf="member?.status == 1" mat-menu-item>Deactivate Account</button>
+                  <swal
+                    #approve_inv
+                    title="Are You Sure You want to Activate This Account?"
+                    text="This cannot be undone"
+                    type="warning"
+                    [showCancelButton]="true"
+                    [focusCancel]="true"
+                    (confirm)="activateMember(member.id)">
+                  </swal>
+                  <swal
+                    #cancel_inv
+                    title="Are You Sure You want to Deactivate this Account?"
+                    text="This cannot be undone"
+                    type="warning"
+                    [showCancelButton]="true"
+                    [focusCancel]="true"
+                    (confirm)="deactivateMember(member.id)">
+                  </swal>
+                </mat-menu>
                 <p class="profile-brief">
                     {{member?.email}}
                 </p>
@@ -25,6 +56,7 @@
                 </div>
                 <div class="profile-details muted">
                     <h3><a class="btn pull-left"><i class="fa fa-balance-scale shaded"></i> Contribution Balance:<span class="label label-sm label-success"> &#8358; {{ actual_balance | number }} </span></a></h3>
+                    <!-- &#8358; {{ member?.contribution_balance | number }} -->
                     <!-- <h3><a class="btn pull-left"><i class="fa fa-balance-scale shaded"></i> 
                         Total Deduction: <span class="label label-sm label-danger"> &#8358; {{ total_deduction || 0 }} </span></a></h3>
                      <h3><a class="btn"><i class="fa fa-phone shaded"></i> {{member?.phone2}} </a></h3>  -->
@@ -115,13 +147,14 @@
                                         <input type="text" class="form-control" [ngModel]="member?.first_name" name="first_name" ngModel>
                                       </div>
                                       <div class="form-group">
+                                        <label>Last Name:</label>
+                                        <input type="text" class="form-control" [ngModel]="member?.last_name" name="last_name" ngModel>
+                                      </div>
+                                      <div class="form-group">
                                         <label>Middle Name:</label>
                                         <input type="text" class="form-control" [ngModel]="member?.middle_name" name="middle_name" ngModel>
                                       </div>
-                                      <div class="form-group">
-                                        <label>Last Name:</label>
-                                      <input type="text" class="form-control" [ngModel]="member?.last_name" name="last_name" ngModel>
-                                      </div>
+                                      
                                       <div class="form-group">
                                         <label>Email:</label>
                                       <input type="text" class="form-control" [ngModel]="member?.email" name="email" ngModel>
@@ -652,7 +685,7 @@
                         </div> -->
                     </div>
                        <button type="submit" class="btn btn-success" [disabled]="withdrawalForm.invalid || submitPending">
-                            <span *ngIf="!submitPending">Save</span>
+                            <span *ngIf="!submitPending">Request Withdrawals</span>
                             <span *ngIf="submitPending && withdrawalForm.valid">Please Wait...</span>
                             <span *ngIf="submitPending && withdrawalForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
                         </button>

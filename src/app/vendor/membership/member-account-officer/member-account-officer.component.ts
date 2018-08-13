@@ -22,6 +22,7 @@ export class MemberAccountOfficerComponent implements OnInit {
   save_acct_officer_form_check: boolean = false;
   public acc_oficer_form : FormGroup;
   account_officers
+  staffList
 
   staff_searchFailed = false;
   staff_searching = false;
@@ -39,6 +40,7 @@ export class MemberAccountOfficerComponent implements OnInit {
 	    this.user = JSON.parse(this.localService.getUser());
       this.member_id = this.view_member_component.memberId;
       this.get_acc_officer();
+      this.getStaff();
 
     }
 
@@ -73,7 +75,7 @@ export class MemberAccountOfficerComponent implements OnInit {
     save_acct_officer_form(form_values)
     {
       let data = {
-        staff_id : form_values.staff_id.id,
+        staff_id : form_values.staff_id,
         member_id : this.member_id,
         status : parseInt(form_values.status),
         approved_by : this.user.id,
@@ -136,4 +138,24 @@ export class MemberAccountOfficerComponent implements OnInit {
   {
     this.acc_oficer_form.reset();
   }
+
+  /**
+     * @method getStaff
+     * creates a new staff  resource
+     * @return data
+     */
+    getStaff()
+    {
+      // this.submitPending = true;
+        this.staffService.getStaff().subscribe((response) => {
+         //this.toPage = response.data.next_page_url;
+         this.staffList = response.data.data;
+         //this.total_staff = response.total;
+         // this.submitPending = false;
+         /*for(var i=0; i < response.data.length; i++)
+         {
+           this.staffList.push(response.data[i])
+         }*/
+       })
+    }
 }
