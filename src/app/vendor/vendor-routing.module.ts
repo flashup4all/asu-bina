@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ManageVendorComponent } from './settings/manage-vendor/manage-vendor.component';
+import { ActivityLogComponent } from './settings/activity-log/activity-log.component';
 import { ProfileComponent } from './user-account/profile/profile.component';
 const routes: Routes = [
 	{
@@ -12,6 +13,13 @@ const routes: Routes = [
 	      {
 	        path: 'manage-vendor',
 	        component: ManageVendorComponent,
+	        data: {
+	          title: 'Buttons'
+	        }
+	      },
+	      {
+	        path: 'activity-log',
+	        component: ActivityLogComponent,
 	        data: {
 	          title: 'Buttons'
 	        }

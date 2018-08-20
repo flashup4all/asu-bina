@@ -11,6 +11,7 @@ import { LocalService } from '../../../storage/local.service';
 import { MembersService } from '../members.service';
 import { TableExportService } from '../../../shared/services/index';
 import { environment } from '../../../../environments/environment';
+import { StaffService } from '../../staff/staff.service';
 
 //import { XlsxToJsonService } from '../../../shared/xls/index'
 
@@ -59,7 +60,7 @@ export class ManageMembersComponent implements OnInit {
   	total_members;
   	total_active_members
   	phone1;
- 
+ 	staffList
 	public file_srcs: string[] = [];
 	 
 	public debug_size_before: string[] = [];
@@ -74,6 +75,7 @@ export class ManageMembersComponent implements OnInit {
 		private localService : LocalService,
   		private _fb : FormBuilder,
   		private manageMemberService : MembersService,
+    	private staffService : StaffService,
   		private sanitizer:DomSanitizer,
   		private router : Router,
       private exportService: TableExportService,
@@ -81,6 +83,7 @@ export class ManageMembersComponent implements OnInit {
 		) {
 			this.getFormFields();
 			this.getMembers()
+			this.getStaff();
 			this.vendor = JSON.parse(this.localService.getVendor());
 		    this.user = JSON.parse(this.localService.getUser());
 			this.image_url = environment.api.imageUrl+'profile/member/';
@@ -160,6 +163,7 @@ export class ManageMembersComponent implements OnInit {
 	        from : '',
 	        to : '',
 	        gender : '',
+	        staff_id:''
 	      })
 	}
 	initMembersForm(data) {
@@ -167,6 +171,26 @@ export class ManageMembersComponent implements OnInit {
         key: '',
         id: data.id
       });
+    }
+
+    /**
+     * @method getStaff
+     * creates a new staff  resource
+     * @return data
+     */
+    getStaff()
+    {
+      // this.submitPending = true;
+        this.staffService.getStaff().subscribe((response) => {
+         //this.toPage = response.data.next_page_url;
+         this.staffList = response.data.data;
+         //this.total_staff = response.total;
+         // this.submitPending = false;
+         /*for(var i=0; i < response.data.length; i++)
+         {
+           this.staffList.push(response.data[i])
+         }*/
+       })
     }
 
     exportTable(format, tableId)
@@ -320,11 +344,13 @@ export class ManageMembersComponent implements OnInit {
 	    input.append('passport', this.newMemberForm.get('passport').value);
 	    input.append('vendor_id', this.vendor.id);
 	    input.append('approved_by', JSON.parse(this.localService.getUser()).id);
+	    input.append('user_id', JSON.parse(this.localService.getUser()).user_id);
 	    return input;
 	}
 
 	filter_member(data){
 		data['vendor_id'] = this.vendor.id;
+		data['user_id'] = this.user.user_id;
 		this.submitPending=true;
 		this.manageMemberService.filter_member(data).subscribe((response) => {
 			console.log(response)
@@ -401,7 +427,12 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	activateMember(id)
 	{
-		this.manageMemberService.activateMember(id).subscribe((response) => {
+		let data ={
+			id: id,
+			user_id: this.user.user_id,
+			vendor_id: this.vendor.id
+		}
+		this.manageMemberService.activateMember(data).subscribe((response) => {
 			if(response.success == true)
 			{
 				this.getMembers()
@@ -418,7 +449,11 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	activateAllMember()
 	{
-		this.manageMemberService.activateAllMember().subscribe((response) => {
+		let data ={
+			user_id: this.user.user_id,
+			vendor_id: this.vendor.id
+		}
+		this.manageMemberService.activateAllMember(data).subscribe((response) => {
 			if(response.success == true)
 			{
 				this.getMembers()
@@ -436,7 +471,11 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	deactivateAllMember()
 	{
-		this.manageMemberService.deactivateAllMember().subscribe((response) => {
+		let data ={
+			user_id: this.user.user_id,
+			vendor_id: this.vendor.id
+		}
+		this.manageMemberService.deactivateAllMember(data).subscribe((response) => {
 			if(response.success == true)
 			{
 				this.getMembers()
@@ -454,7 +493,12 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	deactivateMember(id)
 	{
-		this.manageMemberService.deactivateMember(id).subscribe((response) => {
+		let data ={
+			id: id,
+			user_id: this.user.user_id,
+			vendor_id: this.vendor.id
+		}
+		this.manageMemberService.deactivateMember(data).subscribe((response) => {
 			if(response.success == true)
 			{
 				this.getMembers()

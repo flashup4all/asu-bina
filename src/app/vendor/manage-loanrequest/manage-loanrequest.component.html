@@ -54,12 +54,13 @@
                                 <button style="margin-left:5px;" (click)="exportTable('xls', 'loan_request_table')" class="btn btn-outline btn-success">Export table</button>
                                 <button class="btn btn-outline btn-success" (click)="printReciept('loan_request_table')">Print</button>
                             </div>
-                            <table id="loan_request_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+                            <table id="loan_request_table" class="table table-responsive-sm table-hover table-outline mb-0">
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Loan Type (% Intr)</th>
+                                        <th>Interest Type</th>
                                         <th>&#8358; Amount</th>
                                         <th>&#8358; Interest</th>
                                         <!-- <th>&#8358;Monthly Deductions</th> -->
@@ -81,6 +82,7 @@
                                         <td>
                                             {{item.type.loan_type}} ({{item.type.interest}})% 
                                         </td>
+                                        <td>{{ filter_loan_interest_type(item?.type?.interest_type) }}</td>
                                         <td>
                                             {{item?.amount | number }} 
                                         </td>
@@ -107,7 +109,7 @@
                                     </mat-chip-list>
                                         </td>
                                         <td>
-                                            <mat-menu #appM="matMenu">
+                                            <mat-menu #requestappMenu="matMenu">
                                               <button mat-menu-item (click)="requestHistory(item.id)">Request History</button>
                                               <!-- <button mat-menu-item (click)="approveLoanRequest(item.id)">Approve Request</button>
                                               <button mat-menu-item (click)="loadPaymentModal(item)">Pay Now</button>
@@ -115,39 +117,9 @@
                                               <button mat-menu-item (click)="deleteLoanRequest(item.id)" >Delete</button> -->
                                             </mat-menu>
 
-                                            <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
+                                            <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="requestappMenu">
                                               <mat-icon>more_vert</mat-icon>
                                             </button>
-                                            <!-- <div class="btn-group" dropdown>
-                                              <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-                                                <i class="fa fa-ellipsis-v"></i><span class="caret"></span>
-                                              </button>
-                                              <ul *dropdownMenu class="dropdown-menu" role="menu" style="left:auto !important; right:0px !important;">
-                                                <li role="menuitem">
-                                                    <a class="dropdown-item" type="button" (click)="requestHistory(item.id)">
-                                                        <i class="fa fa-check">Request History</i>
-                                                    </a></li>
-                                                <li role="menuitem">
-                                                    <a class="dropdown-item" (click)="approveLoanRequest(item.id)">
-                                                        <i class="fa fa-check"> Approve Request</i>
-                                                    </a></li>
-                                                <li role="menuitem" *ngIf="item.status == 'approved'">
-                                                    <a class="dropdown-item" (click)="loadPaymentModal(item)">
-                                                        <i class="fa fa-check"> Pay Now</i>
-                                                    </a>
-                                                </li>
-                                                <li role="menuitem" *ngIf="item.status != 'cancelled'">
-                                                    <a class="dropdown-item" (click)="cancelLoanRequest(item.id)">
-                                                        <i class="fa fa-times"> Cancel Request</i>
-                                                    </a>
-                                                </li>
-                                                <li role="menuitem" *ngIf="item.status == 'cancelled'">
-                                                    <a class="dropdown-item" (click)="deleteLoanRequest(item.id)" >
-                                                        <i class="fa fa-trash-o"> Delete</i>
-                                                    </a>
-                                                </li>
-                                              </ul>
-                                            </div> -->
                                         </td>
                                     </tr>
                                 </tbody>

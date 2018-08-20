@@ -32,6 +32,7 @@ import { MatAutocompleteModule,
          MatToolbarModule,
          MatTooltipModule,
          MatStepperModule } from '@angular/material';
+import { LogPipePipe } from './pipe/log-pipe.pipe';
 
 @NgModule({
   imports: [
@@ -101,8 +102,10 @@ import { MatAutocompleteModule,
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatStepperModule
+    MatStepperModule,
+    LogPipePipe
   ],
-  declarations: []
+  declarations: [LogPipePipe],
+  
 })
 export class SharedModule { }

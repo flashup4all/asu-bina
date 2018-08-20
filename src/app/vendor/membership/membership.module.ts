@@ -11,6 +11,7 @@ import { MemberInvestmentsComponent } from './member-investments/member-investme
 import { MemberContributionsComponent } from './member-contributions/member-contributions.component';
 import { MemberAccountOfficerComponent } from './member-account-officer/member-account-officer.component';
 import { MemberLoanRequestComponent } from './member-loan-request/member-loan-request.component';
+import { MemberDeductionsComponent } from './member-deductions/member-deductions.component';
 import { MembersService } from './members.service';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '../../shared/shared.module';
@@ -42,7 +43,8 @@ export const members_routes = [
     ViewMemberComponent, 
     MemberInvestmentsComponent, 
     MemberContributionsComponent,
-    MemberLoanRequestComponent
+    MemberLoanRequestComponent,
+    MemberDeductionsComponent
   ],
   providers: [MembersService]
 })

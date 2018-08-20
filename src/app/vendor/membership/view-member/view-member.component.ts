@@ -105,7 +105,7 @@ export class ViewMemberComponent implements OnInit {
         this.monthList = this.localService.yearjson();
         this.getMemberProfile();
         this.getMemberLoanRequest();
-        this.getMemberLoanDeductions();
+        //this.getMemberLoanDeductions();
         this.getMemberContributions();
         this. getFormFields();
         // this.getLoanType();
@@ -670,7 +670,12 @@ export class ViewMemberComponent implements OnInit {
    */
   activateMember(id)
   {
-    this.memberService.activateMember(id).subscribe((response) => {
+    let data ={
+      id: id,
+      user_id: this.user.user_id,
+      vendor_id: this.vendor.id
+    }
+    this.memberService.activateMember(data).subscribe((response) => {
       if(response.success == true)
       {
         this.getMemberProfile()
@@ -688,7 +693,12 @@ export class ViewMemberComponent implements OnInit {
    */
   deactivateMember(id)
   {
-    this.memberService.deactivateMember(id).subscribe((response) => {
+    let data ={
+      id: id,
+      user_id: this.user.user_id,
+      vendor_id: this.vendor.id
+    }
+    this.memberService.deactivateMember(data).subscribe((response) => {
       if(response.success == true)
       {
         this.getMemberProfile()

@@ -167,4 +167,26 @@ export class VendorService {
       return this.http.post(environment.api.url+'CoopManagement/sms-notifications/',JSON.parse(this.localService.getVendor()).id, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
+
+    /**
+     * @method get_vendor_logs
+     * updates a sms settings  resource
+     * @return data
+     */
+    get_vendor_logs()
+    {
+      return this.http.get(environment.api.url+'CoopManagement/vendor-logs/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method filter_vendor_logs
+     * updates a sms settings  resource
+     * @return data
+     */
+    filter_vendor_logs(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/vendor-logs/filter', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
 }

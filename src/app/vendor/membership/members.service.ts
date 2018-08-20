@@ -99,9 +99,9 @@ export class MembersService {
      * activate  all coorp member resource
      * @return data
      */
-     activateAllMember()
+     activateAllMember(data)
     {
-      return this.http.get(environment.api.url+'CoopManagement/activate-all-coop-member/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+      return this.http.post(environment.api.url+'CoopManagement/activate-all-coop-member', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
@@ -109,9 +109,9 @@ export class MembersService {
      * activate  a member resource
      * @return data
      */
-     activateMember(id)
+     activateMember(data)
     {
-      return this.http.get(environment.api.url+'CoopManagement/activate-coop-member/'+id, this.localService.header())
+      return this.http.post(environment.api.url+'CoopManagement/activate-coop-member', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
@@ -120,9 +120,9 @@ export class MembersService {
      * activate  a member resource
      * @return data
      */
-     deactivateMember(id)
+     deactivateMember(data)
     {
-      return this.http.get(environment.api.url+'CoopManagement/deactivate-coop-member/'+id, this.localService.header())
+      return this.http.post(environment.api.url+'CoopManagement/deactivate-coop-member', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
@@ -131,9 +131,9 @@ export class MembersService {
      * activate  all coorp member resource
      * @return data
      */
-     deactivateAllMember()
+     deactivateAllMember(data)
     {
-      return this.http.get(environment.api.url+'CoopManagement/deactivate-all-coop-member/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+      return this.http.post(environment.api.url+'CoopManagement/deactivate-all-coop-member', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 

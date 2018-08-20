@@ -58,60 +58,46 @@
                         	<table class="table table-responsive-sm table-hover table-outline mb-0">
 				                <thead>
 				                    <tr>
-				                        <th>#</th>
-				                        <th>Monthly Deductions</th>
+				                        <th>Transaction ID</th>
 				                        <th>Repayment Method</th>
-				                        <th>Duration(Months)</th>
-				                        <th>Status</th>
-				                        <th>Actions</th>
+                                        <th>&#8358; Previous Balance</th>
+                                        <th>Interest Days</th>
+                                        <th>&#8358; Amount Paid</th>
+                                        <th>&#8358; Current Balance</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+				                        <!-- <th>Actions</th> -->
 				                    </tr>
 				                </thead>
 				                <tbody>
 				                    <tr class="" *ngFor="let item of loanRequest?.deductions_per_loan">
-				                        <td><input type="checkbox" name=""></td>
-				                       
-				                        <td>
-				                            {{item.amount_deducted}} 
-				                        </td>
+				                        <td>{{ item.transaction_id }} </td>
 				                        <td>
 				                            {{item?.repayment_method?.name}} 
 				                        </td>
-				                        <td>
-				                            {{item.run_date}} 
-				                        </td>
-				                          <td>
-				                            {{item.status}} 
-				                        </td>
-				                        <td class="center">
-				                         <div class="btn-group">
-				                          <!-- <button class="btn btn-mini">Action</button> -->
-				                          <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
-				                            <span><i class="fa fa-ellipsis-v"></i></span>
-				                          </button>
-				                          <ul class="dropdown-menu" style="min-width:1px;">
-				                            <li>
-				                                <a type="button" (click)="requestHistory(item.id)">
-				                                    <i class="fa fa-check">Request History</i>
-				                                </a>
-				                            </li>
-				                            <li *ngIf="item.status != 'approved'">
-				                                <a (click)="approveLoanRequest(item.id)">
-				                                    <i class="fa fa-check"> Approve Request</i>
-				                                </a>
-				                            </li>
-				                            <li *ngIf="item.status != 'cancelled'">
-				                                <a (click)="cancelLoanRequest(item.id)">
-				                                    <i class="fa fa-times"> Cancel Request</i>
-				                                </a>
-				                            </li>
-				                            <li *ngIf="item.status == 'cancelled'">
-				                                <a (click)="deleteLoanRequest(item.id)" >
-				                                    <i class="fa fa-trash-o"> Delete</i>
-				                                </a>
-				                            </li>
-				                        </ul>
-				                        </div>
-				                        </td>
+                                        <td>
+                                              {{item?.previous_balance | number }} 
+                                        </td>
+                                        <td>
+                                              {{item?.no_days | number }} 
+                                        </td>
+                                        <td>
+                                              {{item?.amount_deducted | number }} 
+                                        </td>
+                                        <td>
+                                          <!-- item?.current_balance -->
+                                              {{ item?.current_balance | number }} 
+                                        </td>
+                                        <td>
+                                            <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
+                                            <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
+                                            <span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
+                                        </td>
+                                        <td>
+                                            {{item.run_date}} 
+                                        </td>
+				                        <!-- <td class="center">
+				                        </td> -->
 				                    </tr>
 				                </tbody>
 				            </table>

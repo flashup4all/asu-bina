@@ -98,9 +98,15 @@
 					                    <th>Name</th>
 					                    <th>Loan Type</th>
 					                    <th>Method</th>
-					                    <th>(&#8358;) Deducted</th>
+					                    <th>&#8358; Previous Balance</th>
+					                  <th>Interest Days</th>
+					                  <th>&#8358; Amount Paid</th>
+					                  <th>&#8358; Last Balance</th>
+					                  <th>&#8358; Current Interest Balance</th>
+					                  <th>Status</th>
 					                    <th>Date</th>
-					                    <th>Period</th>
+					                    <th>Created</th>
+                  						<th>Approved</th>
 					                    <th>Actions</th>
 					                </tr>
 					            </thead>
@@ -118,17 +124,68 @@
 					                    <td>
 					                        {{item.repayment_method?.name}} 
 					                    </td>
-					                    <td>
-					                        {{item.amount_deducted | number:'.2'}} 
-					                    </td>
+					                     <td>
+						                      {{item?.previous_balance | number:'.2' }} 
+						                  </td>
+						                  <td>
+						                      {{item?.no_days | number:'.2' }} 
+						                  </td>
+						                  <td>
+						                      {{item?.amount_deducted | number:'.2' }} 
+						                  </td>
+						                  <td>
+						                      {{item?.current_balance | number }} 
+						                  </td>
+						                  <td>
+						                  <!-- item?.current_balance -->
+						                      {{ calculate_loan_balance(item.current_balance, item.interest_percent, item.created_at) | number }} 
+						                  </td>
+						                  <td>
+						                    <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
+						                    <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
+						                    <span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
+						                  </td>
 					                      <td>
 					                        {{item.created_at | date: 'shortDate'}} 
 					                    </td>
-					                      <td>
-					                        {{item.period}} 
-					                    </td>
+					                    <td>
+					                      {{ item?.staff?.first_name }} 
+					                      {{ item?.staff?.last_name }} 
+					                      {{ item?.staff?.middle_name }} 
+					                  </td>
+					                  <td>
+					                      {{ item?.approved_by?.first_name }} 
+					                      {{ item?.approved_by?.last_name }} 
+					                      {{ item?.approved_by?.middle_name }} 
+					                  </td>
 					                    <td class="center">
-					                    	
+					                    	<mat-menu #appM="matMenu">
+						                      <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
+						                      <button *ngIf="item.status == 0 && user?.role_id !=4" [swal]="approve_repay" mat-menu-item>Post Loan Repayment</button>
+						                      <button [swal]="cancel_repay"  *ngIf="item.status != 2 && user?.role_id !=4" mat-menu-item>Cancel Loan Repayment</button>
+						                      <swal
+						                        #approve_repay
+						                        title="Are You Sure You want to Approve this Loan Repayment?"
+						                        text="This cannot be undone"
+						                        type="warning"
+						                        [showCancelButton]="true"
+						                        [focusCancel]="true"
+						                        (confirm)="post_repayment(item.id, 1)">
+						                      </swal>
+						                      <swal
+						                        #cancel_repay
+						                        title="Are You Sure You want to Cancel this Loan Repayment?"
+						                        text="This cannot be undone"
+						                        type="warning"
+						                        [showCancelButton]="true"
+						                        [focusCancel]="true"
+						                        (confirm)="post_repayment(item.id, 2)">
+						                      </swal>
+						                    </mat-menu>
+
+						                    <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
+						                      <mat-icon>more_vert</mat-icon>
+						                    </button>
 					                    </td>
 					                </tr>
 					            </tbody>

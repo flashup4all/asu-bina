@@ -80,6 +80,17 @@ export class DeductionsService {
     }
 
     /**
+     * @method post_repayment
+     * filter contribution
+     * @return data
+     */
+    post_repayment(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/post-deductions', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
      * @method addrepaymentType
      * filter contribution
      * @return data

@@ -91,6 +91,19 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
+                                <label for="typeahead-http">Filter By Staff</label>
+                                <select formControlName="staff_id" class="form-control" value="" >
+                                  <option value="">None</option>
+                                  <option [value]="staff.id" *ngFor="let staff of staffList">
+                                  {{ staff?.first_name }} 
+                                  {{ staff?.last_name }} 
+                                  {{ staff?.middle_name }}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
                                 <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
                                   <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
                                   <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>

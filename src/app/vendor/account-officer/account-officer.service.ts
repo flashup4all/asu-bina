@@ -24,6 +24,17 @@ export class AccountOfficerService {
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
+    /**
+     * @method delete_account_officer
+     * creates a new form field resource
+     * @return data
+     */
+    delete_account_officer(id)
+    {
+      return this.http.delete(environment.api.url+'CoopManagement/account-officer/delete/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
      /**
      * @method assign_account
      * creates a new account officer resource

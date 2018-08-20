@@ -170,7 +170,7 @@
 			           <button type="button" class="btn btn-primary pull-right" (click)="new_inv_history_modal()">Investment Subscription</button>
 			       	</div>
 			       	<div>
-						<mat-progress-spinner *ngIf="investment_history_loader" style="margin:auto;" mode="indeterminate" value=""></mat-progress-spinner>
+					<mat-progress-spinner *ngIf="investment_history_loader" style="margin:auto;" mode="indeterminate" value=""></mat-progress-spinner>
 					</div>
 		        <table id="investment_history" *ngIf="!investment_history_loader" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
                     <thead>

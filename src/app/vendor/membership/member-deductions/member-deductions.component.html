@@ -1,0 +1,232 @@
+<p>Generate Report by Date</p>
+  <div class="row">
+        <form [formGroup] = "deductionFilterForm" (ngSubmit) = "filterDeduction(deductionFilterForm.value)" style="width: 100%;">
+          <div class="row p-1">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>From</label>
+                  <input type="date" formControlName = "from" class="form-control" name=""> 
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>To</label>
+                  <input type="date" formControlName = "to" class="form-control" name="">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Running Loan(s)</label>
+                      <select class="form-control" placeholder="loan_request_id" formControlName = "loan_request_id">
+                          <option value="">none</option>
+                          <option value="{{ item.id }}" *ngFor="let item of memberLoanRequestList">{{ item?.type?.loan_type}} (bal: = {{item?.amount + percentage_to_amount(item.amount, item.type.interest) - (totalDeductions(item.deductions_per_loan))}})</option>
+                      </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Type</label>
+                  <select class="form-control" placeholder="type" formControlName = "repayment_method">
+                      <option value="">Type</option>
+                      <option value="{{item.id}}" *ngFor="let item of deduction_type_list">{{ item?.name }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="deductionFilterForm.invalid && !submitPending">
+                    <span *ngIf="submitPending && deductionFilterForm.valid">Please Wait...</span>
+                    <span *ngIf="submitPending && deductionFilterForm.valid"><i class="fa fa-spinner"></i></span>
+                    <span *ngIf="!submitPending">Filter</span>
+                  </button>
+                   <button type="button" class="btn btn-primary" (click)="newRepaymentModal.show()" style="margin-top: 30px;"> Make a Repayment</button>
+                </div>
+              </div>
+            </div>
+        </form>
+        <div class="container p-2">
+            <button (click)="exportTable('xls', 'deductions_table')" class="btn btn-outline btn-success">Export table</button>
+            <button class="btn btn-outline btn-success" (click)="printReciept('deductions_table')">Print</button>
+        </div>
+          <table id="deductions_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+          <thead>
+              <tr>
+                  <th>Transaction ID</th>
+                  <th>Loan Type</th>
+                  <th>Method</th>
+                  <th>&#8358; Previous Balance</th>
+                  <th>Interest Days</th>
+                  <th>&#8358; Amount Paid</th>
+                  <th>&#8358; Last Balance</th>
+                  <th>&#8358; Current Interest Balance</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Created</th>
+                  <th>Approved</th>
+                  <th>Action</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr class="" *ngFor="let item of memberLoanDeductionsList">
+                  <td>{{ item?.transaction_id }}</td>
+                  <td>
+                      {{item?.type.loan_type}} ({{ item?.interest_percent }}%)
+                  </td>
+                  <td>
+                      {{item?.repayment_method?.name }} 
+                  </td>
+                  <td>
+                      {{item?.previous_balance | number }} 
+                  </td>
+                  <td>
+                      {{item?.no_days | number }} 
+                  </td>
+                  <td>
+                      {{item?.amount_deducted | number }} 
+                  </td>
+                  <td>
+                      {{item?.current_balance | number }} 
+                  </td>
+                  <td>
+                  <!-- item?.current_balance -->
+                      {{ calculate_loan_balance(item.current_balance, item.interest_percent, item.created_at) | number }} 
+                  </td>
+                  <td>
+                    <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
+                    <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
+                    <span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
+                  </td>
+                    <td>
+                      {{item?.created_at | date : 'shortDate'}} 
+                  </td>
+                   <td>
+                      {{ item?.staff?.first_name }} 
+                      {{ item?.staff?.last_name }} 
+                      {{ item?.staff?.middle_name }} 
+                  </td>
+                  <td>
+                      {{ item?.approved_by?.first_name }} 
+                      {{ item?.approved_by?.last_name }} 
+                      {{ item?.approved_by?.middle_name }} 
+                  </td>
+                  <td>
+                    <mat-menu #appM="matMenu">
+                      <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
+                      <button *ngIf="item.status == 0 && user?.role_id !=4" [swal]="approve_repay" mat-menu-item>Post Loan Repayment</button>
+                      <button [swal]="cancel_repay"  *ngIf="item.status != 2 && user?.role_id !=4" mat-menu-item>Cancel Loan Repayment</button>
+                      <!-- <button mat-menu-item (click)="calculate_loan_balance(item?.current_balance,item?.interest_percent, item?.created_at)">Calculate Loan Balance</button> -->
+                      <swal
+                        #approve_repay
+                        title="Are You Sure You want to Approve this Loan Repayment?"
+                        text="This cannot be undone"
+                        type="warning"
+                        [showCancelButton]="true"
+                        [focusCancel]="true"
+                        (confirm)="post_repayment(item.id, 1)">
+                      </swal>
+                      <swal
+                        #cancel_repay
+                        title="Are You Sure You want to Cancel this Loan Repayment?"
+                        text="This cannot be undone"
+                        type="warning"
+                        [showCancelButton]="true"
+                        [focusCancel]="true"
+                        (confirm)="post_repayment(item.id, 2)">
+                      </swal>
+                    </mat-menu>
+
+                    <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                  </td>
+              </tr>
+              <!-- <tr>
+                  <td colspan="3">Total</td>
+                  <td>{{ total_deduction_amount | number }}</td>
+                  <td></td>
+              </tr> -->
+          </tbody>
+      </table>
+  </div>
+
+<div bsModal #newRepaymentModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Make A Repayment</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="newRepaymentModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+                <form [formGroup]="addDeductionForm" (ngSubmit)="make_a_repayment(addDeductionForm.value)">
+                            <div class="row">
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Running Loan(s)</label>
+                                        <select class="form-control" placeholder="loan_request_id" formControlName = "loan_request_id">
+                                            <option selected="false">Type</option>
+                                            <option value="{{ item.id }}" *ngFor="let item of memberLoanRequestList">{{ item?.type?.loan_type}}<!--  (bal: = {{item?.amount + percentage_to_amount(item.amount, item.type.interest) - (totalDeductions(item.deductions_per_loan))}}) --></option>
+                                        </select>
+                                        <small [hidden]="(addDeductionForm.controls.loan_request_id.valid ) || (addDeductionForm.controls.loan_request_id.pristine )" class="text-danger">Repayment Method is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Type</label>
+                                        <select class="form-control" placeholder="type" formControlName = "repayment_method">
+                                            <option selected="false">Type</option>
+                                            <option value="{{item.id}}" *ngFor="let item of deduction_type_list">{{ item?.name }}</option>
+                                        </select>
+                                        <small [hidden]="(addDeductionForm.controls.repayment_method.valid ) || (addDeductionForm.controls.repayment_method.pristine )" class="text-danger">Type Method is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Period</label>
+                                        <select class="form-control" placeholder="Period" formControlName = "period">
+                                            <option selected="false">Period</option>
+                                            <option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
+                                        </select>
+                                        <small [hidden]="(addDeductionForm.controls.period.valid ) || (addDeductionForm.controls.period.pristine )" class="text-danger">Period  is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Date</label> <small>Date Deduction was made</small>
+                                        <input type="date" name="" formControlName = "run_date" class="form-control">
+                                        <small [hidden]="(addDeductionForm.controls.run_date.valid ) || (addDeductionForm.controls.run_date.pristine )" class="text-danger">Date you contribution was made is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Amount</label>
+                                        <input type="text" name="" formControlName = "repayment_amount" class="form-control">
+                                        <small [hidden]="(addDeductionForm.controls.repayment_amount.valid ) || (addDeductionForm.controls.repayment_amount.pristine )" class="text-danger">Amount Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Depositor</label>
+                                        <input type="text" name="" formControlName = "depositor" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <input type="text" name="" formControlName = "description" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                               <button type="submit" class="btn btn-success" [disabled]="addDeductionForm.invalid || submitPending">
+                                    <span *ngIf="!submitPending">Make Payment</span>
+                                    <span *ngIf="submitPending && addDeductionForm.valid">Please Wait...</span>
+                                    <span *ngIf="submitPending && addDeductionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                </button>
+                        </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>

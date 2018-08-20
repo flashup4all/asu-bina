@@ -112,6 +112,7 @@ export class DashboardComponent implements OnInit {
 		this.dashboardService.getVendorStatistics().subscribe((response) => {
       console.log(response)
       this.total_paid_contribution = response.data.total_paid_contribution
+      console.log(response.data.total_paid_contribution)
 			this.total_pending_contribution = response.data.total_pending_contribution
 			this.totalDedutions = response.data.totalDeduction
       this.totalMembers = response.data.totalNoMembers

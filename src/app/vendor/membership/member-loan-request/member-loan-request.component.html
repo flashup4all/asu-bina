@@ -65,7 +65,7 @@
                 <th>&#8358; Paid</th>
                 <!-- <th>Repayment Method</th> -->
                 <th>Duration(Months)</th>
-                <th>Date</th>
+                <th>Start Date</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -103,7 +103,7 @@
                     {{item?.type.duration}} 
                 </td>
                   <td>
-                    {{item?.created_at | date: 'shortDate'}} 
+                    {{item?.start_date | date: 'shortDate'}} 
                 </td>
                   <td>
                     <mat-chip-list>

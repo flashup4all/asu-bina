@@ -1,3 +1,74 @@
-<p>
-  comming soon
-</p>
+<div class="card">
+	<div class="card-body">
+	<div class="">
+         <form [formGroup] = "loan_calculator_form" (ngSubmit) = "calculate_interest(loan_calculator_form.value)" style="width: 100%;">
+        <div class="row p-1">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>Loan Amount</label>
+                <input type="number" formControlName = "amount" class="form-control" name=""> 
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Duration <small style="color: red">[ In nuber of Days ]</small></label>
+                <input type="number" formControlName = "duration" class="form-control" name="">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>Percentage</label>
+                <input type="number" formControlName = "percentage" class="form-control" name="">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label> Interest Type<small>[flate rate | Reducing Balance]</small></label>
+                <select class="form-control"  formControlName="interest_type">
+                    <option  *ngFor="let item of interest_type" [value]="item.value">{{ item?.name }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="loan_calculator_form.invalid">
+                  <span *ngIf="submitPending && loan_calculator_form.valid">Please Wait...</span>
+                  <span *ngIf="submitPending && loan_calculator_form.valid"><i class="fa fa-spinner"></i></span>
+                  <span *ngIf="!submitPending">Filter</span>
+                </button>
+              </div>
+            </div>
+          </div>
+      </form>
+    </div>
+		<div class="col-md-12">
+                    <div class="row">
+                         <div class="col-md-12">
+                            <!-- <h3 class="box-heading pull-left">LOAN SIGNATORY</h3> -->
+                            <!-- <button type="button" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add Loan Signatory</button> -->
+                        </div>
+						<mat-progress-spinner *ngIf="show_loader" style="margin:auto;" mode="indeterminate" value=""></mat-progress-spinner>
+                        <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+                            <thead>
+                                <tr>
+                                <th>sn</th>
+                                    <th>Principal</th>
+                                    <!-- <th>Staff Name</th> -->
+                                    <th>Interest</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="" *ngFor="let item of calculator_array; let i=index">
+                                    <td> {{ i }}</td>
+                                    <td>{{item.original_amount| number }}</td>
+                                    <!-- <td>{{item?.principal | number }} </td> -->
+                                    <td>
+                                         {{item?.interest | number }} 
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+	</div>
+</div>

@@ -7,7 +7,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="typeahead-http">Filter By Staff <small>[Name/Staff ID]</small></label>
-                    <select formControlName="staff_id" class="form-control" [ngModel]="member?.gender" value="" name="gender" ngModel>
+                    <select formControlName="staff_id" class="form-control" value="" name="gender">
                       <option value="">None</option>
                       <option [value]="staff.id" *ngFor="let staff of staffList">
                       {{ staff?.first_name }} 
@@ -15,23 +15,14 @@
                       {{ staff?.middle_name }}
                       </option>
                     </select>
-                    <!-- <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="staff_searchFailed"formControlName="staff_id" [ngbTypeahead]="search_staff" placeholder="Filter By Staff" [inputFormatter]="staff_formatter" [resultTemplate]="st"/>
-                    <span *ngIf="staff_searching">searching...</span>
-                    <ng-template #st let-r="result" let-t="term">
-                        <img *ngIf="!r.passport" src="assets/images/avata.png" class="img-avatar" width='39px'>
-                        <img *ngIf="r.passport" src="{{staff_image_url}}{{r.passport}}" class="img-avatar" width='39px'>
-                       {{ r.first_name}} {{ r.last_name}} {{ r.middle_name}}
-                       <br>
-                       {{ r.staff_id}}
-                    </ng-template> -->
                   </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label>Set Default</label>
+                    <label>Set Status</label>
                     <select class="form-control" formControlName="status">
-                        <option value="1">Yes</option>
-                        <option value="0">No</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
                     </select>
                     <mat-error [hidden]="(acc_oficer_form.controls.status.valid ) || (acc_oficer_form.controls.status.pristine )" class="text-danger">Unique Identifier Required</mat-error>
                 </div>
@@ -74,6 +65,7 @@
             <td class="center" *ngIf="user.role_id < 4">
                 <button *ngIf="!account?.status" class="btn btn-primary btn-sm" (click)="set_default_acc_officer(account.id, 1)" title="Set Defualt"><i class="fa fa-edit"></i> Activate</button>
                 <button *ngIf="account?.status" class="btn btn-primary btn-sm" (click)="set_default_acc_officer(account.id, 0)" title="Set Defualt"><i class="fa fa-edit"></i> De-Activate</button>
+                <button *ngIf="user?.role_id == 2" class="btn btn-danger btn-sm" (click)="delete_acc_officer(account.id)" title="Set Defualt"><i class="fa fa-trash-o"></i> Delete</button>
             </td>
         </tr>
     </tbody>

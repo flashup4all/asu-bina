@@ -53,6 +53,7 @@ import * as moment from 'moment';
 export class ManageDeductionsComponent implements OnInit {
 
 	public vendor;
+  user;
 	public deductionsList = [];
 	public runDeductionsForm : FormGroup;
     filterForm: FormGroup;
@@ -66,6 +67,7 @@ export class ManageDeductionsComponent implements OnInit {
     loanTypeList
   	searching = false;
   	searchFailed = false;
+    approve_btn_loader: boolean = false;
   	hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
   
 	constructor(
@@ -78,6 +80,7 @@ export class ManageDeductionsComponent implements OnInit {
   		) {
 		this.adv_filter = false;
 		this.vendor = JSON.parse(this.localService.getVendor());
+    this.user = JSON.parse(this.localService.getUser());
 		this.getLoanDeductions();
     this.getLoanType()
 		this.monthList = this.localService.yearjson();
@@ -237,6 +240,31 @@ export class ManageDeductionsComponent implements OnInit {
       this.exportService.exportTo(format, tableId);
     }
 
+    post_repayment(id, status)
+    {
+      let data = {
+        id: id,
+        status: status,
+        approved_by : this.user.id,
+        vendor_id: this.vendor.id
+      };
+      this.approve_btn_loader = true;
+      this.deductionService.post_repayment(data).subscribe((response) => {
+        if (response.success) {
+          this.approve_btn_loader = false;
+          //this.member_loan_request_component.getMemberLoanRequest();
+          this.getLoanDeductions();
+          this.localService.showSuccess(response.message,'Operation Successfull');
+        }else{
+          this.approve_btn_loader = false;
+                this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      }, (error) => {
+        this.approve_btn_loader = false;
+              this.localService.showError(error,'Operation Unsuccessfull');
+      });
+    }
+
     printReciept(id): void {
       let printContents, popupWin;
 
@@ -295,5 +323,26 @@ export class ManageDeductionsComponent implements OnInit {
         </html>`
       );
       popupWin.document.close();
+    }
+
+    calculate_loan_balance(balance, interest, last_date)
+    {
+      let last_time = moment(last_date)
+      let curr_time = 0
+      let rate: number;
+      let current_time = moment()
+      let days = current_time.diff(last_time, 'days')
+      let daily_interest
+      let monthly_interest=0;
+        var monthly = 10;
+        let interest_rate 
+        interest_rate = ((interest / 100) / 30).toFixed(4);
+
+        while (curr_time < days) {
+          daily_interest = balance * interest_rate;
+              balance = balance + daily_interest;
+                  days--;
+        }
+        return balance;
     }
 }

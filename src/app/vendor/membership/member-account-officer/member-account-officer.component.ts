@@ -91,6 +91,7 @@ export class MemberAccountOfficerComponent implements OnInit {
           }else{
             this.save_acct_officer_form_check = false;
             this.localService.showError(response.message,'Operation Unsuccessfull');
+            this.localService.showError(response,'Operation Unsuccessfull');
           }
         }, (error) => {
           this.save_acct_officer_form_check = false;
@@ -157,5 +158,22 @@ export class MemberAccountOfficerComponent implements OnInit {
            this.staffList.push(response.data[i])
          }*/
        })
+    }
+
+    delete_acc_officer(id)
+    {
+      this.acc_officer_service.delete_account_officer(id).subscribe((response) => {
+          if (response.success) {
+            this.save_acct_officer_form_check = false;
+          this.get_acc_officer();
+            this.localService.showSuccess(response.message,'Operation Successfull');
+          }else{
+            this.save_acct_officer_form_check = false;
+            this.localService.showError(response.message,'Operation Unsuccessfull');
+          }
+        }, (error) => {
+          this.save_acct_officer_form_check = false;
+                this.localService.showError(error,'Operation Unsuccessfull');
+        })
     }
 }

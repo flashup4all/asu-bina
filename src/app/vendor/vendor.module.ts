@@ -10,6 +10,7 @@ import { ManageVendorComponent } from './settings/manage-vendor/manage-vendor.co
 import { SmsSettingsComponent } from './settings/sms-settings/sms-settings.component';
 import { VendorService } from './vendor.service';
 import { ModalModule } from 'ngx-bootstrap';
+import { ActivityLogComponent } from './settings/activity-log/activity-log.component';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import { ModalModule } from 'ngx-bootstrap';
   declarations: [
   	ManageVendorComponent,
     ProfileComponent,
-    SmsSettingsComponent
+    SmsSettingsComponent,
+    ActivityLogComponent
   ],
   providers:[
   	VendorService

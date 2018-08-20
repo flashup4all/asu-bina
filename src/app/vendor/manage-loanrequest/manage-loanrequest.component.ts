@@ -255,6 +255,18 @@ export class ManageLoanrequestComponent implements OnInit {
 
         return "";
     }
+
+    filter_loan_interest_type(id)
+    {
+      let interest_type = this.localService.interest_type()
+      for (var i in interest_type) {
+        if(interest_type[i].value == id)
+        {
+          return interest_type[i].name;
+        }
+      }
+    }
+    
      paymentOptions(status)
     {
       console.log(status)

@@ -151,6 +151,15 @@ export class AppSidebarNavComponent {
             }
           ]
         },
+        {
+          name: 'Activity Log',
+          url: '/app/activity-log',
+          icon: 'icon-speedometer',
+          // badge: {
+          //   variant: 'info',
+          //   text: 'NEW'
+          // }
+        },
       ]
       }else if(this.user.role_id == 3)
       {

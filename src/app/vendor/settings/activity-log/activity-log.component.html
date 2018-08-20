@@ -1,0 +1,100 @@
+<div class="card">
+    <div class="card-body">
+    <div class="col">
+      	<div class="row">
+                <div class="col">
+                    <tabset>
+                        <tab heading="Activity Logs">
+                        	<div class="row">
+			            		<form [formGroup] = "filter_form" (ngSubmit) = "filter_logs(filter_form.value)" style="width: 100%;">
+                                    <div class="row p-1">
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <label>From</label>
+                                            <input type="date" formControlName = "from" class="form-control" name=""> 
+                                          </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <label>To</label>
+                                            <input type="date" formControlName = "to" class="form-control" name="">
+                                          </div>
+                                        </div>
+                                         <div class="col-md-3">
+                                         	<div class="form-group">
+							                    <label for="typeahead-http">Filter By Staff</label>
+							                    <select formControlName="user_id" class="form-control" value="">
+							                      <option value="">None</option>
+							                      <option [value]="staff.user_id" *ngFor="let staff of staffList">
+							                      {{ staff?.first_name }} 
+							                      {{ staff?.last_name }} 
+							                      {{ staff?.middle_name }}
+							                      </option>
+							                    </select>
+							                  </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filter_form.invalid && !submitPending">
+                                              <span *ngIf="submitPending && filter_form.valid">Please Wait...</span>
+                                              <span *ngIf="submitPending && filter_form.valid"><i class="fa fa-spinner"></i></span>
+                                              <span *ngIf="!submitPending">Filter</span>
+                                            </button>
+                                             <!-- <button type="button" class="btn btn-primary" (click)="newContributionModal.show()" style="margin-top: 30px;"> Make a Contribution</button> -->
+                                          </div>
+                                        </div>
+                                        
+                                      </div>
+                                  </form>
+			            	</div>
+            				<mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
+                        	<table id="target_table" class="table table-responsive-sm table-hover table-outline mb-0">
+				                <thead>
+				                    <tr>
+				                        <th>#</th>
+				                        <th>Caurser</th>
+				                        <th>Subject ID</th>
+				                        <th>Resource</th>
+				                        <th>Description</th>
+				                        <th>Properties</th>
+				                        <th>Role</th>
+				                        <th>Date</th>
+				                    </tr>
+				                </thead>
+				                <tbody>
+				                    <tr class="" *ngFor="let item of logs">
+				                        <td><input type="checkbox" name=""></td>
+				                        <td>
+		                                  {{item?.staff?.first_name}} 
+		                                  {{item?.staff?.last_name}} 
+		                                  {{item?.staff?.middle_name}} 
+		                                </td>
+				                        <td>
+				                            {{item?.subject_id }} 
+				                        </td>
+				                        <td>
+				                            {{item?.subject_type }} 
+				                        </td>
+				                        <td>{{ item?.description}}</td>
+				                        <td>
+				                        	<p *ngFor="let key of decode(item?.properties) | logPipe">
+				                        		{{key.key}}: {{key.value}}
+				                        	</p>
+				                        </td>
+				                        <td>
+				                        	<p *ngIf="item?.staff?.role_id == 2 || item?.staff?.role_id == 3 || item?.staff?.role_id == 4"> Staff</p>
+				                        	<p *ngIf="item?.staff?.role_id >4"> Member</p>
+				                        </td>
+				                        <td>
+				                            {{item?.created_at | date: "shortDate" }} 
+				                        </td>
+				                    </tr>
+				                </tbody>
+				            </table>
+                        </tab>
+                    </tabset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
