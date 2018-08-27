@@ -261,6 +261,7 @@ export class MemberContributionsComponent implements OnInit {
         formValues['contributions'] = [data];
         formValues['vendor_id'] = this.vendor.id;
         formValues['staff_id'] = this.user.id;
+        formValues['user_id'] = this.user.user_id;
         formValues['member_id'] = this.member_id;
         formValues.transaction_type = 'credit';
 
@@ -368,6 +369,7 @@ export class MemberContributionsComponent implements OnInit {
       let data = {
         id: id,
         approved_by: this.user.id,
+        user_id: this.user.user_id,
         vendor_id: this.vendor.id,
         status: status,
       }
@@ -412,6 +414,7 @@ export class MemberContributionsComponent implements OnInit {
       let data = {
         id: transaction_id,
         approved_by: this.user.id,
+        user_id: this.user.user_id,
         vendor_id: this.vendor.id,
         status: status
       }

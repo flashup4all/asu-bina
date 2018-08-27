@@ -208,6 +208,7 @@ export class MemberLoanRequestComponent implements OnInit {
       // input.append('requirements_files', this.requirements_files);
       input.append('vendor_id', this.vendor.id);
       input.append('staff_id', JSON.parse(this.localService.getUser()).id);
+      input.append('user_id', JSON.parse(this.localService.getUser()).user_id);
       input.append('member_id', this.memberId);
       return input;
   }

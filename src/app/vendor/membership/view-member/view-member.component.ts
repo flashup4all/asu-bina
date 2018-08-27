@@ -578,6 +578,7 @@ export class ViewMemberComponent implements OnInit {
       formValues['member_id'] = this.memberId
       formValues['vendor_id'] = this.vendor.id
       formValues['staff_id'] = this.user.id
+      formValues['user_id'] = this.user.user_id
       this.submitPending = true;
       this.withdrawalService.make_a_withdrawal(formValues).subscribe((response) => {
         if (response.success) {
@@ -608,7 +609,9 @@ export class ViewMemberComponent implements OnInit {
       id : id,
       vendor_id: this.vendor.id,
       status: 'Approved',
-      approved_by: JSON.parse(this.localService.getUser()).id
+      approved_by: JSON.parse(this.localService.getUser()).id,
+      user_id :this.user.user_id
+
     }
     this.withdrawalService.approveWidthdrawalRequest(data).subscribe((response) => {
          if(response.success = true)
@@ -639,6 +642,7 @@ export class ViewMemberComponent implements OnInit {
       id : id,
       vendor_id: this.vendor.id,
       status: 'Cancelled',
+      user_id :this.user.user_id,
       approved_by: JSON.parse(this.localService.getUser()).id
     }
     this.withdrawalService.cancelWidthdrawalRequest(data).subscribe((response) => {
