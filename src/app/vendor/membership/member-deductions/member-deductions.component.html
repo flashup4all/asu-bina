@@ -19,7 +19,7 @@
                   <label>Running Loan(s)</label>
                       <select class="form-control" placeholder="loan_request_id" formControlName = "loan_request_id">
                           <option value="">none</option>
-                          <option value="{{ item.id }}" *ngFor="let item of memberLoanRequestList">{{ item?.type?.loan_type}} (bal: = {{item?.amount + percentage_to_amount(item.amount, item.type.interest) - (totalDeductions(item.deductions_per_loan))}})</option>
+                          <option value="{{ item.id }}" *ngFor="let item of memberLoanRequestList">{{ item?.type?.loan_type}} (amount: = {{ item?.amount }})</option>
                       </select>
                 </div>
               </div>

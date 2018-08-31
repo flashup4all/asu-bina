@@ -166,7 +166,6 @@ export class LoanCalculatorComponent implements OnInit {
 
 	calculate_interest(form_values)
 	{
-		console.log(form_values)
 		if(form_values.interest_type == 1)
 		{
 			this.flat_rate(form_values.amount, form_values.percentage, form_values.interest_type, form_values.duration)

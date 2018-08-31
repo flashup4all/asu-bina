@@ -29,9 +29,9 @@
                                 <p>
                                     Amount: &#8358; {{ loanRequest?.amount | number }}
                                 </p>
-                                <p>
+                                <!-- <p>
                                 	Interest Amount: &#8358; {{ loanRequest?.interest_amount | number }}
-                                </p>
+                                </p> -->
                                 <p>
                                     Status:
                                     <span class="pull-right">
@@ -54,6 +54,7 @@
             <div class="col">
                 <tabset>
                   <tab heading="Loan Request History">
+                     <button type="button" class="btn btn-primary" (click)="newRepaymentModal.show()" style="margin-top: 30px;"> Repay this Loan</button>
                         <div class="col-md-12">
                         	<table class="table table-responsive-sm table-hover table-outline mb-0">
 				                <thead>
@@ -96,8 +97,36 @@
                                         <td>
                                             {{item.run_date}} 
                                         </td>
-				                        <!-- <td class="center">
-				                        </td> -->
+				                        <td class="center">
+                                            <mat-menu #appM="matMenu">
+                                              <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
+                                              <button *ngIf="item.status == 0 && user?.role_id !=4" [swal]="approve_repay" mat-menu-item>Post Loan Repayment</button>
+                                              <button [swal]="cancel_repay"  *ngIf="item.status != 2 && user?.role_id !=4" mat-menu-item>Cancel Loan Repayment</button>
+                                              <!-- <button mat-menu-item (click)="calculate_loan_balance(item?.current_balance,item?.interest_percent, item?.created_at)">Calculate Loan Balance</button> -->
+                                              <swal
+                                                #approve_repay
+                                                title="Are You Sure You want to Approve this Loan Repayment?"
+                                                text="This cannot be undone"
+                                                type="warning"
+                                                [showCancelButton]="true"
+                                                [focusCancel]="true"
+                                                (confirm)="post_repayment(item.id, 1)">
+                                              </swal>
+                                              <swal
+                                                #cancel_repay
+                                                title="Are You Sure You want to Cancel this Loan Repayment?"
+                                                text="This cannot be undone"
+                                                type="warning"
+                                                [showCancelButton]="true"
+                                                [focusCancel]="true"
+                                                (confirm)="post_repayment(item.id, 2)">
+                                              </swal>
+                                            </mat-menu>
+
+                                            <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
+                                              <mat-icon>more_vert</mat-icon>
+                                            </button>
+				                        </td>
 				                    </tr>
 				                </tbody>
 				            </table>
@@ -132,7 +161,7 @@
                                     </td>
                                     <td class="center">
                                          <mat-menu #appM="matMenu">
-                                              <button mat-menu-item *ngIf="item.status == 0" (click)="approveLoanRequest(item)">Approve Request</button>
+                                              <button mat-menu-item *ngIf="item.status == 0" (click)="show_approve_loan_request_form(item)">Approve Request</button>
                                               <!-- <button mat-menu-item (click)="loadPaymentModal(item)">Pay Now</button> -->
                                               <button *ngIf="item.status != 2" (click)="cancelLoanRequest(item)" mat-menu-item>Cancel Request</button>
                                             </mat-menu>
@@ -171,4 +200,124 @@
             </div>
         </div>
     </div>
+</div>
+
+<div bsModal #approve_loan_request_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Approve Loan Request</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="approve_loan_request_modal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+            <br>
+            <div>
+               <form [formGroup] = "approve_loan_request_form" (ngSubmit) = "approve_loan_request(approve_loan_request_form.value)" class="form-horizontal row-fluid">
+                    <div class="form-group">
+                        <label>Start Date <small>[Interest starts applying from start date]</small></label>
+                        <input type="date" placeholder="Start Date" formControlName="start_date" name="" class="form-control">
+                        <small [hidden]="(approve_loan_request_form.controls.start_date.valid ) || (approve_loan_request_form.controls.start_date.pristine )" class="text-danger">Loan Start Date is Required, because interest start counting from start date</small>
+                    </div>
+                   <!--  <div class="form-group">
+                        <label>Comment</label>
+                       <input type="text" placeholder="Comment" formControlName="comment" name="" class="form-control">
+                        <small [hidden]="(approve_loan_request_form.controls.comment.valid ) || (approve_loan_request_form.controls.comment.pristine )" class="text-danger">Item Amount is Required</small>
+                    </div> -->
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-success btn-block" [disabled]="approve_loan_request_form.invalid || submitPending ">
+                                <span *ngIf="!submitPending">Approve</span>
+                                <span *ngIf="submitPending && approve_loan_request_form.valid">Please Wait...</span>
+                                <span *ngIf="submitPending && approve_loan_request_form.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>
+<div bsModal #newRepaymentModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Make A Repayment</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="newRepaymentModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+                <form [formGroup]="addDeductionForm" (ngSubmit)="make_a_repayment(addDeductionForm.value)">
+                            <div class="row">
+                                 <!-- <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Running Loan(s)</label>
+                                        <select class="form-control" placeholder="loan_request_id" formControlName = "loan_request_id">
+                                            <option selected="false">Type</option>
+                                            <option value="{{ item.id }}" *ngFor="let item of memberLoanRequestList">{{ item?.type?.loan_type}}</option>
+                                        </select>
+                                        <small [hidden]="(addDeductionForm.controls.loan_request_id.valid ) || (addDeductionForm.controls.loan_request_id.pristine )" class="text-danger">Repayment Method is Required</small>
+                                    </div>
+                                </div> -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Type</label>
+                                        <select class="form-control" placeholder="type" formControlName = "repayment_method">
+                                            <option selected="false">Type</option>
+                                            <option value="{{item.id}}" *ngFor="let item of deduction_type_list">{{ item?.name }}</option>
+                                        </select>
+                                        <small [hidden]="(addDeductionForm.controls.repayment_method.valid ) || (addDeductionForm.controls.repayment_method.pristine )" class="text-danger">Type Method is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Period</label>
+                                        <select class="form-control" placeholder="Period" formControlName = "period">
+                                            <option selected="false">Period</option>
+                                            <option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
+                                        </select>
+                                        <small [hidden]="(addDeductionForm.controls.period.valid ) || (addDeductionForm.controls.period.pristine )" class="text-danger">Period  is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Date</label> <small>Date Deduction was made</small>
+                                        <input type="date" name="" formControlName = "run_date" class="form-control">
+                                        <small [hidden]="(addDeductionForm.controls.run_date.valid ) || (addDeductionForm.controls.run_date.pristine )" class="text-danger">Date you contribution was made is Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Amount</label>
+                                        <input type="text" name="" formControlName = "repayment_amount" class="form-control">
+                                        <small [hidden]="(addDeductionForm.controls.repayment_amount.valid ) || (addDeductionForm.controls.repayment_amount.pristine )" class="text-danger">Amount Required</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Depositor</label>
+                                        <input type="text" name="" formControlName = "depositor" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <input type="text" name="" formControlName = "description" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                               <button type="submit" class="btn btn-success" [disabled]="addDeductionForm.invalid || submitPending">
+                                    <span *ngIf="!submitPending">Make Payment</span>
+                                    <span *ngIf="submitPending && addDeductionForm.valid">Please Wait...</span>
+                                    <span *ngIf="submitPending && addDeductionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                </button>
+                        </form>
+            </div>
+         </div>
+       </div>
+     </div>
 </div>

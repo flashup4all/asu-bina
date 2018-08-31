@@ -249,9 +249,9 @@ export class ContributionService {
      * get member contribution history
      * @return data
      */
-    delete_contribution(id)
+    delete_contribution(id, data)
     {
-      return this.http.delete(environment.api.url+'CoopManagement/member-contribution-plan/delete/'+id, this.localService.header())
+      return this.http.post(environment.api.url+'CoopManagement/member-contribution-plan/delete/'+id, data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 

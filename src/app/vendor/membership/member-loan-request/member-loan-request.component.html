@@ -47,10 +47,8 @@
     <div class="container p-2">
           <button (click)="exportTable('xls', 'loan_table')" class="btn btn-outline btn-success">Export table</button>
           <button class="btn btn-outline btn-success" (click)="printReciept('loan_table')">Print</button>
-          <button type="button" class="btn btn-success pull-right" (click)="newLoanRequestModal.show()"style="margin-top:30px" >
-                    <i class="fa fa-plus"></i> 
-                Make A Loan Request
-                </button>
+          <button type="button" class="btn btn-success pull-right" (click)="newLoanRequestModal.show()"style="margin-top:30px" ><i class="fa fa-plus"></i> Make A Loan Request</button>
+          <button type="button" class="btn btn-success" (click)="loan_calculator_modal.show()">Loan Calculator</button>
       </div>
     <table id="loan_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
         <thead>
@@ -65,7 +63,7 @@
                 <th>&#8358; Paid</th>
                 <!-- <th>Repayment Method</th> -->
                 <th>Duration(Months)</th>
-                <th>Start Date</th>
+                <th>Start Date(days)</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -103,7 +101,7 @@
                     {{item?.type.duration}} 
                 </td>
                   <td>
-                    {{item?.start_date | date: 'shortDate'}} 
+                    {{item?.start_date | date}} <p style="color: red" *ngIf="item?.deductions_per_loan == ''">({{ count_no_loan_days(item?.start_date) }})</p>
                 </td>
                   <td>
                     <mat-chip-list>
@@ -191,6 +189,85 @@
                     </div>
                 </div>
             </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>
+
+<div bsModal #loan_calculator_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-lg">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Loan Calculator</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="loan_calculator_modal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="new session form">
+              <div class="">
+               <form [formGroup] = "loan_calculator_form" (ngSubmit) = "calculate_interest(loan_calculator_form.value)" style="width: 100%;">
+                  <div class="row p-1">
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label>Loan Amount</label>
+                          <input type="number" formControlName = "amount" class="form-control" name=""> 
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label>Duration <small style="color: red">[ In nuber of Days ]</small></label>
+                          <input type="number" formControlName = "duration" class="form-control" name="">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label>Percentage</label>
+                          <input type="number" formControlName = "percentage" class="form-control" name="">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label> Interest Type<small>[flate rate | Reducing Balance]</small></label>
+                          <select class="form-control"  formControlName="interest_type">
+                              <option  *ngFor="let item of interest_type" [value]="item.value">{{ item?.name }}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-1">
+                        <div class="form-group">
+                          <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="loan_calculator_form.invalid">
+                            <span *ngIf="submitPending && loan_calculator_form.valid">Please Wait...</span>
+                            <span *ngIf="submitPending && loan_calculator_form.valid"><i class="fa fa-spinner"></i></span>
+                            <span *ngIf="!submitPending">Filter</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                </form>
+              </div>
+              <mat-progress-spinner *ngIf="show_loader" style="margin:auto;" mode="indeterminate" value=""></mat-progress-spinner>
+                        <table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+                            <thead>
+                                <tr>
+                                <th>sn</th>
+                                    <th>Principal</th>
+                                    <!-- <th>Staff Name</th> -->
+                                    <th>Interest</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="" *ngFor="let item of calculator_array; let i=index">
+                                    <td> {{ i }}</td>
+                                    <td>{{item.original_amount| number }}</td>
+                                    <!-- <td>{{item?.principal | number }} </td> -->
+                                    <td>
+                                         {{item?.interest | number }} 
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
             </div>
          </div>
        </div>

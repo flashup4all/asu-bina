@@ -66,7 +66,8 @@
                                         <!-- <th>&#8358;Monthly Deductions</th> -->
                                         <!-- <th>Repayment Method</th> -->
                                         <th>Duration(Months)</th>
-                                        <th>Date</th>
+                                        <th>Start Date</th>
+                                        <th>Created</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
@@ -98,6 +99,9 @@
                                         <td>
                                             {{item.type.duration}} 
                                         </td>
+                                        <td>
+                                            {{item.start_date |date}} <!-- <p style="color: red">({{ count_no_loan_days(item?.start_date) }})</p> -->
+                                        </td>
                                           <td>
                                             {{item.created_at}} 
                                         </td>
@@ -109,6 +113,9 @@
                                     </mat-chip-list>
                                         </td>
                                         <td>
+                                            <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="requestappMenu">
+                                              <mat-icon>more_vert</mat-icon>
+                                            </button>
                                             <mat-menu #requestappMenu="matMenu">
                                               <button mat-menu-item (click)="requestHistory(item.id)">Request History</button>
                                               <!-- <button mat-menu-item (click)="approveLoanRequest(item.id)">Approve Request</button>
@@ -116,16 +123,12 @@
                                               <button *ngIf="item.status != 'cancelled'" mat-menu-item>Cancel Request</button>
                                               <button mat-menu-item (click)="deleteLoanRequest(item.id)" >Delete</button> -->
                                             </mat-menu>
-
-                                            <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="requestappMenu">
-                                              <mat-icon>more_vert</mat-icon>
-                                            </button>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                             <div class="col-md-12 load-more">
-                               <a  (click)="loadMore()" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
+                               <a  (click)="loadMore()" class="btn btn-success" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
                             </div>
                         </div>
                     </tab>

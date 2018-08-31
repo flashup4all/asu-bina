@@ -8,6 +8,7 @@ import { MembersService } from '../membership/members.service';
 import { VendorService } from '../vendor.service';
 import { LoanSettingsService } from '../loans/loan-settings/loan-settings.service';
 import { TableExportService } from '../../shared/services/index';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-manage-loanrequest',
@@ -188,6 +189,16 @@ export class ManageLoanrequestComponent implements OnInit {
       	});
     }
 
+    count_no_loan_days(start_date)
+    {
+      if(start_date)
+      {
+        var a = moment(start_date);
+        var b = moment();
+        return b.diff(a, 'days')
+      }
+    }
+    
     requestHistory(id)
     {
       this.route.navigate(['app/loan-request/'+id+'/loan-request-history'])

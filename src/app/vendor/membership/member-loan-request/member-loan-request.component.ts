@@ -57,6 +57,10 @@ export class MemberLoanRequestComponent implements OnInit {
     sel_loan_type
     requirements_files;
     deduction_type_list;
+    calculator_array;
+    show_loader : boolean = false
+    public loan_calculator_form : FormGroup;
+    interest_type;
    @ViewChild('fileInput') fileInput: ElementRef;
 
     @ViewChild('newLoanRequestModal') public newLoanRequestModal : ModalDirective;
@@ -86,6 +90,7 @@ export class MemberLoanRequestComponent implements OnInit {
         //this.memberId = this.route.snapshot.params['member_id'];
          // });
         this.monthList = this.localService.yearjson();
+        this.interest_type = this.localService.interest_type();
         this.getMemberLoanRequest();
         this.getLoanType();
         this.get_deduction_type()
@@ -107,6 +112,14 @@ export class MemberLoanRequestComponent implements OnInit {
         loan_request_id : '',
         repayment_method:'',
         id : ''
+      });
+
+       this.loan_calculator_form =this._fb.group({
+        duration : [null, Validators.compose([Validators.required])],
+        amount : [null, Validators.compose([Validators.required])],
+        percentage : [null, Validators.compose([Validators.required])],
+        interest_type : [null, Validators.compose([Validators.required])],
+        signatory: this._fb.array([])
       });
 
     }
@@ -261,6 +274,15 @@ export class MemberLoanRequestComponent implements OnInit {
       this.router.navigate(['app/loan-request/'+id+'/loan-request-history'])
     }
 
+    count_no_loan_days(start_date)
+    {
+      if(start_date)
+      {
+        var a = moment(start_date);
+        var b = moment();
+        return b.diff(a, 'days')
+      }
+    }
     printReciept(id): void {
       let printContents, popupWin;
 
@@ -319,5 +341,144 @@ export class MemberLoanRequestComponent implements OnInit {
         </html>`
       );
       popupWin.document.close();
+  }
+
+  calculate_loan_reducing_balance(amount, percentage, type, duration)
+  {
+    duration = duration+1;
+    this.show_loader = true;
+    /*var a = moment([2018, 0, 28]);
+  var b = moment();
+  a.from(b) */
+    //var percentage = p;
+    //var daily_percentage = ((10 / 100) / 30).toFixed(4);
+    //let 3_decimal_daily_percentage = daily_percentage.toFixed(3)
+
+    let calculator_array = [];
+    //var amount = 100000;
+      var monthly = 10;
+      //var duration = 60;
+      var rate = ((percentage / 100) / 30).toFixed(4);
+
+      //rate = rate / 100 / 12;
+
+      var m = 0;    // number of months
+
+      while (amount > 0) {
+          var interest = amount * parseFloat(rate);
+          
+          var principal = amount + interest;
+          
+          let array = {
+          original_amount: amount.toFixed(2),
+          principal: principal.toFixed(2),
+          interest:interest.toFixed(2)
+        }
+        calculator_array.push(array)
+        
+          if (duration > 0) {
+              //principal = amount;
+              amount = principal;
+          } else {
+              amount -= principal;
+          }
+
+          // build table: m + 1, principal, interest, amount
+
+          m++;
+      }
+    this.calculator_array = calculator_array;
+    //console.log(calculator_array.pop().original_amount)
+    this.show_loader = false;
+  }
+ /* buildTable() {
+
+      var amount = 100000;
+      var monthly = 10;
+      var rate = parseFloat((10 / 100) / 30).toFixed(4);
+
+      //rate = rate / 100 / 12;
+
+      var m = 0;    // number of months
+
+      while (amount > 0) {
+          var interest = amount * rate;
+          var principal = monthly + interest;
+
+          if (principal > amount) {
+              principal = amount;
+              amount = 0.0;
+          } else {
+              amount -= principal;
+          }
+
+          // build table: m + 1, principal, interest, amount
+
+          m++;
+      }
+
+      // display table
+  }*/
+
+  flat_rate(amount, percentage, type, duration)
+  {
+    /*$percentageInterest = $loanRequest->amount*($loanSetting->interest/100);
+        $totalPayment = $loanRequest->amount + $loanRequest->interest_amount;
+        $monthtlyDeductions = round($totalPayment / $loanSetting->duration, 2);*/
+
+        this.show_loader = true;
+      /*var a = moment([2018, 0, 28]);
+    var b = moment();
+    a.from(b) */
+      //var percentage = p;
+      var daily_percentage = ((10 / 100) / 30).toFixed(4);
+      //let 3_decimal_daily_percentage = daily_percentage.toFixed(3)
+
+      let calculator_array = [];
+      //var amount = 100000;
+        amount = amount / duration
+        var monthly = 10;
+        //var duration = 60;
+        var rate = ((percentage / 100) / duration).toFixed(4);
+
+        //rate = rate / 100 / 12;
+
+        var m = 0;    // number of months
+
+        while (amount > 0) {
+            var interest = amount * parseFloat(rate);
+            var principal = amount + interest;
+            let array = {
+            original_amount: amount.toFixed(2),
+            principal: principal.toFixed(2),
+            interest:interest.toFixed(2)
+          }
+          calculator_array.push(array)
+            if (duration > 0) {
+                //principal = amount;
+                amount = amount;
+            } else {
+                amount -= amount;
+            }
+
+            // build table: m + 1, principal, interest, amount
+
+            m++;
+        }
+      this.calculator_array = calculator_array;
+        this.show_loader = false;
+
+  }
+
+  calculate_interest(form_values)
+  {
+    if(form_values.interest_type == 1)
+    {
+      this.flat_rate(form_values.amount, form_values.percentage, form_values.interest_type, form_values.duration)
+    }
+    if(form_values.interest_type == 2)
+    {
+      this.calculate_loan_reducing_balance(form_values.amount, form_values.percentage, form_values.interest_type, form_values.duration)
+    }
   }
 }

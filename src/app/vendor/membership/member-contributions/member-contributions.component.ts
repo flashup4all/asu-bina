@@ -95,7 +95,8 @@ export class MemberContributionsComponent implements OnInit {
         date : '',
         plan_id : [null, Validators.compose([Validators.required])],
         amount: [null, Validators.compose([Validators.required])],
-        depositor_name:''
+        depositor:'',
+        description: ''
       });
       
        this.contributionFilterForm = this._fb.group({
@@ -279,7 +280,7 @@ export class MemberContributionsComponent implements OnInit {
           }
         }, (error) => {
           this.submitPending = false;
-                this.localService.showError(error,'Operation Unsuccessfull');
+                this.localService.showError('Server Error','Operation Unsuccessfull');
         })
         /*this.contributionService.runEditedContributions(formValues).subscribe((response) => {
           if (response.success) {
@@ -341,6 +342,7 @@ export class MemberContributionsComponent implements OnInit {
         contributionplan_id: contribution.id,
         vendor_id: this.vendor.id,
         staff_id: this.user.id,
+        user_id: this.user.user_id,
         //roi_value:form_values.roi_value
       }
       this.form_loader = true;
@@ -392,7 +394,11 @@ export class MemberContributionsComponent implements OnInit {
 
     delete_contribution_plan(id)
     {
-      this.contributionService.delete_contribution(id).subscribe((response) => {
+      let data = {
+        user_id : this.user.user_id,
+        vendor_id : this.vendor.id
+      }
+      this.contributionService.delete_contribution(id, data).subscribe((response) => {
         if (response.success) {
       this.approve_btn_loader = false;
             this.get_member_contribution_plan();

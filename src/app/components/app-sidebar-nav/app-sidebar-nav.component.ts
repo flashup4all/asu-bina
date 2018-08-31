@@ -94,7 +94,7 @@ export class AppSidebarNavComponent {
               icon: 'icon-star'
             },
             {
-              name: 'Manage Deductions',
+              name: 'Manage Repayments',
               url: '/app/deductions',
               icon: 'icon-star'
             },
@@ -199,7 +199,7 @@ export class AppSidebarNavComponent {
           icon: 'icon-star'
         },
         {
-          name: 'Manage Deductions',
+          name: 'Manage Repayments',
           url: '/app/deductions',
           icon: 'icon-star'
         },
@@ -239,7 +239,7 @@ export class AppSidebarNavComponent {
               icon: 'icon-star'
             },
             {
-              name: 'Manage Deductions',
+              name: 'Manage Repayments',
               url: '/app/deductions',
               icon: 'icon-star'
             },
@@ -300,7 +300,7 @@ export class AppSidebarNavComponent {
               icon: 'icon-star'
             },
             {
-              name: 'Manage Deductions',
+              name: 'Manage Repayments',
               url: '/app/deductions',
               icon: 'icon-star'
             },
@@ -359,7 +359,7 @@ export class AppSidebarNavComponent {
               icon: 'icon-star'
             },
             {
-              name: 'Manage Deductions',
+              name: 'Manage Repayments',
               url: '/app/deductions',
               icon: 'icon-star'
             },
@@ -450,7 +450,7 @@ export class AppSidebarNavComponent {
           icon: 'icon-star'
         },
         {
-          name: 'Manage Deductions',
+          name: 'Manage Repayments',
           url: '/app/deductions',
           icon: 'icon-star'
         },
