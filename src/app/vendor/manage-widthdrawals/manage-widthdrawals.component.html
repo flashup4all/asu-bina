@@ -75,7 +75,7 @@
 					                        </ng-template>
 					                      </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
 		                      				<div class="form-group">
 				                                <label>Status</label>
 				                                <select class="form-control" formControlName = "status">
@@ -86,7 +86,16 @@
 				                                </select>
 				                            </div>
 		                      			</div>
-                                        <div class="col-md-3">
+		                      			<div class="col-md-2">
+						                  <div class="form-group">
+						                    <label>Branch</label>
+						                    <select tabindex="1" formControlName="branch_id" data-placeholder="Branch" class="form-control">
+						                      <option value="" disabled="" selected="">Branch</option>
+						                      <option *ngFor="let branch of vendor_branches" value="{{branch.id}}">{{branch?.name}}</option>
+						                    </select>
+						                  </div>
+						                </div>
+                                        <div class="col-md-2">
                                           <div class="form-group">
                                             <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
                                               <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
@@ -105,6 +114,7 @@
 				                <thead>
 				                    <tr>
 				                        <th>Trans ID</th>
+				                        <th>Branch</th>
 				                        <th>Name</th>
 				                        <th>Amount</th>
 				                        <th>Plan</th>
@@ -118,6 +128,7 @@
 				                <tbody>
 				                    <tr class="" *ngFor="let item of widthdrawalsList">
 				                        <td>{{ item?.transaction_id }}</td>
+				                        <td>{{ item?.branch?.name }}</td>
 				                        <td>
 		                                  {{item.member.first_name}} 
 		                                  {{item.member.last_name}} 

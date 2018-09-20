@@ -150,7 +150,10 @@
                                 
                             </form>
                         </tab>
-                        <tab heading="BANK SETTINGS">
+                        <tab heading="BRANCH SETTINGS">
+                            <app-branches></app-branches>
+                        </tab>
+                        <!-- <tab heading="BANK SETTINGS">
                             <button type="submit" class="btn btn-success pull-right" (click)="newAccount()"><i class="fa fa-plus"></i> Add Bank Account</button>
                             <p>this will enable you perform transactions with any of this the account added</p>
                             <div class="col-md-12">
@@ -172,13 +175,12 @@
                                             </td>
                                             <td class="center">
                                                 <button class="btn btn-primary btn-sm" (click)="editAccount(account)" title="Delete Loan Signatory"><i class="fa fa-edit"></i></button>
-                                                 <!-- <button class="btn btn-danger btn-sm" (click)="deleteLoanSignatory(account.id)" title="Delete Loan Signatory"><i class="fa fa-trash-o"></i></button> -->
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                        </tab>
+                        </tab> -->
                         <tab heading="NOTIFICATION SETTINGS">
                             <app-sms-settings></app-sms-settings>
                         </tab>

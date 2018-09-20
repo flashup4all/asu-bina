@@ -71,6 +71,7 @@ export class MemberDeductionsComponent implements OnInit {
     deduction_type_list;
     image_url;
     passport;
+    vendor_branch;
    @ViewChild('fileInput') fileInput: ElementRef;
 
     @ViewChild('newLoanRequestModal') public newLoanRequestModal : ModalDirective;
@@ -97,6 +98,7 @@ export class MemberDeductionsComponent implements OnInit {
         this.image_url = environment.api.imageUrl+'profile/member/';
         this.vendor = JSON.parse(this.localService.getVendor());
         this.user = JSON.parse(this.localService.getUser());
+        this.vendor_branch = JSON.parse(this.localService.getBranchData());
         //this.router.events.subscribe((val) => {
         this.memberId = this.route.snapshot.params['member_id'];
          // });
@@ -228,6 +230,7 @@ export class MemberDeductionsComponent implements OnInit {
       formValues['vendor_id'] = this.vendor.id
       formValues['staff_id'] = this.user.id
       formValues['user_id'] = this.user.user_id
+      formValues['branch_id'] = this.vendor_branch.id
       this.submitPending = true;
       this.deductionService.repayment(formValues).subscribe((response) => {
         if (response.success) {

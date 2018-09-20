@@ -180,6 +180,17 @@ export class MembersService {
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
+    /**
+     * @method getFormField
+     * get form field resource
+     * @return data
+     */
+    generate_login_details(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/member/generate-login',JSON.stringify(data), this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
      /**
      * @method getFormField
      * get form field resource

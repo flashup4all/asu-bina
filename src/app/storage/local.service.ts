@@ -44,6 +44,17 @@ export class LocalService {
     {
         return window.localStorage.getItem('session_data');
     }
+
+    /* set branch data */
+    setBranchData(branch)
+    {
+        return window.localStorage.setItem('branch', branch);
+    }
+    /* get branch data*/
+    getBranchData()
+    {
+        return window.localStorage.getItem('branch');
+    }
       /*set user profile*/
     setUser(userProfile)
     {

@@ -16,33 +16,80 @@
       <div class="col">
         <tabset>
           <tab heading="Staff">
-            <div class="col-md-12">
+            <div class="">
+            <form [formGroup] = "filter_staff_form" (ngSubmit) = "filter_staff(filter_staff_form.value)">
               <div class="row">
-                <div class="col-md-6">
-                  <button type="button" class="btn btn-success" (click)="new_staff_modal()"> New Staff</button>
+                <!-- <div class="col-md-2">
+                  <div class="form-group">
+                    <label>From</label>
+                    <input type="date" formControlName = "from" class="form-control" name=""> 
+                  </div>
                 </div>
-                <div class="col-md-6">
-                    <form>
-                      <div class="form-group">
-                        <div class="input-group">
-                          <input type="text" [formControl]="queryField" type="text" class="form-control" placeholder="Filter by staff name...">
-                          <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                        </div>
-                        <span *ngIf="searching">searching...</span>
-                      </div>
-                    </form>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>To</label>
+                    <input type="date" formControlName = "to" class="form-control" name="">
+                  </div>
+                </div> -->
+                <div class="col-md-3">
+                  <!-- <div class="form-group">
+                      <input type="text" [formControl]="queryField" type="text" class="form-control" placeholder="Filter by staff name...">
+                    <span *ngIf="searching">searching...</span>
+                  </div> -->
+                  <div class="form-group">
+                    <!-- <label>Staff</label> -->
+                    <input id="typeahead-http" formControlName="staff_id" type="text" class="form-control" [class.is-invalid]="searchFailed" [ngbTypeahead]="search" placeholder="Filter Staff" [inputFormatter]="formatter" [resultTemplate]="rt"/>
+                      <span *ngIf="searching">searching...</span>
+                      <ng-template #rt let-r="result" let-t="term">
+                       <div class="row">
+                          {{ r?.first_name}} {{ r?.middle_name}} {{ r?.last_name}}
+                       </div>
+                      </ng-template>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <!-- <label>Branch</label> -->
+                    <select tabindex="1" formControlName="branch_id" data-placeholder="Branch" class="form-control">
+                      <option value="" disabled="" selected="">Branch</option>
+                      <option *ngFor="let branch of vendor_branches" value="{{branch.id}}">{{branch?.name}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <!-- <label>Status</label> -->
+                    <select tabindex="1" formControlName="status" data-placeholder="Branch" class="form-control">
+                      <option value="" disabled="" selected="">Status</option>
+                      <option value="1">Active</option>
+                      <option value="0">In Active</option>
+                      <option value="3">Suspended</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-success" type="submit" [disabled]="filter_staff_form.invalid">Filter</button>
                 </div>
               </div>
+              <div></div>
+              </form>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                  <button type="button" class="btn btn-success" (click)="new_staff_modal()"> New Staff</button>
+                </div>
             </div>
             <mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
             <table class="table table-responsive-sm table-hover table-outline mb-0">
               <thead class="thead-light">
                 <tr>
-                  <th class="text-center"><i class="icon-people"></i></th>
+                  <!-- <th class="text-center"><i class="icon-people"></i></th> -->
+                  <th>Staff ID</th>
                   <th>Name</th>
                   <th>Gender</th>
                   <th class="text-center">Email</th>
                   <th>Role</th>
+                  <th>Branch</th>
                   <th>Position</th>
                   <th>status</th>
                   <th>Created</th>
@@ -52,13 +99,14 @@
               <tbody>
                 <!-- search result -->
                 <tr *ngFor="let item of results">
-                  <td class="text-center">
+                  <!-- <td class="text-center">
                     <div class="avatar">
                       <img *ngIf="!item.passport" src="assets/images/avata.png" class="img-avatar">
                       <img *ngIf="item?.passport != ''" src="{{image_url}}{{item?.passport}}" class="img-avatar">
                       <span class="avatar-status badge-success"></span>
                     </div>
-                  </td>
+                  </td> -->
+                  <td>{{ item?.staff_no }}</td>
                   <td>
                     <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
                   </td>
@@ -69,6 +117,7 @@
                   <td class="text-center">
                     <span class="label label-sm label-primary">{{ item?.role?.name}}</span>
                   </td>
+                  <td>{{ item?.branch?.name }}</td>
                   <td class="text-center">{{ item?.user_position?.name}}</td>
                   <td>
                     <div *ngIf="item.status == 1" class="muted pull-right">Approved</div>
@@ -78,25 +127,61 @@
                   </td>
                   <td>{{ item?.created_at | date:'shortDate' }}</td>
                   <td>
-                    <button class="btn btn-primary btn-sm" (click)="editStaff(item)" title="edit staff details"><i class="fa fa-edit"></i></button>
+                    <mat-menu #appMenu="matMenu">
+                      <mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
+                      <button mat-menu-item (click)="editStaff(item)" title="edit staff details"><i class="fa fa-edit"></i> Edit</button>
+                      <button mat-menu-item (click)="viewStaff(item.id)" title="edit staff details"><i class="fa fa-eye"></i> View/Manage</button>
+                      <button mat-menu-item (click)="editPassword(item)" title="reset password: this sends a password reset link"><i class="fa fa-key"></i>Reset Password</button>
 
-                    <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivate_staff(item.id)" title="deactivate or suspend this staff">
-                    <i class="fa fa-unlock"></i></button>
-                    <button class="btn btn-success btn-sm" *ngIf="item.status == 0" (click)="activate_staff(item.id)" title="activate this staff"><i class="fa fa-unlock"></i></button>
+                      <button [swal]="deact_staff" mat-menu-item *ngIf="item.status == 1" title="deactivate or suspend this staff">
+                      <i class="fa fa-unlock"></i> De-Activate</button>
+                       <swal
+                      #deact_staff
+                      title="Are You Sure You want to De-Activate this Staff?"
+                      text="Staff wont have access to this app"
+                      type="warning"
+                      [showCancelButton]="true"
+                      [focusCancel]="true"
+                      (confirm)="deactivate_staff(item.id)">
+                    </swal>
 
-                    <button class="btn btn-danger btn-sm" (click)="editPassword(item)" title="reset password: this sends a password reset link"><i class="fa fa-key"></i></button>
-                    <button class="btn btn-danger btn-sm" (click)="editStaff(item)" title="edit staff details"><i class="fa fa-trash-o"></i></button>
+                      <button [swal]="act_staff" mat-menu-item *ngIf="item.status == 0" title="activate this staff"><i class="fa fa-unlock"></i> Activate</button>
+                      <swal
+                      #act_staff
+                      title="Are You Sure You want to Activate this Staff?"
+                      text="Staff wont have access to this app"
+                      type="warning"
+                      [showCancelButton]="true"
+                      [focusCancel]="true"
+                      (confirm)="activate_staff(item.id)">
+                    </swal>
+
+                      <button [swal]="delete_staff" mat-menu-item *ngIf="user?.role_id == 2" title="edit staff details"><i class="fa fa-trash-o"></i> Delete Staff</button>
+                      <swal
+                      #delete_staff
+                      title="Are You Sure You want to Delete this Staff?"
+                      text="This cannot be undone"
+                      type="warning"
+                      [showCancelButton]="true"
+                      [focusCancel]="true"
+                      (confirm)="deleteStaff(item.id)">
+                    </swal>
+                  </mat-menu>
+
+                  <button mat-icon-button [matMenuTriggerFor]="appMenu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
                   </td>
                 </tr>
                 <!-- staff list -->
                 <tr *ngFor="let item of staffList">
-                  <td class="text-center">
+                  <!-- <td class="text-center">
                     <div class="avatar">
                       <img *ngIf="item.passport==''" src="assets/images/avata.png" class="img-avatar">
                      <img *ngIf="item?.passport != ''" src="{{image_url}}{{item?.passport}}" class="img-avatar">
-                      <!-- <span class="avatar-status badge-success"></span> -->
                     </div>
-                  </td>
+                  </td> -->
+                  <td>{{ item?.staff_no }}</td>
                   <td>
                     <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
                   </td>
@@ -107,6 +192,7 @@
                   <td class="text-center">
                     <span class="label label-sm label-primary">{{ item?.role?.name}}</span>
                   </td>
+                  <td>{{ item?.branch?.name }}</td>
                   <td class="text-center">{{ item?.user_position?.name}}</td>
                   <td>
                     <div *ngIf="item.status == 1" class="muted pull-right">Approved</div>
@@ -284,7 +370,12 @@
                     </label> 
                     <small [hidden]="(newStaffForm.controls.gender.valid ) || (newStaffForm.controls.gender.pristine)" class="text-danger">Gender is Required</small>
                 </div>
-                
+                <div class="form-group" *ngIf="user?.role_id != 4">
+                  <label >Cooperative Branch</label>
+                    <select tabindex="1" formControlName="branch_id" data-placeholder="Staff Position" class="form-control">
+                      <option *ngFor="let branch of vendor_branches" value="{{branch.id}}">{{branch?.name}}</option>
+                    </select>
+                </div>
                 <div class="form-group">
                   <label >Position</label>
                     <select tabindex="1" formControlName="user_position_id" data-placeholder="Staff Position" class="form-control">
@@ -404,7 +495,12 @@
               <small [hidden]="(newStaffForm.controls.gender.valid ) || (newStaffForm.controls.gender.pristine )" class="text-danger">Gender is Required</small>
             </div>
           </div>
-          
+          <div class="form-group" *ngIf="user?.role_id != 4">
+            <label >Cooperative Branch</label>
+              <select tabindex="1" formControlName="branch_id" data-placeholder="Staff Position" class="form-control">
+                <option *ngFor="let branch of vendor_branches" value="{{branch.id}}">{{branch?.name}}</option>
+              </select>
+          </div>
           <div class="form-group">
             <label class="control-label" for="basicinput">Position</label>
             <div class="controls">

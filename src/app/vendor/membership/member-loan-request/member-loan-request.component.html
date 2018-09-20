@@ -53,7 +53,7 @@
     <table id="loan_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
         <thead>
             <tr>
-                <th>#</th>
+                <th>Branch</th>
                 <!-- <th>Name</th> -->
                 <th>Loan Type (interest %)</th>
                 <th>Interest Type</th>
@@ -70,7 +70,8 @@
         </thead>
         <tbody>
             <tr class="" *ngFor="let item of memberLoanRequestList">
-                <td>{{ item?.id }}</td>
+                <td>{{ item?.branch?.name }}</td>
+                <!-- <td>{{ item?.id }}</td> -->
                 <!-- <td>
                     {{item.member.first_name}} 
                     {{item.member.last_name}} 

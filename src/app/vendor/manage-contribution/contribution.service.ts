@@ -249,9 +249,20 @@ export class ContributionService {
      * get member contribution history
      * @return data
      */
-    delete_contribution(id, data)
+    delete_member_contribution_plan(id, data)
     {
       return this.http.post(environment.api.url+'CoopManagement/member-contribution-plan/delete/'+id, data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method delete_contribution_history
+     * get member contribution history
+     * @return data
+     */
+    delete_contribution_history(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/delete-contribution-history', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 

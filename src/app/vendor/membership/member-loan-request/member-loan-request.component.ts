@@ -61,6 +61,7 @@ export class MemberLoanRequestComponent implements OnInit {
     show_loader : boolean = false
     public loan_calculator_form : FormGroup;
     interest_type;
+    vendor_branch;
    @ViewChild('fileInput') fileInput: ElementRef;
 
     @ViewChild('newLoanRequestModal') public newLoanRequestModal : ModalDirective;
@@ -85,6 +86,7 @@ export class MemberLoanRequestComponent implements OnInit {
         // this.image_url = environment.api.imageUrl+'profile/member/';
         this.vendor = JSON.parse(this.localService.getVendor());
         this.user = JSON.parse(this.localService.getUser());
+        this.vendor_branch = JSON.parse(this.localService.getBranchData());
         //this.router.events.subscribe((val) => {
         this.memberId = this.view_member_component.memberId;
         //this.memberId = this.route.snapshot.params['member_id'];
@@ -223,6 +225,7 @@ export class MemberLoanRequestComponent implements OnInit {
       input.append('staff_id', JSON.parse(this.localService.getUser()).id);
       input.append('user_id', JSON.parse(this.localService.getUser()).user_id);
       input.append('member_id', this.memberId);
+      input.append('branch_id', this.vendor_branch.id);
       return input;
   }
 

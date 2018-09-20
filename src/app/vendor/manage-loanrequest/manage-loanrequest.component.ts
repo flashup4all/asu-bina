@@ -44,6 +44,7 @@ export class ManageLoanrequestComponent implements OnInit {
   bank_list;
   editAccountData;
   account;
+  vendor_branches;
   @ViewChild('paymentModal') public paymentModal :ModalDirective;
   @ViewChild('accountModal') public accountModal :ModalDirective;
   @ViewChild('accountUpdateModal') public accountUpdateModal :ModalDirective;
@@ -55,6 +56,7 @@ export class ManageLoanrequestComponent implements OnInit {
   private exportService: TableExportService,
   private route: Router,
   private loanrequestService : LoanRequestService,
+  private vendor_service : VendorService,
   private loanSettingsService : LoanSettingsService,
   private manageVendorService : VendorService,
 	private memberService : MembersService
@@ -63,6 +65,7 @@ export class ManageLoanrequestComponent implements OnInit {
   this.user = JSON.parse(this.localService.getUser());
 	this.getLoanRequest();
   this.getAccountNumbers();
+  this.get_vendor_branches();
   //this.getBankList()
   this.getLoanType();
 
@@ -89,6 +92,7 @@ export class ManageLoanrequestComponent implements OnInit {
         member_id:'',
         loan_request_id: '',
         loan_id:'',
+        branch_id:'',
         repayment_method: '',
         status: '',
         approved_by: '',
@@ -120,6 +124,17 @@ export class ManageLoanrequestComponent implements OnInit {
 		});
 	}
 
+  /**
+     * @method get_vendor_branches
+     * get vendor branches
+     * @return data
+     */
+     get_vendor_branches()
+     {
+       this.vendor_service.getVendorBranches().subscribe((response) => {
+         this.vendor_branches = response.data
+       })
+     }
   loadMore()
     {
      this.loader = true;

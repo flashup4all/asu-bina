@@ -10,6 +10,7 @@ import { MembersService } from '../membership/members.service';
 import { StaffService } from '../staff/staff.service';
 import { ContributionService } from '../manage-contribution/contribution.service';
 import { environment } from '../../../environments/environment';
+import { VendorService } from '../vendor.service';
 
 @Component({
   selector: 'app-manage-widthdrawals',
@@ -46,6 +47,7 @@ export class ManageWidthdrawalsComponent implements OnInit {
   	staff_searchFailed = false;
 	staff_searching = false;
 	staff_hideSearchingWhenUnsubscribed  = new Observable(() => () => this.searching = false);
+    vendor_branches;
 	constructor(
 		private localService : LocalService,
       	private exportService: TableExportService,
@@ -53,6 +55,7 @@ export class ManageWidthdrawalsComponent implements OnInit {
       	private memberService : MembersService,
       	private staffService : StaffService,
 		private contributionService : ContributionService,
+    	private vendor_service : VendorService,
   		private widthdrawalService : WidthdrawalsService
   		) {
         this.staff_image_url = environment.api.imageUrl+'profile/staff/';
@@ -61,6 +64,7 @@ export class ManageWidthdrawalsComponent implements OnInit {
         this.user = JSON.parse(this.localService.getUser());
 		this.getWidthdrawals();
 		this.get_contribution_plan();
+    	this.get_vendor_branches();
   		}
 
 	ngOnInit() {
@@ -73,6 +77,7 @@ export class ManageWidthdrawalsComponent implements OnInit {
 	        id : '',
           	member_id:'',
           	staff_id:'',
+          	branch_id:'',
           	type:'',
           	status: ''
 	      })
@@ -127,6 +132,18 @@ export class ManageWidthdrawalsComponent implements OnInit {
          }*/
 		})
 	}
+
+	/**
+     * @method get_vendor_branches
+     * get vendor branches
+     * @return data
+     */
+     get_vendor_branches()
+     {
+       this.vendor_service.getVendorBranches().subscribe((response) => {
+         this.vendor_branches = response.data
+       })
+     }
 
 	get_contribution_plan()
     {
@@ -295,6 +312,7 @@ export class ManageWidthdrawalsComponent implements OnInit {
 	        staff_id : filterValues.staff_id.id,
 	        transaction_id : filterValues.transaction_id,
 	        contributionplan_id : filterValues.contributionplan_id,
+	        branch_id : filterValues.branch_id,
 	        status : filterValues.status,
 	        vendor_id: parseInt(this.vendor.id)
 	      }

@@ -38,7 +38,7 @@
                     <form style=" width:100%;" [formGroup]="filterMemberForm" (ngSubmit)="viewMember(filterMemberForm.value)">
                         <label>Filter Members</label>
                         <div class="input-group">
-                            <input id="typeahead-http" formControlName="member" type="text" class="form-control" [class.is-invalid]="searchFailed" [ngbTypeahead]="search" placeholder="Filter Client" [inputFormatter]="formatter" [resultTemplate]="rt"/>
+                            <input id="typeahead-http" formControlName="member" type="text" class="form-control" [class.is-invalid]="searchFailed" [ngbTypeahead]="search" placeholder="Filter Member" [inputFormatter]="formatter" [resultTemplate]="rt"/>
                             <button class="btn btn-success" type="submit" [disabled]="filterMemberForm.invalid">Manage</button>
                             <span *ngIf="searching">searching...</span>
                             <ng-template #rt let-r="result" let-t="term">
@@ -117,6 +117,7 @@
                       <div class="row">
       <!-- <mat-progress-bar  mode="indeterminate"></mat-progress-bar> -->
             <mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
+            <mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
                         
                         <table *ngIf="!searching" id="members_table" class="table table-responsive-sm table-hover table-outline mb-0">
                           <thead class="thead-light">
@@ -172,14 +173,47 @@
                                 {{ item?.created_at | date:'shortDate' }}
                               </td>
                               <td>
-                                <a class="btn btn-primary btn-sm" [routerLink]="['/app/members/', item.id,'view']" title="edit member details">
+                                <mat-menu #appM="matMenu">
+                                  <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
+                                  <button mat-menu-item [routerLink]="['/app/members/', item.id,'view']" title="edit member details">Manage</button>
+                                  <button mat-menu-item (click)="editPassword(item)" title="Generate or reset member login details">Reset Login Details</button>
+                                  <div *ngIf="user.role_id < 4">
+                                  <button [swal]="deactivate_member"  *ngIf="item.status == 1" title="deactivate or suspend this member"  mat-menu-item>Cancel Loan Repayment</button>
+                                  <button [swal]="activate_member"  *ngIf="item.status != 1" title="activate this member"  mat-menu-item>Activate</button>
+                                  </div>
+                                  
+                                  <swal
+                                    #deactivate_member
+                                    title="Are You Sure You want to De-activate this Member Account?"
+                                    text="Be sure!"
+                                    type="warning"
+                                    [showCancelButton]="true"
+                                    [focusCancel]="true"
+                                    (confirm)="deactivateMember(item.id)">
+                                  </swal>
+                                  <swal
+                                    #activate_member
+                                    title="Are You Sure You want to Activate this Member?"
+                                    text="Be sure!"
+                                    type="warning"
+                                    [showCancelButton]="true"
+                                    [focusCancel]="true"
+                                    (confirm)="activateMember(item.id)">
+                                  </swal>
+                                </mat-menu>
+
+                                <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
+                                  <mat-icon>more_vert</mat-icon>
+                                </button>
+
+                                <!-- <a class="btn btn-primary btn-sm" [routerLink]="['/app/members/', item.id,'view']" title="edit member details">
                                   <i class="fa fa-sliders"> </i></a>
                                 <button class="btn btn-success btn-sm" (click)="editPassword(item)" title="reset member password: this sends a password reset link"><i class="fa fa-lock"></i></button>
                                 <div *ngIf="user.role_id < 4">
                                   <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivateMember(item.id)" title="deactivate or suspend this member">
                                   <i class="fa fa-unlock"></i></button>
                                 <button class="btn btn-success btn-sm" *ngIf="item.status != 1" (click)="activateMember(item.id)" title="activate this member"><i class="fa fa-unlock"></i></button>
-                                </div>
+                                </div> -->
                               </td>
                             </tr>
                           </tbody>
@@ -250,15 +284,14 @@
                         </div>
                         <div class="form-group">
                           <label class="control-label" for="basicinput">Passport</label>
-                              <!-- <img *ngIf="!file_srcs[0]" src="assets/images/avata.png">
-                              <img [attr.src]='file_srcs[0]' *ngIf="file_srcs[0]" alt="" width="250px" height="250px" /> -->
-                              <!-- <input type="file" name="" (change)="fileChange(input)" #input> -->
-                              <input type="file" id="avatar" (change)="onFileChange($event)" #fileInput>
-                              <button type="button" class="btn btn-sm btn-default" (click)="clearFile()">clear file</button>
+                            <input type="file" id="avatar" (change)="onFileChange($event)" #fileInput>
+                            <!-- <button type="button" class="btn btn-sm btn-default" (click)="clearFile()">clear file</button> -->
                         </div>
-                        
-                        <!-- <label>Street:</label>
-                        <input type="text" name="street" ngModel> -->
+                        <div class="form-group">
+                          <label class="control-label" for="basicinput">Signature</label>
+                            <input type="file" id="signature" (change)="onSignatureFileChange($event)" #signaturefileInput>
+                            <button type="button" class="btn btn-sm btn-default" (click)="clearFile()">clear file</button>
+                        </div>
                        <div class="control-group">
                           
                       </div>
@@ -271,10 +304,10 @@
                           <textarea class="form-control"  [formControl]="fields.controls.key"  *ngIf="membersFormPoolList[i].type =='textarea'"  placeholder="{{membersFormPoolList[i].placeholder}}" ></textarea>
                       </div>
                     </div>
-                        <button type="submit" class="btn btn-primary btn-block" [disabled]="member_form_loader">
-                        <span *ngIf="!member_form_loader">Submit</span>
-                        <span *ngIf="member_form_loader">Please Wait...</span>
-                        <span *ngIf="member_form_loader" class="fa fa-spinner" aria-hidden="true"></span>
+                    <button type="submit" class="btn btn-primary btn-block" [disabled]="member_form_loader">
+                      <span *ngIf="!member_form_loader">Submit</span>
+                      <span *ngIf="member_form_loader">Please Wait...</span>
+                      <span *ngIf="member_form_loader" class="fa fa-spinner" aria-hidden="true"></span>
                     </button>
                     <mat-progress-bar *ngIf="member_form_loader" mode="indeterminate"></mat-progress-bar>
                   </form>
@@ -291,7 +324,7 @@
 	 <div class="modal-dialog modal-md">
 	   <div class="modal-content">
 	     <div class="modal-header">
-	       <h4 class="modal-title pull-left">Change Password or Send a Password Reset Link</h4>
+	       <h4 class="modal-title pull-left">Reset / Generate Member Login Details</h4>
 	       <button type="button" class="close pull-right" aria-label="Close" (click)="passwordModal.hide()">
 	         <span  (click)="passwordModal.hide()" aria-hidden="true">&times;</span>
 	       </button>
@@ -299,44 +332,9 @@
 	     <div class="modal-body">
 	       <div class="new session form">
 	       		<div class="password-rest">
-	       			<h4>
-						<button type="submit"  (click)="resetPassword(editMemberData)" class="btn btn-primary btn-block" title="send a password reset link to this member">Send Password Reset Link</button>
-						<br>
-						<!-- Or fill the form below -->
-	       			</h4>
+    						<button type="submit"  (click)="generate_login_details(editMemberData)" class="btn btn-primary btn-block" title="send a password reset link to this member">Generate</button>            
+                <mat-progress-bar *ngIf="generate_login_check" mode="indeterminate"></mat-progress-bar>
 	       		</div>
-		       <!-- <form [formGroup] = "changePasswordForm" (ngSubmit) = "changePassword(changePasswordForm.value, editMemberData.id)" class="form-horizontal row-fluid">
-					<div class="control-group">
-						<label class="control-label" for="basicinput">Old Password</label>
-						<div class="controls">
-							<input type="password" id="basicinput" formControlName="old_password" placeholder="Old Password" class="span8">
-							
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="basicinput">New Password</label>
-						<div class="controls">
-							<input type="password" id="basicinput" formControlName="new_password" placeholder="New Password" class="span8">
-							
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="basicinput">New Password Again</label>
-						<div class="controls">
-							<input type="password" id="basicinput" formControlName="new_password_confirm" placeholder="New Password" class="span8">
-							
-						</div>
-					</div>
-					<div class="control-group">
-						<div class="controls">
-							<button type="submit" class="btn btn-primary btn-block" [disabled]="changePasswordForm.invalid || submitPending ">
-			                	<span *ngIf="!passwordFormCheck">Change Password</span>
-			                	<span *ngIf="passwordFormCheck && changePasswordForm.valid">Please Wait...</span>
-			                	<span *ngIf="passwordFormCheck && changePasswordForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
-			            	</button>
-						</div>
-					</div>
-				</form> -->
 			</div>
 	     </div>
 	   </div>

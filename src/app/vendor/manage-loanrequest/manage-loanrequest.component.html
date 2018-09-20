@@ -7,19 +7,28 @@
                         <div class="col-md-12">
                              <form [formGroup] = "filterForm" (ngSubmit) = "filterLoanRequest(filterForm.value)" style="width: 100%;">
                             <div class="row p-1">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                   <div class="form-group">
                                     <label>From</label>
                                     <input type="date" formControlName = "from" class="form-control" name=""> 
                                   </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                   <div class="form-group">
                                     <label>To</label>
                                     <input type="date" formControlName = "to" class="form-control" name="">
                                   </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
+                                  <div class="form-group">
+                                    <label>Branch</label>
+                                    <select tabindex="1" formControlName="branch_id" data-placeholder="Branch" class="form-control">
+                                      <option value="" disabled="" selected="">Branch</option>
+                                      <option *ngFor="let branch of vendor_branches" value="{{branch.id}}">{{branch?.name}}</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="col-md-3">
                                   <div class="form-group">
                                     <!-- <button type="button" class="btn btn-primary" style="margin-top: 30px;" (click)="show_adv_form()"><i class="fa fa-filter"></i></button> -->
                                     <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
@@ -57,7 +66,7 @@
                             <table id="loan_request_table" class="table table-responsive-sm table-hover table-outline mb-0">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th>Branch</th>
                                         <th>Name</th>
                                         <th>Loan Type (% Intr)</th>
                                         <th>Interest Type</th>
@@ -74,7 +83,7 @@
                                 </thead>
                                 <tbody>
                                     <tr class="" *ngFor="let item of loanRequestList">
-                                        <td><input type="checkbox" name=""></td>
+                                        <td>{{ item?.branch?.name }}</td>
                                         <td>
                                             {{item.member?.first_name}} 
                                             {{item.member?.last_name}} 

@@ -13,6 +13,7 @@ export class AppHeaderComponent {
 	user;
   vendor;
   session_data;
+  branch;
 	constructor(
     private localService: LocalService, 
     private router: Router,
@@ -21,7 +22,8 @@ export class AppHeaderComponent {
 
     this.user = JSON.parse(this.localService.getUser());
     this.vendor = JSON.parse(this.localService.getVendor());
-		this.session_data = JSON.parse(this.localService.getSessionData());
+    this.session_data = JSON.parse(this.localService.getSessionData());
+		this.branch = JSON.parse(this.localService.getBranchData());
 	  //console.log(this.session_data)
   }
 	logout()

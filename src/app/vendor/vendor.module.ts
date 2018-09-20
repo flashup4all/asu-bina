@@ -8,9 +8,11 @@ import { ProfileComponent } from './user-account/profile/profile.component';
 import { VendorRoutingModule } from './vendor-routing.module';
 import { ManageVendorComponent } from './settings/manage-vendor/manage-vendor.component';
 import { SmsSettingsComponent } from './settings/sms-settings/sms-settings.component';
+import { BranchesComponent } from './settings/branches/branches.component';
 import { VendorService } from './vendor.service';
 import { ModalModule } from 'ngx-bootstrap';
 import { ActivityLogComponent } from './settings/activity-log/activity-log.component';
+import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 
 @NgModule({
   imports: [
@@ -22,12 +24,14 @@ import { ActivityLogComponent } from './settings/activity-log/activity-log.compo
     ModalModule.forRoot(),
     NgbModule,
     SharedModule,
+    SweetAlert2Module,
   ],
   declarations: [
   	ManageVendorComponent,
     ProfileComponent,
     SmsSettingsComponent,
-    ActivityLogComponent
+    ActivityLogComponent,
+    BranchesComponent
   ],
   providers:[
   	VendorService

@@ -8,6 +8,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { LocalService } from '../../../storage/local.service';
 import { StaffService } from '../staff.service';
 import { MembersService } from '../../membership/members.service';
+import { VendorService } from '../../vendor.service';
 import { environment } from '../../../../environments/environment';
 
 import { DomSanitizer } from '@angular/platform-browser';
@@ -42,6 +43,7 @@ export class ManageStaffComponent implements OnInit {
 	public newStaffForm : FormGroup;
 	public newStaffPositionForm : FormGroup;
   public changePasswordForm:FormGroup;
+  public filter_staff_form:FormGroup;
 	//private editStaffForm : FormGroup;
 	public passport;
 	public model;
@@ -53,6 +55,7 @@ export class ManageStaffComponent implements OnInit {
  passwordFormCheck:boolean;
  searching: boolean;
   searchFailed: boolean;
+  hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
   account_status;
 	public file_srcs: string[] = [];
 	 
@@ -62,6 +65,7 @@ export class ManageStaffComponent implements OnInit {
   image_url
   queryField: FormControl = new FormControl();
   results: any[] = [];
+  public vendor_branches;
   @ViewChild('fileInput') fileInput: ElementRef;
 	@ViewChild('newStaffModal') public newStaffModal :ModalDirective;
 	@ViewChild('editStaffModal') public editStaffModal :ModalDirective;
@@ -74,17 +78,19 @@ export class ManageStaffComponent implements OnInit {
   		private manageStaffService : StaffService,
   		private sanitizer:DomSanitizer,
       private manageMemberService : MembersService,
+      private vendor_service : VendorService,
       private router : Router,
       private changeDetectorRef: ChangeDetectorRef
   		) { 
         this.image_url = environment.api.imageUrl+'profile/staff/';
   		this.getStaffPosition();
       this.getStaff();
+      this.get_vendor_branches();
       this.account_status = this.localService.account_status();
       this.vendor = JSON.parse(this.localService.getVendor());
         this.user = JSON.parse(this.localService.getUser());
       //this.getUserRoles();
-       this.queryField.valueChanges
+       /*this.queryField.valueChanges
         .debounceTime(200)
         .distinctUntilChanged()
         .do(() => this.searching = true)
@@ -102,28 +108,43 @@ export class ManageStaffComponent implements OnInit {
             }else {  
               this.results = result; 
             }
-          });
+          });*/
   	}
+
+    search = (text$: Observable<string>) =>
+      text$
+        .debounceTime(300)
+        .distinctUntilChanged()
+        .do(() => this.searching = true)
+        .switchMap(query =>
+          this.manageStaffService.filterStaff(query)
+            .do(() => this.searchFailed = false)
+            .catch(() => {
+              this.searchFailed = true;
+              return of([]);
+            }))
+        .do(() => this.searching = false)
+        .merge(this.hideSearchingWhenUnsubscribed);
+        formatter = (x: {first_name: string, middle_name: string, last_name: string}) => x.first_name+'  '+ x.middle_name+'  '+ x.last_name;
+
 
   	ngOnInit() {
 
   		this.newStaffForm = this._fb.group({
   			  staff_no : '',
-	        first_name  : [null, Validators.compose([Validators.required])],
+          first_name  : [null, Validators.compose([Validators.required])],
+	        branch_id  : [null, Validators.compose([Validators.required])],
 	        middle_name  : '',
 	        last_name  : [null, Validators.compose([Validators.required])],
 	        mobile_phone  : [null, Validators.compose([Validators.required])],
 	        contact_phone  : '',
 	        email: [null, Validators.compose([Validators.required, Validators.email])],
-	        dob:[null],  
-	        //password : [null, Validators.compose([Validators.required])],
+	        dob:[null],
 	        information_pool :[],
 	        gender :[null, Validators.compose([Validators.required])],
 	        user_position_id :[null, Validators.compose([Validators.required])],
 	        status :[null, Validators.compose([Validators.required])],
 	        passport: '',
-	        //approved_by :JSON.parse(this.localService.getUser()).id,
-	        //vendor_id :JSON.parse(this.localService.getVendor()).id
 	  		});
   		this.newStaffPositionForm = this._fb.group({
   			name : [null, Validators.compose([Validators.required])],
@@ -136,6 +157,15 @@ export class ManageStaffComponent implements OnInit {
         old_password:[null, Validators.compose([Validators.required])],
         new_password:[null, Validators.compose([Validators.required])],
         new_password_confirm:[null, Validators.compose([Validators.required])]
+      })
+
+      /* filter staff*/
+      this.filter_staff_form = this._fb.group({
+        staff_id:'',
+        branch_id:'',
+        status:'',
+        from: '',
+        to: ''
       })
   	}
   	/**
@@ -203,6 +233,31 @@ export class ManageStaffComponent implements OnInit {
        });
     }
 
+    /**
+     * @method filter_staff
+     * filter all vendor staff
+     *
+     */
+    filter_staff(form_values)
+    {
+     if(form_values.staff_id)
+     {
+        form_values['staff_id'] = form_values.staff_id.id;
+     }
+      
+    form_values['vendor_id'] = this.vendor.id;
+    form_values['user_id'] = this.user.user_id;
+    console.log(form_values)
+    this.submitPending=true;
+    this.manageStaffService.filter_staff(form_values).subscribe((response) => {
+      console.log(response)
+      this.submitPending = false;
+      this.staffList = response.data;
+    }, (error) => {
+      this.submitPending = false;
+      console.log(error)
+    });
+    }
     edit_staff_position(data)
     {
       this.edit_staff_position_data = data
@@ -229,6 +284,17 @@ export class ManageStaffComponent implements OnInit {
   	 		this.staffPositionList = response.data
   	 	})
   	 }
+     /**
+     * @method get_vendor_branches
+     * get vendor branches
+     * @return data
+     */
+     get_vendor_branches()
+     {
+       this.vendor_service.getVendorBranches().subscribe((response) => {
+         this.vendor_branches = response.data
+       })
+     }
   	 /**
   	 * @method deleteStaffPosition
   	 * creates a new staff position resource
@@ -535,6 +601,7 @@ export class ManageStaffComponent implements OnInit {
       input.append('gender', this.newStaffForm.get('gender').value);
       input.append('dob', this.newStaffForm.get('dob').value);
       input.append('user_position_id', this.newStaffForm.get('user_position_id').value);
+      input.append('branch_id', this.newStaffForm.get('branch_id').value);
       input.append('status', this.newStaffForm.get('status').value);
       input.append('email', this.newStaffForm.get('email').value);
       input.append('mobile_phone', this.newStaffForm.get('mobile_phone').value);

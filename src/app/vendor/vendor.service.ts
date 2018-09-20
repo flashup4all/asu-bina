@@ -189,4 +189,50 @@ export class VendorService {
       return this.http.post(environment.api.url+'CoopManagement/vendor-logs/filter', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
+
+    /* branches services */
+
+    /**
+     * @method addVendorBranches
+     * updates a updateVendorBranches  resource
+     * @return data
+     */
+    addVendorBranches(data)
+    {
+      return this.http.post(environment.api.url+'vendor-branch',JSON.stringify(data), this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method updateBankAccount
+     * updates a updateVendorBranches  resource
+     * @return data
+     */
+    updateVendorBranches(data)
+    {
+      return this.http.post(environment.api.url+'vendor-branch/update',JSON.stringify(data), this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+     /**
+     * @method getVendorBranches
+     * updates a getVendorBranches  resource
+     * @return data
+     */
+    getVendorBranches()
+    {
+      return this.http.get(environment.api.url+'vendor-branch/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method deleteVendorBranches
+     * updates a deleteVendorBranches  resource
+     * @return data
+     */
+    deleteVendorBranches(data)
+    {
+      return this.http.post(environment.api.url+'vendor-branch/delete', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
 }

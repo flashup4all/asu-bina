@@ -219,6 +219,16 @@
 								  [focusCancel]="true"
 								  (confirm)="post_transaction(item.id, 2)">
 								</swal>
+								<button *ngIf="user.role_id < 3" [swal]="delete_contri_trans" mat-menu-item>Delete Transaction</button>
+							  <swal
+								  #delete_contri_trans
+								  title="Are You Sure You want to Delete this Transaction?"
+								  text="This cannot be undone"
+								  type="warning"
+								  [showCancelButton]="true"
+								  [focusCancel]="true"
+								  (confirm)="delete_contribution_history(item.id)">
+								</swal>
 							</mat-menu>
 
 							<button mat-icon-button *ngIf="localService.check_posting_cash_role(item.amount)" [matMenuTriggerFor]="appMenu">

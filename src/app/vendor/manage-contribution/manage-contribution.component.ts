@@ -9,6 +9,7 @@ import { ContributionService } from './contribution.service';
 // import { XlsxToJsonService } from '../../shared/xls/index'
 import { MembersService } from '../membership/members.service';
 import { StaffService } from '../staff/staff.service';
+import { VendorService } from '../vendor.service';
 import { TableExportService } from '../../shared/services/index';
 //import * as FileSaver from 'file-saver';
 import * as moment from 'moment';
@@ -68,12 +69,13 @@ export class ManageContributionComponent implements OnInit {
     staff_searchFailed = false;
     staff_searching = false;
     staff_hideSearchingWhenUnsubscribed  = new Observable(() => () => this.searching = false);
-  
+    vendor_branches;
 	constructor(
 		private localService : LocalService,
     private exportService: TableExportService,
 		private _fb : FormBuilder,
     private memberService : MembersService,
+    private vendor_service : VendorService,
     private staffService : StaffService,
 		private contributionService : ContributionService
   		) {
@@ -81,7 +83,8 @@ export class ManageContributionComponent implements OnInit {
 		this.vendor = JSON.parse(this.localService.getVendor());
 		this.getContributions();
 		this.get_contribution_type()
-    this.get_contribution_plan()
+    this.get_contribution_plan();
+    this.get_vendor_branches();
 
 		this.monthList = this.localService.yearjson();
 		this.adv_filter = false;
@@ -101,6 +104,7 @@ export class ManageContributionComponent implements OnInit {
 	        to : '',
 	        id : '',
           member_id:'',
+          branch_id: '',
           staff_id:'',
           plan_id:'',
           type:'',
@@ -183,6 +187,17 @@ export class ManageContributionComponent implements OnInit {
       })
     }
 
+    /**
+     * @method get_vendor_branches
+     * get vendor branches
+     * @return data
+     */
+     get_vendor_branches()
+     {
+       this.vendor_service.getVendorBranches().subscribe((response) => {
+         this.vendor_branches = response.data
+       })
+     }
   exportTable(format, tableId)
   {
     this.exportService.exportTo(format, tableId);
@@ -372,6 +387,7 @@ export class ManageContributionComponent implements OnInit {
         from : filterValues.from,
         transaction_id : filterValues.transaction_id,
         plan_id : filterValues.plan_id,
+        branch_id : filterValues.branch_id,
         to : filterValues.to,
         id : filterValues.id,
         staff_id : filterValues.staff_id.id,

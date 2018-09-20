@@ -61,6 +61,7 @@ export class ManageMembersComponent implements OnInit {
   	total_active_members
   	phone1;
  	staffList
+ 	generate_login_check : boolean = false;
 	public file_srcs: string[] = [];
 	 
 	public debug_size_before: string[] = [];
@@ -70,6 +71,7 @@ export class ManageMembersComponent implements OnInit {
 	filterMemberForm: FormGroup;
 	results: any[] = [];
 	 @ViewChild('fileInput') fileInput: ElementRef;
+	 @ViewChild('signaturefileInput') signaturefileInput: ElementRef;
 	@ViewChild('passwordModal') public passwordModal : ModalDirective;
 	constructor(
 		private localService : LocalService,
@@ -141,6 +143,7 @@ export class ManageMembersComponent implements OnInit {
 			gender:[null, Validators.compose([Validators.required])],
 			date_of_birth:[null, Validators.compose([Validators.required])],
 			passport:'',
+			signature:'',
 			account_number:'',
 			membership_date:[null, Validators.compose([Validators.required])],
 			email:[null/*, Validators.compose([Validators.required, Validators.email])*/],
@@ -342,9 +345,11 @@ export class ManageMembersComponent implements OnInit {
 	    input.append('email', this.newMemberForm.get('email').value);
 	    input.append('phone1', this.newMemberForm.get('phone1').value);
 	    input.append('passport', this.newMemberForm.get('passport').value);
+	    input.append('signature', this.newMemberForm.get('signature').value);
 	    input.append('vendor_id', this.vendor.id);
 	    input.append('approved_by', JSON.parse(this.localService.getUser()).id);
 	    input.append('user_id', JSON.parse(this.localService.getUser()).user_id);
+	    input.append('branch_id', JSON.parse(this.localService.getBranchData()).id);
 	    return input;
 	}
 
@@ -523,25 +528,34 @@ export class ManageMembersComponent implements OnInit {
 		// });
 	}
 	/**
-	 * @method resetPassword
+	 * @method generate_login_details
 	 * send password reset link
 	 * @return data
 	 */
-	resetPassword(data)
+	generate_login_details(data)
 	{
-		console.log(data)
+		this.generate_login_check = true;
 		data = {
 			vendor_id: JSON.parse(this.localService.getVendor()).id,
-			user_id: data.id,
+			user_id: JSON.parse(this.localService.getUser()).id,
+			asusu_id: data.asusu_id,
+			member_user_id: data.user_id,
+			member_id: data.id,
 			email: data.email
 		}
-		this.manageMemberService.resetPassword(data).subscribe((response) => {
+		this.manageMemberService.generate_login_details(data).subscribe((response) => {
 			if(response.success)
 			{
+				this.generate_login_check = false;
 				this.localService.showSuccess(response.message,'Operation Successfull');
 			}else{
-				this.localService.showError(response.message,'Operation UnsSuccessfull');
+				this.generate_login_check = false;
+				this.localService.showError(response.message,'Operation Unsuccessfull');
 			}
+		}, (error) => {
+				this.generate_login_check = false;
+				this.localService.showError('Server Error!! Please contact admin','Operation Unsuccessfull');
+
 		});
 	}
 	/**
@@ -569,11 +583,18 @@ export class ManageMembersComponent implements OnInit {
 	}
 	
 	onFileChange(event) {
-    if(event.target.files.length > 0) {
-      let file = event.target.files[0];
-      this.newMemberForm.get('passport').setValue(file);
-    }
-  }
+	    if(event.target.files.length > 0) {
+	      let file = event.target.files[0];
+	      this.newMemberForm.get('passport').setValue(file);
+	    }
+	}
+
+	onSignatureFileChange(e) {
+	    if(e.target.files.length > 0) {
+	      let signature = e.target.files[0];
+	      this.newMemberForm.get('signature').setValue(signature);
+	    }
+	}
 
   onSubmit() {
     const formModel = this.prepareSave();
@@ -590,6 +611,8 @@ export class ManageMembersComponent implements OnInit {
 
   clearFile() {
     this.newMemberForm.get('passport').setValue(null);
+    this.newMemberForm.get('signature').setValue(null);
     this.fileInput.nativeElement.value = '';
+    this.signaturefileInput.nativeElement.value = '';
   }
 }

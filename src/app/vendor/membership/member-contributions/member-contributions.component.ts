@@ -56,7 +56,7 @@ export class MemberContributionsComponent implements OnInit {
     approve_btn_loader : boolean = false;
     files;
     current_year = moment().format('YYYY');
-
+    vendor_branch;
     total_contribution_amount;
     @ViewChild('newContributionModal') public newContributionModal : ModalDirective;
     @ViewChild('newContributionPlanModal') public newContributionPlanModal : ModalDirective;
@@ -73,6 +73,7 @@ export class MemberContributionsComponent implements OnInit {
     	) {
         this.vendor = JSON.parse(this.localService.getVendor());
         this.user = JSON.parse(this.localService.getUser());
+        this.vendor_branch = JSON.parse(this.localService.getBranchData());
         //this.router.events.subscribe((val) => {
         this.member_id = this.route.snapshot.params['member_id'];
          // });
@@ -264,6 +265,7 @@ export class MemberContributionsComponent implements OnInit {
         formValues['staff_id'] = this.user.id;
         formValues['user_id'] = this.user.user_id;
         formValues['member_id'] = this.member_id;
+        formValues['branch_id'] = this.vendor_branch.id;
         formValues.transaction_type = 'credit';
 
         this.submitPending = true;
@@ -398,7 +400,7 @@ export class MemberContributionsComponent implements OnInit {
         user_id : this.user.user_id,
         vendor_id : this.vendor.id
       }
-      this.contributionService.delete_contribution(id, data).subscribe((response) => {
+      this.contributionService.delete_member_contribution_plan(id, data).subscribe((response) => {
         if (response.success) {
       this.approve_btn_loader = false;
             this.get_member_contribution_plan();
@@ -408,6 +410,31 @@ export class MemberContributionsComponent implements OnInit {
             this.localService.showError(response.message,'Operation Unsuccessfull');
           }
         }, (error) => {
+      this.approve_btn_loader = false;
+          this.form_loader = false;
+                this.localService.showError(error,'Operation Unsuccessfull');
+        });
+    }
+
+    delete_contribution_history(id)
+    {
+      let data = {
+        id: id,
+        user_id : this.user.user_id,
+        vendor_id : this.vendor.id
+      }
+      this.contributionService.delete_contribution_history(data).subscribe((response) => {
+        if (response.success) {
+          this.approve_btn_loader = false;
+          this.getMemberContributions();
+            this.view_member_component.getMemberProfile();
+            this.view_member_component.getActualBalance();
+          this.localService.showSuccess(response.message,'Operation Successfull');
+        }else{
+          this.approve_btn_loader = false;
+          this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      }, (error) => {
       this.approve_btn_loader = false;
           this.form_loader = false;
                 this.localService.showError(error,'Operation Unsuccessfull');

@@ -1,0 +1,92 @@
+<button type="submit" class="btn btn-success pull-right" (click)="new_branch_modal()"><i class="fa fa-plus"></i> Add A Branch</button>
+<p>Manage Coorperatives Branches</p>
+<div class="col-md-12">
+     <table class="table table-responsive-sm table-hover table-outline mb-0 p-2" width="100%">
+        <thead>
+            <tr>
+                <th>Branch ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="" *ngFor="let branch of branches">
+                <td>{{ branch?.id }}</td>
+                <td>{{ branch?.name }}</td>
+                <td>
+                    {{ branch?.address }} 
+                </td>
+                <td>
+                    <span *ngIf="branch.status == 0" class="badge badge-warning">Pending</span>
+                    <span *ngIf="branch.status == 2" class="badge badge-danger">Cancelled </span>
+                    <span *ngIf="branch.status == 1" class="badge badge-success">Active</span>
+                </td>
+                <td class="center">
+                    <mat-menu #appM="matMenu">
+                        <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
+                          <!-- <button *ngIf="!item.status" [swal]="approve_contri" mat-menu-item>Approve Plan</button> -->
+                           <button [swal]="delete_branch" mat-menu-item>Delete</button>
+                           <button mat-menu-item (click)="edit_branch_modal(branch)" title="Delete Loan Signatory">Edit</button>
+                           <swal
+                              #delete_branch
+                              title="Are You Sure You want to Delete this Branch?"
+                              text="Ensure that no activity has been carried out on this branch, else cannot be deleted"
+                              type="warning"
+                              [showCancelButton]="true"
+                              [focusCancel]="true"
+                              (confirm)="delete_a_branch(branch.id)">
+                            </swal>
+                        </mat-menu>
+                        <button mat-icon-button [matMenuTriggerFor]="appM">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div bsModal #branchesModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Add A Branch</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="branchesModal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+            <div>
+               <form method="POST" [formGroup] = "branchForm" (ngSubmit) = "store_branch(branchForm.value)" class="form-horizontal row-fluid">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Branch Name</label>
+                            <input type="text" formControlName="name" [ngModel]="edit_branch_data?.name" placeholder="Branch Name" title="Account Number" class="form-control" value="">
+                            <small [hidden]="(branchForm.controls.name.valid ) || (branchForm.controls.name.pristine)" class="text-danger">Acount Number is Required</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Branch Address</label>
+                            <input type="text" [ngModel]="edit_branch_data?.address" formControlName="address" placeholder="Branch Address" title="Account Number" class="form-control" value="">
+                            <small [hidden]="(branchForm.controls.address.valid ) || (branchForm.controls.address.pristine)" class="text-danger">Acount Number is Required</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="form-control" [ngModel]="edit_branch_data?.description"  title="Description: for what" formControlName="description" placeholder="Description"></textarea>
+                        </div>
+                        <div class="form-group mbn">
+                            <button type="submit" class="btn btn-success btn-block" [disabled]="branchForm.invalid || submitPending ">
+                                    <span *ngIf="!submitPending">Add</span>
+                                    <span *ngIf="submitPending && branchForm.valid">Please Wait...</span>
+                                    <span *ngIf="submitPending && branchForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                                </button>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>

@@ -37,7 +37,7 @@
 						        	<button class="btn btn-success" (click)="show_adv_form()">Search</button>
 						        </div>
 			            	</div>
-			            	<div class="row" *ngIf="adv_filter"  [@slideInOut]>
+			            	<div class="col-md-12 row" *ngIf="adv_filter"  [@slideInOut]>
 			            		<form [formGroup] = "filterForm" (ngSubmit) = "filterDeduction(filterForm.value)" style="width: 100%;">
                                     <div class="row p-1">
                                         <div class="col-md-3">
@@ -63,7 +63,15 @@
 					                        </ng-template>
 					                      </div>
                                         </div>
-                                        
+                                        <div class="col-md-3">
+						                  <div class="form-group">
+						                    <label>Branch</label>
+						                    <select tabindex="1" formControlName="branch_id" data-placeholder="Branch" class="form-control">
+						                      <option value="" disabled="" selected="">Branch</option>
+						                      <option *ngFor="let branch of vendor_branches" value="{{branch.id}}">{{branch?.name}}</option>
+						                    </select>
+						                  </div>
+						                </div>
                                         
                                       </div>
                                       <div class="row">
@@ -94,16 +102,17 @@
 			            	<table id="deductions_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
 				                <thead>
 					                <tr>
-					                    <th>#</th>
+					                    <!-- <th>#</th> -->
+					                    <th>Branch</th>
 					                    <th>Name</th>
 					                    <th>Loan Type</th>
 					                    <th>Method</th>
 					                    <th>&#8358; Previous Balance</th>
-					                  <th>Interest Days</th>
-					                  <th>&#8358; Amount Paid</th>
-					                  <th>&#8358; Last Balance</th>
-					                  <th>&#8358; Current Interest Balance</th>
-					                  <th>Status</th>
+						                <th>Interest Days</th>
+						                <th>&#8358; Amount Paid</th>
+						                <th>&#8358; Last Balance</th>
+						                <th>&#8358; Current Interest Balance</th>
+						                <th>Status</th>
 					                    <th>Date</th>
 					                    <th>Created</th>
                   						<th>Approved</th>
@@ -112,7 +121,8 @@
 					            </thead>
 					            <tbody>
 					                <tr class="" *ngFor="let item of deductionsList">
-					                    <td><input type="checkbox" name=""></td>
+					                    <!-- <td><input type="checkbox" name=""></td> -->
+					                    <td>{{ item?.branch?.name }}</td>
 					                    <td>
 					                        {{item.member.first_name}} 
 					                        {{item.member.last_name}} 
@@ -191,7 +201,7 @@
 					            </tbody>
 					        </table>
 				            <div class="col-md-12 load-more">
-	                           <a  (click)="loadMore()" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
+	                           <a class="btn btn-success" (click)="loadMore()" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
 	                        </div>
 			            </div>
 		        	</tab>

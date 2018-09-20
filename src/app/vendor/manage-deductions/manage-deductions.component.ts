@@ -12,6 +12,7 @@ import { MembersService } from '../membership/members.service';
 import { LoanSettingsService } from '../loans/loan-settings/loan-settings.service';
 import { TableExportService } from '../../shared/services/index';
 import * as moment from 'moment';
+import { VendorService } from '../vendor.service';
 
 @Component({
   selector: 'app-manage-deductions',
@@ -69,12 +70,13 @@ export class ManageDeductionsComponent implements OnInit {
   	searchFailed = false;
     approve_btn_loader: boolean = false;
   	hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
-  
+    vendor_branches;
 	constructor(
-		private localService : LocalService,
+		  private localService : LocalService,
       private exportService: TableExportService,
   		private _fb : FormBuilder,
       private loanSettingsService : LoanSettingsService,
+      private vendor_service : VendorService,
       private memberService : MembersService,
   		private deductionService : DeductionsService
   		) {
@@ -83,6 +85,7 @@ export class ManageDeductionsComponent implements OnInit {
     this.user = JSON.parse(this.localService.getUser());
 		this.getLoanDeductions();
     this.getLoanType()
+    this.get_vendor_branches();
 		this.monthList = this.localService.yearjson();
 
   		}
@@ -99,6 +102,7 @@ export class ManageDeductionsComponent implements OnInit {
         member_id : '',
         loan_type_id : '',
         loan_request_id : '',
+        branch_id: ''
       })
 	  }
 
@@ -134,7 +138,18 @@ export class ManageDeductionsComponent implements OnInit {
       .merge(this.hideSearchingWhenUnsubscribed);
       st_formatter = (x: {first_name: string}) => x.first_name;
 */
-
+  
+  /**
+     * @method get_vendor_branches
+     * get vendor branches
+     * @return data
+     */
+     get_vendor_branches()
+     {
+       this.vendor_service.getVendorBranches().subscribe((response) => {
+         this.vendor_branches = response.data
+       })
+   }
 	/**
 	 * @method getDeductions
 	 * get vendor contrinbution
@@ -212,11 +227,12 @@ export class ManageDeductionsComponent implements OnInit {
         id : filterValues.id,
         member_id : filterValues.member_id.id,
         loan_type_id : filterValues.loan_type_id,
+        branch_id: filterValues.branch_id,
         loan_request_id : filterValues.loan_request_id,
         vendor_id: parseInt(this.vendor.id)
       }
       this.deductionService.filterDeduction(data).subscribe((response) => {
-        this.deductionsList = response
+        this.deductionsList = response.data
         this.submitPending = false;
       })
     }

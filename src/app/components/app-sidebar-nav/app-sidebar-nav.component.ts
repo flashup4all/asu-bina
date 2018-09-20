@@ -88,11 +88,11 @@ export class AppSidebarNavComponent {
               url: '/app/investment/history',
               icon: 'icon-star'
             },*/
-            {
+            /*{
               name: 'Manage Target Savings',
               url: '/app/target-savings',
               icon: 'icon-star'
-            },
+            },*/
             {
               name: 'Manage Repayments',
               url: '/app/deductions',

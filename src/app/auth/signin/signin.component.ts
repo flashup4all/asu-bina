@@ -82,6 +82,7 @@ export class SigninComponent implements OnInit {
             this.localService.setUser(JSON.stringify(response.user));
             this.localService.setVendor(JSON.stringify(response.vendor));
             this.localService.setSessionData(JSON.stringify(response.session_data));
+            this.localService.setBranchData(JSON.stringify(response.branch));
             //this.jwt(response);
             this.authNavigate(response.user);
           } else{

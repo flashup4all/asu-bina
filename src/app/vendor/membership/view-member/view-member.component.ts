@@ -60,6 +60,7 @@ export class ViewMemberComponent implements OnInit {
     btn_loader: boolean = false;
     allow_edit_acc_no : boolean = false;
     approve_btn_loader: boolean = false;
+    generate_login_check: boolean = false;
     public loanRequestForm : FormGroup;
     public loanrequestFilterForm : FormGroup;
     public withdrawalForm : FormGroup;
@@ -71,7 +72,10 @@ export class ViewMemberComponent implements OnInit {
     total_deduction_amount;
     deduction_type_list;
     image_url;
+    signature_url;
     passport;
+    member_signature;
+    vendor_branch
    @ViewChild('fileInput') fileInput: ElementRef;
 
     @ViewChild('newLoanRequestModal') public newLoanRequestModal : ModalDirective;
@@ -79,7 +83,8 @@ export class ViewMemberComponent implements OnInit {
     @ViewChild('newRepaymentModal') public newRepaymentModal : ModalDirective;
     @ViewChild('newTargetSavingModal') public newTargetSavingModal : ModalDirective;
     @ViewChild('newWithdrawalModal') public newWithdrawalModal : ModalDirective;
-
+  @ViewChild('passwordModal') public passwordModal : ModalDirective;
+    
     constructor(
       private route : ActivatedRoute, 
     	private localService : LocalService,
@@ -97,8 +102,11 @@ export class ViewMemberComponent implements OnInit {
       //private member_loan_request_component : MemberLoanRequestComponent
     	) {
         this.image_url = environment.api.imageUrl+'profile/member/';
+        this.signature_url = environment.api.imageUrl+'profile/signature/';
         this.vendor = JSON.parse(this.localService.getVendor());
         this.user = JSON.parse(this.localService.getUser());
+        this.vendor_branch = JSON.parse(this.localService.getBranchData());
+
         //this.router.events.subscribe((val) => {
         this.memberId = this.route.snapshot.params['member_id'];
          // });
@@ -340,11 +348,18 @@ export class ViewMemberComponent implements OnInit {
         this.passport = file;
       }
     }
+    onSignatureFileChange(event) {
+      if(event.target.files.length > 0) {
+        let file = event.target.files[0];
+        this.member_signature = file;
+      }
+    }
 
     clearFile() {
       //this.newMemberForm.get('passport').setValue(null);
       this.fileInput.nativeElement.value = '';
     }
+    
 
     private prepareSave(data): any {
       let input = new FormData();
@@ -360,6 +375,7 @@ export class ViewMemberComponent implements OnInit {
       input.append('email', data.email);
       input.append('phone1', data.phone1);
       input.append('passport', this.passport);
+      input.append('signature', this.member_signature);
       input.append('vendor_id', this.vendor.id);
       input.append('approved_by', JSON.parse(this.localService.getUser()).id);
       return input;
@@ -578,6 +594,7 @@ export class ViewMemberComponent implements OnInit {
       formValues['member_id'] = this.memberId
       formValues['vendor_id'] = this.vendor.id
       formValues['staff_id'] = this.user.id
+      formValues['branch_id'] = this.vendor_branch.id;
       formValues['user_id'] = this.user.user_id
       this.submitPending = true;
       this.withdrawalService.make_a_withdrawal(formValues).subscribe((response) => {
@@ -713,5 +730,48 @@ export class ViewMemberComponent implements OnInit {
     });
   }
 
+  /**
+   * @method editPassword
+   * launches edit password modal
+   * @return data
+   */
+  editPassword(data)
+  {
+    //this.editMemberData = data;
+    this.passwordModal.show();
+    // this.manageMemberService.getMember().subscribe((response) => {
+    //   this.membersList = response.data
+    // });
+  }
+  /**
+   * @method generate_login_details
+   * send password reset link
+   * @return data
+   */
+  generate_login_details(data)
+  {
+    this.generate_login_check = true;
+    data = {
+      vendor_id: JSON.parse(this.localService.getVendor()).id,
+      user_id: JSON.parse(this.localService.getUser()).id,
+      asusu_id: data.asusu_id,
+      member_user_id: data.user_id,
+      member_id: data.id,
+      email: data.email
+    }
+    this.memberService.generate_login_details(data).subscribe((response) => {
+      if(response.success)
+      {
+        this.generate_login_check = false;
+        this.localService.showSuccess(response.message,'Operation Successfull');
+      }else{
+        this.generate_login_check = false;
+        this.localService.showError(response.message,'Operation Unsuccessfull');
+      }
+    }, (error) => {
+        this.generate_login_check = false;
+        this.localService.showError('Server Error!! Please contact admin','Operation Unsuccessfull');
 
+    });
+  }
 }

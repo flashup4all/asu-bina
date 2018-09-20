@@ -3,9 +3,9 @@
         <div class="profile-head media" style="padding-bottom: 20px;">
             <a class="col-md-3 pull-left">
               <img *ngIf="!member?.passport" src="assets/images/avata.png" class="img-avatar">
-                <!-- <img *ngIf="member?.passport ==''" class="rounded-circle" src="assets/images/avata.png"> -->
-                <img *ngIf="member?.passport" src="{{image_url}}{{member?.passport}}" class="img-avatar" style="width: 150px; height: 150px;">
-                <!-- <img *ngIf="member?.passport" class="rounded-circle" style="width: 150px; height: 150px;" [src]="sanitizer.bypassSecurityTrustUrl(member.passport) || assets/images/avata.png"> -->
+              <img *ngIf="member?.passport" src="{{image_url}}{{member?.passport}}" class="img-avatar" style="width: 150px; height: 150px;">
+              <br>
+              <img *ngIf="member?.signature" src="{{ signature_url }}{{ member?.signature }}" class="" style="width: 150px; height: 60px;">
             </a>
             <div class="col-md-9">
                 <h2>
@@ -53,6 +53,11 @@
                 <div class="profile-details muted">
                     <h3 *ngIf="member?.contribution > 0"><a class="btn pull-left"><i class="fa fa-money shaded"></i> Contribution : &#8358;  {{member?.contribution | number }} </a></h3>
                     <h3><a class="btn"><i class="fa fa-phone shaded"></i> {{member?.phone1}}, {{member?.phone2}} </a></h3>
+                </div>
+                <div class="profile-details muted">
+                    <h3>
+                      <a class="btn"><i class="fa fa-home shaded"></i>Branch: {{ member?.branch?.name }} </a>
+                    </h3>
                 </div>
                 <div class="profile-details muted">
                     <h3><a class="btn pull-left"><i class="fa fa-balance-scale shaded"></i> Contribution Balance:<span class="label label-sm label-success"> &#8358; {{ actual_balance | number }} </span></a></h3>
@@ -197,6 +202,11 @@
                                             <input type="file" id="avatar" (change)="onFileChange($event)" #fileInput>
                                             <button type="button" class="btn btn-sm btn-default" (click)="clearFile()">clear file</button>
                                       </div>
+                                      <div class="form-group">
+                                        <label class="control-label" for="basicinput">Signature</label>
+                                            <input type="file" id="avatar" (change)="onSignatureFileChange($event)" #fileInput>
+                                            <button type="button" class="btn btn-sm btn-default" (click)="clearFile()">clear file</button>
+                                      </div>
                                     <h4>Custom Form Field</h4>
                                     <div ngModelGroup="member_details" class="control-group" *ngFor="let item of membersFormPoolList;  let i = index; ">
                                     <label class="control-label">{{item.label}}</label>
@@ -224,6 +234,40 @@
                                   <br>
                                   <app-member-account-officer></app-member-account-officer>
                                 </mat-expansion-panel>
+                                <mat-expansion-panel hideToggle="false" style="width:100%">
+                                  <mat-expansion-panel-header>
+                                      <mat-panel-title>Login Account Details</mat-panel-title>
+                                  </mat-expansion-panel-header>
+                                  <br>
+                                   <table *ngIf="!searching" id="members_table" class="table table-responsive-sm table-hover table-outline mb-0">
+                                    <thead class="thead-light">
+                                      <tr>
+                                        <th>Login ID</th>
+                                        <th>Cooperative Account No.</th>
+                                        <th>Action</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td> {{ member?.asusu_id }}</td>
+                                        <td>
+                                          {{member?.account_number || ''}}
+                                        </td>
+                                        <td>
+                                          <mat-menu #appM="matMenu">
+                                            <!-- <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar> -->
+                                            <button mat-menu-item (click)="editPassword(member)" title="Generate or reset member login details">Reset Login Details</button>
+                                          
+                                          </mat-menu>
+
+                                          <button mat-icon-button [matMenuTriggerFor]="appM">
+                                            <mat-icon>more_vert</mat-icon>
+                                          </button>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </mat-expansion-panel>
                             </mat-accordion>
                           
                         </tab>
@@ -240,6 +284,7 @@
                                     <thead>
                                         <tr>
                                             <th>Trans ID</th>
+                                            <th>Branch</th>
                                             <th>Name</th>
                                             <th>Plan</th>
                                             <th> &#8358; Amount</th>
@@ -253,6 +298,7 @@
                                     <tbody>
                                         <tr class="" *ngFor="let item of withdrawal_list">
                                             <td>#00{{ item?.id }}</td>
+                                            <td>{{ item?.branch?.name }}</td>
                                             <td>
                                                 {{item?.member?.first_name}} 
                                                 {{item?.member?.last_name}} 
@@ -329,7 +375,7 @@
                         <tab heading="INVESTMENTS">
                           <app-member-investments></app-member-investments>
                         </tab>
-                        <tab heading="TARGET SAVINGS">
+                        <!-- <tab heading="TARGET SAVINGS">
                             <div class="row">
                                 <div class="col-md-12">
                                      <form [formGroup] = "filterForm" (ngSubmit) = "filterTargetSavings(filterForm.value)" style="width: 100%;">
@@ -348,7 +394,6 @@
                                         </div>
                                         <div class="col-md-4">
                                           <div class="form-group">
-                                            <!-- <button type="button" class="btn btn-primary" style="margin-top: 30px;" (click)="show_adv_form()"><i class="fa fa-filter"></i></button> -->
                                             <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
                                               <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
                                               <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
@@ -361,19 +406,6 @@
                                           </div>
                                         </div>
                                       </div>
-                                      <!-- <div class="row" *ngIf="adv_filter">
-                                        <div class="col-md-3">
-                                          <div class="form-group">
-                                            <label>Trans. ID:</label>
-                                            <input type="text" class="form-control" formControlName="id" placeholder="Invoice Number"/>
-                                            <span *ngIf="searching">searching...</span>
-                                            <ng-template #st let-s="result" let-t="sterm">
-                                              
-                                              {{ s.name}}
-                                            </ng-template>
-                                          </div>
-                                        </div>
-                                      </div> -->
                                   </form>
                                 </div>
                                 <div class="container p-2">
@@ -419,7 +451,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </tab>
+                        </tab> -->
                     </tabset>
                 </div>
             </div>
@@ -427,7 +459,7 @@
     <!--/.module-body-->
 </div>
 
-<div bsModal #newTargetSavingModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<!-- <div bsModal #newTargetSavingModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
      <div class="modal-dialog modal-md">
        <div class="modal-content">
          <div class="modal-header">
@@ -476,8 +508,27 @@
          </div>
        </div>
      </div>
+</div> -->
+<div bsModal #passwordModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-md">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h4 class="modal-title pull-left">Reset / Generate Member Login Details</h4>
+         <button type="button" class="close pull-right" aria-label="Close" (click)="passwordModal.hide()">
+           <span  (click)="passwordModal.hide()" aria-hidden="true">&times;</span>
+         </button>
+       </div>
+       <div class="modal-body">
+         <div class="new session form">
+            <div class="password-rest">
+                <button type="submit"  (click)="generate_login_details(member)" class="btn btn-primary btn-block" title="send a password reset link to this member">Generate</button>            
+                <mat-progress-bar *ngIf="generate_login_check" mode="indeterminate"></mat-progress-bar>
+            </div>
+      </div>
+       </div>
+     </div>
+   </div>
 </div>
-
 <div bsModal #newWithdrawalModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
      <div class="modal-dialog modal-md">
        <div class="modal-content">
