@@ -75,7 +75,7 @@ export class ViewMemberComponent implements OnInit {
     signature_url;
     passport;
     member_signature;
-    vendor_branch
+    vendor_branch;
    @ViewChild('fileInput') fileInput: ElementRef;
 
     @ViewChild('newLoanRequestModal') public newLoanRequestModal : ModalDirective;

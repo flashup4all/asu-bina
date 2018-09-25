@@ -31,6 +31,8 @@ export class ViewRequestHistoryComponent implements OnInit {
 	filesToUpload: Array<File> = [];
   submitPending: boolean = false;
   approve_btn_loader: boolean = false;
+  approvals_loader : boolean = false;
+  history_loader : boolean = false;
   approval_data;
   memberLoanDeductionsList;
   deduction_type_list;
@@ -53,7 +55,7 @@ export class ViewRequestHistoryComponent implements OnInit {
 		this.vendor = JSON.parse(this.localService.getVendor());
 		this.user = JSON.parse(this.localService.getUser());
   		this.loan_request_id = this.router.snapshot.params['loan-request-id']
-  		this.getLoanSignatories();
+  		this.getLoanSignatories(this.loan_request_id);
   		this.getLoanRequest();
       this.get_deduction_type()
       this.monthList = this.localService.yearjson();
@@ -84,7 +86,9 @@ export class ViewRequestHistoryComponent implements OnInit {
 	 */
 	getLoanRequest()
 	{
+    this.history_loader = true;
 		this.loanrequestService.getSingleLoanRequest(this.loan_request_id).subscribe((response) => {
+      this.history_loader = false;
 			this.loanRequest = response
 		});
 	}
@@ -94,9 +98,11 @@ export class ViewRequestHistoryComponent implements OnInit {
   	 * creates a new staff  resource
   	 * @return data
   	 */
-  	getLoanSignatories()
+  	getLoanSignatories(id)
   	{
-        this.loanSettingsService.getLoanSignatory().subscribe((response) => {
+      this.approvals_loader = true;
+        this.loanrequestService.getLoanRequestApprovals(id).subscribe((response) => {
+      this.approvals_loader = false;
          this.loanSignatoryList = response.data
          //console.log(this.loanSignatoryList)
          //this.total_signatories = response.data.length
@@ -121,7 +127,6 @@ export class ViewRequestHistoryComponent implements OnInit {
      */
     approve_loan_request(form_values)
     {
-      console.log(form_values);
       let data = {
         id: this.approval_data.id,
         loan_request_id: this.approval_data.loan_request_id,
@@ -132,10 +137,17 @@ export class ViewRequestHistoryComponent implements OnInit {
         //comment: form_values.comment
       }
       this.loanrequestService.approveLoanRequest(data).subscribe((response) => {
-        this.getLoanRequest();
-        this.approve_loan_request_modal.hide()
-        this.approval_data = null;
-        this.localService.showSuccess(response.message,'Operation Successfull');
+        if(response.success)
+        {
+          this.getLoanRequest();
+          this.approve_loan_request_modal.hide()
+          this.approval_data = null;
+          this.localService.showSuccess(response.message,'Operation Successfull');
+        }else{
+          this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      }, (error) => {
+        this.localService.showError('Please try again later or contact admin','Server Error!!');
       });
     }
 

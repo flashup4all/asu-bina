@@ -44,6 +44,9 @@
 					                </mat-chip-list>
                                     </span>
                                 </p>
+                                <p *ngIf="loanRequest?.status == 1">
+                                  Start Date: {{ loanRequest?.start_date}}
+                                </p>
                                 <br>
                             </div>
                         </div>
@@ -56,6 +59,7 @@
                   <tab heading="Loan Request History">
                      <!-- <button type="button" class="btn btn-primary" (click)="newRepaymentModal.show()" style="margin-top: 30px;"> Repay this Loan</button> -->
                         <div class="col-md-12">
+                  <mat-progress-bar *ngIf="history_loader" mode="indeterminate"></mat-progress-bar>
                         	<table class="table table-responsive-sm table-hover table-outline mb-0">
 				                <thead>
 				                    <tr>
@@ -133,6 +137,7 @@
                         </div>
                     </tab>
                   <tab heading="Approvals">
+                  <mat-progress-bar *ngIf="approvals_loader" mode="indeterminate"></mat-progress-bar>
                   	<table class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
                             <thead>
                                 <tr>
@@ -144,20 +149,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="" *ngFor="let item of loanRequest?.approvals">
+                                <tr class="" *ngFor="let item of loanSignatoryList">
                                     <td><input type="checkbox" name=""></td>
                                     <td>{{item.signatory_type}}</td>
                                     <td>
                                     	<mat-chip-list>
-						                    <mat-chip *ngIf="item?.status == 1" color="primary" selected="true">Approved</mat-chip>
-						                    <mat-chip *ngIf="item?.status == 0" color="accent" selected="true">Pending</mat-chip>
-						                    <mat-chip *ngIf="item?.status == 2" color="warn" selected="true">Cancelled</mat-chip>
-						                </mat-chip-list>
+          						                    <mat-chip *ngIf="item?.status == 1" color="primary" selected="true">Approved</mat-chip>
+          						                    <mat-chip *ngIf="item?.status == 0" color="accent" selected="true">Pending</mat-chip>
+          						                    <mat-chip *ngIf="item?.status == 2" color="warn" selected="true">Cancelled</mat-chip>
+          						                </mat-chip-list>
                                     </td>
                                     <td>
-                                       <!--  {{item.staff?.first_name}} 
-                                        {{item.staff?.last_name}} 
-                                        {{item.staff?.middle_name}} -->
+                                        {{item?.approved_by?.first_name}} 
+                                        {{item?.approved_by?.last_name}} 
+                                        {{item?.approved_by?.middle_name}}
                                     </td>
                                     <td class="center">
                                          <mat-menu #appM="matMenu">

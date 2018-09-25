@@ -51,9 +51,9 @@ export class LoanSettingsService {
   	 * delete staff position resource
   	 * @return data
   	 */
-  	deleteLoanSignatory(id)
+  	deleteLoanSignatory(data)
   	{
-  		return this.http.delete(environment.api.url+'CoopManagement/loan-signatory/'+id, this.localService.header())
+  		return this.http.post(environment.api.url+'CoopManagement/loan-signatory/delete',data, this.localService.header())
   						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
   	}
   	/**

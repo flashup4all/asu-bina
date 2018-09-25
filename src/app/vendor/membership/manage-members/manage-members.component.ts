@@ -302,7 +302,6 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	addMember(data) : void
 	{
-		console.log(data)
 		this.newMemberForm.updateValueAndValidity();
 		if (this.newMemberForm.invalid) {
 		  Object.keys(this.newMemberForm.controls).forEach(key => {

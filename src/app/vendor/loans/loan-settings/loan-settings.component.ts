@@ -4,6 +4,8 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { LocalService } from '../../../storage/local.service';
 import { LoanSettingsService } from './loan-settings.service';
 import { SettingsService } from '../../settings/settings/settings.service';
+import { VendorService } from '../../vendor.service';
+
 @Component({
   selector: 'app-loan-settings',
   templateUrl: './loan-settings.component.html',
@@ -39,6 +41,7 @@ export class LoanSettingsComponent implements OnInit {
   loanTypeCheck: boolean;
   updateloanSignatoryCheck:boolean;
   public vendor;
+  public user;
   public loanThresholdData;
   public loanEligibilityData;
   public eligibilitycheck :boolean;
@@ -55,6 +58,7 @@ export class LoanSettingsComponent implements OnInit {
   total_loan_type;
   addItemCheck: boolean;
   edit_loan_type_approvals;
+  vendor_branches;
   @ViewChild('loanSettingsItemModal') public loanSettingsItemModal :ModalDirective;
 	@ViewChild('loanSignatoryModal') public loanSignatoryModal :ModalDirective;
   @ViewChild('editLoanSignatoryModal') public editLoanSignatoryModal :ModalDirective;
@@ -64,13 +68,16 @@ export class LoanSettingsComponent implements OnInit {
   	constructor(
   		private localService : LocalService,
   		private _fb : FormBuilder,
+      private vendor_service : VendorService,
       private loanSettingsService : LoanSettingsService,
   		private settingsService : SettingsService,
   		) {
   			this.getManagementStaff();
+        //this.get_vendor_branches();
   			this.getLoanSignatories();
         this.getLoanType();
         this.vendor = JSON.parse(this.localService.getVendor());
+        this.user = JSON.parse(this.localService.getUser());
         this.getThreshold();
         this.getEligibility();
         this.getSetings();
@@ -81,7 +88,7 @@ export class LoanSettingsComponent implements OnInit {
   		/*loan signatory form*/
   		this.loanSignatoryForm = this._fb.group({
   			level:[null, Validators.compose([Validators.required])],
-  			user_id: [null, Validators.compose([Validators.required])]
+  			staff_id: [null, Validators.compose([Validators.required])]
   		});
   		/*edit signatory form*/
   		this.editloanSignatoryForm = this._fb.group({
@@ -134,7 +141,17 @@ export class LoanSettingsComponent implements OnInit {
       });
   	}
 
-   
+   /**
+     * @method get_vendor_branches
+     * get vendor branches
+     * @return data
+     */
+     get_vendor_branches()
+     {
+       this.vendor_service.getVendorBranches().subscribe((response) => {
+         this.vendor_branches = response.data
+       })
+     }
     /**
      * @method createItem
      * create new form group
@@ -261,6 +278,7 @@ export class LoanSettingsComponent implements OnInit {
      */
     addLoanItem(data)
     {
+      data['user_id'] = this.user.user_id;
       this.submitPending = true;
       this.loanSettingsService.addLoanItem(data).subscribe((response) => {
          if(response.success)
@@ -288,8 +306,16 @@ export class LoanSettingsComponent implements OnInit {
      */
   	addLoanSignatory(data)
   	{
+      this.loanSignatoryForm.updateValueAndValidity();
+      if (this.loanSignatoryForm.invalid) {
+        Object.keys(this.loanSignatoryForm.controls).forEach(key => {
+          this.loanSignatoryForm.get(key).markAsDirty();
+        });
+        return;
+      }
   		this.loanSignatoryCheck = true;
   		data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;
+      data['user_id'] = this.user.user_id;
   		this.loanSettingsService.addLoanSignatory(data).subscribe((response) => {
   	 		if(response.success)
   			{
@@ -367,7 +393,13 @@ export class LoanSettingsComponent implements OnInit {
   	 */
   	deleteLoanSignatory(id)
   	{
-        this.loanSettingsService.deleteLoanSignatory(id).subscribe((response) => {
+      let data = {
+        id : id,
+        user_id: this.user.user_id,
+        vendor_id: this.vendor.id
+        
+      } 
+        this.loanSettingsService.deleteLoanSignatory(data).subscribe((response) => {
         	this.getLoanSignatories();
 			this.localService.showSuccess(response.message,'Operation Successfull');
        })
