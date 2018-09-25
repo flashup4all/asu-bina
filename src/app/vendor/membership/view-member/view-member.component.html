@@ -56,7 +56,7 @@
                 </div>
                 <div class="profile-details muted">
                     <h3>
-                      <a class="btn"><i class="fa fa-home shaded"></i>Branch: {{ member?.branch?.name }} </a>
+                      <a class="btn"><i class="fa fa-home shaded"></i>Branch: {{ member?.branch?.name }} (branch code : #00{{ member?.branch?.id }})</a>
                     </h3>
                 </div>
                 <div class="profile-details muted">
@@ -132,6 +132,9 @@
                                       {{member?.staff?.middle_name}}
                                       </p>
                                   </div>
+                              </div>
+                              <div class="row">
+                                <img *ngIf="member?.signature" src="{{ signature_url }}{{ member?.signature }}" class="" style="width: 450px; height: 250px; margin: auto;">
                               </div>
                           </div>
                          

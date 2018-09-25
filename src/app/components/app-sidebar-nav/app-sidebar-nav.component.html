@@ -1,5 +1,5 @@
 <nav class="sidebar-nav" >
-      <ul class="nav" style="width:230px !important;">
+      <ul class="nav"><!--  style="width:230px !important;" -->
         <ng-template ngFor let-navitem [ngForOf]="navigation">
           <li *ngIf="isDivider(navitem)" class="nav-divider"></li>
           <ng-template [ngIf]="isTitle(navitem)">

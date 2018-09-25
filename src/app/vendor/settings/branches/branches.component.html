@@ -27,7 +27,7 @@
                     <mat-menu #appM="matMenu">
                         <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
                           <!-- <button *ngIf="!item.status" [swal]="approve_contri" mat-menu-item>Approve Plan</button> -->
-                           <button [swal]="delete_branch" mat-menu-item>Delete</button>
+                           <!-- <button [swal]="delete_branch" mat-menu-item>Delete</button> -->
                            <button mat-menu-item (click)="edit_branch_modal(branch)" title="Delete Loan Signatory">Edit</button>
                            <swal
                               #delete_branch

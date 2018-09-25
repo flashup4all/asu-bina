@@ -539,7 +539,7 @@ export class AppSidebarNavItemComponent {
       [ngClass]="hasVariant() ? 'nav-link nav-link-' + link.variant : 'nav-link'"
       routerLinkActive="active"
       [routerLink]="[link.url]">
-      <i *ngIf="isIcon()" class="{{ link.icon }}"></i>
+      <!-- <i *ngIf="isIcon()" class="{{ link.icon }}"></i> -->
       {{ link.name }}
       <span *ngIf="isBadge()" [ngClass]="'badge badge-' + link.badge.variant">{{ link.badge.text }}</span>
     </a>
