@@ -6,7 +6,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { ModalModule } from 'ngx-bootstrap';
 
 import { TabsModule } from 'ngx-bootstrap/tabs';
-
+import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 import { ReactiveFormsModule, FormsModule} from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { InvestmentPlanComponent } from './investment-plan/investment-plan.component';
@@ -27,7 +27,9 @@ export const investment_routes = [
     NgbModule,
     ModalModule.forRoot(),
     TabsModule,
-  	FormsModule
+  	FormsModule,
+    SweetAlert2Module
+    
   ],
   declarations: [InvestmentPlanComponent, InvestmentHistoryComponent],
   providers:[ InvestmentService ]

@@ -60,7 +60,7 @@
                   <th>&#8358; Last Balance</th>
                   <th>&#8358; Current Interest Balance</th>
                   <th>Status</th>
-                  <th>Date</th>
+                  <th>Run Date</th>
                   <th>Created</th>
                   <th>Approved</th>
                   <th>Action</th>
@@ -89,7 +89,7 @@
                   </td>
                   <td>
                   <!-- item?.current_balance -->
-                      {{ calculate_loan_balance(item.current_balance, item.interest_percent, item.created_at) | number }} 
+                      {{ calculate_loan_balance(item.current_balance, item.interest_percent, item.run_date) | number }} 
                   </td>
                   <td>
                     <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
@@ -97,7 +97,7 @@
                     <span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
                   </td>
                     <td>
-                      {{item?.created_at | date : 'shortDate'}} 
+                      {{item?.run_date | date : 'shortDate'}} 
                   </td>
                    <td>
                       {{ item?.staff?.first_name }} 

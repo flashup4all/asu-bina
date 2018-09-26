@@ -100,14 +100,14 @@
                     </div>
                     <div class="col-md-12">
                       <div class="form-group">
-                        <label>Contribution Type </label>
+                        <label>Investment Type </label>
                         <small>[ set the payment period for members subscribing for this plan ]</small>
                         <select class="form-control" [ngModel]="editData?.contribution_type" formControlName="contribution_type">
                           <option *ngFor="let type of duration_list" [value]="type.value">
                             {{ type?.name }}
                           </option>
                         </select>
-                        <small [hidden]="(investment_plan_form.controls.contribution_type.valid ) || (investment_plan_form.controls.contribution_type.pristine )" class="text-danger">Contribution Type is Required</small>
+                        <small [hidden]="(investment_plan_form.controls.contribution_type.valid ) || (investment_plan_form.controls.contribution_type.pristine )" class="text-danger">Investment Type is Required</small>
                       </div>
                     </div>
                     <div class="col-md-12">

@@ -77,7 +77,7 @@ export class MemberInvestmentsComponent implements OnInit {
       this.investmentHistoryForm = this._fb.group({
         //period : [null, Validators.compose([Validators.required])],
         type : [null, Validators.compose([Validators.required])],
-        //date : [null, Validators.compose([Validators.required])],
+        date : [null, Validators.compose([Validators.required])],
         amount: [null, Validators.compose([Validators.required])],
         investmentplan_id: [null, Validators.compose([Validators.required])],
       });
@@ -198,6 +198,7 @@ export class MemberInvestmentsComponent implements OnInit {
         investmentplan_id: investment.id,
         vendor_id: this.vendor.id,
         staff_id: this.user.id,
+        user_id: this.user.user_id,
         roi_value:form_values.roi_value
       }
       this.form_loader = true;
@@ -225,6 +226,7 @@ export class MemberInvestmentsComponent implements OnInit {
       let data = {
         id: id,
         approved_by: this.user.id,
+        user_id: this.user.user_id,
         vendor_id: this.vendor.id,
         status: status,
       }
@@ -342,6 +344,8 @@ export class MemberInvestmentsComponent implements OnInit {
       }*/
       formValues.member_id = this.member_id;
       formValues.staff_id = this.user.id;
+      formValues.user_id = this.user.user_id;
+      formValues.branch_id = this.user.branch_id;
       formValues.vendor_id = this.vendor.id;
       formValues.transaction_type = 'credit';
       formValues.status = 0;
@@ -354,6 +358,7 @@ export class MemberInvestmentsComponent implements OnInit {
             this.newInvestmentHistoryModal.hide();
             this.localService.showSuccess(response.message,'Operation Successfull');
           }else{
+            this.investment_history_form_loader = false;
             this.localService.showError(response.message,'Operation Unsuccessfull');
           }
         }, (error) => {
@@ -387,6 +392,7 @@ export class MemberInvestmentsComponent implements OnInit {
       let data = {
         id: transaction_id,
         approved_by: this.user.id,
+        user_id: this.user.user_id,
         vendor_id: this.vendor.id,
         status: status
       }
@@ -405,5 +411,26 @@ export class MemberInvestmentsComponent implements OnInit {
           this.investment_history_form_loader = false;
                 this.localService.showError(error,'Operation Unsuccessfull');
         });
+    }
+
+    calculate_loan_balance(balance, interest, last_date)
+    {
+      let last_time = moment(last_date)
+      let curr_time = 0
+      let rate: number;
+      let current_time = moment()
+      let days = current_time.diff(last_time, 'days')
+      let daily_interest
+      let monthly_interest=0;
+        var monthly = 10;
+        let interest_rate 
+        interest_rate = ((interest / 100) / 30).toFixed(4);
+
+        while (curr_time < days) {
+          daily_interest = balance * interest_rate;
+              balance = balance + daily_interest;
+                  days--;
+        }
+        return balance;
     }
 }

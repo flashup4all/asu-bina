@@ -159,4 +159,15 @@ export class InvestmentService {
       return this.http.post(environment.api.url+'CoopManagement/investment-history/filter', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
+
+     /**
+     * @method get_vendor_investment_history
+     * get member investment history
+     * @return data
+     */
+    get_vendor_investment_history()
+    {
+      return this.http.get(environment.api.url+'CoopManagement/investment-history/vendor/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
 }

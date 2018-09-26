@@ -91,7 +91,7 @@
                                         </td>
                                         <td>
                                           <!-- item?.current_balance -->
-                                              {{ item?.current_balance | number }} 
+                                              {{ calculate_loan_balance(item.current_balance, item.interest_percent, item.run_date) | number }} 
                                         </td>
                                         <td>
                                             <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>

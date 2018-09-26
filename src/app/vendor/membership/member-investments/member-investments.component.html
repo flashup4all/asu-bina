@@ -178,6 +178,7 @@
                             <th>Trans ID</th>
                             <th>Investment Plan</th>
                             <th>Amount</th>
+                            <th>Amount + Interest</th>
                             <th>type</th>
                             <th>Status</th>
                             <th>Date</th>
@@ -196,6 +197,9 @@
                                {{ item?.amount }}  
                             </td>
                             <td>
+                            	{{ calculate_loan_balance(item.amount, item?.interest_percent, item?.date) | number }} 
+                            </td>
+                            <td>
                                {{ item?.transaction_type }}  
                             </td>
                               <td>
@@ -206,7 +210,7 @@
 				                </mat-chip-list>
                             </td>
                             <td>
-                                {{item?.created_at | date: 'shortDate'}} 
+                                {{item?.date | date: 'shortDate'}} 
                             </td>
                             <td class="center">
                             	{{ item?.staff?.first_name }} 
@@ -389,6 +393,13 @@
                                 <label>Amount</label>
                                 <input type="number" name="" formControlName = "amount" class="form-control">
                                 <mat-error [hidden]="(investmentHistoryForm.controls.amount.valid ) || (investmentHistoryForm.controls.amount.pristine )" class="text-danger">Invest ment Amount Required</mat-error>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Investment Date</label> <small></small>
+                                <input type="date" name="" formControlName = "date" class="form-control">
+                                <small [hidden]="(investmentHistoryForm.controls.date.valid ) || (investmentHistoryForm.controls.date.pristine )" class="text-danger">Date you contribution was made is Required</small>
                             </div>
                         </div>
                         <div class="col-md-6">

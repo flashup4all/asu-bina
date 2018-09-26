@@ -83,11 +83,11 @@ export class AppSidebarNavComponent {
               url: '/app/contributions',
               icon: 'icon-star'
             },
-            /*{
+            {
               name: 'Manage Investments',
               url: '/app/investment/history',
               icon: 'icon-star'
-            },*/
+            },
             /*{
               name: 'Manage Target Savings',
               url: '/app/target-savings',
@@ -188,11 +188,11 @@ export class AppSidebarNavComponent {
           url: '/app/contributions',
           icon: 'icon-star'
         },
-        /*{
+        {
           name: 'Manage Investments',
           url: '/app/investment/history',
           icon: 'icon-star'
-        },*/
+        },
         {
           name: 'Manage Target Savings',
           url: '/app/target-savings',
