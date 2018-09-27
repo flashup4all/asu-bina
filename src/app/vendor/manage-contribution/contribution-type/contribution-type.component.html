@@ -3,9 +3,6 @@
     	<div class="row">
       		<div class="col">
 		        <tabset>
-              <tab heading="Contribution Plan">
-                <app-contribution-plan></app-contribution-plan>
-              </tab>
 		        	<tab heading="Contribution Types">
 		        		<button type="button" class="btn btn-success pull-right" (click)="new_type()"style="margin-top:30px; margin-bottom: 5px" >
                             <i class="fa fa-plus"></i> Add Type</button>
@@ -44,6 +41,9 @@
 				        </table>
 		        		
 		        	</tab>
+              <tab heading="Contribution Plan">
+                <app-contribution-plan></app-contribution-plan>
+              </tab>
 		        </tabset>
 		    </div>
 		</div>
@@ -79,7 +79,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Period</label>
+                                        <label>Description</label>
                                       	<textarea class="form-control" formControlName = "description" placeholder="Description">{{editData?.description}}</textarea>
                                     </div>
                                 </div>

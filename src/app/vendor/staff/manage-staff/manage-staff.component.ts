@@ -175,10 +175,10 @@ export class ManageStaffComponent implements OnInit {
   	 */
   	addStaffPosition(data)
   	{
-      this.newStaffForm.updateValueAndValidity();
-    if (this.newStaffForm.invalid) {
-      Object.keys(this.newStaffForm.controls).forEach(key => {
-        this.newStaffForm.get(key).markAsDirty();
+      this.newStaffPositionForm.updateValueAndValidity();
+    if (this.newStaffPositionForm.invalid) {
+      Object.keys(this.newStaffPositionForm.controls).forEach(key => {
+        this.newStaffPositionForm.get(key).markAsDirty();
       });
       return;
     }
