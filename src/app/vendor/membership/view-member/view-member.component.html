@@ -13,16 +13,14 @@
                     {{member?.last_name}} 
                     {{member?.middle_name}} 
                 </h2>
-                <button style="float: right" *ngIf="member?.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
+                
                 <mat-chip-list style="float: right">
                     <mat-chip *ngIf="member?.status == '1'" color="primary" selected="true">Activated</mat-chip>
                     <mat-chip *ngIf="member?.status == '0'" color="warn" selected="true">Not Active</mat-chip>
                     <mat-chip *ngIf="member?.status == '2'" color="warn" selected="true">Suspended</mat-chip>
                 </mat-chip-list>
-                <mat-menu #appM="matMenu">
-                            <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
+                <mat-menu #appMi="matMenu">
+                  <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
                   <button *ngIf="member?.status != 1" [swal]="approve_inv" mat-menu-item>Activate Account</button>
                   <button [swal]="cancel_inv" *ngIf="member?.status == 1" mat-menu-item>Deactivate Account</button>
                   <swal
@@ -44,6 +42,12 @@
                     (confirm)="deactivateMember(member.id)">
                   </swal>
                 </mat-menu>
+                <button style="float: right" *ngIf="member?.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appMi">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <!-- <button mat-icon-button [matMenuTriggerFor]="appMi">
+                  <mat-icon>more_vert</mat-icon>
+                </button> -->
                 <p class="profile-brief">
                     {{member?.email}}
                 </p>

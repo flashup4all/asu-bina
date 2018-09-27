@@ -178,7 +178,7 @@
                                   <button mat-menu-item [routerLink]="['/app/members/', item.id,'view']" title="edit member details">Manage</button>
                                   <button mat-menu-item (click)="editPassword(item)" title="Generate or reset member login details">Reset Login Details</button>
                                   <div *ngIf="user.role_id < 4">
-                                  <button [swal]="deactivate_member"  *ngIf="item.status == 1" title="deactivate or suspend this member"  mat-menu-item>Cancel Loan Repayment</button>
+                                  <button [swal]="deactivate_member"  *ngIf="item.status == 1" title="deactivate or suspend this member"  mat-menu-item>Deactivate</button>
                                   <button [swal]="activate_member"  *ngIf="item.status != 1" title="activate this member"  mat-menu-item>Activate</button>
                                   </div>
                                   
@@ -202,7 +202,7 @@
                                   </swal>
                                 </mat-menu>
 
-                                <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
+                                <button  mat-icon-button [matMenuTriggerFor]="appM">
                                   <mat-icon>more_vert</mat-icon>
                                 </button>
 
