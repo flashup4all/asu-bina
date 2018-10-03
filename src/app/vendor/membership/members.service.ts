@@ -62,6 +62,17 @@ export class MembersService {
       return this.http.post(environment.api.url+'CoopManagement/member/filter', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
+
+     /**
+     * @method update_member_account_no
+     * Update Member Coorp Account Number
+     * @return data
+     */
+    update_member_account_no(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/member/update-account-number', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
  
   	/**
   	 * @method deleteMember

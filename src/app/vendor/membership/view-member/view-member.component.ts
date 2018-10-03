@@ -53,6 +53,7 @@ export class ViewMemberComponent implements OnInit {
     public runContributionForm : FormGroup;
     public newMemberForm: FormGroup;
     public targetSavingForm: FormGroup;
+    public member_account_number_form: FormGroup;
     filterForm: FormGroup;
     deductionFilterForm: FormGroup;
     contributionFilterForm: FormGroup;
@@ -61,6 +62,7 @@ export class ViewMemberComponent implements OnInit {
     allow_edit_acc_no : boolean = false;
     approve_btn_loader: boolean = false;
     generate_login_check: boolean = false;
+    update_acc_no_loader: boolean = false;
     public loanRequestForm : FormGroup;
     public loanrequestFilterForm : FormGroup;
     public withdrawalForm : FormGroup;
@@ -84,6 +86,7 @@ export class ViewMemberComponent implements OnInit {
     @ViewChild('newTargetSavingModal') public newTargetSavingModal : ModalDirective;
     @ViewChild('newWithdrawalModal') public newWithdrawalModal : ModalDirective;
   @ViewChild('passwordModal') public passwordModal : ModalDirective;
+  @ViewChild('account_number_modal') public account_number_modal : ModalDirective;
     
     constructor(
       private route : ActivatedRoute, 
@@ -189,6 +192,45 @@ export class ViewMemberComponent implements OnInit {
         date: '',
       });
 
+       this.member_account_number_form = this._fb.group({
+          account_number : [null, Validators.compose([Validators.required])],
+       })
+
+    }
+
+    /**
+     * @method show_member_account_no_modal
+     * show member coorp account number modal
+     *
+     */
+    show_member_account_no_modal()
+    {
+      this.account_number_modal.show();
+    }
+
+    /**
+     * @method update_member_account_no
+     * update member coorp account number
+     */
+    update_member_account_no(form_values)
+    {
+      form_values['member_id'] = this.memberId;
+      form_values['vendor_id'] = this.vendor.id;
+      form_values['user_id'] = this.user.user_id
+      this.submitPending = true;
+      this.memberService.update_member_account_no(form_values).subscribe((response) => {
+        if (response.success) {
+          this.submitPending = false;
+        this.getMemberProfile();
+          this.account_number_modal.hide();
+          this.localService.showSuccess(response.message,'Operation Successfull');
+        }else{
+          this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      }, (error) => {
+        this.submitPending = false;
+              this.localService.showError('Please contact admin','Server Error !!');
+      });
     }
 
     exportTable(format, tableId)

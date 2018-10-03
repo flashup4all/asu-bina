@@ -164,7 +164,7 @@
                                       </div> -->
                                   </form>
                     </div>
-	            	<div class="container p-2">
+	            	<div class="row container p-2">
 			           <button (click)="exportTable('xls', 'investment_history')" class="btn btn-outline btn-success">Export table</button>
 			           <button class="btn btn-outline btn-success" (click)="printReciept('investment_history')">Print</button>
 			           <button type="button" class="btn btn-primary pull-right" (click)="new_inv_history_modal()">Investment Subscription</button>
@@ -172,12 +172,15 @@
 			       	<div>
 					<mat-progress-spinner *ngIf="investment_history_loader" style="margin:auto;" mode="indeterminate" value=""></mat-progress-spinner>
 					</div>
-		        <table id="investment_history" *ngIf="!investment_history_loader" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+		        <table id="investment_history" *ngIf="!investment_history_loader" class="row table table-responsive-sm table-hover table-outline mb-0" width="100%">
                     <thead>
                         <tr>
                             <th>Trans ID</th>
                             <th>Investment Plan</th>
+                            <th>No.Days</th>
+                            <th>Interest%</th>
                             <th>Amount</th>
+                            <th>Balance</th>
                             <th>Amount + Interest</th>
                             <th>type</th>
                             <th>Status</th>
@@ -194,10 +197,15 @@
                                {{ item?.investment_plan?.name }} 
                             </td>
                             <td>
+                            	{{ item?.no_days }}
+                            </td>
+                            <td>{{ item?.interest_percent }}</td>
+                            <td>
                                {{ item?.amount }}  
                             </td>
+                            <td>{{ item?.current_balance }}</td>
                             <td>
-                            	{{ calculate_loan_balance(item.amount, item?.interest_percent, item?.date) | number }} 
+                            	{{ calculate_loan_balance(item.current_balance, item?.interest_percent, item?.date) | number }} 
                             </td>
                             <td>
                                {{ item?.transaction_type }}  
@@ -281,7 +289,7 @@
 		                        <mat-list>
 		                            <mat-list-item>
 		                                <h3 matLine> Duration  </h3>
-		                                <p matLine>{{ plan_list?.duration }} Weeks</p>
+		                                <p matLine>{{ plan_list?.duration }} days</p>
 		                            </mat-list-item>
 		                            <mat-list-item>
 		                                <h3 matLine>Interest Rate  </h3>
@@ -289,7 +297,7 @@
 		                            </mat-list-item>
 		                            <mat-list-item>
 		                                <h3 matLine>Interest Duration  </h3>
-		                                <p matLine>{{ plan_list?.duration }} Days</p>
+		                                <p matLine>{{ plan_list?.interest_duration }} Days</p>
 		                            </mat-list-item>
 		                            <mat-list-item>
 		                                <h3 matLine> Amount Type  </h3>
@@ -410,6 +418,18 @@
                                     <option [value]="item.id" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
                                 </select>
                                 <mat-error [hidden]="(investmentHistoryForm.controls.type.valid ) || (investmentHistoryForm.controls.type.pristine )" class="text-danger">Mode/Method of Payment is Required</mat-error>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Depositor</label>
+                                <input type="text" name="" formControlName = "depositor" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" name="" formControlName = "description" class="form-control">
                             </div>
                         </div>
 

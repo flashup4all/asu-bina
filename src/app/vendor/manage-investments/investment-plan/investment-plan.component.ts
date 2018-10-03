@@ -28,6 +28,7 @@ export class InvestmentPlanComponent implements OnInit {
   max_amount_check: boolean = false;
   min_amount_label;
   max_amount_label;
+  interest_type;
 
   	@ViewChild('newInvestmentPlanModal') public newInvestmentPlanModal : ModalDirective;
   	constructor(
@@ -42,6 +43,8 @@ export class InvestmentPlanComponent implements OnInit {
   		this.filter_curency(this.vendor.currency_code)
       	this.duration_list = this.localService.duration();
       	this.amount_type_list = this.localService.amount_type();
+        this.interest_type = this.localService.interest_type();
+
   	}
 
   	ngOnInit() {
@@ -55,6 +58,7 @@ export class InvestmentPlanComponent implements OnInit {
         duration : [null, Validators.compose([Validators.required])],
         interest : [null, Validators.compose([Validators.required])],
         interest_duration : [null, Validators.compose([Validators.required])],
+        interest_type : [null, Validators.compose([Validators.required])],
         withdrawal_limit : [null, Validators.compose([Validators.required])],
         withdrawal_permit : [null, Validators.compose([Validators.required])],
         contribution_type : [null, Validators.compose([Validators.required])],
@@ -110,6 +114,13 @@ export class InvestmentPlanComponent implements OnInit {
 
     new_contribution_plan(data)
     {
+      this.investment_plan_form.updateValueAndValidity();
+      if (this.investment_plan_form.invalid) {
+        Object.keys(this.investment_plan_form.controls).forEach(key => {
+          this.investment_plan_form.get(key).markAsDirty();
+        });
+        return;
+      }
       data['vendor_id'] = this.vendor.id;
       data['created_by'] = this.user.id;
       this.investmentService.addInvestmentPlan(data).subscribe((response) => {

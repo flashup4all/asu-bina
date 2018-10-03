@@ -338,22 +338,25 @@ export class MemberDeductionsComponent implements OnInit {
 
   calculate_loan_balance(balance, interest, last_date)
   {
-  	let last_time = moment(last_date)
-  	let curr_time = 0
-  	let rate: number;
-  	let current_time = moment()
-  	let days = current_time.diff(last_time, 'days')
-  	let daily_interest
-  	let monthly_interest=0;
-	    var monthly = 10;
-	    let interest_rate 
-	    interest_rate = ((interest / 100) / 30).toFixed(4);
+  	if(balance > 1)
+    {
+      let last_time = moment(last_date)
+      let curr_time = 0
+      let rate: number;
+      let current_time = moment()
+      let days = current_time.diff(last_time, 'days')
+      let daily_interest
+      let monthly_interest=0;
+        var monthly = 10;
+        let interest_rate 
+        interest_rate = ((interest / 100) / 30).toFixed(4);
 
-	    while (curr_time < days) {
-	    	daily_interest = balance * interest_rate;
-            balance = balance + daily_interest;
-                days--;
-	    }
-	    return balance;
+        while (curr_time < days) {
+          daily_interest = balance * interest_rate;
+              balance = balance + daily_interest;
+                  days--;
+        }
+        return balance;
+    }
   }
 }

@@ -158,13 +158,23 @@
                                       <label>Account No: {{ member?.account_number }} 
                                       </label>
                                       <p class="pull-right" style="cursor: pointer; color: blue;">
-                                          <i *ngIf="user?.role_id < 4" class="fa fa-edit" (click)="allow_edit_acc_no = !allow_edit_acc_no">edit</i>
+                                          <!-- <i *ngIf="user?.role_id < 4" class="fa fa-edit" (click)="allow_edit_acc_no = !allow_edit_acc_no">edit</i> -->
+                                          <button [swal]="acc_no_alert" *ngIf="user?.role_id < 4" mat-menu-item>Edit</button>
+                                          <swal
+                                            #acc_no_alert
+                                            title="Are You Sure You want to Edit Member Account Number?"
+                                            text="Please Be sure of this Action"
+                                            type="warning"
+                                            [showCancelButton]="true"
+                                            [focusCancel]="true"
+                                            (confirm)="show_member_account_no_modal()">
+                                          </swal>
                                         </p>
                                   </div>
-                                  <div class="form-group" *ngIf="allow_edit_acc_no">
+                                  <!-- <div class="form-group" *ngIf="allow_edit_acc_no">
                                     <label>Account_no:</label>
                                     <input  type="text" class="form-control" [ngModel]="member?.account_number" name="account_number" ngModel>
-                                  </div>
+                                  </div> -->
                                       <div class="form-group">
                                           <label>Surname:</label>
                                         <input type="text" class="form-control" [ngModel]="member?.first_name" name="first_name" ngModel>
@@ -536,6 +546,38 @@
      </div>
    </div>
 </div>
+
+<div bsModal #account_number_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-md">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h4 class="modal-title pull-left">Change Member Account Number</h4>
+         <button type="button" class="close pull-right" aria-label="Close" (click)="account_number_modal.hide()">
+           <span  (click)="account_number_modal.hide()" aria-hidden="true">&times;</span>
+         </button>
+       </div>
+       <div class="modal-body">
+          <form [formGroup]="member_account_number_form" (ngSubmit)="update_member_account_no(member_account_number_form.value)">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Account Number</label>
+                                <input type="text" name="" [ngModel]="member?.account_number" formControlName = "account_number" class="form-control">
+                                <small [hidden]="(member_account_number_form.controls.account_number.valid ) || (member_account_number_form.controls.account_number.pristine )" class="text-danger">Account Number Required</small>
+                            </div>
+                        </div>
+                    </div>
+                       <button type="submit" class="btn btn-success" [disabled]="member_account_number_form.invalid || update_acc_no_loader">
+                            <span *ngIf="!update_acc_no_loader">Save</span>
+                            <span *ngIf="update_acc_no_loader && member_account_number_form.valid">Please Wait...</span>
+                            <span *ngIf="update_acc_no_loader && member_account_number_form.valid" class="fa fa-spinner" aria-hidden="true"></span>
+                        </button>
+                </form>
+       </div>
+     </div>
+   </div>
+</div>
+
 <div bsModal #newWithdrawalModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
      <div class="modal-dialog modal-md">
        <div class="modal-content">

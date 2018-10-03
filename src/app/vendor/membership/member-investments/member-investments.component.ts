@@ -80,6 +80,8 @@ export class MemberInvestmentsComponent implements OnInit {
         date : [null, Validators.compose([Validators.required])],
         amount: [null, Validators.compose([Validators.required])],
         investmentplan_id: [null, Validators.compose([Validators.required])],
+        depositor:'',
+        description: ''
       });
 
       this.investmentFilterForm = this._fb.group({
