@@ -56,7 +56,7 @@ export class LoanRequestService {
      */
       getLoanRequestApprovals(id)
     {
-      return this.http.get(environment.api.url+'CoopManagement/get-loan-request-approvals/'+id, this.localService.header())
+      return this.http.get(environment.api.url+'CoopManagement/get-loan-request-approvals/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
