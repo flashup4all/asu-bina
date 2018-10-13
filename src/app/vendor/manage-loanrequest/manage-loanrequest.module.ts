@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
@@ -22,6 +23,7 @@ import { LoanCalculatorComponent } from '../../loan-calculator/loan-calculator.c
     BsDropdownModule.forRoot(),
     TabsModule,
     SharedModule,
+    NgbModule,
     SweetAlert2Module
   ],
   declarations: [ManageLoanrequestComponent, ViewRequestHistoryComponent, LoanCalculatorComponent],

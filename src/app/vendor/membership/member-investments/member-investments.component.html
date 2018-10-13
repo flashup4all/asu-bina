@@ -17,9 +17,10 @@
 		                <tr>
 		                    <th>S/N</th>
 		                    <th>Investment Name</th>
-		                    <th>Type</th>
+		                    <th>Interest Type</th>
 		                    <th>Status</th>
 		                    <th>ROI</th>
+		                    <th>Current Balance</th>
 		                    <th>Start Date</th>
 		                    <th>Created</th>
 		                    <th>Created By</th>
@@ -31,12 +32,12 @@
 		                <tr class="" *ngFor="let item of member_plan_list; let i = index">
 		                    <td>{{ i + 1 }}</td>
 		                    <td>
-		                        {{item?.investment_plan?.name}}
+		                        {{item?.investment_plan?.name}} ({{item?.investment_plan?.interest}}%)
 		                    </td>
 		                    <td>
-		                        {{item?.investment_plan?.type}} 
-		                        <small *ngIf="item?.investment_plan?.amount_type =='fixed'"> {{ vendor_curency }} {{item?.investment_plan?.min_amount }}</small> 
-		                		<small *ngIf="item?.investment_plan?.amount_type =='range'"> {{ vendor_curency }} {{item?.investment_plan?.min_amount }} - {{item?.investment_plan?.max_amount }}</small> 
+		                        {{ filter_interest_type(item.investment_plan.interest_type) }}
+		                        <!-- <small *ngIf="item?.investment_plan?.amount_type =='fixed'"> {{ vendor_curency }} {{item?.investment_plan?.min_amount }}</small> 
+		                		<small *ngIf="item?.investment_plan?.amount_type =='range'"> {{ vendor_curency }} {{item?.investment_plan?.min_amount }} - {{item?.investment_plan?.max_amount }}</small>  -->
 		                    </td>
 		                    <td>
 		                        <mat-chip-list>
@@ -48,6 +49,9 @@
 		                    <td>
 		                    	{{ return_roi(item.roi_value) }}
 		                    </td>
+		                    <td>
+                                {{ calculate_inv_plan_balance(item) | number }} 
+                            </td>
 		                    <td>
 		                        {{item?.start_at | date: 'shortDate'}} 
 		                    </td>
@@ -167,22 +171,24 @@
 	            	<div class="row container p-2">
 			           <button (click)="exportTable('xls', 'investment_history')" class="btn btn-outline btn-success">Export table</button>
 			           <button class="btn btn-outline btn-success" (click)="printReciept('investment_history')">Print</button>
-			           <button type="button" class="btn btn-primary pull-right" (click)="new_inv_history_modal()">Investment Subscription</button>
+			           <button type="button" class="btn btn-primary pull-right" (click)="new_inv_history_modal()">Credit</button>
+			           <button type="button" class="btn btn-warning pull-right" (click)="debit_inv_history_modal()">Debit</button>
 			       	</div>
 			       	<div>
 					<mat-progress-spinner *ngIf="investment_history_loader" style="margin:auto;" mode="indeterminate" value=""></mat-progress-spinner>
 					</div>
-		        <table id="investment_history" *ngIf="!investment_history_loader" class="row table table-responsive-sm table-hover table-outline mb-0" width="100%">
+		        <table id="investment_history" *ngIf="!investment_history_loader" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
                     <thead>
                         <tr>
-                            <th>Trans ID</th>
+                            <th>TXNID</th>
                             <th>Investment Plan</th>
-                            <th>No.Days</th>
-                            <th>Interest%</th>
+                            <th>Days</th>
+                            <!-- <th>Interest%</th> -->
+                            <th>Previous Balance</th>
                             <th>Amount</th>
-                            <th>Balance</th>
-                            <th>Amount + Interest</th>
-                            <th>type</th>
+                            <th>Available Balance</th>
+                            <!-- <th>Amount + Interest</th> -->
+                            <!-- <th>type</th> -->
                             <th>Status</th>
                             <th>Date</th>
                             <th>Pre-Post</th>
@@ -194,22 +200,24 @@
                         <tr class="" *ngFor="let item of member_inv_history_list">
                             <td>#{{ item?.transaction_id }}</td>
                             <td>
-                               {{ item?.investment_plan?.name }} 
+                               {{ item?.investment_plan?.name }} ({{ item?.interest_percent }}%)
                             </td>
                             <td>
                             	{{ item?.no_days }}
                             </td>
-                            <td>{{ item?.interest_percent }}</td>
-                            <td>
-                               {{ item?.amount }}  
+                            <!-- <td>{{ item?.interest_percent }}</td> -->
+                            <td>{{ item?.previous_balance | number }}</td><td>
+                               <i *ngIf="item.transaction_type == 1" style="color: green">+{{ item?.amount | number }}</i>
+                               <i *ngIf="item.transaction_type == 0" style="color: red">-{{ item?.amount | number }}</i>
+                                 
                             </td>
-                            <td>{{ item?.current_balance }}</td>
-                            <td>
+                            <td>{{ item?.current_balance | number }}</td>
+                            <!-- <td>
                             	{{ calculate_loan_balance(item.current_balance, item?.interest_percent, item?.date) | number }} 
-                            </td>
-                            <td>
+                            </td> -->
+                            <!-- <td>
                                {{ item?.transaction_type }}  
-                            </td>
+                            </td> -->
                               <td>
                                 <mat-chip-list>
 				                    <mat-chip *ngIf="item.status==1" color="primary" selected="true">Posted</mat-chip>
@@ -358,7 +366,7 @@
     <div class="modal-dialog modal-lg">
        	<div class="modal-content">
          	<div class="modal-header">
-           		<h4 class="modal-title pull-left">Investment Subscription</h4>
+           		<h4 class="modal-title pull-left">{{ inv_form_modal_title }}</h4>
            		<button type="button" class="close pull-right" aria-label="Close" (click)="newInvestmentHistoryModal.hide()">
              	<span aria-hidden="true">&times;</span>
            		</button>
@@ -370,32 +378,15 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Investment Plan</label>
-                                <select class="form-control" placeholder="type" formControlName = "investmentplan_id">
+                                <select class="form-control" placeholder="type" formControlName = "member_investment_plan_id">
                                     <option selected="false">Type</option>
-                                    <option [value]="plan.investment_plan.id" *ngFor="let plan of member_plan_list">
+                                    <option [value]="plan.id" *ngFor="let plan of member_plan_list">
                                     	{{plan?.investment_plan?.name}}
                                     </option>
                                 </select>
-                                <mat-error [hidden]="(investmentHistoryForm.controls.investmentplan_id.valid ) || (investmentHistoryForm.controls.investmentplan_id.pristine )" class="text-danger">Please Select an Investment Plan</mat-error>
+                                <mat-error [hidden]="(investmentHistoryForm.controls.member_investment_plan_id.valid ) || (investmentHistoryForm.controls.member_investment_plan_id.pristine )" class="text-danger">Please Select an Investment Plan</mat-error>
                             </div>
                         </div>
-                        <!-- <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Period</label>
-                                <select class="form-control" placeholder="Period" formControlName = "period">
-                                    <option selected="false">Period</option>
-                                    <option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
-                                </select>
-                                <small [hidden]="(investmentHistoryForm.controls.period.valid ) || (investmentHistoryForm.controls.period.pristine )" class="text-danger">Period  is Required</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Date</label> <small>Date Contribution was made</small>
-                                <input type="date" name="" formControlName = "date" class="form-control">
-                                <small [hidden]="(investmentHistoryForm.controls.date.valid ) || (investmentHistoryForm.controls.date.pristine )" class="text-danger">Date you contribution was made is Required</small>
-                            </div>
-                        </div> -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Amount</label>

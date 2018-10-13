@@ -15,6 +15,9 @@ export class MemberInvestmentsComponent implements OnInit {
 
   public investment_application_form : FormGroup;
   public investmentHistoryForm : FormGroup;
+  inv_form_modal_title;
+  inv_form_button_title;
+  inv_form_type;
   public investmentFilterForm : FormGroup;
   submitPending: boolean = false;
   investment_details_loader: boolean = false;
@@ -46,6 +49,7 @@ export class MemberInvestmentsComponent implements OnInit {
   member_id;
   investment_plan_min_amt_error_msg;
   errorMessage;
+  interest_type;
 
     @ViewChild('newInvestmentPlanModal') public newInvestmentPlanModal : ModalDirective;
   	@ViewChild('newInvestmentHistoryModal') public newInvestmentHistoryModal : ModalDirective;
@@ -64,6 +68,7 @@ export class MemberInvestmentsComponent implements OnInit {
       	this.amount_type_list = this.localService.amount_type();
         this.return_on_investment_list = this.localService.return_on_investment_type()
         this.member_id = this.view_member_component.memberId;
+        this.interest_type = this.localService.interest_type();
         this.refresh()
 
   	}
@@ -79,7 +84,7 @@ export class MemberInvestmentsComponent implements OnInit {
         type : [null, Validators.compose([Validators.required])],
         date : [null, Validators.compose([Validators.required])],
         amount: [null, Validators.compose([Validators.required])],
-        investmentplan_id: [null, Validators.compose([Validators.required])],
+        member_investment_plan_id: [null, Validators.compose([Validators.required])],
         depositor:'',
         description: ''
       });
@@ -89,7 +94,7 @@ export class MemberInvestmentsComponent implements OnInit {
         to : '',
         id : '',
         type:'',
-        investmentplan_id:''
+        member_investment_plan_id:''
       });
   	}
 
@@ -150,7 +155,18 @@ export class MemberInvestmentsComponent implements OnInit {
   			
   		}
   	}
-
+    /*filter interest type from list of interest type*/
+    filter_interest_type(id)
+    {
+      let interest_type = this.localService.interest_type()
+      for (var i in interest_type) {
+        if(interest_type[i].value == id)
+        {
+          return interest_type[i].name;
+        }
+      }
+    }
+    /*filter currency code from list of currencies*/
   	filter_curency(code)
   	{
   		for (var i in this.currencies) {
@@ -327,6 +343,17 @@ export class MemberInvestmentsComponent implements OnInit {
 
     new_inv_history_modal()
     {
+      this.investmentHistoryForm.reset();
+      this.inv_form_modal_title = "Credit Investment Subscription";
+      this.inv_form_type = 1;
+      this.investment_history_form_loader = false;
+      this.newInvestmentHistoryModal.show();
+    }
+    debit_inv_history_modal()
+    {
+      this.investmentHistoryForm.reset();
+      this.inv_form_modal_title = "Debit Investment Subscription";
+      this.inv_form_type = 0;
       this.investment_history_form_loader = false;
       this.newInvestmentHistoryModal.show();
     }
@@ -349,13 +376,14 @@ export class MemberInvestmentsComponent implements OnInit {
       formValues.user_id = this.user.user_id;
       formValues.branch_id = this.user.branch_id;
       formValues.vendor_id = this.vendor.id;
-      formValues.transaction_type = 'credit';
+      formValues.transaction_type = this.inv_form_type;
       formValues.status = 0;
         this.investment_history_form_loader = true;
         this.investmentService.create_investment_history(formValues).subscribe((response) => {
           if (response.success) {
             this.investment_history_form_loader = false;
             this.get_member_investment_history();
+            this.get_member_investment_plan()
             this.investmentHistoryForm.reset()
             this.newInvestmentHistoryModal.hide();
             this.localService.showSuccess(response.message,'Operation Successfull');
@@ -434,5 +462,53 @@ export class MemberInvestmentsComponent implements OnInit {
                   days--;
         }
         return balance;
+    }
+
+  /**
+   * @method calculate_inv_plan_balance
+   * calculates member_investment_plan balance from last active deductions
+   * @var member_investment_plan
+   */
+  calculate_inv_plan_balance(member_investment_plan)
+  {
+      if(member_investment_plan.status == 1)
+      {
+        if(member_investment_plan.investment_plan.interest_type == 2)
+        {
+          if(member_investment_plan.investment_history.length > 0)
+          {
+            var lastItem = member_investment_plan.investment_history[member_investment_plan.investment_history.length-1];
+            let balance = lastItem.current_balance;
+            let interest = lastItem.interest_percent;
+            let last_date = lastItem.date;
+            if(balance > 1)
+            {
+              let last_time = moment(last_date)
+              let curr_time = 0
+              let rate: number;
+              let current_time = moment()
+              let days = current_time.diff(last_time, 'days')
+              let daily_interest
+              let monthly_interest=0;
+                var monthly = 10;
+                let interest_rate 
+                interest_rate = ((interest / 100) / 30).toFixed(4);
+
+                while (curr_time < days) {
+                  daily_interest = balance * interest_rate;
+                      balance = balance + daily_interest;
+                          days--;
+                }
+                return balance;
+            }else{
+              return 0;
+            }
+          } else{
+            return 0;
+          }
+        }
+      } else {
+        return 0;
+      }
     }
 }

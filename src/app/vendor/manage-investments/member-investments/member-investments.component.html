@@ -1,0 +1,186 @@
+<div class="card">
+  	<div class="card-body" style="padding:0px;">
+    	<div class="">
+    		<div class="">
+    			<div class="">
+    				<tabset>
+		          <tab heading="Manage Investment">
+			            <div class="col-md-12">
+                      <form [formGroup] = "investmentFilterForm" (ngSubmit) = "filter_member_investment_plan(investmentFilterForm.value)" style="width: 100%;">
+                        <div class="row p-1">
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label>From</label>
+                                <input type="date" formControlName = "from" class="form-control" name=""> 
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label>To</label>
+                                <input type="date" formControlName = "to" class="form-control" name="">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                            	<div class="form-group">
+                            		<label>Investment Plan</label>
+	                                <select class="form-control" placeholder="type" formControlName = "investmentplan_id">
+	                                    <option selected="false">Type</option>
+	                                    <option value="{{plan.id}}" *ngFor="let plan of investment_plan_list">{{ plan?.name }}</option>
+	                                </select>
+                            	</div>
+                            </div>
+                            <div class="col-md-2">
+                                  <div class="form-group">
+                                    <label>Status</label>
+                                    <select tabindex="1" formControlName="status" data-placeholder="Branch" class="form-control">
+                                      <option value="" disabled="" selected="">None</option>
+                                      <option value="0" >Pending</option>
+                                      <option value="1" >Active</option>
+                                      <option value="2">Cancelled</option>
+                                      <option value="3" >Completed | Closed</option>
+                                    </select>
+                                  </div>
+                                </div>
+
+                            <div class="col-md-1">
+                              <div class="form-group">
+                                <button type="submit" style="margin-top:30px" class="btn btn-primary" [disabled]="investmentFilterForm.invalid || investment_history_loader">
+                                 Filter</button>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- <div class="row" *ngIf="adv_filter">
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label>Trans. ID:</label>
+                                <input type="text" class="form-control" formControlName="id" placeholder="Invoice Number"/>
+                                <span *ngIf="searching">searching...</span>
+                                <ng-template #st let-s="result" let-t="sterm">
+                                  
+                                  {{ s.name}}
+                                </ng-template>
+                              </div>
+                            </div>
+                          </div> -->
+                      </form>
+                    </div>
+	            	<div class="container p-2">
+			           <button (click)="exportTable('xls', 'investment_history')" class="btn btn-outline btn-success">Export table</button>
+			           <button class="btn btn-outline btn-success" (click)="printReciept('investment_history')">Print</button>
+			       	</div>
+			       	<div>
+					<mat-progress-spinner *ngIf="investment_history_loader" style="margin:auto;" mode="indeterminate" value=""></mat-progress-spinner>
+					</div>
+			        <table *ngIf="!submitPending" id="member_invest_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+			            <thead>
+			                <tr>
+			                    <th>S/N</th>
+			                    <th>Member</th>
+			                    <th>Investment</th>
+			                    <th>Interest Type</th>
+			                    <th>Status</th>
+			                    <th>ROI</th>
+			                    <th>Current Balance</th>
+			                    <th>Start Date</th>
+			                    <th>Created</th>
+			                    <th>Created By</th>
+			                    <th>Approved</th>
+			                    <th>Actions</th>
+			                </tr>
+			            </thead>
+			            <tbody>
+			                <tr class="" *ngFor="let item of inv_member_list; let i = index">
+			                    <td>{{ i + 1 }}</td>
+			                    <td>
+	                               {{ item?.member?.first_name }} 
+	                               {{ item?.member?.last_name }} 
+	                               {{ item?.member?.middle_name }} 
+	                            </td>
+			                    <td>
+			                        {{item?.investment_plan?.name}} ({{item?.investment_plan?.interest}}%)
+			                    </td>
+			                    <td>
+			                        {{ filter_interest_type(item.investment_plan.interest_type) }}
+			                    </td>
+			                    <td>
+			                        <mat-chip-list>
+					                    <mat-chip *ngIf="item.status == 1" color="primary" selected="true">Active</mat-chip>
+					                    <mat-chip *ngIf="!item.status" color="accent" selected="true">Inactive</mat-chip>
+					                    <mat-chip *ngIf="item.status == 2" color="warn" selected="true">Cancelled</mat-chip>
+					                    <mat-chip *ngIf="item.status == 3" color="primary" selected="true">Completed/Closed</mat-chip>
+					                </mat-chip-list>
+			                    </td>
+			                    <td>
+			                    	{{ return_roi(item.roi_value) }}
+			                    </td>
+			                    <td>
+	                                {{ calculate_inv_plan_balance(item) | number }} 
+	                            </td>
+			                    <td>
+			                        {{item?.start_at | date: 'shortDate'}} 
+			                    </td>
+			                    <td>
+			                        {{item?.created_at | date: 'shortDate'}} 
+			                    </td>
+			                    <td>
+			                    	{{ item?.staff?.first_name}} 
+			                    	{{ item?.staff?.last_name}} 
+			                    	{{ item?.staff?.middle_name}}
+			                    </td>
+			                    <td>
+			                    	{{ item?.approved_by?.first_name}} 
+			                    	{{ item?.approved_by?.last_name}} 
+			                    	{{ item?.approved_by?.middle_name}}
+			                    </td>
+			                    <td class="center">
+			                    	<mat-menu #appM="matMenu">
+	                        		<mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
+									  <button *ngIf="!item.status" [swal]="approve_inv" mat-menu-item>Approve Investment</button>
+									  <button *ngIf="item.status !=3" [swal]="close_inv" mat-menu-item>Close Investment</button>
+									  <button [swal]="cancel_inv" mat-menu-item>Cancel Investment</button>
+									  <swal
+										  #approve_inv
+										  title="Are You Sure You want to Approve this Investment?"
+										  text="This cannot be undone"
+										  type="warning"
+										  [showCancelButton]="true"
+										  [focusCancel]="true"
+										  (confirm)="approve_investment(item.id, 1)">
+										</swal>
+										<swal
+										  #cancel_inv
+										  title="Are You Sure You want to Cancel this Investment?"
+										  text="This cannot be undone"
+										  type="warning"
+										  [showCancelButton]="true"
+										  [focusCancel]="true"
+										  (confirm)="approve_investment(item.id, 2)">
+										</swal>
+										<swal
+										  #close_inv
+										  title="Are You Sure You want to close this Investment?"
+										  text="This cannot be undone"
+										  type="warning"
+										  [showCancelButton]="true"
+										  [focusCancel]="true"
+										  (confirm)="approve_investment(item.id, 3)">
+										</swal>
+									</mat-menu>
+
+									<button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
+									  <mat-icon>more_vert</mat-icon>
+									</button>
+			                    </td>
+			                </tr>
+			            </tbody>
+			        </table>
+                <div class="col-md-12 load-more" *ngIf="show_pagination_button">
+                   <a  (click)="loadMore()" class="btn btn-success" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
+                </div>
+            </tab>
+        </tabset>
+    </div>
+            </div>
+    	</div>
+    </div>
+</div>

@@ -107,13 +107,24 @@ export class InvestmentService {
     }
 
     /**
-     * @method get_investment_plan
+     * @method get_member_investment_plan
      * filter investment
      * @return data
      */
     get_member_investment_plan(member_id)
     {
       return this.http.get(environment.api.url+'CoopManagement/member-investment-plan/'+JSON.parse(this.localService.getVendor()).id+'/'+member_id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method get_vendor_investment_plan
+     * filter investment
+     * @return data
+     */
+    get_vendor_member_investment_plan()
+    {
+      return this.http.get(environment.api.url+'CoopManagement/member-investment-plan/vendor/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
@@ -157,6 +168,17 @@ export class InvestmentService {
     filter_investment_history(data)
     {
       return this.http.post(environment.api.url+'CoopManagement/investment-history/filter', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+     /**
+     * @method filter_member_investment_plan
+     * get member investment history
+     * @return data
+     */
+    filter_member_investment_plan(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/member-investment-plan/vendor/filter', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 

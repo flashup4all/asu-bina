@@ -84,7 +84,12 @@ export class AppSidebarNavComponent {
               icon: 'icon-star'
             },
             {
-              name: 'Manage Investments',
+              name: 'Member Investments',
+              url: '/app/investment/member-investments',
+              icon: 'icon-star'
+            },
+            {
+              name: 'Investments History',
               url: '/app/investment/history',
               icon: 'icon-star'
             },
@@ -189,7 +194,12 @@ export class AppSidebarNavComponent {
           icon: 'icon-star'
         },
         {
-          name: 'Manage Investments',
+          name: 'Member Investments',
+          url: '/app/investment/member-investments',
+          icon: 'icon-star'
+        },
+        {
+          // name: 'Investments History',
           url: '/app/investment/history',
           icon: 'icon-star'
         },
@@ -348,11 +358,16 @@ export class AppSidebarNavComponent {
               url: '/app/contributions',
               icon: 'icon-star'
             },
-            /*{
-              name: 'Manage Investments',
+            {
+              name: 'Member Investments',
+              url: '/app/investment/member-investments',
+              icon: 'icon-star'
+            },
+            {
+              name: 'Investments History',
               url: '/app/investment/history',
               icon: 'icon-star'
-            },*/
+            },
             {
               name: 'Manage Target Savings',
               url: '/app/target-savings',
@@ -439,11 +454,16 @@ export class AppSidebarNavComponent {
           url: '/app/contributions',
           icon: 'icon-star'
         },
-        /*{
-          name: 'Manage Investments',
+        {
+          name: 'Member Investments',
+          url: '/app/investment/member-investments',
+          icon: 'icon-star'
+        },
+        {
+          name: 'Investments History',
           url: '/app/investment/history',
           icon: 'icon-star'
-        },*/
+        },
         {
           name: 'Manage Target Savings',
           url: '/app/target-savings',

@@ -63,6 +63,7 @@
                 <th>&#8358; Paid</th>
                 <!-- <th>Repayment Method</th> -->
                 <th>Duration(Months)</th>
+                <th>Current Interest Balance</th>
                 <th>Start Date(days)</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -101,6 +102,9 @@
                 <td>
                     {{item?.type.duration}} 
                 </td>
+                <td>
+                    {{ calculate_loan_balance(item) | number }} 
+                </td>
                   <td>
                     {{item?.start_date | date}} <p style="color: red" *ngIf="item?.deductions_per_loan == ''">({{ count_no_loan_days(item?.start_date) }})</p>
                 </td>
@@ -114,11 +118,18 @@
                 </td>
                 <td class="center">
                   <mat-menu #appM="matMenu">
+                      <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
                       <button mat-menu-item (click)="requestHistory(item.id)">Request History</button>
-                      <!-- <button mat-menu-item (click)="approveLoanRequest(item.id)">Approve Request</button>
-                      <button mat-menu-item (click)="loadPaymentModal(item)">Pay Now</button>
-                      <button *ngIf="item.status != 'cancelled'" mat-menu-item>Cancel Request</button>
-                      <button mat-menu-item (click)="deleteLoanRequest(item.id)" >Delete</button> -->
+                      <button *ngIf="item.status != 3" [swal]="swal_close_loan" mat-menu-item>Close Request</button>
+                      <swal
+                        #swal_close_loan
+                        title="Are You Sure You want to Close this Loan Request?"
+                        text="This cannot be undone"
+                        type="warning"
+                        [showCancelButton]="true"
+                        [focusCancel]="true"
+                        (confirm)="close_loan(item)">
+                      </swal>
                     </mat-menu>
 
                     <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">

@@ -29,9 +29,10 @@
                                 <p>
                                     Amount: &#8358; {{ loanRequest?.amount | number }}
                                 </p>
-                                <!-- <p>
-                                	Interest Amount: &#8358; {{ loanRequest?.interest_amount | number }}
-                                </p> -->
+                                <p>
+                                  <mat-chip color="warn" selected="true">
+                                	Current Balance: &#8358; {{ calculate_total_loan_balance(loanRequest) | number }} </mat-chip>
+                                </p>
                                 <p>
                                     Status:
                                     <span class="pull-right">

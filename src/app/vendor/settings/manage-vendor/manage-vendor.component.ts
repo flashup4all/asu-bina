@@ -66,7 +66,7 @@ export class ManageVendorComponent implements OnInit {
 			this.vendor = JSON.parse(this.localService.getVendor());
 			this.editVendorData = JSON.parse(this.localService.getVendor());
             this.getAccountNumbers();
-            this.getBankList();
+            //this.getBankList();
 		}
 
 	ngOnInit() {

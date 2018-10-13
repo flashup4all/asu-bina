@@ -12,6 +12,8 @@ import { ContributionService } from '../manage-contribution/contribution.service
 import { WidthdrawalsService } from '../manage-widthdrawals/widthdrawals.service';
 import { environment } from '../../../environments/environment';
 declare let d3: any;
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -50,6 +52,7 @@ export class DashboardComponent implements OnInit {
     public user;
 	  public messagesList;
     public messages: boolean;
+    approve_btn_loader: boolean = false;
     public viewMessages: boolean;
     public messageDetails;
     public messageForm: FormGroup;
@@ -74,8 +77,7 @@ export class DashboardComponent implements OnInit {
   		this.getMembers();
       this.vendor = JSON.parse(this.localService.getVendor());
   		this.user = JSON.parse(this.localService.getUser());
-      console.log(this.user.role_id)
-        this.member_image_url = environment.api.imageUrl+'profile/member/';
+      this.member_image_url = environment.api.imageUrl+'profile/member/';
       	//this.getVendorMessages('inbox');
   		this.getLoanRequest();
       this.getChangeContributionRequest();
@@ -102,6 +104,91 @@ export class DashboardComponent implements OnInit {
 			this.membersList = response.data.data
 		});
 	}
+
+  filter_loan_interest_type(id)
+  {
+    let interest_type = this.localService.interest_type()
+    for (var i in interest_type) {
+      if(interest_type[i].value == id)
+      {
+        return interest_type[i].name;
+      }
+    }
+  }
+
+  /**
+   * @method calculate_loan_balance
+   * calculates loan balance from last active deductions
+   * @var loan
+   */
+  calculate_loan_balance(loan)
+  {
+      if(loan.status == 1)
+      {
+        if(loan.type.interest_type == 2)
+        {
+          if(loan.deductions_per_loan.length > 0)
+          {
+            var lastItem = loan.deductions_per_loan[loan.deductions_per_loan.length-1];
+            let balance = lastItem.current_balance;
+            let interest = lastItem.interest_percent;
+            let last_date = lastItem.run_date;
+            if(balance > 1)
+            {
+              let last_time = moment(last_date)
+              let curr_time = 0
+              let rate: number;
+              let current_time = moment()
+              let days = current_time.diff(last_time, 'days')
+              let daily_interest
+              let monthly_interest=0;
+                var monthly = 10;
+                let interest_rate 
+                interest_rate = ((interest / 100) / 30).toFixed(4);
+
+                while (curr_time < days) {
+                  daily_interest = balance * interest_rate;
+                      balance = balance + daily_interest;
+                          days--;
+                }
+                return balance;
+            }else{
+              return 0;
+            }
+          } else{
+            let balance = loan.amount;
+            let interest = loan.interest_percent;
+            let last_date = loan.start_date;
+            let last_time = moment(last_date)
+            let curr_time = 0
+            let rate: number;
+            let current_time = moment()
+            let days = current_time.diff(last_time, 'days')
+            let daily_interest
+            let monthly_interest=0;
+            var monthly = 10;
+            let interest_rate 
+            interest_rate = ((interest / 100) / 30).toFixed(4);
+
+            while (curr_time < days) {
+              daily_interest = balance * interest_rate;
+                  balance = balance + daily_interest;
+                      days--;
+            }
+            return balance;
+          }
+        }
+      } else {
+        return 0;
+      }
+    }
+
+  percentage_to_amount(total_amount, percentage)
+  {
+    let amount = 0
+    return amount = parseInt(total_amount) * (parseInt(percentage)/100);
+  }
+
 	/**
 	 * @method getVendorstatistics
 	 * get vendor stats
@@ -110,9 +197,7 @@ export class DashboardComponent implements OnInit {
 	getVendorstatistics()
 	{
 		this.dashboardService.getVendorStatistics().subscribe((response) => {
-      console.log(response)
       this.total_paid_contribution = response.data.total_paid_contribution
-      console.log(response.data.total_paid_contribution)
 			this.total_pending_contribution = response.data.total_pending_contribution
 			this.totalDedutions = response.data.totalDeduction
       this.totalMembers = response.data.totalNoMembers
@@ -121,7 +206,7 @@ export class DashboardComponent implements OnInit {
 			this.total_widthdrawals_pending = response.data.total_widthdrawals_pending
 
       for (var i = 0; i < this.totalMembers.length; i++) {
-        console.log(this.totalMembers[i].first_name)
+        // console.log(this.totalMembers[i].first_name)
       }
 		});
 	}
@@ -170,8 +255,40 @@ export class DashboardComponent implements OnInit {
 	/*loan request method*/
 
 	requestHistory(id)
+  {
+    this.route.navigate(['app/loan-request/'+id+'/loan-request-history'])
+  }
+
+  /**
+     * @method close_loan
+     * close | complete | stop an active loan
+     * @var loan
+     * @return response
+     */
+    close_loan(loan)
     {
-      this.route.navigate(['coorp/'+id+'/loan-request-history'])
+      console.log(loan)
+      this.approve_btn_loader = true;
+      let data = {
+        vendor_id: this.vendor.id,
+        user_id: this.user.id,
+        member_id: loan.member_id,
+        loan_request_id: loan.id,
+      } 
+      this.loanrequestService.close_loan_request(data).subscribe((response) => {
+        if(response.success)
+        {
+          this.approve_btn_loader = false;
+           this.getLoanRequest()
+          this.localService.showSuccess(response.message,'Operation Successfull');
+        }else{
+          this.approve_btn_loader = false;
+          this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      }, (error) => {
+          this.approve_btn_loader = false;
+          this.localService.showError('Please contact admin','Server Error!!');
+      })
     }
 
 	/**
@@ -423,7 +540,6 @@ export class DashboardComponent implements OnInit {
   approveChangeContribution(data)
   {
     data['approved_by'] = JSON.parse(this.localService.getUser()).id;
-    console.log(data)
     this.contributionService.approveChangeContribution(data).subscribe((response) => {
       if (response.success) {
           this.getChangeContributionRequest()

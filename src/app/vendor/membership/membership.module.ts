@@ -7,6 +7,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 //import { MembershipRoutingModule } from './membership-routing.module';
 import { ManageMembersComponent } from './manage-members/manage-members.component';
 import { ViewMemberComponent } from './view-member/view-member.component';
+import { MemberWithdrawalsComponent } from './member-withdrawals/member-withdrawals';
 import { MemberInvestmentsComponent } from './member-investments/member-investments.component';
 import { MemberContributionsComponent } from './member-contributions/member-contributions.component';
 import { MemberAccountOfficerComponent } from './member-account-officer/member-account-officer.component';
@@ -44,7 +45,8 @@ export const members_routes = [
     MemberInvestmentsComponent, 
     MemberContributionsComponent,
     MemberLoanRequestComponent,
-    MemberDeductionsComponent
+    MemberDeductionsComponent,
+    MemberWithdrawalsComponent,
   ],
   providers: [MembersService]
 })

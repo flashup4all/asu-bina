@@ -37,6 +37,7 @@ export class ViewRequestHistoryComponent implements OnInit {
   memberLoanDeductionsList;
   deduction_type_list;
   monthList;
+  total_loan_balance;
   current_year = moment().format('YYYY');
   @ViewChild('approve_loan_request_modal') public approve_loan_request_modal :ModalDirective;
   @ViewChild('newRepaymentModal') public newRepaymentModal : ModalDirective;
@@ -89,6 +90,7 @@ export class ViewRequestHistoryComponent implements OnInit {
     this.history_loader = true;
 		this.loanrequestService.getSingleLoanRequest(this.loan_request_id).subscribe((response) => {
       this.history_loader = false;
+      //this.calculate_total_loan_balance(response)
 			this.loanRequest = response
 		});
 	}
@@ -101,13 +103,10 @@ export class ViewRequestHistoryComponent implements OnInit {
   	getLoanSignatories(id)
   	{
       this.approvals_loader = true;
-        this.loanrequestService.getLoanRequestApprovals(id).subscribe((response) => {
-      this.approvals_loader = false;
-         this.loanSignatoryList = response.data
-         //console.log(this.loanSignatoryList)
-         //this.total_signatories = response.data.length
-        
-       })
+      this.loanrequestService.getLoanRequestApprovals(id).subscribe((response) => {
+        this.approvals_loader = false;
+        this.loanSignatoryList = response.data;
+      })
   	}
 	/**
      * @method show_sapprove_loan_request_form
@@ -140,6 +139,7 @@ export class ViewRequestHistoryComponent implements OnInit {
         if(response.success)
         {
           this.getLoanRequest();
+          this.getLoanSignatories(this.loan_request_id);
           this.approve_loan_request_modal.hide()
           this.approval_data = null;
           this.localService.showSuccess(response.message,'Operation Successfull');
@@ -238,6 +238,137 @@ export class ViewRequestHistoryComponent implements OnInit {
       });
 
     }*/
+  /**
+   * @method calculate_total_loan_balance
+   * calculates loan balance from last active deductions
+   * @var loan
+   */
+  calculate_total_loan_balance(loan)
+  {
+    if(loan)
+    {
+      if(loan.status == 1)
+      {
+        if(loan.type.interest_type == 2)
+        {
+          if(loan.deductions_per_loan.length > 0)
+          {
+            var lastItem = loan.deductions_per_loan[loan.deductions_per_loan.length-1];
+            let balance = lastItem.current_balance;
+            let interest = lastItem.interest_percent;
+            let last_date = lastItem.run_date;
+            if(balance > 1)
+            {
+              let last_time = moment(last_date)
+              let curr_time = 0
+              let rate: number;
+              let current_time = moment()
+              let days = current_time.diff(last_time, 'days')
+              let daily_interest
+              let monthly_interest=0;
+                var monthly = 10;
+                let interest_rate 
+                interest_rate = ((interest / 100) / 30).toFixed(4);
+
+                while (curr_time < days) {
+                  daily_interest = balance * interest_rate;
+                      balance = balance + daily_interest;
+                          days--;
+                }
+                return balance;
+            }else{
+              return 0;
+            }
+          } else{
+            let balance = loan.amount;
+            let interest = loan.interest_percent;
+            let last_date = loan.start_date;
+            let last_time = moment(last_date)
+            let curr_time = 0
+            let rate: number;
+            let current_time = moment()
+            let days = current_time.diff(last_time, 'days')
+            let daily_interest
+            let monthly_interest=0;
+            var monthly = 10;
+            let interest_rate 
+            interest_rate = ((interest / 100) / 30).toFixed(4);
+
+            while (curr_time < days) {
+              daily_interest = balance * interest_rate;
+                  balance = balance + daily_interest;
+                      days--;
+            }
+            return balance;
+          }
+        }
+        if(loan.type.interest_type == 1)
+        {
+        /*
+          if(loan.deductions_per_loan.length > 0)
+          {
+            var lastItem = loan.deductions_per_loan[loan.deductions_per_loan.length-1];
+            let balance = lastItem.current_balance;
+            let interest = lastItem.interest_percent;
+            let last_date = lastItem.run_date;
+            if(balance > 1)
+            {
+
+              let last_time = moment(last_date)
+              let curr_time = 0
+              let rate: number;
+              let current_time = moment()
+              let days = current_time.diff(last_time, 'days')
+              let daily_interest
+              let monthly_interest=0;
+                var monthly = 10;
+                let interest_rate 
+                interest_rate = ((interest / 100) / 30).toFixed(4);
+
+                while (curr_time < days) {
+                  daily_interest = balance * interest_rate;
+                      balance = balance + daily_interest;
+                          days--;
+                }
+                return balance;
+            }else{
+              return 0;
+            }
+          } else{
+            let balance = loan.amount;
+            let interest = loan.interest_percent;
+            let last_date = loan.start_date;
+            let last_time = moment(last_date)
+            let curr_time = 0
+            let rate: number;
+            let current_time = moment()
+            let days = current_time.diff(last_time, 'days')
+            let daily_interest
+            let monthly_interest=0;
+            var monthly = 10;
+            let interest_rate 
+            interest_rate = ((interest / 100) / 30).toFixed(4);
+
+            while (curr_time < days) {
+              daily_interest = balance * interest_rate;
+                  balance = balance + daily_interest;
+                      days--;
+            }
+            return balance;
+          }
+        }*/
+        
+      }else{
+        return 0;
+      }
+      // balance, interest, last_date
+      
+      } else {
+        return 0;
+      }
+    }
+    
+}
     upload() {
 	    const formData: any = new FormData();
 	    const files: Array<File> = this.filesToUpload;

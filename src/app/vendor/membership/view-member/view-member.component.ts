@@ -15,7 +15,7 @@ import { WidthdrawalsService } from '../../manage-widthdrawals/widthdrawals.serv
 import * as moment from 'moment';
 import { TableExportService } from '../../../shared/services/index';
 import { environment } from '../../../../environments/environment';
-
+//import { MemberContributionsComponent } from '../member-contributions/member-contributions.component';
 @Component({
   selector: 'app-view-member',
   templateUrl: './view-member.component.html',
@@ -78,6 +78,8 @@ export class ViewMemberComponent implements OnInit {
     passport;
     member_signature;
     vendor_branch;
+   member_active_loans;
+   count_active_loans;
    @ViewChild('fileInput') fileInput: ElementRef;
 
     @ViewChild('newLoanRequestModal') public newLoanRequestModal : ModalDirective;
@@ -102,7 +104,7 @@ export class ViewMemberComponent implements OnInit {
       private loanRequestService : LoanRequestService,
       private loanSettingsService : LoanSettingsService,
     	private targetService : TargetSavingsService,
-      //private member_loan_request_component : MemberLoanRequestComponent
+      //private member_contribution_component : MemberContributionsComponent
     	) {
         this.image_url = environment.api.imageUrl+'profile/member/';
         this.signature_url = environment.api.imageUrl+'profile/signature/';
@@ -117,15 +119,16 @@ export class ViewMemberComponent implements OnInit {
         this.getMemberProfile();
         this.getMemberLoanRequest();
         //this.getMemberLoanDeductions();
-        this.getMemberContributions();
+        //this.getMemberContributions();
         this. getFormFields();
         // this.getLoanType();
         this.get_contribution_type()
         this.get_deduction_type()
         this.getMemberTargetSavings()
-        this.getMemberWithdrawal();
+        //this.getMemberWithdrawal();
         this.getActualBalance();
         this.get_member_contribution_plan();
+        this.get_member_active_loans()
        }
 
     ngOnInit() {
@@ -246,6 +249,47 @@ export class ViewMemberComponent implements OnInit {
         this.submitPending = false;
       })
     }
+
+    get_member_active_loans()
+    {
+      //this.submitPending = true;
+      this.memberService.getMemberActiveLoanRequest(this.memberId).subscribe((response) => {
+        this.member_active_loans = response.data;
+        this.count_active_loans = response.data.length
+        /*if(this.member_active_loans.length > 0)
+        {
+          for (var i = Things.length - 1; i >= 0; i--) {
+            Things[i]
+          }
+          console.log('has loans')
+        }*/
+        //this.submitPending = false;
+      })
+    }
+
+    calculate_loan_balance(balance, interest, last_date)
+  {
+    if(balance > 1)
+    {
+      let last_time = moment(last_date)
+      let curr_time = 0
+      let rate: number;
+      let current_time = moment()
+      let days = current_time.diff(last_time, 'days')
+      let daily_interest
+      let monthly_interest=0;
+        var monthly = 10;
+        let interest_rate 
+        interest_rate = ((interest / 100) / 30).toFixed(4);
+
+        while (curr_time < days) {
+          daily_interest = balance * interest_rate;
+              balance = balance + daily_interest;
+                  days--;
+        }
+        return balance;
+    }
+  }
 
     /**
      * @method getMemberProfile
@@ -678,6 +722,7 @@ export class ViewMemberComponent implements OnInit {
         this.btn_loader = false;
          this.getMemberWithdrawal()
          this.getActualBalance();
+         //this.member_contribution_component.get_member_contribution_plan();
         this.localService.showSuccess(response.message,'Operation Successfull');
       }
       else{

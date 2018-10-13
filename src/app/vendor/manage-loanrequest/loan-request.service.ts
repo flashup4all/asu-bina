@@ -25,6 +25,17 @@ export class LoanRequestService {
     {
       return this.http.post(environment.api.url+'CoopManagement/cancel-loan-request', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method close_loan_request
+     * close active loan request
+     * @return data
+     */
+    close_loan_request(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/loan-request/close-loan', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     } 
 
     /**

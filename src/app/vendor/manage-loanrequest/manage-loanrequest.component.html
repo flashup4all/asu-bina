@@ -5,7 +5,7 @@
                 <tabset>
                   <tab heading="Manage Loan Request">
                         <div class="col-md-12">
-                             <form [formGroup] = "filterForm" (ngSubmit) = "filterLoanRequest(filterForm.value)" style="width: 100%;">
+                            <form [formGroup] = "filterForm" (ngSubmit) = "filterLoanRequest(filterForm.value)" style="width: 100%;">
                             <div class="row p-1">
                                 <div class="col-md-3">
                                   <div class="form-group">
@@ -19,7 +19,7 @@
                                     <input type="date" formControlName = "to" class="form-control" name="">
                                   </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                   <div class="form-group">
                                     <label>Branch</label>
                                     <select tabindex="1" formControlName="branch_id" data-placeholder="Branch" class="form-control">
@@ -29,6 +29,18 @@
                                   </div>
                                 </div>
                                 <div class="col-md-3">
+                                  <div class="form-group">
+                                    <label>Status</label>
+                                    <select tabindex="1" formControlName="status" data-placeholder="Branch" class="form-control">
+                                      <option value="" disabled="" selected="">None</option>
+                                      <option value="0" >Pending</option>
+                                      <option value="1" >Active</option>
+                                      <option value="2">Cancelled</option>
+                                      <option value="3" >Completed | Closed</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="col-md-1">
                                   <div class="form-group">
                                     <!-- <button type="button" class="btn btn-primary" style="margin-top: 30px;" (click)="show_adv_form()"><i class="fa fa-filter"></i></button> -->
                                     <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
@@ -63,7 +75,7 @@
                                 <button style="margin-left:5px;" (click)="exportTable('xls', 'loan_request_table')" class="btn btn-outline btn-success">Export table</button>
                                 <button class="btn btn-outline btn-success" (click)="printReciept('loan_request_table')">Print</button>
                             </div>
-                            <table id="loan_request_table" class="table table-responsive-sm table-hover table-outline mb-0">
+                            <table id="loan_request_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
                                 <thead>
                                     <tr>
                                         <th>Branch</th>
@@ -71,10 +83,11 @@
                                         <th>Loan Type (% Intr)</th>
                                         <th>Interest Type</th>
                                         <th>&#8358; Amount</th>
-                                        <th>&#8358; Interest</th>
+                                        <!-- <th>&#8358; Interest</th> -->
                                         <!-- <th>&#8358;Monthly Deductions</th> -->
                                         <!-- <th>Repayment Method</th> -->
                                         <th>Duration(Months)</th>
+                                        <th>Current Interest Balance</th>
                                         <th>Start Date</th>
                                         <th>Created</th>
                                         <th>Status</th>
@@ -96,9 +109,9 @@
                                         <td>
                                             {{item?.amount | number }} 
                                         </td>
-                                        <td>
+                                        <!-- <td>
                                             {{ percentage_to_amount(item.amount, item.type.interest)  | number }} 
-                                        </td>
+                                        </td> -->
                                         <!-- <td>
                                             {{item.monthly_deductions | number:'.2'}} 
                                         </td>
@@ -109,29 +122,45 @@
                                             {{item.type.duration}} 
                                         </td>
                                         <td>
+                                            {{ calculate_loan_balance(item) | number }} 
+                                        </td>
+                                        <td>
                                             {{item.start_date |date}} <!-- <p style="color: red">({{ count_no_loan_days(item?.start_date) }})</p> -->
                                         </td>
                                           <td>
-                                            {{item.created_at}} 
-                                        </td>
-                                          <td>
-                                            <mat-chip-list>
-                                        <mat-chip *ngIf="item?.status == 1" color="primary" selected="true">Approved</mat-chip>
-                                        <mat-chip *ngIf="item?.status == 0" color="accent" selected="true">Pending</mat-chip>
-                                        <mat-chip *ngIf="item?.status == 2" color="warn" selected="true">Cancelled</mat-chip>
-                                    </mat-chip-list>
+                                            {{ item.created_at }} 
                                         </td>
                                         <td>
-                                            <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="requestappMenu">
-                                              <mat-icon>more_vert</mat-icon>
-                                            </button>
+                                            <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
+                                            <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
+                                            <span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
+                                            <span *ngIf="item.status == 3" class="badge badge-primary">Closed </span>
+                                            <!-- <mat-chip-list>
+                                                <mat-chip *ngIf="item?.status == 1" color="primary" selected="true">Approved</mat-chip>
+                                                <mat-chip *ngIf="item?.status == 0" color="accent" selected="true">Pending</mat-chip>
+                                                <mat-chip *ngIf="item?.status == 2" color="warn" selected="true">Cancelled</mat-chip>
+                                                <mat-chip *ngIf="item?.status == 3" color="primary" selected="true">Completed/Closed</mat-chip>
+                                            </mat-chip-list> -->
+                                        </td>
+                                        <td class="center">
+                                            
                                             <mat-menu #requestappMenu="matMenu">
-                                              <button mat-menu-item (click)="requestHistory(item.id)">Request History</button>
-                                              <!-- <button mat-menu-item (click)="approveLoanRequest(item.id)">Approve Request</button>
-                                              <button mat-menu-item (click)="loadPaymentModal(item)">Pay Now</button>
-                                              <button *ngIf="item.status != 'cancelled'" mat-menu-item>Cancel Request</button>
-                                              <button mat-menu-item (click)="deleteLoanRequest(item.id)" >Delete</button> -->
+                                                <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
+                                                <button mat-menu-item (click)="requestHistory(item.id)">Request History</button>
+                                                <button *ngIf="item.status != 3" [swal]="swal_close_loan" mat-menu-item>Close Request</button>
+                                                <swal
+                                                    #swal_close_loan
+                                                    title="Are You Sure You want to Close this Loan Request?"
+                                                    text="This cannot be undone"
+                                                    type="warning"
+                                                    [showCancelButton]="true"
+                                                    [focusCancel]="true"
+                                                    (confirm)="close_loan(item)">
+                                                </swal>
                                             </mat-menu>
+                                            <button *ngIf="item.status != 2 && user.role_id != 4" [matMenuTriggerFor]="requestappMenu" class="btn btn-primary btn-sm">
+                                              <i class="fa fa-sliders"> </i>
+                                            </button>
                                         </td>
                                     </tr>
                                 </tbody>

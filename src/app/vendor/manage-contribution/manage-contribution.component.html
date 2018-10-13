@@ -149,7 +149,7 @@
 			            	<div style="margin-bottom: 4px">
 			            		<button style="margin-left:5px;" (click)="exportTable('xls', 'contri_table')" class="btn btn-outline btn-success">Export table</button>
                         		<button class="btn btn-outline btn-success" (click)="printReciept('contri_table')">Print</button>
-                        		<a class="btn btn-success" [routerLink]="['/app/contributions/run-contributions']" (click)="manageContribution()">Manage Contributions</a>
+                        		<!-- <a class="btn btn-success" [routerLink]="['/app/contributions/run-contributions']" (click)="manageContribution()">Manage Contributions</a> -->
 			            	</div>
             				<mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
 

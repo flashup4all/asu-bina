@@ -63,18 +63,20 @@
                       <a class="btn"><i class="fa fa-home shaded"></i>Branch: {{ member?.branch?.name }} (branch code : #00{{ member?.branch?.id }})</a>
                     </h3>
                 </div>
+                <div class="profile-details muted" *ngIf="count_active_loans > 0">
+                  <mat-chip color="warn" selected="true">Active Loans: {{ count_active_loans }}</mat-chip>
+                   <!--  <h3 ><a class="btn pull-left"><i class="fa fa-money shaded"></i> Loans : {{ member?.account_number }} </a></h3> -->
+                </div>
                 <div class="profile-details muted">
                     <h3><a class="btn pull-left"><i class="fa fa-balance-scale shaded"></i> Contribution Balance:<span class="label label-sm label-success"> &#8358; {{ actual_balance | number }} </span></a></h3>
-                    <!-- &#8358; {{ member?.contribution_balance | number }} -->
-                    <!-- <h3><a class="btn pull-left"><i class="fa fa-balance-scale shaded"></i> 
-                        Total Deduction: <span class="label label-sm label-danger"> &#8358; {{ total_deduction || 0 }} </span></a></h3>
-                     <h3><a class="btn"><i class="fa fa-phone shaded"></i> {{member?.phone2}} </a></h3>  -->
                 </div>
                 <div class="profile-details muted">
                     <h3 *ngIf="member?.account_number != ''"><a class="btn pull-left"><i class="fa fa-money shaded"></i> Account No. : {{ member?.account_number }} </a></h3>
                 </div>
+
             </div>
         </div>
+        
         <div class="row">
                 <div class="col">
                     <tabset>
@@ -285,6 +287,13 @@
                                     </tbody>
                                   </table>
                                 </mat-expansion-panel>
+                                <mat-expansion-panel hideToggle="false" style="width:100%">
+                                  <mat-expansion-panel-header>
+                                      <mat-panel-title>Account Settings</mat-panel-title>
+                                  </mat-expansion-panel-header>
+                                  <br>
+                                   
+                                </mat-expansion-panel>
                             </mat-accordion>
                           
                         </tab>
@@ -292,7 +301,8 @@
                           <app-member-contributions></app-member-contributions>
                         </tab>
                         <tab heading="WITHDRAWAL">
-                            <div class="container p-2">
+                          <app-member-withdrawals></app-member-withdrawals>
+                            <!-- <div class="container p-2">
                                    <button (click)="exportTable('xls', 'withdrawal_table')" class="btn btn-outline btn-success">Export table</button>
                                    <button class="btn btn-outline btn-success" (click)="printReciept('withdrawal_table')">Print</button>
                                    <button type="button" class="btn btn-primary pull-right" (click)="newWithdrawalModal.show()"> Make a Withdrawal</button>
@@ -381,7 +391,7 @@
                                             <td></td>
                                         </tr>
                                     </tbody>
-                                </table>
+                                </table> -->
                         </tab>
                         <tab heading="LOAN REPAYMENTS">
                           <app-member-deductions></app-member-deductions>
@@ -390,7 +400,7 @@
                             <app-member-loan-request></app-member-loan-request>
                         </tab>
                         <tab heading="INVESTMENTS">
-                          Coming soon<!-- <app-member-investments></app-member-investments> -->
+                          <app-member-investments></app-member-investments>
                         </tab>
                         <!-- <tab heading="TARGET SAVINGS">
                             <div class="row">
@@ -578,7 +588,7 @@
    </div>
 </div>
 
-<div bsModal #newWithdrawalModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<!-- <div bsModal #newWithdrawalModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
      <div class="modal-dialog modal-md">
        <div class="modal-content">
          <div class="modal-header">
@@ -608,12 +618,6 @@
                                 <small [hidden]="(withdrawalForm.controls.amount.valid ) || (withdrawalForm.controls.amount.pristine )" class="text-danger">Amount Required</small>
                             </div>
                         </div>
-                       <!--  <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Description</label>
-                                <textarea formControlName = "description" class="form-control"></textarea>
-                            </div>
-                        </div> -->
                     </div>
                        <button type="submit" class="btn btn-success" [disabled]="withdrawalForm.invalid || submitPending">
                             <span *ngIf="!submitPending">Request Withdrawals</span>
@@ -625,4 +629,4 @@
          </div>
        </div>
      </div>
-</div>
+</div> -->

@@ -33,7 +33,7 @@
 						            </form>
 						        </div>
 						        <div class="col-md-4">
-						        	<a class="btn btn-success" [routerLink]="['/app/deductions/run-deductions']">Manage Deductions</a>
+						        	<!-- <a class="btn btn-success" [routerLink]="['/app/deductions/run-deductions']">Manage Deductions</a> -->
 						        	<button class="btn btn-success" (click)="show_adv_form()">Search</button>
 						        </div>
 			            	</div>
@@ -111,7 +111,7 @@
 						                <th>Interest Days</th>
 						                <th>&#8358; Amount Paid</th>
 						                <th>&#8358; Last Balance</th>
-						                <th>&#8358; Current Interest Balance</th>
+						                <!-- <th>&#8358; Current Interest Balance</th> -->
 						                <th>Status</th>
 					                    <th>Date</th>
 					                    <th>Created</th>
@@ -146,10 +146,9 @@
 						                  <td>
 						                      {{item?.current_balance | number }} 
 						                  </td>
-						                  <td>
-						                  <!-- item?.current_balance -->
+						                  <!-- <td>
 						                      {{ calculate_loan_balance(item.current_balance, item.interest_percent, item.run_date) | number }} 
-						                  </td>
+						                  </td> -->
 						                  <td>
 						                    <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
 						                    <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
