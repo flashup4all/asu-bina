@@ -94,6 +94,7 @@ export class MemberInvestmentsComponent implements OnInit {
         to : '',
         id : '',
         type:'',
+        investmentplan_id:'',
         member_investment_plan_id:''
       });
   	}
