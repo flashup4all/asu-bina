@@ -207,7 +207,8 @@
                             	{{ item?.no_days }}
                             </td>
                             <!-- <td>{{ item?.interest_percent }}</td> -->
-                            <td>{{ item?.previous_balance | number }}</td><td>
+                            <td>{{ item?.previous_balance | number }}</td>
+                            <td>
                                <i *ngIf="item.transaction_type == 1" style="color: green">+{{ item?.amount | number }}</i>
                                <i *ngIf="item.transaction_type == 0" style="color: red">-{{ item?.amount | number }}</i>
                                  
