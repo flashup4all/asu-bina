@@ -74,7 +74,7 @@
                             <th>Member</th>
                             <th>Investment Plan</th>
                             <th>Amount</th>
-                            <th>Amount + Interest</th>
+                            <!-- <th>Amount + Interest</th> -->
                             <th>type</th>
                             <th>Status</th>
                             <th>Date</th>
@@ -97,9 +97,9 @@
                             <td>
                                {{ item?.amount }}  
                             </td>
-                            <td>
+                            <!-- <td>
                             	{{ calculate_loan_balance(item.amount, item?.interest_percent, item?.date) | number }} 
-                            </td>
+                            </td> -->
                             <td>
                                {{ item?.transaction_type }}  
                             </td>

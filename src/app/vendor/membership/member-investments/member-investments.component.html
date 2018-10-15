@@ -41,10 +41,11 @@
 		                    </td>
 		                    <td>
 		                        <mat-chip-list>
-				                    <mat-chip *ngIf="item.status == 1" color="primary" selected="true">Active</mat-chip>
-				                    <mat-chip *ngIf="!item.status" color="accent" selected="true">Inactive</mat-chip>
-				                    <mat-chip *ngIf="item.status == 2" color="warn" selected="true">Cancelled</mat-chip>
-				                </mat-chip-list>
+					                    <mat-chip *ngIf="item.status == 1" color="primary" selected="true">Active</mat-chip>
+					                    <mat-chip *ngIf="!item.status" color="accent" selected="true">Inactive</mat-chip>
+					                    <mat-chip *ngIf="item.status == 2" color="warn" selected="true">Cancelled</mat-chip>
+					                    <mat-chip *ngIf="item.status == 3" color="primary" selected="true">Completed/Closed</mat-chip>
+					                </mat-chip-list>
 		                    </td>
 		                    <td>
 		                    	{{ return_roi(item.roi_value) }}
