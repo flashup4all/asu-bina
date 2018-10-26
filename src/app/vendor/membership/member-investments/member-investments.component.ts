@@ -21,7 +21,8 @@ export class MemberInvestmentsComponent implements OnInit {
   public investmentFilterForm : FormGroup;
   submitPending: boolean = false;
   investment_details_loader: boolean = false;
-	form_loader: boolean = false;
+  form_loader: boolean = false;
+	apply_form_loader: boolean = false;
   investment_history_form_loader: boolean =false;
   investment_history_loader: boolean =false;
 	vendor;
@@ -94,6 +95,7 @@ export class MemberInvestmentsComponent implements OnInit {
         to : '',
         id : '',
         type:'',
+        transaction_type:'',
         investmentplan_id:'',
         member_investment_plan_id:''
       });
@@ -198,11 +200,13 @@ export class MemberInvestmentsComponent implements OnInit {
     }
     apply_investment(form_values,investment)
     {
+      this.apply_form_loader = true;
       this.investment_application_form.updateValueAndValidity();
     if (this.investment_application_form.invalid) {
       Object.keys(this.investment_application_form.controls).forEach(key => {
         this.investment_application_form.get(key).markAsDirty();
       });
+      this.apply_form_loader = false;
       return;
     }
       for (var i in this.member_plan_list) {
@@ -220,21 +224,21 @@ export class MemberInvestmentsComponent implements OnInit {
         user_id: this.user.user_id,
         roi_value:form_values.roi_value
       }
-      this.form_loader = true;
+      this.apply_form_loader = true;
       this.investmentService.create_member_investment_plan(data).subscribe((response) => {
         if(response.success)
         {
-          this.form_loader = false;
+          this.apply_form_loader = false;
           this.get_member_investment_plan()
           this.newInvestmentPlanModal.hide();
           this.localService.showSuccess(response.message,'Operation Successfull');
         }else{
-          this.form_loader = false;
+          this.apply_form_loader = false;
               this.localService.showError(response.message,'Operation Successfull');
               this.localService.showError(response,'Operation Successfull');
         }
       }, (error)=> {
-          this.form_loader = false;
+          this.apply_form_loader = false;
         this.localService.showError(error,'!Oops Operation UnSuccessfull');
       })
     }
@@ -354,7 +358,7 @@ export class MemberInvestmentsComponent implements OnInit {
     {
       this.investmentHistoryForm.reset();
       this.inv_form_modal_title = "Debit Investment Subscription";
-      this.inv_form_type = 0;
+      this.inv_form_type = 2;
       this.investment_history_form_loader = false;
       this.newInvestmentHistoryModal.show();
     }
@@ -379,23 +383,23 @@ export class MemberInvestmentsComponent implements OnInit {
       formValues.vendor_id = this.vendor.id;
       formValues.transaction_type = this.inv_form_type;
       formValues.status = 0;
-        this.investment_history_form_loader = true;
-        this.investmentService.create_investment_history(formValues).subscribe((response) => {
-          if (response.success) {
-            this.investment_history_form_loader = false;
-            this.get_member_investment_history();
-            this.get_member_investment_plan()
-            this.investmentHistoryForm.reset()
-            this.newInvestmentHistoryModal.hide();
-            this.localService.showSuccess(response.message,'Operation Successfull');
-          }else{
-            this.investment_history_form_loader = false;
-            this.localService.showError(response.message,'Operation Unsuccessfull');
-          }
-        }, (error) => {
+      this.investment_history_form_loader = true;
+      this.investmentService.create_investment_history(formValues).subscribe((response) => {
+        if (response.success) {
           this.investment_history_form_loader = false;
-                this.localService.showError(error,'Operation Unsuccessfull');
-        });
+          this.get_member_investment_history();
+          this.get_member_investment_plan()
+          this.investmentHistoryForm.reset()
+          this.newInvestmentHistoryModal.hide();
+          this.localService.showSuccess(response.message,'Operation Successfull');
+        }else{
+          this.investment_history_form_loader = false;
+          this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      }, (error) => {
+        this.investment_history_form_loader = false;
+              this.localService.showError(error,'Operation Unsuccessfull');
+      });
     }
 
     get_member_investment_history()

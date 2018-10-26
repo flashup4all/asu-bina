@@ -31,10 +31,11 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
-                                <label>Type</label>
-                                <select class="form-control" placeholder="type" formControlName = "type">
+                                <label>Transaction Type</label>
+                                <select class="form-control" formControlName = "transaction_type">
                                     <option selected="false" value="">Type</option>
-                                    <option [value]="item.id" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
+                                    <option value="1">credit</option>
+                                    <option value="2">debit</option>
                                 </select>
                               </div>
                             </div>
@@ -102,7 +103,7 @@
                             </td> -->
                             <td>
                                <i *ngIf="item.transaction_type == 1" style="color: green">+{{ item?.amount | number }}</i>
-                               <i *ngIf="item.transaction_type == 0" style="color: red">-{{ item?.amount | number }}</i>
+                               <i *ngIf="item.transaction_type == 2" style="color: red">-{{ item?.amount | number }}</i>
                             </td>
                               <td>
                                 <mat-chip-list>

@@ -170,6 +170,7 @@ export class MemberLoanRequestComponent implements OnInit {
      */
     makeLoanRequest(data)
     {
+      this.submitPending = true;
       /*data['member_id'] = this.memberId
       data['vendor_id'] = JSON.parse(this.localService.getVendor()).id;*/
       //data['requirements'] = this.files;

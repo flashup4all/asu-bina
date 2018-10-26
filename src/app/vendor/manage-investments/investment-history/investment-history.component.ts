@@ -46,6 +46,7 @@ export class InvestmentHistoryComponent implements OnInit {
         to : '',
         id : '',
         type:'',
+        transaction_type:'',
         investmentplan_id:''
       });
   }

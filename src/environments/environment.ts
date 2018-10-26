@@ -8,8 +8,8 @@ export const environment = {
   application_name: 'ASUSU',
   api: {
   	version: '1.2',
-  	url: 'http://localhost:8000/api/',//'http://104.248.37.238/api/', //'http://asusuapi.asusu.ng/api/',
-  	imageUrl: 'http://localhost:8000/api/',//'http://104.248.37.238/api/', //'http://localhost:8000/images/',
+  	url: 'http://104.248.37.238/api/', //'http://localhost:8000/api/',//'http://asusuapi.asusu.ng/api/',
+  	imageUrl: 'http://104.248.37.238/', //'http://localhost:8000/api/',//'http://localhost:8000/images/',
   	payment_gateway_live: 'https://live.moneywaveapi.co/',
   	payment_gateway_test: 'https://moneywave.herokuapp.com/',
   	payment_key: {

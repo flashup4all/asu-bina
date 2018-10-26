@@ -1,5 +1,10 @@
 <div class="row">
-    <div class="col-md-12">
+  <mat-accordion class="example-headers-align" style="width: 100%;">
+    <mat-expansion-panel hideToggle="true">
+        <mat-expansion-panel-header>
+            <mat-panel-title>Loan Request</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="col-md-12">
          <form [formGroup] = "loanrequestFilterForm" (ngSubmit) = "filterLoanRequest(loanrequestFilterForm.value)" style="width: 100%;">
         <div class="row p-1">
             <div class="col-md-3">
@@ -139,6 +144,17 @@
             </tr>
         </tbody>
     </table>
+    </mat-expansion-panel>
+    <mat-divider></mat-divider>
+    <mat-expansion-panel hideToggle="true">
+        <mat-expansion-panel-header>
+            <mat-panel-title>Repayment History</mat-panel-title>
+        </mat-expansion-panel-header>
+        <!-- member deductions component -->
+        <app-member-deductions></app-member-deductions>
+    </mat-expansion-panel>
+  </mat-accordion>
+    
 </div>
 
 <!-- new loan type modal -->

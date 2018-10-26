@@ -72,7 +72,7 @@
 		                    <td class="center">
 		                    	<mat-menu #appM="matMenu">
                         		<mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
-								  <button *ngIf="!item.status" [swal]="approve_inv" mat-menu-item>Approve Investment</button>
+								  <button *ngIf="item.status != 1" [swal]="approve_inv" mat-menu-item>Approve Investment</button>
 								  <button [swal]="cancel_inv" mat-menu-item>Cancel Investment</button>
 								  <swal
 									  #approve_inv
@@ -140,10 +140,11 @@
                                         </div>
                                         <div class="col-md-3">
                                           <div class="form-group">
-                                            <label>Type</label>
-                                            <select class="form-control" placeholder="type" formControlName = "type">
+                                            <label>Transaction Type</label>
+                                            <select class="form-control" placeholder="type" formControlName = "transaction_type">
 			                                    <option selected="false" value="">Type</option>
-			                                    <option [value]="item.id" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
+			                                    <option value="1">credit</option>
+			                                    <option value="2">debit</option>
 			                                </select>
                                           </div>
                                         </div>
@@ -210,7 +211,7 @@
                             <td>{{ item?.previous_balance | number }}</td>
                             <td>
                                <i *ngIf="item.transaction_type == 1" style="color: green">+{{ item?.amount | number }}</i>
-                               <i *ngIf="item.transaction_type == 0" style="color: red">-{{ item?.amount | number }}</i>
+                               <i *ngIf="item.transaction_type == 2" style="color: red">-{{ item?.amount | number }}</i>
                                  
                             </td>
                             <td>{{ item?.current_balance | number }}</td>
@@ -350,7 +351,9 @@
 						                        <div class="col-md-6">
 						                        	{{ rot_value?.description }}
 						                        </div>
-						                        <button mat-raised-button [disabled]="investment_application_form.invalid || form_loader" class="btn btn-success" block color="accent" selected="true">Apply</button>
+						                        <button mat-raised-button [disabled]="investment_application_form.invalid || apply_form_loader" class="btn btn-success" block color="accent" selected="true">Apply</button>
+                        						<mat-progress-bar *ngIf="apply_form_loader" mode="indeterminate"></mat-progress-bar>
+
 	                    					</div>
                     					</form>
 
