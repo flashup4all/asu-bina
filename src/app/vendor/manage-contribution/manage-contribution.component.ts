@@ -58,7 +58,7 @@ export class ManageContributionComponent implements OnInit {
   	monthList;
     user;
     filterForm: FormGroup;
-    adv_filter: boolean;
+    adv_filter: boolean = false;
   	public changeContibutionsRequestList;
     contribution_plan_list;
   	current_year = moment().format('YYYY');
@@ -87,16 +87,15 @@ export class ManageContributionComponent implements OnInit {
     this.get_vendor_branches();
 
 		this.monthList = this.localService.yearjson();
-		this.adv_filter = false;
-		//this.getChangeContributionRequest();
   		}
 
 	  ngOnInit() {
-	  	this.runContributionForm = this._fb.group({
+	  	/*this.runContributionForm = this._fb.group({
         plan_id : [null, Validators.compose([Validators.required])],
   			type : [null, Validators.compose([Validators.required])],
   			period : [null, Validators.compose([Validators.required])]
-  		});
+  		});*/
+      
   		 /*filter form*/
        this.filterForm = this._fb.group({
           transaction_id : '',

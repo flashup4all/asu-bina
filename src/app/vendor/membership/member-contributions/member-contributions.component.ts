@@ -58,9 +58,10 @@ export class MemberContributionsComponent implements OnInit {
     current_year = moment().format('YYYY');
     vendor_branch;
     total_contribution_amount;
+    transaction_data;
     @ViewChild('newContributionModal') public newContributionModal : ModalDirective;
     @ViewChild('newContributionPlanModal') public newContributionPlanModal : ModalDirective;
-
+    @ViewChild('view_contribution_transaction_modal') public view_contribution_transaction_modal : ModalDirective;
     constructor(
       private route : ActivatedRoute, 
     	private localService : LocalService,
@@ -208,6 +209,70 @@ export class MemberContributionsComponent implements OnInit {
       );
       popupWin.document.close();
     }
+
+    /**
+     * @method print_transaction
+     * prints single transaction slip
+     */
+    print_transaction(id): void {
+      let printContents, popupWin;
+
+      printContents = document.getElementById(id).outerHTML;
+      popupWin = window.open('', '_blank', 'width=auto');
+      popupWin.document.open();
+      popupWin.document.write(`
+        <html>
+          <head>
+            <title>Print tab</title>
+            <style>
+              body{font-size:14px; text-align: center;}
+                table {
+                    margin: 5px;
+                  
+              }
+
+              .center{
+                text-align:center;
+              }
+              .full{
+                width:100%;
+              }
+              .row{
+                display: block;
+              }
+
+              .border, tr, th, td {
+                  border: 0px;
+                  padding:2px;
+                  border-collapse: collapse;
+                   }
+                   
+              .no-border{ 
+                  border: none !important;
+                  }
+                  
+               .print-full{ 
+                 width: 100%      
+               }
+
+               .print-half{ 
+                 width: 48%;   
+               }
+               
+               .left{ float: left;}
+               
+               .right{float: right;}
+               
+               
+               .margin{ 5px;}
+               .row{width:100%;}
+            </style>
+          </head>
+      <body onload="window.print();window.close()">${printContents}</body>
+        </html>`
+      );
+      popupWin.document.close();
+  }
     
     get_contribution_plan()
     {
@@ -224,6 +289,32 @@ export class MemberContributionsComponent implements OnInit {
       })
     }
 
+    /**
+     * @method view_contribution_transaction_details
+     * using a modal to view transaction data
+     *
+     */
+    view_contribution_transaction_details(transaction_data)
+    {
+      this.transaction_data = transaction_data;
+      this.view_contribution_transaction_modal.show();
+    }
+   /**
+   * @method mask_number
+   * mask account number and ids
+   */
+    mask_number(number) {
+      // let number = '4567 6365 7987 3783';
+      if(number)
+      {
+        let first4 = number.substring(0, 2);
+        let last5 = number.substring(number.length - 2);
+
+        let mask = number.substring(4, number.length - 2).replace(/\d/g,"*");
+        return first4 + mask + last5;
+      }
+      return '******';
+    }
     /**
      * @method getMemberContributions
      * get member loan deductions resource

@@ -48,6 +48,17 @@ export class ContributionService {
       return this.http.get(environment.api.url+'CoopManagement/all-coop-members/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
+    /**
+     * @method get_all_plan_members
+     * @param plan_id
+     * get all contribution plan members
+     * @return data
+     */
+    get_all_plan_members(plan_id)
+    {
+      return this.http.get(environment.api.url+'CoopManagement/member-contribution-plan/plan-members/'+JSON.parse(this.localService.getVendor()).id+'/'+plan_id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
 
     /**
      * @method getChangeContributionRequest

@@ -62,6 +62,7 @@ export class ManageMembersComponent implements OnInit {
   	phone1;
  	staffList
  	generate_login_check : boolean = false;
+ 	activate_loader: boolean = false;
 	public file_srcs: string[] = [];
 	 
 	public debug_size_before: string[] = [];
@@ -89,29 +90,6 @@ export class ManageMembersComponent implements OnInit {
 			this.vendor = JSON.parse(this.localService.getVendor());
 		    this.user = JSON.parse(this.localService.getUser());
 			this.image_url = environment.api.imageUrl+'profile/member/';
-			/*this.queryField.valueChanges
-				.debounceTime(200)
-				.distinctUntilChanged()
-				.do(() => this.searching = true)
-		    	.switchMap((query) =>  this.manageMemberService.filterMembers(query)
-		    		.do(() => this.searchFailed = false)
-			          .catch(() => {
-			            this.searchFailed = true;
-			            return of([]);
-			          })
-		    		)
-		    	.subscribe( result => { 
-		    		if (result.status === 400)
-		    		{ 
-		    			this.searching = false
-		    			return; 
-		    		}else {  
-		    			this.searching = false
-		    			this.results = result; 
-		    		}
-		  		});*/
-
-
 		 }
 
 		search = (text$: Observable<string>) =>
@@ -131,10 +109,7 @@ export class ManageMembersComponent implements OnInit {
 	      formatter = (x: {first_name: string, middle_name: string, last_name: string}) => x.first_name+'  '+ x.middle_name+'  '+ x.last_name;
 
 	ngOnInit() {
-		/*this.queryField.valueChanges
- 			.subscribe( result => console.log(result));
- */
-
+	
 		this.newMemberForm = this._fb.group({
 			first_name:[null, Validators.compose([Validators.required])],
 			middle_name:'',
@@ -453,6 +428,7 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	activateAllMember()
 	{
+		this.submitPending = true;
 		let data ={
 			user_id: this.user.user_id,
 			vendor_id: this.vendor.id
@@ -460,11 +436,16 @@ export class ManageMembersComponent implements OnInit {
 		this.manageMemberService.activateAllMember(data).subscribe((response) => {
 			if(response.success == true)
 			{
+				this.submitPending = false;
 				this.getMembers()
 				this.localService.showSuccess(response.message,'Operation Successfull');
 			}else{
+				this.submitPending = false;
 				this.localService.showError(response.message,'Operation UnsSuccessfull');
 			}
+		},(error) => {
+			this.submitPending = false;
+			this.localService.showError('Please contact administrator','Server Error !!');
 		});
 	}
 

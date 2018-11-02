@@ -16,6 +16,8 @@ import { MemberDeductionsComponent } from './member-deductions/member-deductions
 import { MembersService } from './members.service';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '../../shared/shared.module';
+//import { MaskPipe } from '../../shared/pipe/mask.pipe';
+
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 
 export const members_routes = [
@@ -47,6 +49,7 @@ export const members_routes = [
     MemberLoanRequestComponent,
     MemberDeductionsComponent,
     MemberWithdrawalsComponent,
+    // MaskPipe,
   ],
   providers: [MembersService]
 })

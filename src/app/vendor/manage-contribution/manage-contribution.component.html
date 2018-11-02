@@ -6,7 +6,7 @@
 		          <tab heading="Manage Contributions">
 			            <div class="col-md-12">
 			            	<div _ngcontent-c4="" class="module-option clearfix">
-					           <form class="pull-left" [formGroup] = "runContributionForm" (ngSubmit) = "runContribution(runContributionForm.value)">
+					           <!-- <form class="pull-left" [formGroup] = "runContributionForm" (ngSubmit) = "runContribution(runContributionForm.value)">
 					           	 	<div class="row">
 					           	 		<div class="col-md-3">
 		                      				<div class="form-group">
@@ -31,7 +31,6 @@
 							           		 <label>Period</label>
 							           		<select class="form-control" placeholder="Period" formControlName = "period">
 						                        <option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
-						                        <!-- <option value="January/{{ current_year }}">January/{{ current_year }}</option> -->
 						                    </select>
 						                    <small [hidden]="(runContributionForm.controls.period.valid ) || (runContributionForm.controls.period.pristine )" class="text-danger">Period Method is Required</small> 
 							           	</div>
@@ -44,12 +43,12 @@
 							           	</div>
 					                </div>
 					                <br>
-					            </form>
+					            </form> -->
 					            <!-- <button class="btn btn-success" (click)="excelUploadModal.show()">Upload Excel Format</button> -->
-					            <button *ngIf="!adv_filter" class="btn btn-success" style="margin-top:30px" (click)="show_adv_form()">Show Search</button>
-					            <button *ngIf="adv_filter" class="btn btn-success" style="margin-top:30px" (click)="show_adv_form()">Hide Search</button>
+					            <!-- <button *ngIf="!adv_filter" class="btn btn-success" style="margin-top:30px" (click)="show_adv_form()">Show Search</button>
+					            <button *ngIf="adv_filter" class="btn btn-success" style="margin-top:30px" (click)="show_adv_form()">Hide Search</button> -->
 					        </div>
-					        <div class="row" *ngIf="adv_filter">
+					        <div class="row"> <!-- *ngIf="adv_filter" -->
 			            		<form [formGroup] = "filterForm" (ngSubmit) = "filterContribution(filterForm.value)" style="width: 100%;">
                                     <div class="row p-1">
                                     	<div class="col-md-3">
@@ -79,7 +78,6 @@
 				                                    	{{item?.name }}
 				                                    </option>
 				                                </select>
-				                                <small [hidden]="(runContributionForm.controls.plan_id.valid ) || (runContributionForm.controls.plan_id.pristine )" class="text-danger">Period Method is Required</small>
 				                            </div>
 		                      			</div>
 		                      			<div class="col-md-3">
@@ -146,10 +144,40 @@
                                       </div>
                                   </form>
 			            	</div>
+			            	<!-- <div class="row" *ngIf="show_bulk_contribution">
+			            		<form [formGroup] = "bulk_plan_contribution_form" (ngSubmit) = "bulk_contribution(bulk_plan_contribution_form.value)" style="width: 100%;">
+                                    <div class="row p-1">
+                              
+                                      <div class="col-md-3">
+                                      	<div class="form-group">
+			                                <label>Select Contribution Plan</label>
+			                                <select class="form-control" placeholder="type" formControlName = "plan_id">
+			                                    <option selected="false">Type</option>
+			                                    <option [value]="item.id" *ngFor="let item of contribution_plan_list">
+			                                    	{{item?.name }}
+			                                    </option>
+			                                </select>
+			                                <small [hidden]="(bulk_plan_contribution_form.controls.plan_id.valid ) || (bulk_plan_contribution_form.controls.plan_id.pristine )" class="text-danger">Contribution Plan is Required</small>
+			                            </div>
+                                      </div>
+		                      		
+                                 
+                                        <div class="col-md-2">
+                                          <div class="form-group">
+                                            <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="bulk_plan_contribution_form.invalid && !submitPending">
+                                              <span *ngIf="submitPending && bulk_plan_contribution_form.valid">Please Wait...</span>
+                                              <span *ngIf="submitPending && bulk_plan_contribution_form.valid"><i class="fa fa-spinner"></i></span>
+                                              <span *ngIf="!submitPending">Filter</span>
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </form>
+			            	</div> -->
 			            	<div style="margin-bottom: 4px">
 			            		<button style="margin-left:5px;" (click)="exportTable('xls', 'contri_table')" class="btn btn-outline btn-success">Export table</button>
                         		<button class="btn btn-outline btn-success" (click)="printReciept('contri_table')">Print</button>
-                        		<!-- <a class="btn btn-success" [routerLink]="['/app/contributions/run-contributions']" (click)="manageContribution()">Manage Contributions</a> -->
+                        		<!-- <a class="btn btn-success" [routerLink]="['/app/contributions/bulk-contributions']">Bulk Contributions</a> -->
 			            	</div>
             				<mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
 

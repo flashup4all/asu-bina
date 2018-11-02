@@ -36,11 +36,10 @@
                 <div class="col-md-12">
                   <div class="row">
                     <form style=" width:100%;" [formGroup]="filterMemberForm" (ngSubmit)="viewMember(filterMemberForm.value)">
-                        <label>Filter Members</label>
+                        <label>Filter Members</label> <br><span *ngIf="searching">searching...</span>
                         <div class="input-group">
                             <input id="typeahead-http" formControlName="member" type="text" class="form-control" [class.is-invalid]="searchFailed" [ngbTypeahead]="search" placeholder="Filter Member" [inputFormatter]="formatter" [resultTemplate]="rt"/>
                             <button class="btn btn-success" type="submit" [disabled]="filterMemberForm.invalid">Manage</button>
-                            <span *ngIf="searching">searching...</span>
                             <ng-template #rt let-r="result" let-t="term">
                              <div class="row">
                                 {{ r?.first_name}} {{ r?.middle_name}} {{ r?.last_name}} 
@@ -61,11 +60,11 @@
                         <button class="btn btn-success" style="margin-left:5px" (click)="show_adv_form = !show_adv_form">Show Search</button>
                       </div>
                       </div>
-                     <div class="row">
+                     <!-- <div class="row">
                         <div class="card" *ngIf="searching" style="width:100%;">
                             <div class="card-body"><i class="fa fa-spinner" style="margin: auto auto 0 400px;"></i></div>
                           </div>
-                     </div>
+                     </div> -->
                      <div class="row" *ngIf="show_adv_form">
                       <form [formGroup] = "filterForm" (ngSubmit) = "filter_member(filterForm.value)" style="width: 100%;">
                         <div class="row p-1">
@@ -115,11 +114,9 @@
                         </form>
                     </div>
                       <div class="row">
-      <!-- <mat-progress-bar  mode="indeterminate"></mat-progress-bar> -->
-            <mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
-            <mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
+                        <mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
                         
-                        <table *ngIf="!searching" id="members_table" class="table table-responsive-sm table-hover table-outline mb-0">
+                        <table id="members_table" class="table table-responsive-sm table-hover table-outline mb-0">
                           <thead class="thead-light">
                             <tr>
                               <th>S/N</th>

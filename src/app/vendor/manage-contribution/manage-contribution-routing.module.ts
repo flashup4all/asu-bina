@@ -16,7 +16,7 @@ const routes: Routes = [
 		component: CollectionsComponent
 	},
 	{
-		path: 'run-contributions',
+		path: 'bulk-contributions',
 		component: RunContributionComponent
 	},
 	{

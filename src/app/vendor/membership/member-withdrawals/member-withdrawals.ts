@@ -64,8 +64,10 @@ export class MemberWithdrawalsComponent implements OnInit {
     member_signature;
     vendor_branch;
     member_contribution_component;
+    transaction_data;
    	@ViewChild('fileInput') fileInput: ElementRef;
     @ViewChild('newWithdrawalModal') public newWithdrawalModal : ModalDirective;
+    @ViewChild('view_transaction_modal') public view_transaction_modal : ModalDirective;
   
     constructor(
       private route : ActivatedRoute, 
@@ -210,6 +212,33 @@ export class MemberWithdrawalsComponent implements OnInit {
   }
 
   /**
+   * @method view_transaction_details
+   * using a modal to view transaction data
+   *
+   */
+  view_transaction_details(transaction_data)
+  {
+    this.transaction_data = transaction_data;
+    this.view_transaction_modal.show();
+  }
+  /**
+   * @method mask_number
+   * mask account number and ids
+   */
+  mask_number(number) {
+    // let number = '4567 6365 7987 3783';
+    if(number)
+    {
+      let first4 = number.substring(0, 2);
+      let last5 = number.substring(number.length - 2);
+
+      let mask = number.substring(4, number.length - 2).replace(/\d/g,"*");
+      return first4 + mask + last5;
+    }
+    return '******';
+  }
+
+  /**
    * @method cancelWidthdrawalRequest
    * cancel widthdrawal requests
    *  @return true/false
@@ -269,6 +298,66 @@ export class MemberWithdrawalsComponent implements OnInit {
 
               .border, tr, th, td {
                   border: 1px solid black;
+                  padding:2px;
+                  border-collapse: collapse;
+                   }
+                   
+              .no-border{ 
+                  border: none !important;
+                  }
+                  
+               .print-full{ 
+                 width: 100%      
+               }
+
+               .print-half{ 
+                 width: 48%;   
+               }
+               
+               .left{ float: left;}
+               
+               .right{float: right;}
+               
+               
+               .margin{ 5px;}
+               .row{width:100%;}
+            </style>
+          </head>
+      <body onload="window.print();window.close()">${printContents}</body>
+        </html>`
+      );
+      popupWin.document.close();
+  }
+
+  print_transaction(id): void {
+      let printContents, popupWin;
+
+      printContents = document.getElementById(id).outerHTML;
+      popupWin = window.open('', '_blank', 'width=auto');
+      popupWin.document.open();
+      popupWin.document.write(`
+        <html>
+          <head>
+            <title>Print tab</title>
+            <style>
+              body{font-size:14px; text-align: center;}
+                table {
+                    margin: 5px;
+                  
+              }
+
+              .center{
+                text-align:center;
+              }
+              .full{
+                width:100%;
+              }
+              .row{
+                display: block;
+              }
+
+              .border, tr, th, td {
+                  border: 0px;
                   padding:2px;
                   border-collapse: collapse;
                    }

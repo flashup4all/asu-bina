@@ -20,6 +20,7 @@ import { AuthService } from './auth/auth.service';
 import { AppComponent } from './app.component';
 import { LocalService } from './storage/local.service';
 import { AuthGuardService } from './shared/guards/index';
+import { MaskPipe } from './shared/pipe/mask.pipe';
 import { handleErrors } from './shared/helpers/index';
 import { MembersService } from './vendor/membership/members.service';
 import { FormService } from './vendor/form-settings/form.service';
@@ -99,6 +100,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
 import { SigninComponent } from './auth/signin/signin.component';
 //import { LoanCalculatorComponent } from './loan-calculator/loan-calculator.component';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -125,6 +127,7 @@ import { SigninComponent } from './auth/signin/signin.component';
     ...APP_COMPONENTS,
     ...APP_DIRECTIVES,
     SigninComponent,
+    MaskPipe,
     //LoanCalculatorComponent
   ],
   providers: [

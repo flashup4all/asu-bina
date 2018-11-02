@@ -25,6 +25,9 @@ export class RunContributionComponent implements OnInit {
   	monthList;
   	contribution_plan_list;
   	current_year = moment().format('YYYY');
+  	show_plan_members_loader: boolean = false;
+  	show_bulk_contribution: boolean = false;
+  	vendor_branch;
 	constructor(
 		private localService : LocalService,
   		private _fb : FormBuilder,
@@ -32,7 +35,9 @@ export class RunContributionComponent implements OnInit {
   		) {
 		this.vendor = JSON.parse(this.localService.getVendor());
 		this.user = JSON.parse(this.localService.getUser());
-		this.getAllCoorpMembers();
+		console.log(this.user)
+        this.vendor_branch = JSON.parse(this.localService.getBranchData());
+		//this.getAllCoorpMembers();
 		this.get_contribution_type()
 		this.monthList = this.localService.yearjson();
 		//this.getChangeContributionRequest();
@@ -44,16 +49,19 @@ export class RunContributionComponent implements OnInit {
 			type : [null, Validators.compose([Validators.required])],
 			date : [null, Validators.compose([Validators.required])],
 			plan_id : [null, Validators.compose([Validators.required])],
+			status : [null, Validators.compose([Validators.required])],
+			depositor : '',
+			description : '',
 			contributions : this._fb.array([])
 		});
   	}
 
   	initMembersForm(data) {
         return this._fb.group({
-        contribution: data.contribution,
+        contribution: data.member.contribution,
         status: true,
-        id: data.id,
-        name: data.first_name
+        member_id: data.member.id,
+        name: data.member.first_name
       });
     }
     get_contribution_type()
@@ -81,7 +89,10 @@ export class RunContributionComponent implements OnInit {
 	runContribution(formValues)
 	{
 		formValues['vendor_id'] = this.vendor.id
+		formValues['branch_id'] = this.vendor_branch.id
 		formValues['approved_by'] = this.user.id
+		formValues['staff_id'] = this.user.id
+		formValues['user_id'] = this.user.user_id
         formValues.transaction_type = 'credit';
 		
 		this.submitPending = true;
@@ -90,6 +101,7 @@ export class RunContributionComponent implements OnInit {
 				this.submitPending = false;
           		this.localService.showSuccess(response.message,'Operation Successfull');
 			}else{
+				this.submitPending = false;
           		this.localService.showError(response.message,'Operation Unsuccessfull');
 			}
 		}, (error) => {
@@ -110,4 +122,35 @@ export class RunContributionComponent implements OnInit {
 	{
 		console.log(event)
 	}
+
+	/**
+     * @method show_bulk_contribution_form
+     * show bulk contribution form by selecting 
+     * the plan that bulk contribution should be made
+     * @return boolean
+     */
+    show_bulk_contribution_form()
+    {
+      this.show_bulk_contribution =!this.show_bulk_contribution
+    }
+    /**
+     * @method get_plan_members
+     * get the plan id fron the form and use it
+     * to form a route and return the route
+     * the plan id will be use to pull members that belongs to that plan
+     * @return route
+     */
+    get_plan_members(plan_id)
+    {
+      this.show_plan_members_loader = true;
+      this.contributionService.get_all_plan_members(plan_id).subscribe((response) => {
+      	this.coorpMembers = response;
+      	this.coorpMembers.forEach((list)=> 
+	        (<FormArray>this.runContributionForm.controls['contributions']).push(this.initMembersForm(list))
+	    );
+      	this.show_plan_members_loader = false;
+      }, (error) => {
+      	this.show_plan_members_loader = false;
+      })
+    }
 }

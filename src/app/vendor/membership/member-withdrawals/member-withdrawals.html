@@ -55,7 +55,8 @@
               </td>
               <td class="center">
                 <mat-menu #appMenu="matMenu">
-                  <button [swal]="approve_request" [disabled]="btn_loader" mat-menu-item *ngIf="item.status==0">Approve Request</button>
+                   <button [disabled]="btn_loader" mat-menu-item (click)="view_transaction_details(item)">View Details</button>
+                   <button [swal]="approve_request" [disabled]="btn_loader" mat-menu-item *ngIf="item.status==0">Approve Request</button>
                   <mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
                   <button [swal]="cancel_request" [disabled]="btn_loader" mat-menu-item *ngIf="item.status == 0 ">Cancel Request</button>
                   <swal
@@ -121,12 +122,12 @@
                                 <small [hidden]="(withdrawalForm.controls.amount.valid ) || (withdrawalForm.controls.amount.pristine )" class="text-danger">Amount Required</small>
                             </div>
                         </div>
-                       <!--  <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label>Description</label>
                                 <textarea formControlName = "description" class="form-control"></textarea>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
                        <button type="submit" class="btn btn-success" [disabled]="withdrawalForm.invalid || submitPending">
                             <span *ngIf="!submitPending">Request Withdrawals</span>
@@ -134,6 +135,93 @@
                             <span *ngIf="submitPending && withdrawalForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
                         </button>
                 </form>
+            </div>
+         </div>
+       </div>
+     </div>
+</div>
+<div bsModal #view_transaction_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Transaction  Details</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="view_transaction_modal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="">
+            <div class="card">
+              <div class="card-body">
+                <div class="row mb-4">
+                  <div class="col-lg-12" id="transaction">
+                    <table class="table table-clear">
+                      <tbody>
+                        <tr>
+                          <td class="left">
+                            <strong>Ref</strong>
+                          </td>
+                          <td class="right">{{ transaction_data?.transaction_id }}</td>
+                        </tr>
+                        <tr>
+                          <td class="left">
+                            <strong>Branch</strong>
+                          </td>
+                          <td class="right">{{ transaction_data?.branch?.name }}</td>
+                        </tr>
+                        <tr *ngIf="transaction_data?.member?.account_number != ''">
+                          <td class="left">
+                            <strong>Account Number</strong>
+                          </td>
+                          <td class="right">{{ mask_number(transaction_data?.member?.account_number) }}</td>
+                        </tr>
+                        <tr *ngIf="transaction_data?.member?.asusu_id != ''">
+                          <td class="left">
+                            <strong>Account ID</strong>
+                          </td>
+                          <td class="right">{{ mask_number(transaction_data?.member?.asusu_id) }}</td>
+                        </tr>
+                        <tr>
+                          <td class="left"><strong>Plan</strong></td>
+                          <td class="right">{{ transaction_data?.plan?.name }}</td>
+                        </tr>
+                        <tr>
+                          <td class="left"><strong>Amount</strong></td>
+                          <td class="right">&#8358;{{ transaction_data?.amount | number }}</td>
+                        </tr>
+                        <tr>
+                          <td class="left"><strong>Description</strong></td>
+                          <td class="right">{{ transaction_data?.details || 'No description'}}</td>
+                        </tr>
+                        <tr>
+                          <td class="left"><strong>Date</strong></td>
+                          <td class="right">{{ transaction_data?.created_at }}</td>
+                        </tr>
+                        <tr>
+                          <td class="left"><strong>Created</strong></td>
+                          <td class="right">
+                            {{ transaction_data?.staff?.first_name }} 
+                            {{ transaction_data?.staff?.last_name }} 
+                            {{ transaction_data?.staff?.middle_name }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="left"><strong>Posted</strong></td>
+                          <td class="right">
+                            {{ transaction_data?.approved_by?.first_name }} 
+                            {{ transaction_data?.approved_by?.last_name }} 
+                            {{ transaction_data?.approved_by?.middle_name }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <a class="btn btn-sm btn-info float-right" (click)="print_transaction('transaction');"><i class="fa fa-print"></i> Print</a>
+                </div>
+              </div>
             </div>
          </div>
        </div>
