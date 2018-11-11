@@ -130,6 +130,11 @@ export class AppSidebarNavComponent {
               icon: 'icon-star'
             },
             {
+              name: 'Notification Settings',
+              url: '/app/notifications',
+              icon: 'icon-star'
+            },
+            {
               name: 'Loan Settings',
               url: '/app/loan/settings',
               icon: 'icon-star'

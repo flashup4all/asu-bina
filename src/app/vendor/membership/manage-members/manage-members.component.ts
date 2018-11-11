@@ -12,6 +12,7 @@ import { MembersService } from '../members.service';
 import { TableExportService } from '../../../shared/services/index';
 import { environment } from '../../../../environments/environment';
 import { StaffService } from '../../staff/staff.service';
+import { VendorService } from '../../vendor.service';
 
 //import { XlsxToJsonService } from '../../../shared/xls/index'
 
@@ -61,6 +62,7 @@ export class ManageMembersComponent implements OnInit {
   	total_active_members
   	phone1;
  	staffList
+ 	vendor_branches;
  	generate_login_check : boolean = false;
  	activate_loader: boolean = false;
 	public file_srcs: string[] = [];
@@ -81,14 +83,16 @@ export class ManageMembersComponent implements OnInit {
     	private staffService : StaffService,
   		private sanitizer:DomSanitizer,
   		private router : Router,
-      private exportService: TableExportService,
+    	private vendor_service : VendorService,
+      	private exportService: TableExportService,
   		private changeDetectorRef: ChangeDetectorRef
 		) {
 			this.getFormFields();
 			this.getMembers()
 			this.getStaff();
 			this.vendor = JSON.parse(this.localService.getVendor());
-		    this.user = JSON.parse(this.localService.getUser());
+			 this.user = JSON.parse(this.localService.getUser());
+    		this.get_vendor_branches();
 			this.image_url = environment.api.imageUrl+'profile/member/';
 		 }
 
@@ -141,7 +145,8 @@ export class ManageMembersComponent implements OnInit {
 	        from : '',
 	        to : '',
 	        gender : '',
-	        staff_id:''
+	        staff_id:'',
+	        branch_id: '',
 	      })
 	}
 	initMembersForm(data) {
@@ -270,6 +275,17 @@ export class ManageMembersComponent implements OnInit {
 	    }
 	  }*/
 
+	  /**
+     * @method get_vendor_branches
+     * get vendor branches
+     * @return data
+     */
+     get_vendor_branches()
+     {
+       this.vendor_service.getVendorBranches().subscribe((response) => {
+         this.vendor_branches = response.data
+       })
+     }
 	/**
 	 * @method addMember
 	 * add members resource

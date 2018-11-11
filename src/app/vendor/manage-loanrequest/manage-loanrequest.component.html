@@ -1,6 +1,7 @@
 <div class="card">
     <div class="card-body" style="padding:0px;">
-        <div class="row">
+    <div class="widget">
+        <div class="row p-2">
             <div class="col">
                 <tabset>
                   <tab heading="Manage Loan Request">
@@ -75,7 +76,7 @@
                                 <button style="margin-left:5px;" (click)="exportTable('xls', 'loan_request_table')" class="btn btn-outline btn-success">Export table</button>
                                 <button class="btn btn-outline btn-success" (click)="printReciept('loan_request_table')">Print</button>
                             </div>
-                            <table id="loan_request_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
+                            <table id="loan_request_table" class="table table-responsive table-hover table-outline mb-0" width="100%">
                                 <thead>
                                     <tr>
                                         <th>Branch</th>
@@ -176,6 +177,7 @@
                 </tabset>
             </div>
         </div>
+    </div>
     </div>
 </div>
 

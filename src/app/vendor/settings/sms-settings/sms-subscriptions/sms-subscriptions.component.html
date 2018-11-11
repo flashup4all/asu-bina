@@ -1,0 +1,61 @@
+<mat-progress-bar *ngIf="loader" mode="indeterminate"></mat-progress-bar>
+<table id="investment_history" class="table table-responsive table-hover table-outline mb-0" width="100%">
+    <thead>
+        <tr>
+            <th>Ref</th>
+            <th>Amount</th>
+            <th>Units</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="" *ngFor="let item of sms_subscriptions">
+            <td>#{{ item?.id }}</td>
+            <td>
+               {{ item?.amount }} 
+            </td>
+            <td>
+               {{ item?.units }} 
+            </td>
+              <td>
+                <mat-chip-list>
+                    <mat-chip *ngIf="item.status==1" color="primary" selected="true">Paid</mat-chip>
+                    <mat-chip *ngIf="item.status==0" color="accent" selected="true">Pending</mat-chip>
+                    <mat-chip *ngIf="item.status==2" color="warn" selected="true">Failed</mat-chip>
+                </mat-chip-list>
+            </td>
+            <td>
+            	<mat-menu #appMenu="matMenu">
+        		<mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
+				  <button mat-menu-item (click)="view_subscription_invoice(item)">View Invoice</button>
+				</mat-menu>
+
+				<button mat-icon-button [matMenuTriggerFor]="appMenu">
+				  <mat-icon>more_vert</mat-icon>
+				</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div class="row load-more">
+   <a  (click)="loadMore()" class="btn btn-success" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
+</div>
+
+<div bsModal #sms_subscription_invoice_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-md">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title pull-left">Invoice</h4>
+           <button type="button" class="close pull-right" aria-label="Close" (click)="sms_subscription_invoice_modal.hide()">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <div class="">
+            
+            </div>
+         </div>
+       </div>
+     </div>
+</div>

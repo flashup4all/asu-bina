@@ -135,15 +135,35 @@ export class VendorService {
       return this.http.post(environment.api.url+'CoopManagement/birthday-sms-settings',data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
-
     /**
-     * @method send_notification
-     * updates a sms settings  resource
+     * @method update_welcome_sms_settings
+     * updates a welcome sms settings  resource
      * @return data
      */
-    send_notification(data)
+    update_welcome_sms_settings(data)
     {
-      return this.http.post(environment.api.url+'CoopManagement/send-notification',data, this.localService.header())
+      return this.http.post(environment.api.url+'CoopManagement/sms-settings/welcome-sms-settings',data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method send_bulk_notification
+     * send bulk notification
+     * @return data
+     */
+    send_bulk_notification(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/sms-settings/send-bulk-notification',data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+    /**
+     * @method send_bulk_
+     * send bulk sms
+     * @return data
+     */
+    send_bulk_sms(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/sms-settings/send-bulk-sms',data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
     /**
@@ -164,7 +184,18 @@ export class VendorService {
      */
     get_sms_messages()
     {
-      return this.http.post(environment.api.url+'CoopManagement/sms-notifications/',JSON.parse(this.localService.getVendor()).id, this.localService.header())
+      return this.http.post(environment.api.url+'CoopManagement/sms-notifications/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method get_vendor_sms_history
+     * get vendor sms history resource
+     * @return data
+     */
+    get_vendor_sms_history()
+    {
+      return this.http.get(environment.api.url+'CoopManagement/sms-settings/sms-history/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
@@ -233,6 +264,19 @@ export class VendorService {
     deleteVendorBranches(data)
     {
       return this.http.post(environment.api.url+'vendor-branch/delete', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /*sms subscriptions api calls*/
+
+     /**
+     * @method get_vendor_subscriptions
+     * get vendor sms subscriptions
+     * @return data
+     */
+    get_vendor_subscriptions()
+    {
+      return this.http.get(environment.api.url+'CoopManagement/sms-subscription/vendor/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 }

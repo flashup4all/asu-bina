@@ -1,0 +1,44 @@
+<div class="row p-2">
+    <div class="col">
+        <tabset>
+            <tab heading="Settings">
+            </tab>
+            <tab heading="Subscription">
+            </tab>
+            <tab heading="SMS History">
+            </tab>
+          </tabset>
+ <div class="card-footer" style="border-top: 0px">
+  <ul>
+    <li>
+      <div class="text-muted">Total SMS Units</div>
+      <strong>{{ sms_settings?.sms_settings?.sms_unit_balance | number}}</strong>
+      <div class="progress progress-xs mt-2">
+        <div class="progress-bar bg-primary" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+    </li>
+  </ul>
+</div>
+<br>
+<br>
+<!-- <mat-card>
+    <div class="row">
+        <div class="col-md-3" style="border: 1px solid rgba(0, 0, 0, 0.14)">
+           <mat-nav-list>
+              <mat-list-item>
+                 <a matLine [routerLink]="['sms-settings']">Settings</a>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+              <mat-list-item>
+                 <a matLine [routerLink]="['sms-subscriptions']">SMS Subscriptions</a>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+            </mat-nav-list>
+        </div>
+        <div class="col-md-9">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</mat-card> -->
+</div>
+</div>
