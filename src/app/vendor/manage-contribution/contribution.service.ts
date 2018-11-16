@@ -289,6 +289,28 @@ export class ContributionService {
     }
 
     /**
+     * @method get_vendor_member_contribution_plan
+     * filter contribution
+     * @return data
+     */
+    get_vendor_member_contribution_plan()
+    {
+      return this.http.get(environment.api.url+'CoopManagement/member-contribution-plan/vendor/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
+     * @method filter_member_contribution_plan
+     * filter member contribution plan
+     * @return data
+     */
+    filter_member_contribution_plan(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/member-contribution-plan/filter', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
      * @method post_contribution_history
      * get member investment history
      * @return data

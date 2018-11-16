@@ -79,7 +79,12 @@ export class AppSidebarNavComponent {
               icon: 'icon-star'
             },
             {
-              name: 'Manage Contributions',
+              name: 'Member Contributions',
+              url: '/app/contributions/member-contribution-plan',
+              icon: 'icon-star'
+            },
+            {
+              name: 'Contribution History',
               url: '/app/contributions',
               icon: 'icon-star'
             },
@@ -194,7 +199,12 @@ export class AppSidebarNavComponent {
           icon: 'icon-star'
         },
         {
-          name: 'Manage Contributions',
+          name: 'Member Contributions',
+          url: '/app/contributions/member-contribution-plan',
+          icon: 'icon-star'
+        },
+        {
+          name: 'Contribution History',
           url: '/app/contributions',
           icon: 'icon-star'
         },
@@ -359,7 +369,12 @@ export class AppSidebarNavComponent {
               icon: 'icon-star'
             },
             {
-              name: 'Manage Contributions',
+              name: 'Member Contributions',
+              url: '/app/contributions/member-contribution-plan',
+              icon: 'icon-star'
+            },
+            {
+              name: 'Contribution History',
               url: '/app/contributions',
               icon: 'icon-star'
             },
@@ -455,7 +470,12 @@ export class AppSidebarNavComponent {
           icon: 'icon-star'
         },
         {
-          name: 'Manage Contributions',
+          name: 'Member Contributions',
+          url: '/app/contributions/member-contribution-plan',
+          icon: 'icon-star'
+        },
+        {
+          name: 'Contribution History',
           url: '/app/contributions',
           icon: 'icon-star'
         },

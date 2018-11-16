@@ -5,6 +5,7 @@ import { CollectionsComponent } from './collections/collections.component';
 import { RunContributionComponent } from './run-contribution/run-contribution.component';
 import { ContributionTypeComponent } from './contribution-type/contribution-type.component';
 import { ContributionPlanComponent } from './contribution-plan/contribution-plan.component';
+import { MemberContributionPlanComponent } from './member-contribution-plan/member-contribution-plan.component';
 
 const routes: Routes = [
 	{
@@ -23,10 +24,10 @@ const routes: Routes = [
 		path: 'contribution-types',
 		component: ContributionTypeComponent
 	},
-	/*{
-		path: 'contribution-plan',
-		component: ContributionPlanComponent
-	}*/
+	{
+		path: 'member-contribution-plan',
+		component: MemberContributionPlanComponent
+	}
 ];
 
 @NgModule({
