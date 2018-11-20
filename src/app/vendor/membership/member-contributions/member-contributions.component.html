@@ -159,6 +159,8 @@
 		                <th>&#8358; Contributed</th>
 		                <th>Type</th>
 		                <th>Status</th>
+		                <th>Depositor</th>
+		                <th>Naration</th>
 		                <th>Date</th>
                         <th>Pre-Post</th>
                         <th>Posted</th>
@@ -183,6 +185,12 @@
 			                     <mat-chip *ngIf="item.status == 2" color="warn" selected="true">Canceled</mat-chip>
 			                    <mat-chip *ngIf="item.status == 0" color="accent" selected="true">Pending</mat-chip>
 			                </mat-chip-list>
+		                </td>
+		                <td>
+		                	{{ item?.depositor }}
+		                </td>
+		                <td>
+		                	{{ item?.description}}
 		                </td>
 		                <td>
 		                    {{item?.created_at | date: 'shortDate'}} 

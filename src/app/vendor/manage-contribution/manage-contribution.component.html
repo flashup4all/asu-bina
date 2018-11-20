@@ -192,7 +192,9 @@
 					                    <th>Type</th>
 					                    <th>Date</th>
 					                    <th>Status</th>
-					                    <th>Created</th>
+					                    <th>Depositor</th>
+						                <th>Naration</th>
+						                <th>Created</th>
 					                    <th>Approved</th>
 					                    <th>Actions</th>
 					                </tr>
@@ -223,6 +225,12 @@
 				                            <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
                                     		<span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
 				                        </td>
+				                        <td>
+						                	{{ item?.depositor }}
+						                </td>
+						                <td>
+						                	{{ item?.description}}
+						                </td>
 					                    <td>
 					                         {{item?.staff?.first_name}} 
 					                        {{item?.staff?.last_name}} 
