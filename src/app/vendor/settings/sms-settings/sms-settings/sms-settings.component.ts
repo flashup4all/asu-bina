@@ -274,11 +274,11 @@ export class SmsSettingsComponent implements OnInit {
       console.log(form_values)
       this.vendor_service.send_bulk_sms(form_values).subscribe((response) => {
        // this.sms_history = response.data;
-       this.get_sms_settings();
+       /*this.get_sms_settings();
        this.get_vendor_sms_history();
        this.single_sms_form.reset();
        this.single_sms_modal.hide()
-        this.send_sms_loader = false;  
+        this.send_sms_loader = false;  */
       }, (error) => {
         this.send_sms_loader = false;
         this.localService.showError(error,'Operation Unsuccessfull');

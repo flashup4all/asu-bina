@@ -119,6 +119,7 @@
 				                        <th>Amount</th>
 				                        <th>Plan</th>
 				                        <th>Status</th>
+				                        <th>Narration</th>
 				                        <th>Created</th>
 				                        <th>Created By</th>
 				                        <th>Approved</th>
@@ -144,6 +145,9 @@
 				                        	<span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
 				                            <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
                                     		<span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
+				                        </td>
+				                        <td>
+				                        	{{ item?.details }}
 				                        </td>
 				                        <td>
 				                            {{item?.created_at | date: 'shortDate'}} 
