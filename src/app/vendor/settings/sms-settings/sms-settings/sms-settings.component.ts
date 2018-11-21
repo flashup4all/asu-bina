@@ -68,7 +68,7 @@ export class SmsSettingsComponent implements OnInit {
       });
       this.single_sms_form = this._fb.group({
         identifier : [null, Validators.compose([Validators.required])],
-        msg: '',
+        message: '',
         phone_no: '',
       });
 
@@ -191,6 +191,7 @@ export class SmsSettingsComponent implements OnInit {
         if(response.success)
         {
           this.get_sms_settings();
+         this.get_vendor_sms_history();
           this.sms_notification_loader = false;
           this.localService.showSuccess(response.message,'Operation Successfull');
         }
@@ -262,6 +263,39 @@ export class SmsSettingsComponent implements OnInit {
 
     }
     /**
+     * @method resend_sms
+     * delete a row from sms history
+     * @return response
+     */
+    resend_sms(item)
+    {
+      let data = {
+       vendor_id: this.vendor.id,
+       staff_id: this.user.id,
+       phone_no: item.recipient,
+       message: item.message,
+       identifier: item.identifier 
+      }
+      this.vendor_service.send_bulk_sms(data).subscribe((response) => {
+        if(response.success)
+        {
+           // this.sms_history = response.data;
+         this.get_sms_settings();
+         this.get_vendor_sms_history();
+         this.single_sms_form.reset();
+         this.single_sms_modal.hide()
+          this.send_sms_loader = false;  
+        }else{
+          this.send_sms_loader = false;
+        this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      
+      }, (error) => {
+        this.send_sms_loader = false;
+        this.localService.showError(error,'Operation Unsuccessfull');
+      });
+    }
+    /**
      * @method send_sms
      * send sms
      * @return response
@@ -271,14 +305,20 @@ export class SmsSettingsComponent implements OnInit {
       this.send_sms_loader = true;
       form_values['vendor_id'] = this.vendor.id;
       form_values['staff_id'] = this.user.id;
-      console.log(form_values)
       this.vendor_service.send_bulk_sms(form_values).subscribe((response) => {
-       // this.sms_history = response.data;
-       /*this.get_sms_settings();
-       this.get_vendor_sms_history();
-       this.single_sms_form.reset();
-       this.single_sms_modal.hide()
-        this.send_sms_loader = false;  */
+        if(response.success)
+        {
+           // this.sms_history = response.data;
+         this.get_sms_settings();
+         this.get_vendor_sms_history();
+         this.single_sms_form.reset();
+         this.single_sms_modal.hide()
+          this.send_sms_loader = false;  
+        }else{
+          this.send_sms_loader = false;
+        this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      
       }, (error) => {
         this.send_sms_loader = false;
         this.localService.showError(error,'Operation Unsuccessfull');
