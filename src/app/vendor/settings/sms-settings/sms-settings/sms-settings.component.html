@@ -191,58 +191,6 @@
                                 </form>
                             </div>
                         </mat-expansion-panel>
-                        <mat-expansion-panel hideToggle="false" style="width:100%">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>SMS SUBSCRIPTIONS</mat-panel-title>
-                                <mat-panel-description></mat-panel-description>
-                            </mat-expansion-panel-header>
-                            <h3 style="text-align:center;"> Subscriptions </h3>
-                            <div>
-                                <mat-progress-bar *ngIf="loader" mode="indeterminate"></mat-progress-bar>
-                                <table id="investment_history" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Ref</th>
-                                            <th>Amount</th>
-                                            <th>Units</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="" *ngFor="let item of sms_subscriptions">
-                                            <td>#{{ item?.id }}</td>
-                                            <td>
-                                               {{ item?.amount }} 
-                                            </td>
-                                            <td>
-                                               {{ item?.units }} 
-                                            </td>
-                                              <td>
-                                                <mat-chip-list>
-                                                    <mat-chip *ngIf="item.status==1" color="primary" selected="true">Paid</mat-chip>
-                                                    <mat-chip *ngIf="item.status==0" color="accent" selected="true">Pending</mat-chip>
-                                                    <mat-chip *ngIf="item.status==2" color="warn" selected="true">Failed</mat-chip>
-                                                </mat-chip-list>
-                                            </td>
-                                            <td>
-                                                <mat-menu #appMenu="matMenu">
-                                                <mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
-                                                  <button mat-menu-item (click)="view_subscription_invoice(item)">View Invoice</button>
-                                                </mat-menu>
-
-                                                <button mat-icon-button [matMenuTriggerFor]="appMenu">
-                                                  <mat-icon>more_vert</mat-icon>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div class="row load-more">
-                                   <a  (click)="loadMore()" class="btn btn-success" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
-                                </div>
-                            </div>
-                        </mat-expansion-panel>
                     </mat-accordion>
                 </tab>
                 <tab heading="SMS History">
@@ -252,21 +200,21 @@
                     <h3 style="text-align:center;"> SMS History </h3>
                     <div class="container">
                         <mat-progress-bar *ngIf="sms_history_loader" mode="indeterminate"></mat-progress-bar>
-                        <table id="sms_history" class="table table-responsive table-hover table-outline mb-0" width="100%">
+                        <table id="sms_history" class="table table-responsive-lg table-hover table-outline mb-0" width="100%">
                             <thead>
                                 <tr>
-                                    <!-- <th>Ref</th> -->
+                                    <th>Sn</th>
                                     <th>Recipient</th>
                                     <th>SMS ID</th>
                                     <th>Message</th>
                                     <th>Status</th>
-                                    <th>Created</th>
+                                    <th>Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="" *ngFor="let history of sms_history">
-                                    <!-- <td>#{{ history?.id }}</td> -->
+                                <tr class="" *ngFor="let history of sms_history; let i=index">
+                                    <td>{{ i + 1 }}</td>
                                     <td>{{ history?.recipient }}</td>
                                     <td>
                                        {{ history?.identifier }} 
@@ -287,7 +235,8 @@
                                     <td>
                                         <mat-menu #appMenu="matMenu">
                                         <mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
-                                          <!-- <button mat-menu-item (click)="delete_sms_history(history)">View Invoice</button> -->
+                                          <button mat-menu-item (click)="resend_sms(history)">Resend</button>
+                                          <button mat-menu-item (click)="delete_sms_history(history.id)">View Invoice</button>
                                         </mat-menu>
 
                                         <button mat-icon-button [matMenuTriggerFor]="appMenu">
@@ -307,13 +256,14 @@
                     <h3 style="text-align:center;"> Subscriptions </h3>
                     <div class="container" style="width: 100%;">
                         <mat-progress-bar *ngIf="sms_subscription_loader" mode="indeterminate"></mat-progress-bar>
-                        <table id="subscription_table" class="table table-responsive  table-hover table-outline mb-0" width="100%">
+                        <table id="subscription_table" class="table table-responsive-lg  table-hover table-outline mb-0" width="100%">
                             <thead>
                                 <tr>
                                     <th>Ref</th>
                                     <th>Amount</th>
                                     <th>Units</th>
                                     <th>Status</th>
+                                    <th>Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -332,6 +282,9 @@
                                             <mat-chip *ngIf="item.status==0" color="accent" selected="true">Pending</mat-chip>
                                             <mat-chip *ngIf="item.status==2" color="warn" selected="true">Failed</mat-chip>
                                         </mat-chip-list>
+                                    </td>
+                                    <td>
+                                        {{ item?.created_at }}
                                     </td>
                                     <td>
                                         <mat-menu #appMenu="matMenu">
@@ -440,7 +393,7 @@
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title pull-left">Send Single SMS</h4>
+                <h4 class="modal-title pull-left">Send SMS</h4>
                 <button type="button" class="close pull-right" aria-label="Close" (click)="single_sms_modal.hide()">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -467,7 +420,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Message</label>
-                                <textarea formControlName = "msg" class="form-control"></textarea>
+                                <textarea formControlName = "message" class="form-control"></textarea>
                             </div>
                         </div>
 
