@@ -90,12 +90,12 @@
                                             <mat-checkbox [ngModel]="welcome_sms_settings?.staff_email" formControlName="staff_email">Send Welcome Email Notifications to Staff</mat-checkbox>
                                         </div>
                                         <div class="col-md-12">
-                                            <label>Member Birthday Message <small style="color:red;">[160 characters per unit]</small></label>
+                                            <label>Member Welcome Message <small style="color:red;">[160 characters per unit]</small></label>
                                             <textarea [ngModel]="welcome_sms_settings?.member_msg" (ngModelChange)="count_member_msg($event)" class="form-control"  formControlName="member_msg"></textarea>
                                             {{ member_msg_length }} - {{ member_unit_length }}
                                         </div>
                                         <div class="col-md-12">
-                                            <label>Staff Birthday Message <small style="color:red;">[160 characters per unit]</small></label>
+                                            <label>Staff Welcome Message <small style="color:red;">[160 characters per unit]</small></label>
                                             <textarea class="form-control" [ngModel]="welcome_sms_settings?.staff_msg" (ngModelChange)="count_staff_msg($event)" formControlName="staff_msg"></textarea>
                                             {{ staff_msg_length }} - {{ staff_unit_length }}
                                         </div>
