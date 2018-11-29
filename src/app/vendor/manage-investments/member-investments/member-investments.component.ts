@@ -243,6 +243,7 @@ export class ManageMemberInvestmentsComponent implements OnInit {
           }
         }
       } else {
+
         return 0;
       }
     }
