@@ -113,6 +113,11 @@ export class AppSidebarNavComponent {
               url: '/app/loan-request',
               icon: 'icon-star'
             },
+            {
+              name: 'Manage Notification',
+              url: '/app/manage-sms',
+              icon: 'icon-star'
+            },
           ]
         },
         {

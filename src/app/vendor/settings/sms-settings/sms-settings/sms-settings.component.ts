@@ -67,7 +67,7 @@ export class SmsSettingsComponent implements OnInit {
         staff_email: '',
       });
       this.single_sms_form = this._fb.group({
-        identifier : [null, Validators.compose([Validators.required])],
+        //identifier : [null, Validators.compose([Validators.required])],
         message: '',
         phone_no: '',
       });
@@ -303,6 +303,7 @@ export class SmsSettingsComponent implements OnInit {
     send_sms(form_values)
     {
       this.send_sms_loader = true;
+      form_values['identifier'] = this.sms_settings_data.identifier;
       form_values['vendor_id'] = this.vendor.id;
       form_values['staff_id'] = this.user.id;
       this.vendor_service.send_bulk_sms(form_values).subscribe((response) => {

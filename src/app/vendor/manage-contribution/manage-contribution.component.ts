@@ -413,6 +413,7 @@ export class ManageContributionComponent implements OnInit {
       this.btn_loader = true;
       let data = {
         id: transaction_id,
+        user_id: this.user.user_id,
         approved_by: this.user.id,
         vendor_id: this.vendor.id,
         status: status
@@ -429,7 +430,7 @@ export class ManageContributionComponent implements OnInit {
           }
         }, (error) => {
             this.btn_loader = false;
-                this.localService.showError(error,'Operation Unsuccessfull');
+                this.localService.showError('Server Error Please contact Administrator','Operation Unsuccessfull');
         });
     }
 
