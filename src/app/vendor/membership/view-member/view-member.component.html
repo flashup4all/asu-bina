@@ -56,7 +56,13 @@
                 </p> -->
                 <div class="profile-details muted">
                     <h3 *ngIf="member?.contribution > 0"><a class="btn pull-left"><i class="fa fa-money shaded"></i> Contribution : &#8358;  {{member?.contribution | number }} </a></h3>
-                    <h3><a class="btn"><i class="fa fa-phone shaded"></i> {{member?.phone1}}, {{member?.phone2}} </a></h3>
+                    <h3><a class="btn"><i class="fa fa-phone shaded"></i> {{member?.phone1}}, {{member?.phone2}} </a>
+                    <mat-menu #appSms="matMenu">
+                      <button mat-menu-item (click)="single_sms_modal.show()">Send SMS</button>                  
+                    </mat-menu>
+                    <button mat-icon-button *ngIf="member?.phone1 !=''"[matMenuTriggerFor]="appSms">
+                      <mat-icon>more_vert</mat-icon>
+                    </button></h3>
                 </div>
                 <div class="profile-details muted">
                     <h3>
@@ -556,7 +562,39 @@
      </div>
    </div>
 </div>
+<div bsModal #single_sms_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-md">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h4 class="modal-title pull-left">Send SMS to {{member?.first_name}} 
+                    {{member?.last_name}} 
+                    {{member?.middle_name}}</h4>
+         <button type="button" class="close pull-right" aria-label="Close" (click)="single_sms_modal.hide()">
+           <span  (click)="single_sms_modal.hide()" aria-hidden="true">&times;</span>
+         </button>
+       </div>
+       <div class="modal-body">
+          <div class="new session form">
+            <form [formGroup]="single_sms_form" (ngSubmit)="send_sms(single_sms_form.value)">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea formControlName = "message" class="form-control"></textarea>
+                    </div>
+                </div>
 
+            </div>
+               <button type="submit" block class="btn btn-success" [disabled]="single_sms_form.invalid || send_sms_loader">
+                    Send SMS
+                </button>
+                <mat-progress-bar *ngIf="send_sms_loader" mode="indeterminate"></mat-progress-bar>
+        </form>
+        </div>
+       </div>
+     </div>
+   </div>
+</div>
 <div bsModal #account_number_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
    <div class="modal-dialog modal-md">
      <div class="modal-content">

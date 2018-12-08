@@ -8,6 +8,7 @@ import { ProfileComponent } from './user-account/profile/profile.component';
 import { VendorRoutingModule } from './vendor-routing.module';
 import { ManageVendorComponent } from './settings/manage-vendor/manage-vendor.component';
 import { SmsSettingsComponent } from './settings/sms-settings/sms-settings/sms-settings.component';
+import { SmsHistoryComponent } from './settings/sms-settings/sms-history/sms-history.component';
 import { SmsSubscriptionComponent } from './settings/sms-settings/sms-subscriptions/sms-subscriptions.component';
 import { ManageSmsComponent } from './settings/sms-settings/manage-sms.component';
 import { BranchesComponent } from './settings/branches/branches.component';
@@ -35,7 +36,8 @@ import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
     ActivityLogComponent,
     BranchesComponent,
     SmsSubscriptionComponent,
-    ManageSmsComponent
+    ManageSmsComponent,
+    SmsHistoryComponent
   ],
   providers:[
   	VendorService

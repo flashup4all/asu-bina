@@ -11,6 +11,7 @@ import { ContributionService } from '../../manage-contribution/contribution.serv
 import { DeductionsService } from '../../manage-deductions/deductions.service';
 import { TargetSavingsService } from '../../target-savings/target-savings.service';
 import { WidthdrawalsService } from '../../manage-widthdrawals/widthdrawals.service';
+import { VendorService } from '../../vendor.service';
 //import { MemberLoanRequestComponent } from '../member-loan-request/member-loan-request.component';
 import * as moment from 'moment';
 import { TableExportService } from '../../../shared/services/index';
@@ -66,6 +67,7 @@ export class ViewMemberComponent implements OnInit {
     public loanRequestForm : FormGroup;
     public loanrequestFilterForm : FormGroup;
     public withdrawalForm : FormGroup;
+    public single_sms_form : FormGroup;
     files;
     current_year = moment().format('YYYY');
     member_plan_list;
@@ -78,8 +80,11 @@ export class ViewMemberComponent implements OnInit {
     passport;
     member_signature;
     vendor_branch;
-   member_active_loans;
-   count_active_loans;
+    member_active_loans;
+    count_active_loans;
+    sms_settings_data;
+    sms_loader: boolean = false;
+    send_sms_loader: boolean = false;
    @ViewChild('fileInput') fileInput: ElementRef;
 
     @ViewChild('newLoanRequestModal') public newLoanRequestModal : ModalDirective;
@@ -89,7 +94,8 @@ export class ViewMemberComponent implements OnInit {
     @ViewChild('newWithdrawalModal') public newWithdrawalModal : ModalDirective;
   @ViewChild('passwordModal') public passwordModal : ModalDirective;
   @ViewChild('account_number_modal') public account_number_modal : ModalDirective;
-    
+  @ViewChild('single_sms_modal') public single_sms_modal : ModalDirective;
+  
     constructor(
       private route : ActivatedRoute, 
     	private localService : LocalService,
@@ -104,6 +110,7 @@ export class ViewMemberComponent implements OnInit {
       private loanRequestService : LoanRequestService,
       private loanSettingsService : LoanSettingsService,
     	private targetService : TargetSavingsService,
+      private vendor_service: VendorService,
       //private member_contribution_component : MemberContributionsComponent
     	) {
         this.image_url = environment.api.imageUrl+'profile/member/';
@@ -126,6 +133,7 @@ export class ViewMemberComponent implements OnInit {
         this.get_deduction_type()
         this.getMemberTargetSavings()
         //this.getMemberWithdrawal();
+        this.get_sms_settings();
         this.getActualBalance();
         this.get_member_contribution_plan();
         this.get_member_active_loans()
@@ -199,8 +207,22 @@ export class ViewMemberComponent implements OnInit {
           account_number : [null, Validators.compose([Validators.required])],
        })
 
+       this.single_sms_form = this._fb.group({
+        //identifier : [null, Validators.compose([Validators.required])],
+        message: '',
+        // phone_no: '',
+      });
     }
 
+    get_sms_settings()
+    {
+      this.vendor_service.get_sms_settings().subscribe((response) => {
+        this.sms_settings_data = response.sms_settings;
+      }, (error) => {
+        this.sms_loader = false;
+        this.localService.showError(error,'Operation Unsuccessfull');
+      });
+    }
     /**
      * @method show_member_account_no_modal
      * show member coorp account number modal
@@ -861,4 +883,33 @@ export class ViewMemberComponent implements OnInit {
 
     });
   }
+
+  /**
+     * @method send_sms
+     * send sms
+     * @return response
+     */
+    send_sms(form_values)
+    {
+      this.send_sms_loader = true;
+      form_values['identifier'] = this.sms_settings_data.identifier;
+      form_values['vendor_id'] = this.vendor.id;
+      form_values['staff_id'] = this.user.id;
+      form_values['phone_no'] = this.member.phone1;
+      this.vendor_service.send_bulk_sms(form_values).subscribe((response) => {
+        if(response.success)
+        {
+         this.single_sms_form.reset();
+         this.single_sms_modal.hide()
+          this.send_sms_loader = false;  
+        }else{
+          this.send_sms_loader = false;
+        this.localService.showError(response.message,'Operation Unsuccessfull');
+        }
+      
+      }, (error) => {
+        this.send_sms_loader = false;
+        this.localService.showError(error,'Operation Unsuccessfull');
+      });
+    }
 }

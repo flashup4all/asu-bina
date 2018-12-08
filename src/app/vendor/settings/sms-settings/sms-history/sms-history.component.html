@@ -1,0 +1,130 @@
+<div class="card"> 
+    <div class="card-body">
+     <div class="card-footer" style="border-top: 0px">
+      <ul>
+        <li>
+          <div class="text-muted">Total SMS Units</div>
+          <strong>{{ sms_settings_data?.sms_unit_balance | number}}</strong>
+          <div class="progress progress-xs mt-2">
+            <div class="progress-bar bg-primary" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <br>
+    <br>
+    <div class="widget">
+    <div class="row p-2">
+        <div class="col">
+            <tabset>
+            	<tab heading="SMS History">
+                    <br>
+                     <button type="button" class="btn btn-primary pull-right" (click)="single_sms_modal.show()">Send SMS</button>
+                     <br>
+                    <h3 style="text-align:center;"> SMS History </h3>
+                    <div class="container">
+                        <mat-progress-bar *ngIf="sms_history_loader" mode="indeterminate"></mat-progress-bar>
+                        <table id="sms_history" class="table table-responsive-lg table-hover table-outline mb-0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Sn</th>
+                                    <th>Recipient</th>
+                                    <th>SMS ID</th>
+                                    <th>Message</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="" *ngFor="let history of sms_history; let i=index">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ history?.recipient }}</td>
+                                    <td>
+                                       {{ history?.identifier }} 
+                                    </td>
+                                    <td>
+                                       {{ history?.message }} 
+                                    </td>
+                                      <td>
+                                        <mat-chip-list>
+                                            <mat-chip *ngIf="history.status==1" color="primary" selected="true">Sent</mat-chip>
+                                            <mat-chip *ngIf="history.status==0" color="accent" selected="true">Pending</mat-chip>
+                                            <mat-chip *ngIf="history.status==2" color="warn" selected="true">Failed</mat-chip>
+                                        </mat-chip-list>
+                                    </td>
+                                    <td>
+                                        {{ history?.created_at}}
+                                    </td>
+                                    <td>
+                                        <mat-menu #appMenu="matMenu">
+                                        <mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
+                                          <button mat-menu-item (click)="resend_sms(history)">Resend</button>
+                                          <button mat-menu-item (click)="delete_sms_history(history.id)">View Invoice</button>
+                                        </mat-menu>
+
+                                        <button mat-icon-button [matMenuTriggerFor]="appMenu">
+                                          <mat-icon>more_vert</mat-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="container load-more">
+                           <a  (click)="loadMore()" class="btn btn-success" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
+                        </div>
+                    </div>
+                </tab>
+             </tabset>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<div bsModal #single_sms_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Send SMS</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="single_sms_modal.hide()">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="new session form">
+                    <form [formGroup]="single_sms_form" (ngSubmit)="send_sms(single_sms_form.value)">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Recipient(s)</label> <small style="color: red">[ seperate phone numbers with comma eg. 08090000000, 09089898989 etc]</small>
+                                <textarea formControlName = "phone_no" class="form-control"></textarea>
+                               
+                                <mat-error [hidden]="(single_sms_form.controls.phone_no.valid ) || (single_sms_form.controls.phone_no.pristine )" class="text-danger">Phone Number(s) is required</mat-error>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Identifier</label> <small></small>
+                                <input type="text" name="" formControlName = "identifier" class="form-control">
+                                <small [hidden]="(single_sms_form.controls.identifier.valid ) || (single_sms_form.controls.identifier.pristine )" class="text-danger">Sender ID is required</small>
+                            </div>
+                        </div> -->
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Message</label>
+                                <textarea formControlName = "message" class="form-control"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                       <button type="submit" block class="btn btn-success" [disabled]="single_sms_form.invalid || send_sms_loader">
+                            Send SMS
+                        </button>
+                        <mat-progress-bar *ngIf="send_sms_loader" mode="indeterminate"></mat-progress-bar>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

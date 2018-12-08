@@ -6,6 +6,7 @@ import { ProfileComponent } from './user-account/profile/profile.component';
 import { SmsSubscriptionComponent } from './settings/sms-settings/sms-subscriptions/sms-subscriptions.component';
 import { SmsSettingsComponent } from './settings/sms-settings/sms-settings/sms-settings.component';
 import { ManageSmsComponent } from './settings/sms-settings/manage-sms.component';
+import { SmsHistoryComponent } from './settings/sms-settings/sms-history/sms-history.component';
 const routes: Routes = [
 	{
 		path: '',
@@ -30,6 +31,14 @@ const routes: Routes = [
 		        component: SmsSettingsComponent,
 		        data : {
 		        	title: 'SMS Settings'
+		        }
+
+	      },
+	      {
+		        path: 'manage-sms', 
+		        component: SmsHistoryComponent,
+		        data : {
+		        	title: 'SMS History'
 		        }
 
 	      },
