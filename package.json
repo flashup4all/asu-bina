@@ -55,6 +55,7 @@
     "ts-xlsx": "0.0.11",
     "typeface-roboto": "0.0.54",
     "xlsx": "^0.11.19",
+    "crypto-js": "3.1.8",
     "zone.js": "0.8.20"
   },
   "devDependencies": {

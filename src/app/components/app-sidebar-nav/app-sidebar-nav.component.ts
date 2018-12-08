@@ -238,6 +238,11 @@ export class AppSidebarNavComponent {
           url: '/app/loan-request',
           icon: 'icon-star'
         },
+        {
+          name: 'Manage Notification',
+          url: '/app/manage-sms',
+          icon: 'icon-star'
+        },
         /*{
           name: 'Members Activity',
           url: '/members',
@@ -408,6 +413,11 @@ export class AppSidebarNavComponent {
               url: '/app/loan-request',
               icon: 'icon-star'
             },
+            {
+              name: 'Manage Notification',
+              url: '/app/manage-sms',
+              icon: 'icon-star'
+            },
           ]
         },
         {
@@ -507,6 +517,11 @@ export class AppSidebarNavComponent {
         {
           name: 'Manage Loan Request',
           url: '/app/loan-request',
+          icon: 'icon-star'
+        },
+        {
+          name: 'Manage Notification',
+          url: '/app/manage-sms',
           icon: 'icon-star'
         },
   ]
