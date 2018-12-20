@@ -459,7 +459,7 @@ export class MemberInvestmentsComponent implements OnInit {
       let monthly_interest=0;
         var monthly = 10;
         let interest_rate 
-        interest_rate = ((interest / 100) / 30).toFixed(4);
+        interest_rate = ((interest / 100) / 30).toFixed(2);
 
         while (curr_time < days) {
           daily_interest = balance * interest_rate;

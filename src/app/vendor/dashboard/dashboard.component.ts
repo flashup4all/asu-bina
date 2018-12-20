@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { VendorService } from '../vendor.service';
 
 import { LocalService } from '../../storage/local.service';
 import { DashboardService } from './dashboard.service';
@@ -38,6 +39,7 @@ export class DashboardComponent implements OnInit {
 	public totalDedutions
 	public totalMembers;
 	public runDeductionsForm : FormGroup;
+  filterForm: FormGroup;
 	public runContributionForm : FormGroup;
 	submitPending : boolean;
 	successAlert;
@@ -62,6 +64,7 @@ export class DashboardComponent implements OnInit {
     toRequestPage;
     total_widthdrawals_paid;
     total_widthdrawals_pending;
+    vendor_branches;
     member_image_url
   	constructor(
   		private localService : LocalService,
@@ -70,6 +73,7 @@ export class DashboardComponent implements OnInit {
   		private dashboardService : DashboardService,
   		private messageService : MessageService,
   		private route: Router,
+      private vendor_service : VendorService,
       private loanrequestService : LoanRequestService,
       private contributionService : ContributionService,
   		private widthdrawalService : WidthdrawalsService,
@@ -82,6 +86,7 @@ export class DashboardComponent implements OnInit {
   		this.getLoanRequest();
       this.getChangeContributionRequest();
       this.getWidthdrawals();
+      this.get_vendor_branches();
   		this.getVendorstatistics();
   	}
 
@@ -91,7 +96,20 @@ export class DashboardComponent implements OnInit {
           details : [null, Validators.compose([Validators.required])],
           type: [null, Validators.compose([Validators.required])],
           //emails: this._fb.array([this.initEmails()])
-      })
+      });
+       /*filter form*/
+       this.filterForm = this._fb.group({
+        from : '',
+        to : '',
+        id : '',
+        member_id:'',
+        loan_request_id: '',
+        loan_id:'',
+        branch_id:'',
+        repayment_method: '',
+        status: '',
+        approved_by: '',
+      });
   	}
   	/**
 	 * @method getMembers
@@ -105,6 +123,26 @@ export class DashboardComponent implements OnInit {
 		});
 	}
 
+  filterLoanRequest(filterValues)
+    {
+      this.submitPending = true;
+      filterValues['vendor_id'] = parseInt(this.vendor.id);
+      this.loanrequestService.filterLoanRequest(filterValues).subscribe((response) => {
+        this.loanRequestList = response.data;
+        this.submitPending = false;
+      })
+    }
+  /**
+     * @method get_vendor_branches
+     * get vendor branches
+     * @return data
+     */
+     get_vendor_branches()
+     {
+       this.vendor_service.getVendorBranches().subscribe((response) => {
+         this.vendor_branches = response.data
+       })
+     }
   filter_loan_interest_type(id)
   {
     let interest_type = this.localService.interest_type()

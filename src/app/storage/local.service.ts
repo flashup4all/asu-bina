@@ -5,6 +5,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs/Rx';
 import { JwtHelperService } from '@auth0/angular-jwt';
+//import * as CryptoJS from 'crypto-js';
 
 @Injectable()
 export class LocalService {
@@ -13,10 +14,10 @@ export class LocalService {
     private route: ActivatedRoute
     ) { }
 	  /*get jwt token*/
-	setToken(token: string) :void
-	{
-		return window.localStorage.setItem('token', token);
-	}
+  	setToken(token: string) :void
+  	{
+  		return window.localStorage.setItem('token', token);
+  	}
 	
      /*get token*/
     getToken()
@@ -25,7 +26,7 @@ export class LocalService {
     }
   /*set profile*/
     setVendor(vendorProfile): void
-    {
+    { 
         return window.localStorage.setItem('vendorProfile', vendorProfile);
     }
       /*get agency profile*/
