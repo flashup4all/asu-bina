@@ -178,6 +178,72 @@
             </div>
           </tab> -->
           <tab heading="Loan Request">
+            <div class="col-md-12">
+                            <form [formGroup] = "filterForm" (ngSubmit) = "filterLoanRequest(filterForm.value)" style="width: 100%;">
+                            <div class="row p-1">
+                                <div class="col-md-3">
+                                  <div class="form-group">
+                                    <label>From</label>
+                                    <input type="date" formControlName = "from" class="form-control" name=""> 
+                                  </div>
+                                </div>
+                                <div class="col-md-3">
+                                  <div class="form-group">
+                                    <label>To</label>
+                                    <input type="date" formControlName = "to" class="form-control" name="">
+                                  </div>
+                                </div>
+                                <div class="col-md-2">
+                                  <div class="form-group">
+                                    <label>Branch</label>
+                                    <select tabindex="1" formControlName="branch_id" data-placeholder="Branch" class="form-control">
+                                      <option value="" disabled="" selected="">Branch</option>
+                                      <option *ngFor="let branch of vendor_branches" value="{{branch.id}}">{{branch?.name}}</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="col-md-3">
+                                  <div class="form-group">
+                                    <label>Status</label>
+                                    <select tabindex="1" formControlName="status" data-placeholder="Branch" class="form-control">
+                                      <option value="" disabled="" selected="">None</option>
+                                      <option value="0" >Pending</option>
+                                      <option value="1" >Active</option>
+                                      <option value="2">Cancelled</option>
+                                      <option value="3" >Completed | Closed</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="col-md-1">
+                                  <div class="form-group">
+                                    <!-- <button type="button" class="btn btn-primary" style="margin-top: 30px;" (click)="show_adv_form()"><i class="fa fa-filter"></i></button> -->
+                                    <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+                                      <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
+                                      <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
+                                      <span *ngIf="!submitPending">Filter</span>
+                                    </button>
+                                   <!--  <button type="button" class="btn btn-success pull-right" (click)="newLoanRequestModal.show()"style="margin-top:30px" >
+                                        <i class="fa fa-plus"></i> 
+                                    Make A Loan Request
+                                    </button> -->
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- <div class="row" *ngIf="adv_filter">
+                                <div class="col-md-3">
+                                  <div class="form-group">
+                                    <label>Trans. ID:</label>
+                                    <input type="text" class="form-control" formControlName="id" placeholder="Invoice Number"/>
+                                    <span *ngIf="searching">searching...</span>
+                                    <ng-template #st let-s="result" let-t="sterm">
+                                      
+                                      {{ s.name}}
+                                    </ng-template>
+                                  </div>
+                                </div>
+                              </div> -->
+                          </form>
+                        </div>
               <table id="loan_request_table" class="table table-responsive-sm table-hover table-outline mb-0">
                                 <thead>
                                     <tr>

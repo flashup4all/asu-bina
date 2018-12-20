@@ -24,7 +24,7 @@
                     <h3 style="text-align:center;"> SMS History </h3>
                     <div class="container">
                         <mat-progress-bar *ngIf="sms_history_loader" mode="indeterminate"></mat-progress-bar>
-                        <table id="sms_history" class="table table-responsive-lg table-hover table-outline mb-0" width="100%">
+                        <table id="sms_history" class="table table-responsive-lg table-hover table-outline mb-0" width="100%" style="table-layout: fixed;">
                             <thead>
                                 <tr>
                                     <th>Sn</th>
@@ -44,7 +44,9 @@
                                        {{ history?.identifier }} 
                                     </td>
                                     <td>
-                                       {{ history?.message }} 
+                                       <p class="sms-msg" style="word-wrap: break-word;">
+                                           {{ history?.message }}
+                                       </p> 
                                     </td>
                                       <td>
                                         <mat-chip-list>

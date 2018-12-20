@@ -4,6 +4,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BsDropdownModule } from 'ngx-bootstrap';
 import { SharedModule } from '../../shared/shared.module';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
+import { VendorService } from '../vendor.service';
 
 import { ModalModule } from 'ngx-bootstrap';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -23,6 +24,6 @@ import { DashboardService } from './dashboard.service';
     SweetAlert2Module
   ],
   declarations: [DashboardComponent],
-  providers: [DashboardService]
+  providers: [DashboardService, VendorService]
 })
 export class DashboardModule { }
