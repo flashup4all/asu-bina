@@ -63,6 +63,8 @@ export class ManageMembersComponent implements OnInit {
   	phone1;
  	staffList
  	vendor_branches;
+ 	new_login_data;
+ 	view_login_check: boolean = false;
  	generate_login_check : boolean = false;
  	activate_loader: boolean = false;
 	public file_srcs: string[] = [];
@@ -518,6 +520,7 @@ export class ManageMembersComponent implements OnInit {
 	editPassword(data)
 	{
 		this.editMemberData = data;
+		this.view_login_check = false;
 		this.passwordModal.show();
 		// this.manageMemberService.getMember().subscribe((response) => {
 		// 	this.membersList = response.data
@@ -542,6 +545,8 @@ export class ManageMembersComponent implements OnInit {
 		this.manageMemberService.generate_login_details(data).subscribe((response) => {
 			if(response.success)
 			{
+				this.new_login_data = response.data;
+				this.view_login_check = true;
 				this.generate_login_check = false;
 				this.localService.showSuccess(response.message,'Operation Successfull');
 			}else{

@@ -62,6 +62,8 @@ export class ViewMemberComponent implements OnInit {
     btn_loader: boolean = false;
     allow_edit_acc_no : boolean = false;
     approve_btn_loader: boolean = false;
+    new_login_data;
+    view_login_check: boolean = false;
     generate_login_check: boolean = false;
     update_acc_no_loader: boolean = false;
     public loanRequestForm : FormGroup;
@@ -848,6 +850,7 @@ export class ViewMemberComponent implements OnInit {
   {
     //this.editMemberData = data;
     this.passwordModal.show();
+    this.view_login_check = false;
     // this.manageMemberService.getMember().subscribe((response) => {
     //   this.membersList = response.data
     // });
@@ -872,6 +875,8 @@ export class ViewMemberComponent implements OnInit {
       if(response.success)
       {
         this.generate_login_check = false;
+        this.new_login_data = response.data;
+        this.view_login_check = true;
         this.localService.showSuccess(response.message,'Operation Successfull');
       }else{
         this.generate_login_check = false;
