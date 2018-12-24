@@ -330,7 +330,7 @@
 	 <div class="modal-dialog modal-md">
 	   <div class="modal-content">
 	     <div class="modal-header">
-	       <h4 class="modal-title pull-left">Reset / Generate Member Login Details</h4>
+	       <h4 class="modal-title pull-left">Reset Member Login Details</h4>
 	       <button type="button" class="close pull-right" aria-label="Close" (click)="passwordModal.hide()">
 	         <span  (click)="passwordModal.hide()" aria-hidden="true">&times;</span>
 	       </button>
@@ -340,6 +340,18 @@
 	       		<div class="password-rest">
     						<button type="submit"  (click)="generate_login_details(editMemberData)" class="btn btn-primary btn-block" title="send a password reset link to this member">Generate</button>            
                 <mat-progress-bar *ngIf="generate_login_check" mode="indeterminate"></mat-progress-bar>
+                <br>
+                <div *ngIf="view_login_check">
+                  <p>
+                     Account ID : {{ new_login_data?.asusu_id}}
+                  </p>
+                  <p>
+                     Cooperative Account No. : {{ new_login_data?.account_number}}
+                  </p>
+                  <p>
+                     New Password : {{ new_login_data?.new_password}}
+                  </p>
+                </div>
 	       		</div>
 			</div>
 	     </div>
