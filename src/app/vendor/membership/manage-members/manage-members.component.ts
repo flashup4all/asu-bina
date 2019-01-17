@@ -468,7 +468,7 @@ export class ManageMembersComponent implements OnInit {
 	}
 
 	/**
-	 * @method activateAllMember
+	 * @method deactivateAllMember
 	 * activate member
 	 * @return data
 	 */
