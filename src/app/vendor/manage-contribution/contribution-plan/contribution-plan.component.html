@@ -48,12 +48,19 @@
                 {{ item?.created_at | date }} 
             </td>
             <td class="center">
-                  <button class="btn btn-sm btn-primary" (click)="edit(item)">
-                    <span><i class="fa fa-edit"></i></span>
+              <mat-menu #contri_plan_Menu="matMenu">
+                      <!-- <mat-progress-bar mode="indeterminate"></mat-progress-bar> -->
+                      <button class="btn btn-sm btn-primary" (click)="edit(item)">
+                        <span><i class="fa fa-edit"></i></span> Edit
+                      </button>
+                      <button class="btn btn-sm btn-danger" (click)="delete(item.id)">
+                      <span><i class="fa fa-trash-o"></i></span> Delete
                   </button>
-                   <button class="btn btn-sm btn-danger" (click)="delete(item.id)">
-                    <span><i class="fa fa-trash-o"></i></span>
-                  </button>
+                  </mat-menu>
+
+                  <button mat-icon-button [matMenuTriggerFor]="contri_plan_Menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
             </td>
         </tr>
       </tbody>

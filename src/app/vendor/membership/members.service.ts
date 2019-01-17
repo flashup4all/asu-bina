@@ -274,4 +274,15 @@ data   * get all member deductions
       return this.http.get(environment.api.url+'CoopManagement/members/query/'+JSON.parse(this.localService.getVendor()).id+'/'+query, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
+    /**
+     * @method send_login_details_to_all_members
+     * activate  all coorp member resource
+     * @return data
+     */
+     send_login_details_to_all_members(data)
+    {
+       return this.http.post(environment.api.url +'CoopManagement/member/generate-all-members-login', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
 }

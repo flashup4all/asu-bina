@@ -1,14 +1,47 @@
 <div class="card">
-  <div class="card-body">
-    <div class="row">
-      <div class="col">
-        <tabset>
-          <tab heading="Members Form Fields">
-            <div class="col-md-12">
-              <div class="row">
-                <div class="col-md-12">
-                  <form class="form-horizontal row-fluid" [formGroup]="formPool">
-                            <!-- <div class="defualt-form">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <tabset>
+                    <tab heading="Members Settings">
+                        <mat-accordion>
+                            <mat-expansion-panel hideToggle="false" style="width:100%">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title> All Member Account Activation</mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <mat-panel-description>
+                                    <br>
+                                    <div>
+                                        <mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
+                                        <br><button class="btn btn-success pull-left" (click)="activateAllMember()">Activate
+                                            All Members</button>
+                                        <button style="margin-left:5px;" class="btn btn-danger" (click)="deactivateAllMember()">Deactivate
+                                            All Members</button>
+                                    </div>
+                                </mat-panel-description>
+                            </mat-expansion-panel>
+                            <mat-expansion-panel hideToggle="false" style="width:100%">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>All Member Login Details </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <mat-panel-description>
+                                    <mat-progress-bar *ngIf="login_details_loader" mode="indeterminate"></mat-progress-bar>
+                                    <br><button class="btn btn-success pull-left" [swal]="send_login_swal">Send Login
+                                        Details to all Members</button>
+                                    <swal #send_login_swal title="Are You Sure You want to send login details to all members?"
+                                        text="This cannot be undone" type="warning" [showCancelButton]="true"
+                                        [focusCancel]="true" (confirm)="send_login_details_to_all_members()">
+                                    </swal>
+                                </mat-panel-description>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </tab>
+                    <tab heading="Members Form Fields">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form class="form-horizontal row-fluid" [formGroup]="formPool">
+                                        <!-- <div class="defualt-form">
                                 <h3>Default Form</h3>
                                 <br>
                                 <div class="control-group">
@@ -30,66 +63,71 @@
                                     </div>
                                 </div>
                             </div> -->
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h3>Add Custom Form Fields to Members Form</h3>
-                                <small>your custom form fields</small>
-                                </div>
-                                <div class="form-group" *ngFor="let item of membersFormPoolList">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>{{item.label}}</label>
-                                            <input type="text" *ngIf="item.type =='text'" placeholder="{{item.placeholder}}" name="{{item.label}}" class="form-control">
-                                            <textarea class="form-control"  *ngIf="item.type =='textarea'"  placeholder="{{item.placeholder}}" ></textarea>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h3>Add Custom Form Fields to Members Form</h3>
+                                                <small>your custom form fields</small>
+                                            </div>
+                                            <div class="form-group" *ngFor="let item of membersFormPoolList">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label>{{item.label}}</label>
+                                                        <input type="text" *ngIf="item.type =='text'" placeholder="{{item.placeholder}}"
+                                                            name="{{item.label}}" class="form-control">
+                                                        <textarea class="form-control" *ngIf="item.type =='textarea'"
+                                                            placeholder="{{item.placeholder}}"></textarea>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <button class="btn btn-danger">
+                                                            <i class="fa fa-trash-o" (click)="deleteFormField(item.id)"
+                                                                title="Remove This Form Field From Members Form"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <button class="btn btn-danger">
-                                                <i class="fa fa-trash-o" (click)="deleteFormField(item.id)" title="Remove This Form Field From Members Form"></i>   
-                                            </button>
-                                        </div>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
-                            </form>
-                </div>
-              </div>
-            </div>
-            
-          </tab>
-          <tab heading="Add Form Field">
-            <div class="col-md-12">
-              <div class="row">
-                    <form class="form-horizontal row-fluid" [formGroup] = "formPool" (ngSubmit) = "addFormField(formPool.value)">
-                        <div class="form-group">
-                            <label>Kind</label>
-                            <select class="form-control" formControlName="kind" name="kind" required="">
-                                <option value="input" title=" text field for short text">Input</option>
-                                <option value="textarea" title="large text box for lont text">Text Area</option>
-                                <!-- <option value="image">image</option>
+                        </div>
+
+                    </tab>
+                    <tab heading="Add Form Field">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <form class="form-horizontal row-fluid" [formGroup]="formPool" (ngSubmit)="addFormField(formPool.value)">
+                                    <div class="form-group">
+                                        <label>Kind</label>
+                                        <select class="form-control" formControlName="kind" name="kind" required="">
+                                            <option value="input" title=" text field for short text">Input</option>
+                                            <option value="textarea" title="large text box for lont text">Text Area</option>
+                                            <!-- <option value="image">image</option>
                                 <option value="select">Select</option> -->
-                            </select>
-                            <i class="fa fa-question-circle-o" title="field type"></i>
-                        </div>
-                        <div class="form-group">
-                            <label>Title</label>
-                            <input type="text" formControlName="label" placeholder="label [eg. Name, Email etc]" name="label" class="form-control">
-                            <i class="fa fa-question-circle-o" title="Field label eg: First Name:"></i>
-                        </div>
-                        <div class="form-group">
-                            <label>Type</label>
-                                 <select class="form-control" formControlName="type" name="type" required="">
-                                    <option value="text">Text</option>
-                                    <option value="text">Email</option>
-                                    <option value="text">Number</option>
-                                </select>
-                                <i class="fa fa-question-circle-o" title="what type of input field id this field"></i>
-                        </div>
-                        <div class="form-group">
-                            <label>Placeholder</label>
-                            <input type="text" formControlName="placeholder" name="placeholder" placeholder="eg. [please enter your email]" class="form-control">
-                                <i class="fa fa-question-circle-o" title="this is the text that appears insides a text field. it disappears once the user types insides the field"></i>
-                        </div>
-                                <!-- <div class="control-group">
+                                        </select>
+                                        <i class="fa fa-question-circle-o" title="field type"></i>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Title</label>
+                                        <input type="text" formControlName="label" placeholder="label [eg. Name, Email etc]"
+                                            name="label" class="form-control">
+                                        <i class="fa fa-question-circle-o" title="Field label eg: First Name:"></i>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Type</label>
+                                        <select class="form-control" formControlName="type" name="type" required="">
+                                            <option value="text">Text</option>
+                                            <option value="text">Email</option>
+                                            <option value="text">Number</option>
+                                        </select>
+                                        <i class="fa fa-question-circle-o" title="what type of input field id this field"></i>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Placeholder</label>
+                                        <input type="text" formControlName="placeholder" name="placeholder" placeholder="eg. [please enter your email]"
+                                            class="form-control">
+                                        <i class="fa fa-question-circle-o" title="this is the text that appears insides a text field. it disappears once the user types insides the field"></i>
+                                    </div>
+                                    <!-- <div class="control-group">
                                     <label class="col-sm-3">Required</label>
                                     <div class="col-sm-6">
                                         <select class="form-control"  name="required" required="">
@@ -101,20 +139,21 @@
                                         <i class="fa fa-question-circle-o" title="is this field a must fill"></i>
                                     </div>
                                 </div> -->
-                        <div class="form-group">
-                        <button type="submit" class="btn btn-success btn-block" [disabled]="formPool.invalid || submitPending ">
-                            <span *ngIf="!submitPending">Add Field</span>
-                            <span *ngIf="submitPending && formPool.valid">Please Wait...</span>
-                            <span *ngIf="submitPending && formPool.valid" class="fa fa-spinner" aria-hidden="true"></span>
-                        </button>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-success btn-block" [disabled]="formPool.invalid || submitPending ">
+                                            <span *ngIf="!submitPending">Add Field</span>
+                                            <span *ngIf="submitPending && formPool.valid">Please Wait...</span>
+                                            <span *ngIf="submitPending && formPool.valid" class="fa fa-spinner"
+                                                aria-hidden="true"></span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                </form>
-              </div>
+
+                    </tab>
+                </tabset>
             </div>
-            
-          </tab>
-        </tabset>
-      </div>
+        </div>
     </div>
-  </div>
 </div>
