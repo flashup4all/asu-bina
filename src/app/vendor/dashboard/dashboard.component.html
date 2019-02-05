@@ -244,6 +244,11 @@
                               </div> -->
                           </form>
                         </div>
+                        <div style="margin-bottom: 4px">
+                          <button style="margin-left:5px;" (click)="exportTable('xls', 'loan_request_table')" class="btn btn-outline btn-success">Export
+                            table</button>
+                          <button class="btn btn-outline btn-success" (click)="printReciept('loan_request_table')">Print</button>
+                        </div>
               <table id="loan_request_table" class="table table-responsive-sm table-hover table-outline mb-0">
                                 <thead>
                                     <tr>
