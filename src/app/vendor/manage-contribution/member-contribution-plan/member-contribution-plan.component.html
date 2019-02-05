@@ -1,12 +1,12 @@
 <div class="card">
-  	<div class="card-body" style="padding:0px;">
-    	<div class="row">
-      		<div class="col">
-      			<div class="container" style="padding: 30px;">
-      				<div class="row">
-	            		<form [formGroup] = "filterForm" (ngSubmit) = "filter_member_contribution_plan(filterForm.value)" style="width: 100%;">
-	                        <div class="row p-1">
-	                        	<!-- <div class="col-md-3">
+	<div class="card-body" style="padding:0px;">
+		<div class="row">
+			<div class="col">
+				<div class="container" style="padding: 30px;">
+					<div class="row">
+						<form [formGroup]="filterForm" (ngSubmit)="filter_member_contribution_plan(filterForm.value)" style="width: 100%;">
+							<div class="row p-1">
+								<!-- <div class="col-md-3">
 	                              <div class="form-group">
 	                                <label>Transaction ID</label>
 	                                <input type="text" formControlName = "transaction_id" class="form-control" name=""> 
@@ -24,41 +24,42 @@
 	                                <input type="date" formControlName = "to" class="form-control" name="">
 	                              </div>
 	                            </div> -->
-	                            <div class="col-md-3">
-	                              <div class="form-group">
-			                        <label for="typeahead-http">Filter Member <small>[name/Account no.]</small></label>
-			                        <input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="searchFailed"formControlName="member_id" [ngbTypeahead]="search" placeholder="Filter Member" [inputFormatter]="formatter" [resultTemplate]="rt"/>
-			                        <span *ngIf="searching">searching...</span>
-			                        <ng-template #rt let-r="result" let-t="term">
-			                        	<img [src]="r.passport" style="width:30px; height:30px;">
-			                           {{ r.first_name}} {{ r.middle_name}} {{ r.last_name}}
-			                        </ng-template>
-			                      </div>
-	                            </div>
-	                            <div class="col-md-3">
-	                  				<div class="form-group">
-		                                <label>Contribution Plan</label>
-		                                <select class="form-control" placeholder="type" formControlName = "plan_id">
-		                                    <option selected="false" value="">Type</option>
-		                                    <option [value]="item.id" *ngFor="let item of contribution_plans">
-		                                    	{{item?.name }}
-		                                    </option>
-		                                </select>
-		                            </div>
-	                  			</div>
-	                            
-	                            <div class="col-md-2">
-	                  				<div class="form-group">
-		                                <label>Status</label>
-		                                <select class="form-control" formControlName = "status">
-		                                    <option selected="" value="">None</option>
-		                                    <option value="1">Approve</option>
-		                                    <option value="0">Pending</option>
-		                                    <option value="2">Cancelled</option>
-		                                </select>
-		                            </div>
-	                  			</div>
-	                  			<!-- <div class="col-md-2">
+								<div class="col-md-3">
+									<div class="form-group">
+										<label for="typeahead-http">Filter Member <small>[name/Account no.]</small></label>
+										<input id="typeahead-http" type="text" class="form-control" [class.is-invalid]="searchFailed" formControlName="member_id"
+										 [ngbTypeahead]="search" placeholder="Filter Member" [inputFormatter]="formatter" [resultTemplate]="rt" />
+										<span *ngIf="searching">searching...</span>
+										<ng-template #rt let-r="result" let-t="term">
+											<img [src]="r.passport" style="width:30px; height:30px;">
+											{{ r.first_name}} {{ r.middle_name}} {{ r.last_name}}
+										</ng-template>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>Contribution Plan</label>
+										<select class="form-control" placeholder="type" formControlName="plan_id">
+											<option selected="false" value="">Type</option>
+											<option [value]="item.id" *ngFor="let item of contribution_plans">
+												{{item?.name }}
+											</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="col-md-2">
+									<div class="form-group">
+										<label>Status</label>
+										<select class="form-control" formControlName="status">
+											<option selected="" value="">None</option>
+											<option value="1">Approve</option>
+											<option value="0">Pending</option>
+											<option value="2">Cancelled</option>
+										</select>
+									</div>
+								</div>
+								<!-- <div class="col-md-2">
 				                  <div class="form-group">
 				                    <label>Branch</label>
 				                    <select tabindex="1" formControlName="branch_id" data-placeholder="Branch" class="form-control">
@@ -67,70 +68,80 @@
 				                    </select>
 				                  </div>
 				                </div> -->
-	                            <!-- <div class="col-md-3">
+								<!-- <div class="col-md-3">
 	                            	<label>Type</label>
 	                               	<select class="form-control" placeholder="Filter by name..." formControlName = "type">
 	                               		<option value="">None</option>
 				                        <option value="{{ item.id }}" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
 				                    </select>
 	                            </div> -->
-	                            <div class="col-md-2">
-	                              <div class="form-group">
-	                                <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
-	                                  <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
-	                                  <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
-	                                  <span *ngIf="!submitPending">Filter</span>
-	                                </button>
-	                              </div>
-	                            </div>
-	                          </div>
-	                      </form>
-	            	</div>
-      			</div>
-            	<div style="margin-bottom: 4px">
-            		<button style="margin-left:18px;" (click)="exportTable('xls', 'contri_table')" class="btn btn-outline btn-success">Export table</button>
-            		<button class="btn btn-outline btn-success" (click)="printReciept('contri_table')">Print</button>
-            	</div>
+								<div class="col-md-2">
+									<div class="form-group">
+										<button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+											<span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
+											<span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
+											<span *ngIf="!submitPending">Filter</span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div style="margin-bottom: 4px">
+					<button style="margin-left:18px;" (click)="exportTable('xls', 'contri_table')" class="btn btn-outline btn-success">Export
+						table</button>
+					<button class="btn btn-outline btn-success" (click)="printReciept('contri_table')">Print</button>
+					<button style="margin-left:1px;" (click)="show_hide_adv_options = !show_hide_adv_options" class="btn btn-outline btn-success">Advance
+						Options</button>
+				</div>
+				<div class="col-md-12" *ngIf="show_hide_adv_options">
+					show adv options
+				</div>
 				<mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
 
-            	<div class="card-body">
-            		<table id="contri_table" class="table table-responsive-lg table-hover table-outline mb-0" width="100%">
-		                <thead>
-			                <tr>
-			                    <th>S/N</th>
-			                    <th>Name</th>
-			                    <th>Branch</th>
-			                    <th>Plan</th>
-			                    <th>(&#8358;) Contributed</th>
-			                    <th>Status</th>
-			                    <th>Actions</th>
-			                </tr>
-			            </thead>
-			            <tbody>
-			                <tr class="" *ngFor="let item of member_contribution_plans; let i =index">
-			                    <td>{{ i + 1 }}</td>
-			                    <td>
-			                        {{item?.member?.first_name}} 
-			                        {{item?.member?.last_name}} 
-			                        {{item?.member?.middle_name}} 
-			                    </td>
-			                    <td>{{ item?.member?.branch?.name }}</td>
-			                    
-			                    <td>
-			                        {{ item?.contribution_plan?.name }} 
-			                    </td>
-			                    <td>
-			                         {{ item?.balance | number:'.2' }}
-			                    </td>
-			                    <td>
-		                        	<span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
-		                            <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
-	                        		<span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
-		                        </td>
-			                    <td class="center">
-			                    	<mat-menu #appMenu="matMenu">
-		                        		<mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
-									  	<button mat-menu-item [routerLink]="['/app/members/', item.member_id,'view']" title="view member details">Manage</button>
+				<div class="card-body">
+					<table id="contri_table" class="table table-responsive-lg table-hover table-outline mb-0" width="100%">
+						<thead>
+							<tr>
+								<th>S/N</th>
+								<th>Name</th>
+								<th>Acc. No.</th>
+								<th>Phone</th>
+								<th>Branch</th>
+								<th>Plan</th>
+								<th>(&#8358;) Contributed</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="" *ngFor="let item of member_contribution_plans; let i =index">
+								<td>{{ i + 1 }}</td>
+								<td>
+									{{item?.member?.first_name}}
+									{{item?.member?.last_name}}
+									{{item?.member?.middle_name}}
+								</td>
+								<td>{{ item?.member?.account_number }}</td>
+								<td>{{ item?.member?.phone1 }}</td>
+								<td>{{ item?.member?.branch?.name }}</td>
+
+								<td>
+									{{ item?.contribution_plan?.name }}
+								</td>
+								<td>
+									{{ item?.balance | number:'.2' }}
+								</td>
+								<td>
+									<span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
+									<span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
+									<span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
+								</td>
+								<td class="center">
+									<mat-menu #appMenu="matMenu">
+										<mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
+										<button mat-menu-item [routerLink]="['/app/members/', item.member_id,'view']" title="view member details">Manage</button>
 										<!-- <button mat-menu-item (click)="load_plan_transactions_history(item.contributionplan_id)">View History</button> -->
 										<!-- <button *ngIf="!item.status" [swal]="approve_contri" mat-menu-item>Approve Plan</button>
 									  <button *ngIf="user.role_id ==2" [swal]="cancel_contri" mat-menu-item>Cancel Plan</button>
@@ -165,37 +176,39 @@
 									</mat-menu>
 
 									<button mat-icon-button [matMenuTriggerFor]="appMenu">
-									  <mat-icon>more_vert</mat-icon>
-								</button>
-			                    </td>
-			                </tr>
-			            </tbody>
-			        </table>
-	            </div>
-		        <br>
-	            <div class="col-md-12 load-more" *ngIf="show_load_more_button">
-                   <a  (click)="load_more()" style="cursor: pointer;" class="btn btn-block btn-success"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
-                </div>
-            </div>
-      	</div>
-    </div>
+										<mat-icon>more_vert</mat-icon>
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<br>
+				<div class="col-md-12 load-more" *ngIf="show_load_more_button">
+					<a (click)="load_more()" style="cursor: pointer;" class="btn btn-block btn-success"><i *ngIf="loader" class="fa fa-spinner"></i>Load
+						more... </a>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-<div bsModal #view_plan_contribution_history_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-     <div class="modal-dialog modal-lg">
-       <div class="modal-content">
-         <div class="modal-header">
-           <h4 class="modal-title pull-left">Transaction  History</h4>
-           <button type="button" class="close pull-right" aria-label="Close" (click)="view_plan_contribution_history_modal.hide()">
-             <span aria-hidden="true">&times;</span>
-           </button>
-         </div>
-         <div class="modal-body">
-           <div class="">
-           		<div class="card">
-	              <div class="card-body">
-	                <div class="row mb-4">
-	                  <div class="col-lg-12" id="transaction">
-	                    <!-- <table class="table table-clear">
+<div bsModal #view_plan_contribution_history_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+ aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title pull-left">Transaction History</h4>
+				<button type="button" class="close pull-right" aria-label="Close" (click)="view_plan_contribution_history_modal.hide()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="">
+					<div class="card">
+						<div class="card-body">
+							<div class="row mb-4">
+								<div class="col-lg-12" id="transaction">
+									<!-- <table class="table table-clear">
 	                      <tbody>
 	                        <tr>
 	                          <td class="left">
@@ -255,15 +268,15 @@
 	                        </tr>
 	                      </tbody>
 	                    </table> -->
-	                  </div>
-	                  </div>
-	                </div>
-	                <div class="card-footer">
-	                  <!-- <a class="btn btn-sm btn-info float-right" (click)="print_transaction('transaction');"><i class="fa fa-print"></i> Print</a> -->
-	                </div>
-	              </div>
-            </div>
-         </div>
-       </div>
-     </div>
+								</div>
+							</div>
+						</div>
+						<div class="card-footer">
+							<!-- <a class="btn btn-sm btn-info float-right" (click)="print_transaction('transaction');"><i class="fa fa-print"></i> Print</a> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

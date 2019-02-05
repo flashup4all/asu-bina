@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { VendorService } from '../vendor.service';
+import { TableExportService } from '../../shared/services/index';
 
 import { LocalService } from '../../storage/local.service';
 import { DashboardService } from './dashboard.service';
@@ -70,6 +71,7 @@ export class DashboardComponent implements OnInit {
   		private localService : LocalService,
       	private sanitizer:DomSanitizer,
   		private _fb : FormBuilder,
+      private exportService: TableExportService,
   		private dashboardService : DashboardService,
   		private messageService : MessageService,
   		private route: Router,
@@ -182,7 +184,7 @@ export class DashboardComponent implements OnInit {
               let monthly_interest=0;
                 var monthly = 10;
                 let interest_rate 
-                interest_rate = ((interest / 100) / 30).toFixed(4);
+                interest_rate = ((interest / 100) / 30).toFixed(2);
 
                 while (curr_time < days) {
                   daily_interest = balance * interest_rate;
@@ -653,5 +655,67 @@ export class DashboardComponent implements OnInit {
         this.localService.showError(response.message,'Operation Unsuccessfull');
       }
        });
+  }
+  exportTable(format, tableId) {
+    this.exportService.exportTo(format, tableId);
+  }
+  printReciept(id): void {
+    let printContents, popupWin;
+
+    printContents = document.getElementById(id).outerHTML;
+    popupWin = window.open('', '_blank', 'width=auto');
+    popupWin.document.open();
+    popupWin.document.write(`
+        <html>
+          <head>
+            <title>Print tab</title>
+            <style>
+              body{font-size:14px; text-align: center;}
+                table {
+                    margin: 5px;
+                  
+              }
+
+              .center{
+                text-align:center;
+              }
+              .full{
+                width:100%;
+              }
+              .row{
+                display: block;
+              }
+
+              .border, tr, th, td {
+                  border: 1px solid black;
+                  padding:2px;
+                  border-collapse: collapse;
+                   }
+                   
+              .no-border{ 
+                  border: none !important;
+                  }
+                  
+               .print-full{ 
+                 width: 100%      
+               }
+
+               .print-half{ 
+                 width: 48%;   
+               }
+               
+               .left{ float: left;}
+               
+               .right{float: right;}
+               
+               
+               .margin{ 5px;}
+               .row{width:100%;}
+            </style>
+          </head>
+      <body onload="window.print();window.close()">${printContents}</body>
+        </html>`
+    );
+    popupWin.document.close();
   }
 }
