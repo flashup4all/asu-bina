@@ -1,5 +1,40 @@
 <div class="row">
-    
+    <form [formGroup] = "filterForm" (ngSubmit) = "filter_withdawals(filterForm.value)" style="width: 100%;">
+          <div class="row p-1">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>From</label>
+                  <input type="date" formControlName = "from" class="form-control" name=""> 
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>To</label>
+                  <input type="date" formControlName = "to" class="form-control" name="">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Type</label>
+                  <select class="form-control" placeholder="type" formControlName = "plan_id">
+                      <option selected="false">Type</option>
+                      <option [value]="item.contribution_plan.id" *ngFor="let item of member_plan_list">
+                        {{item?.contribution_plan?.name }}
+                      </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+                    <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
+                    <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
+                    <span *ngIf="!submitPending">Filter</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+        </form>
    <div class="container p-2">
      <button (click)="exportTable('xls', 'withdrawal_table')" class="btn btn-outline btn-success">Export table</button>
      <button class="btn btn-outline btn-success" (click)="printReciept('withdrawal_table')">Print</button>

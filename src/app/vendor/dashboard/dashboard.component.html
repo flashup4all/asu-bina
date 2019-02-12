@@ -67,10 +67,10 @@
         </div>
       </div>
     </div><!--/.col-->
-    <!-- <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-danger">
+    <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-success">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{(totalContribution - totalWidthdrawal) | number:'.2' || 0}}</h4>
+          <h4 class="mb-0">{{(total_paid_contribution - total_widthdrawals_paid) | number:'.2' || 0}}</h4>
           <p>Balance: width - contri</p>
         </div>
         <div class="chart-wrapper px-3" style="height:70px;">
@@ -78,6 +78,26 @@
       </div>
     </div>
     <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-success">
+        <div class="card-body pb-0">
+          <h4 class="mb-0">{{ active_loan_request | number }}</h4>
+          <p>Active Loans
+        </div>
+        <div class="chart-wrapper px-3" style="height:70px;">
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-success">
+        <div class="card-body pb-0">
+          <h4 class="mb-0">{{ pending_loan_request | number }}</h4>
+          <p>Pending Loans</p>
+        </div>
+        <div class="chart-wrapper px-3" style="height:70px;">
+        </div>
+      </div>
+    </div>
+    <!-- <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-info">
         <div class="card-body pb-0">
           <button type="button" class="btn btn-transparent p-0 float-right">
@@ -485,7 +505,7 @@
             </tabset>
           </tab>
           <tab heading="Members">
-            <table class="table table-responsive-sm table-hover table-outline mb-0">
+            <table class="table table-responsive table-hover table-outline mb-0">
               <thead class="thead-light">
                 <tr>
                   <th class="text-center"><i class="icon-people"></i></th>
