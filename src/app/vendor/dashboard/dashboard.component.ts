@@ -62,6 +62,8 @@ export class DashboardComponent implements OnInit {
     public changeContibutionsRequestList;
     public widthdrawalsList;
     totalActiveMembers;
+  pending_loan_request;
+  active_loan_request;
     toRequestPage;
     total_widthdrawals_paid;
     total_widthdrawals_pending;
@@ -120,7 +122,7 @@ export class DashboardComponent implements OnInit {
 	 */
 	getMembers()
 	{
-		this.dashboardService.getMember().subscribe((response) => {
+    this.dashboardService.get_inactive_Member().subscribe((response) => {
 			this.membersList = response.data.data
 		});
 	}
@@ -243,7 +245,9 @@ export class DashboardComponent implements OnInit {
       this.totalMembers = response.data.totalNoMembers
       this.totalActiveMembers = response.data.totalNoActiveMembers
       this.total_widthdrawals_paid = response.data.total_widthdrawals_paid
-			this.total_widthdrawals_pending = response.data.total_widthdrawals_pending
+      this.total_widthdrawals_pending = response.data.total_widthdrawals_pending
+      this.pending_loan_request = response.data.pending_loan_request
+      this.active_loan_request = response.data.active_loan_request
 
       for (var i = 0; i < this.totalMembers.length; i++) {
         // console.log(this.totalMembers[i].first_name)

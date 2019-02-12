@@ -34,7 +34,16 @@ export class DashboardService {
   	{
   		return this.http.get(environment.api.url+'CoopManagement/coop-members/'+JSON.parse(this.localService.getVendor()).id, this.localService.header())
   						.map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
-  	}
+    }
+  /**
+   * @method get_inactive_Member
+   * get form field resource
+   * @return data
+   */
+  get_inactive_Member() {
+    return this.http.get(environment.api.url + 'CoopManagement/pending-coop-members/' + JSON.parse(this.localService.getVendor()).id, this.localService.header())
+      .map((response: Response) => response.json()).catch((error) => { return this.handleErr.err(error) });
+  }
   	/**
   	 * @method deleteMember
   	 * delete form field resource

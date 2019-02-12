@@ -118,7 +118,8 @@ export class MemberWithdrawalsComponent implements OnInit {
        this.filterForm = this._fb.group({
         from : '',
         to : '',
-        id : ''
+        id : '',
+        plan_id : ''
       });
 
     }
@@ -175,6 +176,18 @@ export class MemberWithdrawalsComponent implements OnInit {
       this.exportService.exportTo(format, tableId);
     }
     
+    filter_withdawals(filterValues)
+    {
+      this.submitPending = true;
+      filterValues['vendor_id'] = parseInt(this.vendor.id);
+      filterValues['member_id'] = parseInt(this.memberId);
+      this.withdrawalService.filter_withdrawal(filterValues).subscribe((response) => {
+        this.withdrawal_list = response.data
+        // this.total_contribution_amount = response.total;
+        this.submitPending = false;
+      })
+    }
+
   /**
    * @method approveWidthdrawalRequest
    * approve widthdrawal requests

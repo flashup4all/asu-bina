@@ -5,7 +5,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs/Rx';
 import { JwtHelperService } from '@auth0/angular-jwt';
-//import * as CryptoJS from 'crypto-js';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable()
 export class LocalService {
