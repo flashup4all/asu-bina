@@ -37,8 +37,9 @@
     "@types/jquery": "^3.3.1",
     "angular2-moment": "^1.9.0",
     "bootstrap": "4.0.0",
-    "chart.js": "2.7.1",
+    "chart.js": "^2.7.3",
     "core-js": "2.5.3",
+    "crypto-js": "3.1.8",
     "flag-icon-css": "2.9.0",
     "font-awesome": "^4.7.0",
     "material-design-icons": "^3.0.1",
@@ -55,10 +56,10 @@
     "ts-xlsx": "0.0.11",
     "typeface-roboto": "0.0.54",
     "xlsx": "^0.11.19",
-    "crypto-js": "3.1.8",
     "zone.js": "0.8.20"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^0.13.2",
     "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "5.2.3",
     "@angular/language-service": "5.2.3",
@@ -74,11 +75,10 @@
     "karma-coverage-istanbul-reporter": "1.4.1",
     "karma-jasmine": "1.1.1",
     "karma-jasmine-html-reporter": "0.2.2",
-    "protractor": "5.3.0",
+    "protractor": "^5.4.2",
     "ts-node": "4.1.0",
     "tslint": "5.9.1",
-    "typescript": "2.6.2",
-    "@angular-devkit/build-angular": "~0.6.8"
+    "typescript": "2.6.2"
   },
   "engines": {
     "node": ">= 8.9.4",
