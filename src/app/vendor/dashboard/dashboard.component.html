@@ -1,5 +1,15 @@
+<style>
+  .asu-card{
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    border: 0px;
+    border-radius: 5px;
+  }
+  .asu-widget-font{
+    font-weight: 800;
+  }
+</style>
 <div *ngIf="user.role_id == 2" class="card">
-    <div class="card-footer">
+    <div class=" asu-card card-footer">
       <ul>
         <li>
           <div class="text-muted">Total Members</div>
@@ -28,72 +38,58 @@
 <div class="animated fadeIn" *ngIf="user.role_id == 2">
   <div class="row">
     <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-success">
+      <div class="card asu-card text-white bg-success">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{total_paid_contribution | number:'.2' || 0}}</h4>
+          <h3 class="mb-0 asu-widget-font">{{total_paid_contribution | number:'.2' || 0}}</h3>
           <p>Total Paid Contributions</p>
         </div>
-        <div class="chart-wrapper px-3" style="height:70px;">
-        </div>
       </div>
     </div><!--/.col-->
     <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-warning">
+      <div class="asu-card card text-white bg-warning">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{total_pending_contribution | number:'.2' || 0}}</h4>
+          <h4 class="asu-widget-font mb-0">{{total_pending_contribution | number:'.2' || 0}}</h4>
           <p>Total Pending Contributions</p>
         </div>
-        <div class="chart-wrapper px-3" style="height:70px;">
-        </div>
       </div>
     </div><!--/.col-->
     <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-primary">
+      <div class="asu-card card text-white bg-primary">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{total_widthdrawals_paid | number:'' || 0}}</h4>
+          <h4 class=" asu-widget-font mb-0">{{total_widthdrawals_paid | number:'' || 0}}</h4>
           <p>Total Paid Widthdrawals</p>
         </div>
-        <div class="chart-wrapper" style="height:70px;">
-        </div>
       </div>
     </div><!--/.col-->
     <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-warning">
+      <div class="asu-card card text-white bg-warning">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{total_widthdrawals_pending | number:'' || 0}}</h4>
+          <h4 class="asu-widget-font mb-0">{{total_widthdrawals_pending | number:'' || 0}}</h4>
           <p>Total Pending Widthdrawals</p>
         </div>
-        <div class="chart-wrapper" style="height:70px;">
-        </div>
       </div>
     </div><!--/.col-->
     <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-success">
+      <div class="asu-card card text-white bg-success">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{(total_paid_contribution - total_widthdrawals_paid) | number:'.2' || 0}}</h4>
+          <h4 class="asu-widget-font mb-0">{{(total_paid_contribution - total_widthdrawals_paid) | number:'.2' || 0}}</h4>
           <p>Balance: width - contri</p>
         </div>
-        <div class="chart-wrapper px-3" style="height:70px;">
-        </div>
       </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-success">
+      <div class="asu-card card text-white bg-success">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{ active_loan_request | number }}</h4>
+          <h4 class="asu-widget-font mb-0">{{ active_loan_request | number }}</h4>
           <p>Active Loans
         </div>
-        <div class="chart-wrapper px-3" style="height:70px;">
-        </div>
       </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-success">
+      <div class="asu-card card text-white bg-warning">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{ pending_loan_request | number }}</h4>
+          <h4 class="asu-widget-font mb-0">{{ pending_loan_request | number }}</h4>
           <p>Pending Loans</p>
-        </div>
-        <div class="chart-wrapper px-3" style="height:70px;">
         </div>
       </div>
     </div>
@@ -116,7 +112,7 @@
         <button type="button" class="close" data-dismiss="alert" style="right: 0px;">×</button>
         <strong>{{successAlert}}</strong>
     </div>
-<div class="card">
+<div class="asu-card card">
   <div class="card-body">
     <div class="row">
       <div class="col">

@@ -4,12 +4,12 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: true,
+  production: false,
   application_name: 'ASUSU',
   api: {
   	version: '1.2',
-  	url: 'http://localhost:8000/api/',//'http://104.248.37.238/api/', //'http://asusuapi.asusu.ng/api/',
-  	imageUrl: 'http://localhost:8000/',//'http://104.248.37.238/',// 'http://localhost:8000/images/',
+  	url: 'http://localhost:8000/api/', // 'http://192.168.1.6:8000/api/',// 'http://104.248.37.238/api/', //'http://asusuapi.asusu.ng/api/',
+  	imageUrl: 'http://localhost:8000/', //// 'http://192.168.1.6:8000/',// 'http://104.248.37.238/',// 'http://localhost:8000/images/',
   	payment_gateway_live: 'https://live.moneywaveapi.co/',
   	payment_gateway_test: 'https://moneywave.herokuapp.com/',
   	payment_key: {
