@@ -113,7 +113,7 @@ export class MemberDeductionsComponent implements OnInit {
         loan_request_id : [null, Validators.compose([Validators.required])],
         period : [null, Validators.compose([Validators.required])],
         repayment_method : [null, Validators.compose([Validators.required])],
-        run_date : [null, Validators.compose([Validators.required])],
+        //run_date : [null, Validators.compose([Validators.required])],
         repayment_amount: '',
         depositor: '',
         description: '',
@@ -227,6 +227,7 @@ export class MemberDeductionsComponent implements OnInit {
 
     make_a_repayment(formValues)
     {
+      formValues['run_date'] = moment();
       formValues['vendor_id'] = this.vendor.id
       formValues['staff_id'] = this.user.id
       formValues['user_id'] = this.user.user_id
