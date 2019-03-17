@@ -14,6 +14,7 @@ import { WidthdrawalsService } from '../../manage-widthdrawals/widthdrawals.serv
 import * as moment from 'moment';
 import { TableExportService } from '../../../shared/services/index';
 import { ViewMemberComponent } from '../view-member/view-member.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'app-member-contributions',
@@ -70,7 +71,8 @@ export class MemberContributionsComponent implements OnInit {
       private exportService: TableExportService,
       private memberService : MembersService,
   	  private _fb : FormBuilder,
-      private view_member_component: ViewMemberComponent
+      private view_member_component: ViewMemberComponent, 
+      private deviceService: DeviceDetectorService
     	) {
         this.vendor = JSON.parse(this.localService.getVendor());
         this.user = JSON.parse(this.localService.getUser());
@@ -344,6 +346,7 @@ export class MemberContributionsComponent implements OnInit {
 
     makeContribution(formValues)
     {
+      console.log(this.deviceService.getDeviceInfo())
        /*if(parseInt(this.member.status))
        {*/
          let data = {
@@ -351,12 +354,17 @@ export class MemberContributionsComponent implements OnInit {
            id:this.member_id,
            contribution: parseInt(formValues.contribution)
          }
+        formValues['amount'] = parseFloat(formValues.amount);
         formValues['contributions'] = [data];
         formValues['vendor_id'] = this.vendor.id;
         formValues['staff_id'] = this.user.id;
         formValues['user_id'] = this.user.user_id;
         formValues['member_id'] = this.member_id;
         formValues['branch_id'] = this.vendor_branch.id;
+        formValues['mode'] = 'ntxn';
+        formValues['app_channel'] = 'web';
+        formValues['device_info'] = 'browser: '+ this.deviceService.getDeviceInfo().browser + ' /browser_version: ' + this.deviceService.getDeviceInfo().browser_version + ' /device: ' + this.deviceService.getDeviceInfo().device + ' /os: '+this.deviceService.getDeviceInfo().os;
+        
         formValues.transaction_type = 'credit';
 
         this.submitPending = true;
@@ -539,6 +547,7 @@ export class MemberContributionsComponent implements OnInit {
         id: transaction_id,
         approved_by: this.user.id,
         user_id: this.user.user_id,
+        member_id: this.member_id,
         vendor_id: this.vendor.id,
         status: status
       }
