@@ -200,7 +200,8 @@ export class MemberWithdrawalsComponent implements OnInit {
     let data = {
       id : id,
       vendor_id: this.vendor.id,
-      status: 'Approved',
+      member_id: this.memberId,
+      status: 1,
       approved_by: JSON.parse(this.localService.getUser()).id,
       user_id :this.user.user_id
 
@@ -263,7 +264,8 @@ export class MemberWithdrawalsComponent implements OnInit {
     let data = {
       id : id,
       vendor_id: this.vendor.id,
-      status: 'Cancelled',
+      member_id: this.memberId,
+      status: 2,
       user_id :this.user.user_id,
       approved_by: JSON.parse(this.localService.getUser()).id
     }

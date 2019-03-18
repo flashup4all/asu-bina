@@ -127,7 +127,8 @@ export class ManageMembersComponent implements OnInit {
 			signature:'',
 			account_number:'',
 			membership_date:[null, Validators.compose([Validators.required])],
-			email:[null/*, Validators.compose([Validators.required, Validators.email])*/],
+			email: [null/*, Validators.compose([Validators.required, Validators.email])*/],
+			address:[null/*, Validators.compose([Validators.required, Validators.email])*/],
 			phone1: [null, Validators.compose([Validators.required])],
 			memberData : this._fb.array([])
 		});
@@ -332,6 +333,7 @@ export class ManageMembersComponent implements OnInit {
 	    input.append('contribution', this.newMemberForm.get('contribution').value);
 	    input.append('gender', this.newMemberForm.get('gender').value);
 	    input.append('date_of_birth', this.newMemberForm.get('date_of_birth').value);
+			input.append('address', this.newMemberForm.get('address').value);
 	    input.append('account_number', this.newMemberForm.get('account_number').value);
 	    input.append('membership_date', this.newMemberForm.get('membership_date').value);
 	    input.append('email', this.newMemberForm.get('email').value);
