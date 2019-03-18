@@ -1,25 +1,25 @@
 <div class="animated fadeIn" *ngIf="user?.role_id == 2">
   <div class="row">
     <div class="col-sm-12 col-lg-4">
-      <div class="card text-white bg-primary">
+      <div class="asu-card card text-white bg-primary">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{ total_members }}</h4>
+          <h4 class="asu-widget-font mb-0">{{ total_members }}</h4>
           <p>Total Members</p>
         </div>
       </div>
     </div>
     <div class="col-sm-12 col-lg-4">
-      <div class="card text-white bg-success">
+      <div class="asu-card card text-white bg-success">
         <div class="card-body pb-0">
-          <h4 class="mb-0"> {{ total_active_members }}</h4>
+          <h4 class="asu-widget-font mb-0"> {{ total_active_members }}</h4>
           <p>Active Members
         </div>
       </div>
     </div>
     <div class="col-sm-12 col-lg-4">
-      <div class="card text-white bg-warning">
+      <div class="asu-card card text-white bg-warning">
         <div class="card-body pb-0">
-          <h4 class="mb-0"> {{ total_members - total_active_members }}</h4>
+          <h4 class="asu-widget-font mb-0"> {{ total_members - total_active_members }}</h4>
           <p>Inactive Members/Suspended
         </div>
       </div>

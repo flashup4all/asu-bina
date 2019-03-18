@@ -40,12 +40,12 @@
     <button class="btn btn-outline btn-success" (click)="printReciept('withdrawal_table')">Print</button>
     <button type="button" class="btn btn-primary pull-right" (click)="newWithdrawalModal.show()"> Make a Withdrawal</button>
   </div> -->
-  <table id="withdrawal_table" class="table table-responsive table-hover table-outline mb-0" width="100%">
+  <!-- <table id="withdrawal_table" class="table table-responsive table-hover table-outline mb-0" width="100%">
     <thead>
       <tr>
         <th>Trans ID</th>
         <th>Branch</th>
-        <!-- <th>Name</th> -->
+        
         <th>Plan</th>
         <th>&#8358; Previous Balance</th>
         <th>&#8358; Amount</th>
@@ -53,8 +53,7 @@
         <th>Status</th>
         <th>Naration</th>
         <th>Date</th>
-        <!-- <th>Created By</th>
-        <th>Approved</th> -->
+       
         <th>Actions</th>
       </tr>
     </thead>
@@ -62,11 +61,7 @@
       <tr class="" *ngFor="let item of transaction_list">
         <td>#00{{ item?.id }}</td>
         <td>{{ item?.branch?.name }}</td>
-        <!-- <td>
-          {{item?.member?.first_name}}
-          {{item?.member?.last_name}}
-          {{item?.member?.middle_name}}
-        </td> -->
+        
         <td>
           {{item?.plan?.name}}
         </td>
@@ -88,16 +83,7 @@
         <td>
           {{item?.created_at | date: 'shortDate'}}
         </td>
-        <!-- <td>
-          {{ item?.staff?.first_name}}
-          {{ item?.staff?.last_name}}
-          {{ item?.staff?.middle_name}}
-        </td>
-        <td>
-          {{ item?.approved_by?.first_name}}
-          {{ item?.approved_by?.last_name}}
-          {{ item?.approved_by?.middle_name}}
-        </td> -->
+        
         <td class="center">
           <mat-menu #appMenu="matMenu">
             <button [disabled]="btn_loader" mat-menu-item (click)="view_transaction_details(item)">View Details</button>
@@ -126,7 +112,7 @@
         <td></td>
       </tr>
     </tbody>
-  </table>
+  </table> -->
 </div>
 
 <!-- <div bsModal #view_transaction_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
