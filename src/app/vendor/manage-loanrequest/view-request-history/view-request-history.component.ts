@@ -20,7 +20,8 @@ export class ViewRequestHistoryComponent implements OnInit {
 	public loan_request_id;
 	public vendor;
 	public user;
-	public loanRequest;
+  public loanRequest;
+  loan_request_deductions;
   approve_loan_request_form : FormGroup;
   public addDeductionForm : FormGroup;
 	loan_files_url;
@@ -57,7 +58,8 @@ export class ViewRequestHistoryComponent implements OnInit {
 		this.user = JSON.parse(this.localService.getUser());
   		this.loan_request_id = this.router.snapshot.params['loan-request-id']
   		this.getLoanSignatories(this.loan_request_id);
-  		this.getLoanRequest();
+      this.getLoanRequest();
+      this.get_loan_deductions();
       this.get_deduction_type()
       this.monthList = this.localService.yearjson();
       this.member_image_url = environment.api.imageUrl+'profile/member/';
@@ -91,9 +93,23 @@ export class ViewRequestHistoryComponent implements OnInit {
 		this.loanrequestService.getSingleLoanRequest(this.loan_request_id).subscribe((response) => {
       this.history_loader = false;
       //this.calculate_total_loan_balance(response)
-			this.loanRequest = response
+      this.loanRequest = response.data
+      this.total_loan_balance = response.total_loan_balance
 		});
 	}
+  /**
+     * @method get_loan_deductions
+     * get vendor loan request
+     * @return data
+     */
+  get_loan_deductions() {
+    this.history_loader = true;
+    this.loanrequestService.get_loan_deductions(this.loan_request_id).subscribe((response) => {
+      this.history_loader = false;
+      //this.calculate_total_loan_balance(response)
+      this.loan_request_deductions = response.data
+    });
+  }
 
 	/**
   	 * @method getLoanSignatories
@@ -304,65 +320,15 @@ export class ViewRequestHistoryComponent implements OnInit {
         }
         if(loan.type.interest_type == 1)
         {
-        /*
-          if(loan.deductions_per_loan.length > 0)
-          {
-            var lastItem = loan.deductions_per_loan[loan.deductions_per_loan.length-1];
-            let balance = lastItem.current_balance;
-            let interest = lastItem.interest_percent;
-            let last_date = lastItem.run_date;
-            if(balance > 1)
-            {
-
-              let last_time = moment(last_date)
-              let curr_time = 0
-              let rate: number;
-              let current_time = moment()
-              let days = current_time.diff(last_time, 'days')
-              let daily_interest
-              let monthly_interest=0;
-                var monthly = 10;
-                let interest_rate 
-                interest_rate = ((interest / 100) / 30).toFixed(4);
-
-                while (curr_time < days) {
-                  daily_interest = balance * interest_rate;
-                      balance = balance + daily_interest;
-                          days--;
-                }
-                return balance;
-            }else{
-              return 0;
-            }
-          } else{
-            let balance = loan.amount;
-            let interest = loan.interest_percent;
-            let last_date = loan.start_date;
-            let last_time = moment(last_date)
-            let curr_time = 0
-            let rate: number;
-            let current_time = moment()
-            let days = current_time.diff(last_time, 'days')
-            let daily_interest
-            let monthly_interest=0;
-            var monthly = 10;
-            let interest_rate 
-            interest_rate = ((interest / 100) / 30).toFixed(4);
-
-            while (curr_time < days) {
-              daily_interest = balance * interest_rate;
-                  balance = balance + daily_interest;
-                      days--;
-            }
-            return balance;
+          if (loan.deductions_per_loan.length > 0) {
+            lastItem = loan.deductions_per_loan[loan.deductions_per_loan.length-1];
+            return lastItem.current_balance;
+          } else {
+           let interest_rate = ((loan.interest_percent / 100));
+            let interest_amount = loan.amount * interest_rate;
+            return loan.amount + interest_amount;
           }
-        }*/
-        
-      }else{
-        return 0;
-      }
-      // balance, interest, last_date
-      
+        }
       } else {
         return 0;
       }

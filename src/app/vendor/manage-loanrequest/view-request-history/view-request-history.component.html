@@ -31,7 +31,7 @@
                                 </p>
                                 <p>
                                   <mat-chip color="warn" selected="true">
-                                	Current Balance: &#8358; {{ calculate_total_loan_balance(loanRequest) | number }} </mat-chip>
+                                	Current Balance: &#8358; {{ (total_loan_balance || 0) | number }} </mat-chip>
                                 </p>
                                 <p>
                                     Status:
@@ -76,7 +76,7 @@
 				                    </tr>
 				                </thead>
 				                <tbody>
-				                    <tr class="" *ngFor="let item of loanRequest?.deductions_per_loan">
+				                    <tr class="" *ngFor="let item of loan_request_deductions">
 				                        <td>{{ item.transaction_id }} </td>
 				                        <td>
 				                            {{item?.repayment_method?.name}} 
@@ -91,8 +91,8 @@
                                               {{item?.amount_deducted | number }} 
                                         </td>
                                         <td>
-                                          <!-- item?.current_balance -->
-                                              {{ calculate_loan_balance(item.current_balance, item.interest_percent, item.run_date) | number }} 
+                                          {{ item?.current_balance }}
+                                              <!-- {{ calculate_loan_balance(item.current_balance, item.interest_percent, item.run_date) | number }}  -->
                                         </td>
                                         <td>
                                             <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
