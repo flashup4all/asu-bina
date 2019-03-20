@@ -70,6 +70,16 @@ export class LoanRequestService {
       return this.http.get(environment.api.url+'CoopManagement/get-loan-request-approvals/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
+    /**
+     * @method get_loan_deductions
+     * get all vendor loan request
+     * @return data
+     */
+      get_loan_deductions(id)
+    {
+        return this.http.get(environment.api.url +'CoopManagement/deductions/'+JSON.parse(this.localService.getVendor()).id+'/'+id, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
 
     /**
      * @method getAllLoanRequest

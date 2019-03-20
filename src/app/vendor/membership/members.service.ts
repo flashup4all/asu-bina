@@ -285,4 +285,24 @@ data   * get all member deductions
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
+  /**
+   * @method get_vendor_transactions
+   * vendor transaction resource
+   * @return data
+   */
+  get_vendor_transactions(id) {
+    return this.http.get(environment.api.url + 'transactions/vendor/'+id, this.localService.header())
+      .map((response: Response) => response.json()).catch((error) => { return this.handleErr.err(error) });
+  }
+
+  /**
+   * @method get_member_transactions
+   * vendor transaction resource
+   * @return data
+   */
+  get_member_transactions(id) {
+    return this.http.get(environment.api.url +'transactions/member/'+ JSON.parse(this.localService.getVendor()).id +'/'+ id, this.localService.header())
+      .map((response: Response) => response.json()).catch((error) => { return this.handleErr.err(error) });
+  }
+
 }

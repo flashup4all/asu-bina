@@ -1,0 +1,206 @@
+<div class="row">
+  <!-- <form [formGroup]="filterForm" (ngSubmit)="filter_withdawals(filterForm.value)" style="width: 100%;">
+    <div class="row p-1">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>From</label>
+          <input type="date" formControlName="from" class="form-control" name="">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>To</label>
+          <input type="date" formControlName="to" class="form-control" name="">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Type</label>
+          <select class="form-control" placeholder="type" formControlName="plan_id">
+            <option selected="false">Type</option>
+            <option [value]="item.contribution_plan.id" *ngFor="let item of member_plan_list">
+              {{item?.contribution_plan?.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+            <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
+            <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
+            <span *ngIf="!submitPending">Filter</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="container p-2">
+    <button (click)="exportTable('xls', 'withdrawal_table')" class="btn btn-outline btn-success">Export table</button>
+    <button class="btn btn-outline btn-success" (click)="printReciept('withdrawal_table')">Print</button>
+    <button type="button" class="btn btn-primary pull-right" (click)="newWithdrawalModal.show()"> Make a Withdrawal</button>
+  </div> -->
+  <!-- <table id="withdrawal_table" class="table table-responsive table-hover table-outline mb-0" width="100%">
+    <thead>
+      <tr>
+        <th>Trans ID</th>
+        <th>Branch</th>
+        
+        <th>Plan</th>
+        <th>&#8358; Previous Balance</th>
+        <th>&#8358; Amount</th>
+        <th>&#8358; Available Balance</th>
+        <th>Status</th>
+        <th>Naration</th>
+        <th>Date</th>
+       
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="" *ngFor="let item of transaction_list">
+        <td>#00{{ item?.id }}</td>
+        <td>{{ item?.branch?.name }}</td>
+        
+        <td>
+          {{item?.plan?.name}}
+        </td>
+        <td>{{ item?.previous_balance | number }}</td>
+        <td>
+          <i *ngIf="item.type == 1" style="color: green">+{{ item?.amount | number }}</i>
+          <i *ngIf="item.type == 2" style="color: red">-{{ item?.amount | number }}</i>
+        
+        </td>
+        <td>{{ item?.current_balance | number }}</td>
+        <td>
+          <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
+          <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
+          <span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
+        </td>
+        <td>
+          {{ item?.naration }}
+        </td>
+        <td>
+          {{item?.created_at | date: 'shortDate'}}
+        </td>
+        
+        <td class="center">
+          <mat-menu #appMenu="matMenu">
+            <button [disabled]="btn_loader" mat-menu-item (click)="view_transaction_details(item)">View Details</button>
+            <button [swal]="approve_request" [disabled]="btn_loader" mat-menu-item *ngIf="item.status==0">Approve
+              Request</button>
+            <mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
+            <button [swal]="cancel_request" [disabled]="btn_loader" mat-menu-item *ngIf="item.status == 0 ">Cancel
+              Request</button>
+            <swal #approve_request title="Are You Sure You want to Approve this Withdrawal?" text="This cannot be undone"
+              type="warning" [showCancelButton]="true" [focusCancel]="true" (confirm)="approveWidthdrawalRequest(item.id)">
+            </swal>
+            <swal #cancel_request title="Are You Sure You want to Cancel this Withdrawal?" text="This cannot be undone"
+              type="warning" [showCancelButton]="true" [focusCancel]="true" (confirm)="cancelWidthdrawalRequest(item.id)">
+            </swal>
+          </mat-menu>
+
+          <button *ngIf="item.status != 2 && localService.check_posting_cash_role(item.amount)" mat-icon-button
+            [matMenuTriggerFor]="appMenu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3">Total</td>
+        <td>{{ total_contribution_amount | number }}</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table> -->
+</div>
+
+<!-- <div bsModal #view_transaction_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Transaction Details</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="view_transaction_modal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="">
+          <div class="card">
+            <div class="card-body">
+              <div class="row mb-4">
+                <div class="col-lg-12" id="transaction">
+                  <table class="table table-clear">
+                    <tbody>
+                      <tr>
+                        <td class="left">
+                          <strong>Ref</strong>
+                        </td>
+                        <td class="right">{{ transaction_data?.transaction_id }}</td>
+                      </tr>
+                      <tr>
+                        <td class="left">
+                          <strong>Branch</strong>
+                        </td>
+                        <td class="right">{{ transaction_data?.branch?.name }}</td>
+                      </tr>
+                      <tr *ngIf="transaction_data?.member?.account_number != ''">
+                        <td class="left">
+                          <strong>Account Number</strong>
+                        </td>
+                        <td class="right">{{ mask_number(transaction_data?.member?.account_number) }}</td>
+                      </tr>
+                      <tr *ngIf="transaction_data?.member?.asusu_id != ''">
+                        <td class="left">
+                          <strong>Account ID</strong>
+                        </td>
+                        <td class="right">{{ mask_number(transaction_data?.member?.asusu_id) }}</td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Plan</strong></td>
+                        <td class="right">{{ transaction_data?.plan?.name }}</td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Amount</strong></td>
+                        <td class="right">&#8358;{{ transaction_data?.amount | number }}</td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Description</strong></td>
+                        <td class="right">{{ transaction_data?.details || 'No description'}}</td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Date</strong></td>
+                        <td class="right">{{ transaction_data?.created_at }}</td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Created</strong></td>
+                        <td class="right">
+                          {{ transaction_data?.staff?.first_name }}
+                          {{ transaction_data?.staff?.last_name }}
+                          {{ transaction_data?.staff?.middle_name }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Posted</strong></td>
+                        <td class="right">
+                          {{ transaction_data?.approved_by?.first_name }}
+                          {{ transaction_data?.approved_by?.last_name }}
+                          {{ transaction_data?.approved_by?.middle_name }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-sm btn-info float-right" (click)="print_transaction('transaction');"><i class="fa fa-print"></i>
+                Print</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->

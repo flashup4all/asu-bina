@@ -11,7 +11,7 @@
     <div class="col-sm-12 col-lg-4">
       <div class="asu-card card text-white bg-success">
         <div class="card-body pb-0">
-          <h4 class="asu-widget-fontmb-0"> {{ total_active_members }}</h4>
+          <h4 class="asu-widget-font mb-0"> {{ total_active_members }}</h4>
           <p>Active Members
         </div>
       </div>
@@ -288,6 +288,10 @@
                         <mat-error [hidden]="(newMemberForm.controls.membership_date.valid ) || (newMemberForm.controls.membership_date.pristine )" class="text-danger">Mobile Number is Required</mat-error>
                         <small>Date this member was registered</small>
 
+                        </div>
+                        <div class="form-group">
+                          <label>Address:</label>
+                          <input type="text" name="address" class="form-control" formControlName="address">
                         </div>
                         <div class="form-group">
                           <label class="control-label" for="basicinput">Passport</label>

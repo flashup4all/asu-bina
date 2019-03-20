@@ -484,6 +484,7 @@ export class ViewMemberComponent implements OnInit {
       input.append('membership_date', data.membership_date);
       input.append('email', data.email);
       input.append('phone1', data.phone1);
+      input.append('address', data.address);
       input.append('passport', this.passport);
       input.append('signature', this.member_signature);
       input.append('vendor_id', this.vendor.id);

@@ -220,6 +220,16 @@ export class DashboardComponent implements OnInit {
             return balance;
           }
         }
+        if (loan.type.interest_type == 1) {
+          if (loan.deductions_per_loan.length > 0) {
+            lastItem = loan.deductions_per_loan[loan.deductions_per_loan.length - 1];
+            return lastItem.current_balance;
+          } else {
+            let interest_rate = ((loan.interest_percent / 100));
+            let interest_amount = loan.amount * interest_rate;
+            return loan.amount + interest_amount;
+          }
+        }
       } else {
         return 0;
       }

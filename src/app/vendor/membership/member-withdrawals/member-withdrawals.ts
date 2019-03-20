@@ -11,7 +11,8 @@ import { ContributionService } from '../../manage-contribution/contribution.serv
 import { WidthdrawalsService } from '../../manage-widthdrawals/widthdrawals.service';
 import { ViewMemberComponent } from '../view-member/view-member.component';
 import { MemberContributionsComponent } from '../member-contributions/member-contributions.component';
-//import { MemberLoanRequestComponent } from '../member-loan-request/member-loan-request.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
+
 import * as moment from 'moment';
 import { TableExportService } from '../../../shared/services/index';
 import { environment } from '../../../../environments/environment';
@@ -73,19 +74,14 @@ export class MemberWithdrawalsComponent implements OnInit {
       private route : ActivatedRoute, 
     	private localService : LocalService,
       private contributionService : ContributionService,
-      //private deductionService : DeductionsService,
       private withdrawalService : WidthdrawalsService,
       private exportService: TableExportService,
       private router : Router,
       private sanitizer:DomSanitizer,
   	  private _fb : FormBuilder,
-      //private member_contribution_component : MemberContributionsComponent,
       private memberService : MembersService,
-      //private loanRequestService : LoanRequestService,
-      //private loanSettingsService : LoanSettingsService,
-    	//private targetService : TargetSavingsService,
       private view_member_component: ViewMemberComponent,
-      //private member_contribution_component : MemberContributionsComponent
+      private deviceService: DeviceDetectorService,
     	) {
         
         this.image_url = environment.api.imageUrl+'profile/member/';
@@ -152,7 +148,12 @@ export class MemberWithdrawalsComponent implements OnInit {
       formValues['vendor_id'] = this.vendor.id
       formValues['staff_id'] = this.user.id
       formValues['branch_id'] = this.vendor_branch.id;
-      formValues['user_id'] = this.user.user_id
+      formValues['user_id'] = this.user.user_id;
+      formValues['mode'] = 'ntxn';
+      formValues['app_channel'] = 'web';
+      formValues['device_info'] = 'browser: ' + this.deviceService.getDeviceInfo().browser + ' /browser_version: ' + this.deviceService.getDeviceInfo().browser_version + ' /device: ' + this.deviceService.getDeviceInfo().device + ' /os: ' + this.deviceService.getDeviceInfo().os;
+
+      formValues.transaction_type = 'debit';
       this.submitPending = true;
       this.withdrawalService.make_a_withdrawal(formValues).subscribe((response) => {
         if (response.success) {
@@ -199,7 +200,8 @@ export class MemberWithdrawalsComponent implements OnInit {
     let data = {
       id : id,
       vendor_id: this.vendor.id,
-      status: 'Approved',
+      member_id: this.memberId,
+      status: 1,
       approved_by: JSON.parse(this.localService.getUser()).id,
       user_id :this.user.user_id
 
@@ -262,7 +264,8 @@ export class MemberWithdrawalsComponent implements OnInit {
     let data = {
       id : id,
       vendor_id: this.vendor.id,
-      status: 'Cancelled',
+      member_id: this.memberId,
+      status: 2,
       user_id :this.user.user_id,
       approved_by: JSON.parse(this.localService.getUser()).id
     }

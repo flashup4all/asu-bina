@@ -126,7 +126,12 @@
                                       <p>{{member?.contribution  | number }}</p>
                                   </div>
                               </div>
-
+                              <div class="row">
+                                  <label class="col-sm-3">Address</label>
+                                  <div class="col-sm-9">
+                                      <p>{{member?.address}}</p>
+                                  </div>
+                              </div>
                                <h4>Custom</h4>
                               <hr>
                               <div class="row" *ngFor="let item of member?.members">
@@ -219,6 +224,10 @@
                                         <label>Date of Birth:</label>
                                         <input type="date" class="form-control" [ngModel]="member?.date_of_birth" value="" name="date_of_birth" ngModel>
                                       </div>
+                                    <div class="form-group">
+                                        <label>Address:</label>
+                                        <input type="text" [ngModel]="member?.address" value="" name="address" class="form-control" ngModel>
+                                    </div>
                                       <div class="form-group">
                                         <label class="control-label" for="basicinput">Passport</label>
                                             <!-- <img *ngIf="!file_srcs[0]" src="assets/images/avata.png">
@@ -408,6 +417,9 @@
                         <tab heading="INVESTMENTS">
                           <app-member-investments></app-member-investments>
                         </tab>
+                        <!-- <tab heading="Transaction Activity">
+                            <app-member-transaction></app-member-transaction>
+                        </tab> -->
                         <!-- <tab heading="TARGET SAVINGS">
                             <div class="row">
                                 <div class="col-md-12">
