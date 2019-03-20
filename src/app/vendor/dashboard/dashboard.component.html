@@ -1,12 +1,5 @@
 <style>
-  .asu-card{
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-    border: 0px;
-    border-radius: 5px;
-  }
-  .asu-widget-font{
-    font-weight: 800;
-  }
+  
 </style>
 <div *ngIf="user.role_id == 2" class="card">
     <div class=" asu-card card-footer">
@@ -40,7 +33,7 @@
     <div class="col-sm-6 col-lg-3">
       <div class="card asu-card text-white bg-success">
         <div class="card-body pb-0">
-          <h3 class="mb-0 asu-widget-font">{{total_paid_contribution | number:'.2' || 0}}</h3>
+          <h4 class="mb-0 asu-widget-font">{{total_paid_contribution | number:'.2' || 0}}</h4>
           <p>Total Paid Contributions</p>
         </div>
       </div>
@@ -54,7 +47,7 @@
       </div>
     </div><!--/.col-->
     <div class="col-sm-6 col-lg-3">
-      <div class="asu-card card text-white bg-primary">
+      <div class="asu-card card text-white bg-success">
         <div class="card-body pb-0">
           <h4 class=" asu-widget-font mb-0">{{total_widthdrawals_paid | number:'' || 0}}</h4>
           <p>Total Paid Widthdrawals</p>
@@ -70,10 +63,10 @@
       </div>
     </div><!--/.col-->
     <div class="col-sm-6 col-lg-3">
-      <div class="asu-card card text-white bg-success">
+      <div class="asu-card card text-white bg-primary">
         <div class="card-body pb-0">
           <h4 class="asu-widget-font mb-0">{{(total_paid_contribution - total_widthdrawals_paid) | number:'.2' || 0}}</h4>
-          <p>Balance: width - contri</p>
+          <p>Balance</p>
         </div>
       </div>
     </div>
@@ -194,9 +187,9 @@
             </div>
           </tab> -->
           <tab heading="Loan Request">
-            <div class="col-md-12">
+            <div class="row col-md-12">
                             <form [formGroup] = "filterForm" (ngSubmit) = "filterLoanRequest(filterForm.value)" style="width: 100%;">
-                            <div class="row p-1">
+                            <div class="row">
                                 <div class="col-md-3">
                                   <div class="form-group">
                                     <label>From</label>
@@ -260,8 +253,8 @@
                               </div> -->
                           </form>
                         </div>
-                        <div style="margin-bottom: 4px">
-                          <button style="margin-left:5px;" (click)="exportTable('xls', 'loan_request_table')" class="btn btn-outline btn-success">Export
+                        <div style="margin-bottom: 10px">
+                          <button (click)="exportTable('xls', 'loan_request_table')" class="btn btn-outline btn-success">Export
                             table</button>
                           <button class="btn btn-outline btn-success" (click)="printReciept('loan_request_table')">Print</button>
                         </div>

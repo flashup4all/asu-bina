@@ -1,0 +1,92 @@
+<div class="col-md-12 mt-5 mb-5 justify-content-center align-items-center">
+    <p *ngIf="error_msg" class="alert alert-danger">{{ error_msg }}</p>
+    <p *ngIf="success_msg" class="alert alert-success">{{ success_msg }}</p>
+    <input type="file" style="display: inline-block;" (change)="incomingfile($event)" placeholder="Upload file" accept=".xlsx">
+    <button type="button" class="btn btn-info" (click)="Upload()" >Upload</button>
+</div>
+<mat-progress-bar *ngIf="upload_pending" mode="indeterminate"></mat-progress-bar>
+<div class=" asu-card card-footer" *ngIf="show_table">
+    <ul>
+      <li>
+        <div class="text-muted">Total data <a href="" (click)="view_result(excel_data)">view</a></div>
+        <strong>{{ total_upload | number:'' || 0}}</strong>
+        <div class="progress progress-xs mt-2">
+          <div class="progress-bar bg-primary" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </li>
+      <li class="d-none d-md-table-cell">
+        <div class="text-muted">Successful Uploads <a href="" (click)="view_result(uploaded_list)">view</a></div>
+        <strong>{{number_of_successful_uploads | number:'' || 0}} ({{ percentageCalculator(number_of_successful_uploads, total_upload) }}%)</strong>
+        <div class="progress progress-xs mt-2">
+          <div class="progress-bar bg-success" role="progressbar" style="width: 80%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </li>
+      <li>
+        <div class="text-muted">Failed Uploads <a href="" (click)="view_result(failed_list)">view</a></div>
+        <strong>{{ number_of_failed_uploads | number:'' || 0}} ({{ percentageCalculator(number_of_failed_uploads, total_upload) }}%)</strong>
+        <div class="progress progress-xs mt-2">
+          <div class="progress-bar bg-danger" role="progressbar" style="width: 50%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </li>
+    </ul>
+  </div>    
+  <br> 
+  <div class="row h-100 justify-content-center align-items-center">
+      <mat-spinner *ngIf="upload_loader"></mat-spinner>
+      <br>
+      <p *ngIf="upload_loader" class="alert alert-danger">please stay on this page until upload is completed</p>
+  </div>       
+
+<table *ngIf="show_table" id="members_table" class="table table-hover table-outline mb-0 datatable">
+  <thead class="thead-light">
+    <tr>
+      <th>S/N</th>
+      <th>Name</th>
+      <th>Gender</th>
+      <th>Acc No.</th>
+      <th class="text-center">Phone</th>
+      <th class="text-center">Email</th>
+      <th>status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of upload_list; let i=index">
+      <td> {{ i + 1 }}</td>
+      <td>
+        <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
+      </td>
+      <td>{{item?.gender}}</td>
+      <td>
+        {{item?.account_number}}
+      </td>
+      <td class="text-center">
+          {{item?.phone || 'nil'}}
+      </td>
+      <td>{{ item.email }}</td>
+      <td>
+        <div *ngIf="item.status == 1" class="badge badge-success">
+            uploaded
+        </div>
+        <div *ngIf="item.status == 2" class="badge badge-danger">
+            failed
+        </div>
+        <div *ngIf="item.status == 0" class="badge badge-warning">
+          pending
+        </div>
+        <div *ngIf="item.status == 4" class="badge badge-primary">
+            uploading... <i class="ml-2 fa fa-spinner"></i>
+          </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<button *ngIf="show_table" [disabled]="upload_loader" [swal]="confirm_upload" class="p-3 btn btn-primary"  title="Confirm Upload">upload Members</button>
+<swal
+    #confirm_upload
+    title="Are You Sure You want to Upload all this Member?"
+    text="Be sure! this cannot be undone"
+    type="warning"
+    [showCancelButton]="true"
+    [focusCancel]="true"
+    (confirm)="save()">
+</swal>

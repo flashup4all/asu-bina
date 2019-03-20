@@ -1,0 +1,8 @@
+.asu-card{
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    border: 0px !important;
+    border-radius: 4px;
+  }
+  .asu-widget-font{
+    font-weight: 800;
+  }

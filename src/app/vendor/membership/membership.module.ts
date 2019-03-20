@@ -19,6 +19,7 @@ import { SharedModule } from '../../shared/shared.module';
 //import { MaskPipe } from '../../shared/pipe/mask.pipe';
 
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
+import { MemberUploadComponent } from './member-upload/member-upload.component';
 
 export const members_routes = [
   { path: '', redirectTo: 'manage-members', pathMatch: 'full'},
@@ -49,6 +50,7 @@ export const members_routes = [
     MemberLoanRequestComponent,
     MemberDeductionsComponent,
     MemberWithdrawalsComponent,
+    MemberUploadComponent,
     // MaskPipe,
   ],
   providers: [MembersService]

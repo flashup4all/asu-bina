@@ -75,8 +75,8 @@ export class ManageMembersComponent implements OnInit {
 	questions = [];
 	filterMemberForm: FormGroup;
 	results: any[] = [];
-	 @ViewChild('fileInput') fileInput: ElementRef;
-	 @ViewChild('signaturefileInput') signaturefileInput: ElementRef;
+	@ViewChild('fileInput') fileInput: ElementRef;
+	@ViewChild('signaturefileInput') signaturefileInput: ElementRef;
 	@ViewChild('passwordModal') public passwordModal : ModalDirective;
 	constructor(
 		private localService : LocalService,
@@ -86,15 +86,15 @@ export class ManageMembersComponent implements OnInit {
   		private sanitizer:DomSanitizer,
   		private router : Router,
     	private vendor_service : VendorService,
-      	private exportService: TableExportService,
+      private exportService: TableExportService,
   		private changeDetectorRef: ChangeDetectorRef
 		) {
 			this.getFormFields();
 			this.getMembers()
 			this.getStaff();
 			this.vendor = JSON.parse(this.localService.getVendor());
-			 this.user = JSON.parse(this.localService.getUser());
-    		this.get_vendor_branches();
+			this.user = JSON.parse(this.localService.getUser());
+    	this.get_vendor_branches();
 			this.image_url = environment.api.imageUrl+'profile/member/';
 		 }
 

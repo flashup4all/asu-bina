@@ -1,25 +1,25 @@
 <div class="animated fadeIn" *ngIf="user?.role_id == 2">
   <div class="row">
     <div class="col-sm-12 col-lg-4">
-      <div class="card text-white bg-primary">
+      <div class="asu-card card text-white bg-primary">
         <div class="card-body pb-0">
-          <h4 class="mb-0">{{ total_members }}</h4>
+          <h4 class="asu-widget-font mb-0">{{ total_members }}</h4>
           <p>Total Members</p>
         </div>
       </div>
     </div>
     <div class="col-sm-12 col-lg-4">
-      <div class="card text-white bg-success">
+      <div class="asu-card card text-white bg-success">
         <div class="card-body pb-0">
-          <h4 class="mb-0"> {{ total_active_members }}</h4>
+          <h4 class="asu-widget-fontmb-0"> {{ total_active_members }}</h4>
           <p>Active Members
         </div>
       </div>
     </div>
     <div class="col-sm-12 col-lg-4">
-      <div class="card text-white bg-warning">
+      <div class="asu-card card text-white bg-warning">
         <div class="card-body pb-0">
-          <h4 class="mb-0"> {{ total_members - total_active_members }}</h4>
+          <h4 class="asu-widget-font mb-0"> {{ total_members - total_active_members }}</h4>
           <p>Inactive Members/Suspended
         </div>
       </div>
@@ -159,7 +159,7 @@
                               </td>
                               <td class="text-center">
                                 <!-- {{item.email}} -->
-                                  {{item?.phone1 || 'nil'}}
+                                  {{item?.phone1 || ''}}
                               </td>
                               <td>
                                 <div *ngIf="item.status == 1">
@@ -233,7 +233,8 @@
                 </div>
             </tab>
             <tab heading="New Member">
-                <div class="col-md-12">
+              <div class="row col-md-12">
+                <div class="col-md-4">
                     <div class="row">
                       <form [formGroup]="newMemberForm" (ngSubmit)="addMember(newMemberForm.value)">
                         <div class="form-group">
@@ -319,7 +320,16 @@
                   </form>
                     </div>
                 </div>
+                <div class="col-md-8">
+                  
+                </div>
+                </div>
             </tab>
+            <tab heading="Upload Member">
+              <div class="row h-100 justify-content-center align-items-center">
+                  <app-member-upload></app-member-upload>
+                </div>
+                </tab>
         </tabset>
       </div>
     </div>
