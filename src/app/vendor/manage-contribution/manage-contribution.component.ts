@@ -408,11 +408,13 @@ export class ManageContributionComponent implements OnInit {
       this.adv_filter =!this.adv_filter
     }
 
-    post_transaction(transaction_id, status)
+    post_transaction(transaction, status)
     {
+      console.log(transaction)
       this.btn_loader = true;
       let data = {
-        id: transaction_id,
+        id: transaction.id,
+        member_id: transaction.member_id,
         user_id: this.user.user_id,
         approved_by: this.user.id,
         vendor_id: this.vendor.id,

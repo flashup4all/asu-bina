@@ -19,7 +19,7 @@ export class AppHeaderComponent {
     private router: Router,
     private authService : AuthService,
     ) {
-
+    console.log(JSON.parse(this.localService.getBranchData()))
     this.user = JSON.parse(this.localService.getUser());
     this.vendor = JSON.parse(this.localService.getVendor());
     this.session_data = JSON.parse(this.localService.getSessionData());

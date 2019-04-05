@@ -6,6 +6,8 @@ import { ContributionService } from '../contribution.service';
 import { XlsxToJsonService } from '../../../shared/xls/index'
 //import * as FileSaver from 'file-saver';
 import * as moment from 'moment';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { AlertConfig } from 'ngx-bootstrap/alert';
 
 @Component({
   selector: 'app-run-contribution',
@@ -22,20 +24,22 @@ export class RunContributionComponent implements OnInit {
 	file;
 	public result: any;
 	submitPending: boolean;
+  show_sucess_alert: boolean = false;
   	monthList;
   	contribution_plan_list;
   	current_year = moment().format('YYYY');
   	show_plan_members_loader: boolean = false;
   	show_bulk_contribution: boolean = false;
   	vendor_branch;
+    success_msg: string;
 	constructor(
 		private localService : LocalService,
   		private _fb : FormBuilder,
+      private deviceService: DeviceDetectorService,
   		private contributionService : ContributionService
   		) {
 		this.vendor = JSON.parse(this.localService.getVendor());
 		this.user = JSON.parse(this.localService.getUser());
-		console.log(this.user)
         this.vendor_branch = JSON.parse(this.localService.getBranchData());
 		//this.getAllCoorpMembers();
 		this.get_contribution_type()
@@ -61,6 +65,7 @@ export class RunContributionComponent implements OnInit {
         contribution: data.member.contribution,
         status: true,
         member_id: data.member.id,
+        phone1: data.member.phone1,
         name: data.member.first_name
       });
     }
@@ -85,6 +90,7 @@ export class RunContributionComponent implements OnInit {
 	        );
 		});
 	}
+  
 
 	runContribution(formValues)
 	{
@@ -93,15 +99,25 @@ export class RunContributionComponent implements OnInit {
 		formValues['approved_by'] = this.user.id
 		formValues['staff_id'] = this.user.id
 		formValues['user_id'] = this.user.user_id
-        formValues.transaction_type = 'credit';
+    formValues['mode'] = 'ntxn';
+    formValues['app_channel'] = 'web';
+    formValues['device_info'] = 'browser: '+ this.deviceService.getDeviceInfo().browser + ' /browser_version: ' + this.deviceService.getDeviceInfo().browser_version + ' /device: ' + this.deviceService.getDeviceInfo().device + ' /os: '+this.deviceService.getDeviceInfo().os;
+    formValues.transaction_type = 'credit';
 		
-		this.submitPending = true;
+		this.show_plan_members_loader = true;
 		this.contributionService.runEditedContributions(formValues).subscribe((response) => {
 			if (response.success) {
-				this.submitPending = false;
-          		this.localService.showSuccess(response.message,'Operation Successfull');
+				this.show_plan_members_loader = false;
+        this.show_sucess_alert = true;
+        this.success_msg = response.message;
+        this.runContributionForm.reset();
+        /*const control = <FormArray>this.runContributionForm.controls['contributions'];
+          for(let i = control.length-1; i >= 0; i--) {
+          control.removeAt(i)
+        }*/
+        this.localService.showSuccess(response.message,'Operation Successfull');
 			}else{
-				this.submitPending = false;
+				this.show_plan_members_loader = false;
           		this.localService.showError(response.message,'Operation Unsuccessfull');
 			}
 		}, (error) => {
@@ -110,6 +126,10 @@ export class RunContributionComponent implements OnInit {
 		});
 	}
 
+  hide_success_alert()
+  {
+    this.show_sucess_alert = false;
+  }
 	get_contribution_plan()
     {
       this.submitPending = true;
@@ -143,6 +163,10 @@ export class RunContributionComponent implements OnInit {
     get_plan_members(plan_id)
     {
       this.show_plan_members_loader = true;
+      const control = <FormArray>this.runContributionForm.controls['contributions'];
+          for(let i = control.length-1; i >= 0; i--) {
+          control.removeAt(i)
+        }
       this.contributionService.get_all_plan_members(plan_id).subscribe((response) => {
       	this.coorpMembers = response;
       	this.coorpMembers.forEach((list)=> 

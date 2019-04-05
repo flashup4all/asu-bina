@@ -5,65 +5,97 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs/Rx';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import * as CryptoJS from 'crypto-js';
+import * as crypto from 'crypto-js'
+import * as aes from 'crypto-js/aes'
+import * as sha256 from 'crypto-js/sha256'
 
 @Injectable()
 export class LocalService {
 
-	constructor(public http : Http, private toastrService : ToastsManager, public router: Router,
-    private route: ActivatedRoute
-    ) { }
+  key: any = '';
+	constructor(
+    public http : Http, 
+    private toastrService : ToastsManager, 
+    public router: Router,
+    private route: ActivatedRoute,
+    ) { 
+      (<any>window).$$$ = sha256('23984urkjefgdvcxh90342hk');
+      //   console.log('Key', (<any>window).$$$);
+      (<any>window).$$$.words.forEach(key_part => {
+        this.key += key_part.toString().replace('-', '');
+      });
+  }
 	  /*get jwt token*/
   	setToken(token: string) :void
   	{
-  		return window.localStorage.setItem('token', token);
+      return window.localStorage.setItem('token', token);
+      /*let set_data = aes.encrypt(token, this.key);
+      return window.localStorage.setItem('token', set_data);*/
   	}
 	
-     /*get token*/
+    /*get token*/
     getToken()
     {
       return window.localStorage.getItem('token');
+      /*let stored_token = window.localStorage.getItem('token');
+      return aes.decrypt(stored_token.toString(), this.key).toString(crypto.enc.Utf8);*/
     }
   /*set profile*/
     setVendor(vendorProfile): void
     { 
-        return window.localStorage.setItem('vendorProfile', vendorProfile);
+      let set_data = aes.encrypt(JSON.stringify(vendorProfile), this.key);
+      return window.localStorage.setItem('vendorProfile', set_data);
+      // return window.localStorage.setItem('vendorProfile', vendorProfile);
     }
       /*get agency profile*/
     getVendor()
     {
-        return window.localStorage.getItem('vendorProfile');
+      let stored_user = window.localStorage.getItem('vendorProfile');
+      return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);
+        // return window.localStorage.getItem('vendorProfile');
     }
 
     /*set session*/
     setSessionData(session_data): void
     {
-        return window.localStorage.setItem('session_data', session_data);
+      // let set_data = aes.encrypt(JSON.stringify(session_data), this.key);
+      // return window.localStorage.setItem('session_data', set_data);
+         //return window.localStorage.setItem('session_data', session_data);
     }
       /*get agency profile*/
     getSessionData()
     {
+      /*let stored_user = window.localStorage.getItem('session_data');
+      return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);*/
         return window.localStorage.getItem('session_data');
     }
 
     /* set branch data */
     setBranchData(branch)
     {
-        return window.localStorage.setItem('branch', branch);
+      let set_data = aes.encrypt(JSON.stringify(branch), this.key);
+      return window.localStorage.setItem('branch', set_data);
+        // return window.localStorage.setItem('branch', branch);
     }
     /* get branch data*/
     getBranchData()
     {
-        return window.localStorage.getItem('branch');
+      let stored_user = window.localStorage.getItem('branch');
+      return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);
+        // return window.localStorage.getItem('branch');
     }
       /*set user profile*/
     setUser(userProfile)
     {
+      /*let set_data = aes.encrypt(JSON.stringify(userProfile), this.key);
+      return window.localStorage.setItem('userProfile', set_data);*/
         return window.localStorage.setItem('userProfile', userProfile);
     }
       /*get user profile*/
     getUser()
     {
+      /*let stored_user = window.localStorage.getItem('userProfile');
+      return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);*/
         return window.localStorage.getItem('userProfile');
     }
 

@@ -172,7 +172,7 @@
                                       </label>
                                       <p class="pull-right" style="cursor: pointer; color: blue;">
                                           <!-- <i *ngIf="user?.role_id < 4" class="fa fa-edit" (click)="allow_edit_acc_no = !allow_edit_acc_no">edit</i> -->
-                                          <button [swal]="acc_no_alert" *ngIf="user?.role_id < 4" mat-menu-item>Edit</button>
+                                          <button type="button" [swal]="acc_no_alert" *ngIf="user?.role_id < 4" mat-menu-item>Edit</button>
                                           <swal
                                             #acc_no_alert
                                             title="Are You Sure You want to Edit Member Account Number?"
@@ -417,9 +417,9 @@
                         <tab heading="INVESTMENTS">
                           <app-member-investments></app-member-investments>
                         </tab>
-                        <!-- <tab heading="Transaction Activity">
+                        <tab heading="Transaction Activity">
                             <app-member-transaction></app-member-transaction>
-                        </tab> -->
+                        </tab>
                         <!-- <tab heading="TARGET SAVINGS">
                             <div class="row">
                                 <div class="col-md-12">

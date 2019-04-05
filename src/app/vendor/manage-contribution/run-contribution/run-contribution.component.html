@@ -1,9 +1,35 @@
+<style type="text/css">
+	.loader {
+		position: absolute;
+	   left: 50%;
+	   top: 50%;
+	  border: 16px solid #f3f3f3;
+	  border-radius: 50%;
+	  border-top: 16px solid #3498db;
+	  width: 120px;
+	  height: 120px;
+	  -webkit-animation: spin 2s linear infinite; /* Safari */
+	  animation: spin 2s linear infinite;
+	}
+
+	/* Safari */
+	@-webkit-keyframes spin {
+	  0% { -webkit-transform: rotate(0deg); }
+	  100% { -webkit-transform: rotate(360deg); }
+	}
+
+	@keyframes spin {
+	  0% { transform: rotate(0deg); }
+	  100% { transform: rotate(360deg); }
+	}
+</style>
 <div class="card">
   	<div class="card-body">
     	<div class="row">
       		<div class="col">
 		        <tabset>
 			        <tab heading="Manage Contributions">
+			        	<!-- <div class="loader"></div> -->
                       	<form [formGroup]="runContributionForm" (ngSubmit)="runContribution(runContributionForm.value)">
                       		<div class="row">
                       			<div class="col-md-3">
@@ -48,11 +74,16 @@
 
                       		</div>
             				<mat-progress-bar *ngIf="show_plan_members_loader" mode="indeterminate"></mat-progress-bar>
-
-                      		 <table *ngIf="!show_plan_members_loader" class="table table-responsive table-hover table-outline mb-0">
+	                       	<div *ngIf="show_sucess_alert" class="alert alert-success alert-dismissible fade show" role="alert">
+	                       		{{ success_msg }}
+	                       		<button type="button" class="close" (click)="hide_success_alert()"  aria-label="Close">
+								    <span aria-hidden="true">&times;</span>
+								  </button>
+	                       	</div>
+                      		 <table *ngIf="!show_plan_members_loader" class="table table-hover table-outline mb-0">
 		                        <thead class="thead-light">
 		                          <tr>
-		                            <th class="text-center"><i class="icon-people"></i></th>
+		                            <th class="text-center">Acct No.| Account ID</th>
 		                            <th>
 		                            	<input type="checkbox" (click)="checkAll($event)">
 		                            </th>
@@ -63,11 +94,7 @@
 		                        <tbody>
 		                        	<tr *ngFor="let item of runContributionForm['controls'].contributions['controls']; let i=index">
 		                        		<td>
-		                        			<div class="avatar">
-				                                <img *ngIf="!item.passport" title="{{coorpMembers[i]?.member?.first_name}} {{coorpMembers[i]?.member?.middle_name}} {{coorpMembers[i]?.member?.last_name}}" src="assets/images/avata.png" class="img-avatar">
-				                                <img *ngIf="item.passport" [src]="sanitizer.bypassSecurityTrustUrl(coorpMembers[i]?.member?.passport)" title="{{coorpMembers[i]?.member?.first_name}} {{coorpMembers[i]?.member?.middle_name}} {{coorpMembers[i]?.member?.last_name}}" class="img-avatar">
-				                                <span class="avatar-status badge-success"></span>
-				                            </div>
+		                        			{{ coorpMembers[i]?.member?.account_number ||  coorpMembers[i]?.member?.asusu_id }}
 		                        		</td>
 		                        		<td>
 		                        			<input type="checkbox" [formControl]="item.controls.status" class="form-control" [checked]="item.controls.status">
@@ -102,11 +129,26 @@
 			                            </div>
 		                      		</div>
 		                       </div>
-		                       <button type="submit" class="btn btn-success" [disabled]="runContributionForm.invalid || submitPending">
+		                       <div *ngIf="show_sucess_alert" class="alert alert-success alert-dismissible fade show" role="alert">
+		                       		{{ success_msg }}
+		                       		<button type="button" class="close" (click)="hide_success_alert()"  aria-label="Close">
+									    <span aria-hidden="true">&times;</span>
+									  </button>
+		                       	</div>
+		                       <button type="submit" class="btn btn-success" [swal]="delete_contri" [disabled]="runContributionForm.invalid || submitPending">
 			                        <span *ngIf="!submitPending">Run Contribution</span>
 			                        <span *ngIf="submitPending && runContributionForm.valid">Please Wait...</span>
 			                        <span *ngIf="submitPending && runContributionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
 			                    </button>
+			                    <swal
+									  #delete_contri
+									  title="Are You Sure You want to Perform this Bulk Contribution?"
+									  text="This cannot be undone"
+									  type="warning"
+									  [showCancelButton]="true"
+									  [focusCancel]="true"
+									  (confirm)="runContribution(runContributionForm.value)">
+									</swal>
                       	</form>
 			        </tab>
 		      	</tabset>

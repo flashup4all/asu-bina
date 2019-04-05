@@ -61,6 +61,37 @@ export class ContributionService {
     }
 
     /**
+     * @method get_unassigned_plan_members
+     * @param plan_id
+     * get members that are not asigned to a contribution plan
+     * @return data
+     */
+    get_unassigned_plan_members(page=0)
+    {
+      let url;
+      if(page==0)
+      {
+
+       url = environment.api.url+'CoopManagement/uploads/get-unassigned-member-to-plan/'+JSON.parse(this.localService.getVendor()).id;
+      }else{
+        url = environment.api.url+'CoopManagement/uploads/get-unassigned-member-to-plan/'+JSON.parse(this.localService.getVendor()).id+'?page='+page;
+      }
+      return this.http.get(url, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+    /**
+     * @method assign_plan_to_members
+     * @param plan_id
+     * get members that are not asigned to a contribution plan
+     * @return data
+     */
+    assign_plan_to_members(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/uploads/assign-member-to-plan', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
+    /**
      * @method getChangeContributionRequest
      * get all vendor loan request
      * @return data
@@ -131,6 +162,16 @@ export class ContributionService {
     filterContribution(data)
     {
       return this.http.post(environment.api.url+'CoopManagement/contribution-history/filter', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+    /**
+     * @method filter_transactions
+     * filter transactions
+     * @return data
+     */
+    filter_transactions(data)
+    {
+      return this.http.post(environment.api.url+'transactions/filter', data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 

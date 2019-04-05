@@ -90,6 +90,7 @@ export class MembersFormComponent implements OnInit {
 		this.submitPending = true;
 		let data = {
 			user_id: this.user.user_id,
+			staff_id: this.user.id,
 			vendor_id: this.vendor.id
 		}
 		this.manageMemberService.activateAllMember(data).subscribe((response) => {
@@ -140,6 +141,7 @@ export class MembersFormComponent implements OnInit {
 		this.login_details_loader = true;
 		let data = {
 			user_id: this.user.user_id,
+			staff_id: this.user.id,
 			vendor_id: this.vendor.id
 		}
 		this.manageMemberService.send_login_details_to_all_members(data).subscribe((response) => {

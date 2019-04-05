@@ -69,38 +69,42 @@ export class MemberUploadComponent implements OnInit {
       let json = XLSX.utils.sheet_to_json(worksheet, { raw: true })
       if (json.length <= 0) {
         this.error_msg = "Empty file uploaded, please verify that the uploaded file is excel and has appropiate data in it";
+        this.upload_pending = false;
         return;
       }
       this.error_msg = ''
       this.upload_list = json;
       var lastItem = json[json.length - 1]; 
-      if (lastItem.hasOwnProperty("first_name")) {
+      /*if (lastItem.hasOwnProperty("first_name")) {
         console.log('first name true')
       } else {
+        this.upload_pending = false;
         return this.localService.showError('first_name header incorrect', 'Operation Unsuccessfull');
-      }
-      if (lastItem.hasOwnProperty("last_name")) {
+      }*/
+      /*if (lastItem.hasOwnProperty("last_name")) {
         console.log('last true')
       } else {
+        this.upload_pending = false;
         return this.localService.showError('last_name header incorrect', 'Operation Unsuccessfull');
-      }
+      }*/
 
-      if (!lastItem.hasOwnProperty("middle_name")) {
-        
-      
+      /* if (!lastItem.hasOwnProperty("middle_name")) {
         return this.localService.showError('middle_name header incorrect', 'Operation Unsuccessfull');
-      }
-      if (lastItem.hasOwnProperty("gender")) {
+      } */
+      /*if (lastItem.hasOwnProperty("gender")) {
         console.log('last true')
       } else {
+        this.upload_pending = false;
         return this.localService.showError('gender header incorrect', 'Operation Unsuccessfull');
-      }
-      if (!lastItem.hasOwnProperty("account_number")) {
+      }*/
+      /* if (!lastItem.hasOwnProperty("account_number")) {
+        this.upload_pending = false;
         return this.localService.showError('account_number header incorrect', 'Operation Unsuccessfull');
-      }
-      if (!lastItem.hasOwnProperty("phone")) {
+      } */
+      /*if (!lastItem.hasOwnProperty("phone")) {
+        this.upload_pending = false;
         return this.localService.showError('phone header incorrect', 'Operation Unsuccessfull');
-      }
+      }*/
 
       for (let i in this.upload_list) {
         this.upload_list[i].status = 0;

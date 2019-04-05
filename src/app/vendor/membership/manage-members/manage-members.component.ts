@@ -426,9 +426,10 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	activateMember(id)
 	{
+		this.submitPending = true;
 		let data ={
-			id: id,
 			user_id: this.user.user_id,
+			staff_id: this.user.id,
 			vendor_id: this.vendor.id
 		}
 		this.manageMemberService.activateMember(data).subscribe((response) => {
@@ -436,8 +437,10 @@ export class ManageMembersComponent implements OnInit {
 			{
 				this.getMembers()
 				this.localService.showSuccess(response.message,'Operation Successfull');
+				this.submitPending = false;
 			}else{
 				this.localService.showError(response.message,'Operation UnsSuccessfull');
+				this.submitPending = false;
 			}
 		});
 	}

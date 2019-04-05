@@ -509,7 +509,6 @@ export class LoanSettingsComponent implements OnInit {
       });
       this.editLoanTypeData = data;
       this.edit_loan_type_approvals = data.approvals;
-      console.log(data.approvals)
       this.edit_loan_type_approvals.forEach((list)=> 
             (<FormArray>this.editLoanTypeForm.controls['signatory']).push(this.create_edit_signatory_fields(list))
           );

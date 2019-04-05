@@ -16,6 +16,7 @@ import { RunContributionComponent } from './run-contribution/run-contribution.co
 import { ContributionTypeComponent } from './contribution-type/contribution-type.component';
 import { ContributionPlanComponent } from './contribution-plan/contribution-plan.component';
 import { MemberContributionPlanComponent } from './member-contribution-plan/member-contribution-plan.component';
+import { UploadMembersToPlanComponent } from './upload-members-to-plan/upload-members-to-plan.component';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { MemberContributionPlanComponent } from './member-contribution-plan/memb
     RunContributionComponent, 
     ContributionTypeComponent,
     ContributionPlanComponent,
-    MemberContributionPlanComponent
+    MemberContributionPlanComponent,
+    UploadMembersToPlanComponent
   ],
   providers: [ContributionService]
 })

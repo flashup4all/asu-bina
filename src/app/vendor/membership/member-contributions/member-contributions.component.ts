@@ -362,6 +362,7 @@ export class MemberContributionsComponent implements OnInit {
         formValues['member_id'] = this.member_id;
         formValues['branch_id'] = this.vendor_branch.id;
         formValues['mode'] = 'ntxn';
+        formValues['status'] = 0;
         formValues['app_channel'] = 'web';
         formValues['device_info'] = 'browser: '+ this.deviceService.getDeviceInfo().browser + ' /browser_version: ' + this.deviceService.getDeviceInfo().browser_version + ' /device: ' + this.deviceService.getDeviceInfo().device + ' /os: '+this.deviceService.getDeviceInfo().os;
         

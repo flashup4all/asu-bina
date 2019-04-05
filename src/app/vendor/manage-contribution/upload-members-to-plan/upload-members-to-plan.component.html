@@ -1,0 +1,67 @@
+<div>
+	<div>
+		<h3>Assign plans to Members</h3>
+		<small>Note that member who appear on this list are not assigned to any savings plan.</small>
+		<div style="float: right" class="mr-5">
+	        	<h5>{{ current_page }} of {{ last_page }} page</h5>
+	        </div>
+	</div>
+	<form [formGroup]="member_plan_upload_form" (ngSubmit)="assign_members_to_plans(member_plan_upload_form.value)">
+		<mat-progress-bar *ngIf="show_plan_members_loader" mode="indeterminate"></mat-progress-bar>
+
+  		 <table class="table table-hover table-outline mb-0">
+            <thead class="thead-light">
+              <tr>
+              	<th>
+                	<input type="checkbox" (click)="checkAll($event)">
+                </th>
+                <th class="text-center">Acct No.</th>
+                <th class="text-center">Name</th>
+                <th>Plan|Package</th>
+              </tr>
+            </thead>
+            <tbody>
+            	<tr *ngFor="let item of member_plan_upload_form['controls'].plans['controls']; let i=index" style="text-align: center">
+            		<td>
+            			<input type="checkbox" [formControl]="item.controls.status" class="form-control" [checked]="item.controls.status">
+            		</td> 
+            		<td>
+            			{{ members_list[i]?.account_number ||  members_list[i]?.asusu_id }}
+            		</td>
+            		<td>{{ members_list[i]?.first_name }} {{ members_list[i]?.middle_name }} {{ members_list[i]?.last_name }}</td>
+            		<td>
+            			<select class="form-control"[formControl]="item.controls.plan_id" >
+            				<option [value]="item.id" *ngFor="let item of contribution_plan_list"> {{ item?.name}}</option>
+            			</select>
+            			<!-- <input type="text" [value]=" members_list[i]?.contribution" [formControl]="item.controls.plan_id" class="form-control"> -->
+            		</td>
+            	</tr>
+            </tbody>
+           </table>
+           <div class="row">
+          		<div class="col-md-4">
+          			<div class="form-group">
+                        <label>Status</label>
+                        <select class="form-control" placeholder="status" formControlName = "status">
+                            <option selected="true" value="1">Approved</option>
+                            <option selected="true" value="0">Pending</option>
+                            <option selected="true" value="2">Cancelled</option>
+                        </select>
+                        <small [hidden]="(member_plan_upload_form.controls.status.valid ) || (member_plan_upload_form.controls.status.pristine )" class="text-danger">Status of account | package Required</small>
+                    </div>
+          		</div>
+           </div>
+           <button type="submit" class="btn btn-success block" [disabled]="member_plan_upload_form.invalid || submitPending">
+                <span *ngIf="!submitPending">Run Contribution</span>
+                <span *ngIf="submitPending && member_plan_upload_form.valid">Please Wait...</span>
+                <span *ngIf="submitPending && member_plan_upload_form.valid" class="fa fa-spinner" aria-hidden="true"></span>
+            </button>
+  	</form>
+  	<div class="col-xs-12 col-12 d-sm-down-none mt-5">
+  		<ul class="pagination" style="float: left;">
+  			<li *ngFor="let item of pagination" class="pagination-page" (click)="get_next_page(item)"><a>{{ item +1 }}</a></li>
+  			
+  		</ul>
+        
+    </div>
+</div>

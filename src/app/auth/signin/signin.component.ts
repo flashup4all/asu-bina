@@ -75,13 +75,14 @@ export class SigninComponent implements OnInit {
 	    let auth = this.signinService.authenticate(data);
 	    auth.then(response => {
           if(response.success){
+            console.log(response);
             this.submitPending = false;
             this.localService.showSuccess('Login Successful, you will be redirected in a moment', 'Operation Successfull')
             this.localService.setToken(response.token);
             //this.user = response.user;
             this.localService.setUser(JSON.stringify(response.user));
-            this.localService.setVendor(JSON.stringify(response.vendor));
-            this.localService.setSessionData(JSON.stringify(response.session_data));
+            this.localService.setVendor(response.vendor);
+            this.localService.setSessionData(response.session_data);
             this.localService.setBranchData(JSON.stringify(response.branch));
             //this.jwt(response);
             this.authNavigate(response.user);
