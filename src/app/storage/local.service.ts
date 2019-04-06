@@ -60,7 +60,7 @@ export class LocalService {
     {
       // let set_data = aes.encrypt(JSON.stringify(session_data), this.key);
       // return window.localStorage.setItem('session_data', set_data);
-         //return window.localStorage.setItem('session_data', session_data);
+         return window.localStorage.setItem('session_data', session_data);
     }
       /*get agency profile*/
     getSessionData()
