@@ -60,6 +60,8 @@ export class MemberContributionsComponent implements OnInit {
     vendor_branch;
     total_contribution_amount;
     transaction_data;
+    user_position;
+    staff_transaction_limit;
     @ViewChild('newContributionModal') public newContributionModal : ModalDirective;
     @ViewChild('newContributionPlanModal') public newContributionPlanModal : ModalDirective;
     @ViewChild('view_contribution_transaction_modal') public view_contribution_transaction_modal : ModalDirective;
@@ -76,6 +78,7 @@ export class MemberContributionsComponent implements OnInit {
     	) {
         this.vendor = JSON.parse(this.localService.getVendor());
         this.user = JSON.parse(this.localService.getUser());
+        this.user_position = this.user.user_position;
         this.vendor_branch = JSON.parse(this.localService.getBranchData());
         //this.router.events.subscribe((val) => {
         this.member_id = this.route.snapshot.params['member_id'];
@@ -116,8 +119,28 @@ export class MemberContributionsComponent implements OnInit {
       });
 
     }
+    /**
+     *@method transaction_limit
+     */
+    transaction_limit(amount)
+    {
+      let transaction_limit = this.user_position.post_max_amount
+      if(parseInt(this.user_position.role) < 4)
+      {
+        return true;
+      }
+      if(transaction_limit > 0){
+        if(transaction_limit > amount)
+        {
+          return true;
+        }
+      }else{
+        return false;
+      }
+      return false;
+    }
 
-     refresh()
+    refresh()
     {
       this.submitPending = true;
       // this.get_member_investment_plan()
