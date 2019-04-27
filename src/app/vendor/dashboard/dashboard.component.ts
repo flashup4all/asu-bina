@@ -82,7 +82,6 @@ export class DashboardComponent implements OnInit {
       private contributionService : ContributionService,
   		private widthdrawalService : WidthdrawalsService,
   		) { 
-      console.log(JSON.parse(this.localService.getVendor()))
   		this.getMembers();
       this.vendor = JSON.parse(this.localService.getVendor());
   		this.user = JSON.parse(this.localService.getUser());

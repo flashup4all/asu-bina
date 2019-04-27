@@ -95,9 +95,9 @@
               <td class="center">
                 <mat-menu #appMenu="matMenu">
                    <button [disabled]="btn_loader" mat-menu-item (click)="view_transaction_details(item)">View Details</button>
-                   <button [swal]="approve_request" [disabled]="btn_loader" mat-menu-item *ngIf="item.status==0 && user.role_id <= 3">Approve Request</button>
+                   <button [swal]="approve_request" [disabled]="btn_loader" mat-menu-item *ngIf="item.status==0 && transaction_limit(item.amount)">Approve Request</button>
                   <mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
-                  <button [swal]="cancel_request" [disabled]="btn_loader" mat-menu-item *ngIf="item.status == 0 && user.role_id <= 3 ">Cancel Request</button>
+                  <button [swal]="cancel_request" [disabled]="btn_loader" mat-menu-item *ngIf="item.status == 0 && transaction_limit(item.amount) ">Cancel Request</button>
                   <swal
                     #approve_request
                     title="Are You Sure You want to Approve this Withdrawal?"

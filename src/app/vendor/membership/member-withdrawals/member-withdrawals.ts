@@ -66,6 +66,7 @@ export class MemberWithdrawalsComponent implements OnInit {
     vendor_branch;
     member_contribution_component;
     transaction_data;
+    user_position;
    	@ViewChild('fileInput') fileInput: ElementRef;
     @ViewChild('newWithdrawalModal') public newWithdrawalModal : ModalDirective;
     @ViewChild('view_transaction_modal') public view_transaction_modal : ModalDirective;
@@ -89,7 +90,7 @@ export class MemberWithdrawalsComponent implements OnInit {
         this.vendor = JSON.parse(this.localService.getVendor());
         this.user = JSON.parse(this.localService.getUser());
         this.vendor_branch = JSON.parse(this.localService.getBranchData());
-
+        this.user_position = this.user.user_position;
         //this.router.events.subscribe((val) => {
         this.memberId = this.route.snapshot.params['member_id'];
          // });
@@ -119,7 +120,26 @@ export class MemberWithdrawalsComponent implements OnInit {
       });
 
     }
-
+    /**
+     *@method transaction_limit
+     */
+    transaction_limit(amount)
+    {
+      let transaction_limit = this.user_position.post_max_amount
+      if(parseInt(this.user_position.role) < 4)
+      {
+        return true;
+      }
+      if(transaction_limit > 0){
+        if(transaction_limit > amount)
+        {
+          return true;
+        }
+      }else{
+        return false;
+      }
+      return false;
+    }
     get_member_contribution_plan()
     {
       this.submitPending = true;

@@ -133,11 +133,8 @@ export class LocalService {
     {
       let user = JSON.parse(this.getUser());
       let position = user.user_position;
-          console.log(array)
-
       for (var i in array) {
         if(array[i].staff_id == id){
-          console.log(array[i].signatory_type)
           return 1;
         }else{
           return 0;
@@ -203,7 +200,7 @@ export class LocalService {
      }
 
     token_expired(status){
-        console.log(status)
+        // console.log(status)
     }
 
     /*clear storage*/
@@ -229,11 +226,11 @@ export class LocalService {
 useJwtHelper(error: Response) {
   var token = localStorage.getItem('token');
 
-  console.log(
-    this.jwtHelper.decodeToken(token),
-    this.jwtHelper.getTokenExpirationDate(token),
-    this.jwtHelper.isTokenExpired(token)
-  );
+  // console.log(
+  //   this.jwtHelper.decodeToken(token),
+  //   this.jwtHelper.getTokenExpirationDate(token),
+  //   this.jwtHelper.isTokenExpired(token)
+  // );
   if(this.jwtHelper.isTokenExpired(token))
   {
     this.router.navigate(['/auth']);

@@ -208,7 +208,7 @@
                         	<mat-menu #appMenu="matMenu">
                         		<mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
 							   <button [disabled]="btn_loader" mat-menu-item (click)="view_contribution_transaction_details(item)">View Details</button>
-							   <button *ngIf="item.status == 0 && user.role_id <= 3" [swal]="post_contri_trans" mat-menu-item>Post Transaction</button>
+							   <button *ngIf="item.status == 0 && transaction_limit(item.amount)" [swal]="post_contri_trans" mat-menu-item>Post Transaction</button>
 							  <swal
 								  #post_contri_trans
 								  title="Are You Sure You want to Approve this Transaction?"
@@ -218,7 +218,7 @@
 								  [focusCancel]="true"
 								  (confirm)="post_transaction(item.id, 1)">
 								</swal>
-								 <button *ngIf="item.status != 2 && user.role_id <=3" [swal]="cancel_contri_trans" mat-menu-item>Cancel Transaction</button>
+								 <button *ngIf="item.status != 2 && transaction_limit(item.amount)" [swal]="cancel_contri_trans" mat-menu-item>Cancel Transaction</button>
 							  <swal
 								  #cancel_contri_trans
 								  title="Are You Sure You want to Cancel this Transaction?"

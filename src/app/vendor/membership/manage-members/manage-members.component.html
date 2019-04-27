@@ -51,10 +51,10 @@
                       </form>
                   </div>
                   <br>
-                    <div class="row" *ngIf="user.role_id < 4">
+                    <div class="row" >
                       <div class="pull-right">
-                        <button class="btn btn-success pull-left" (click)="activateAllMember()">Activate All Members</button>
-                        <button style="margin-left:5px;" class="btn btn-danger" (click)="deactivateAllMember()">Deactivate All Members</button>
+                        <button *ngIf="user.role_id < 3" class="btn btn-success pull-left" (click)="activateAllMember()">Activate All Members</button>
+                        <button style="margin-left:5px;" *ngIf="user.role_id < 3" class="btn btn-danger" (click)="deactivateAllMember()">Deactivate All Members</button>
                          <button style="margin-left:5px;" (click)="exportTable('xls', 'members_table')" class="btn btn-outline btn-success">Export table</button>
                         <button class="btn btn-outline btn-success" (click)="printReciept('members_table')">Print</button>
                         <button class="btn btn-success" style="margin-left:5px" (click)="show_adv_form = !show_adv_form">Show Search</button>
