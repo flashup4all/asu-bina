@@ -73,16 +73,16 @@ export class LocalService {
     /* set branch data */
     setBranchData(branch)
     {
-      let set_data = aes.encrypt(JSON.stringify(branch), this.key);
-      return window.localStorage.setItem('branch', set_data);
-        // return window.localStorage.setItem('branch', branch);
+      // let set_data = aes.encrypt(JSON.stringify(branch), this.key);
+      // return window.localStorage.setItem('branch', set_data);
+        return window.localStorage.setItem('branch', branch);
     }
     /* get branch data*/
     getBranchData()
     {
-      let stored_user = window.localStorage.getItem('branch');
-      return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);
-        // return window.localStorage.getItem('branch');
+      // let stored_user = window.localStorage.getItem('branch');
+      // return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);
+        return window.localStorage.getItem('branch');
     }
       /*set user profile*/
     setUser(userProfile)

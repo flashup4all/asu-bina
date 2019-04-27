@@ -4,20 +4,20 @@
       		<div class="col">
 		        <tabset>
 		          <tab heading="Manage Widthdrawals">
-			            <div class="col-md-12">
-			            	<div style="margin-bottom: 4px">
-			            		<button style="margin-left:5px;" (click)="exportTable('xls', 'withdrawal_table')" class="btn btn-outline btn-success">Export table</button>
-                        		<button class="btn btn-outline btn-success" (click)="printReciept('withdrawal_table')">Print</button>
-                        		<button *ngIf="!show_adv_form" class="btn btn-success" style="margin-left:5px" (click)="show_adv_filter_form()">
+			            <div class="container">
+			            	<div class="mb-4 mt-4">
+			            		<button (click)="exportTable('xls', 'withdrawal_table')" class="btn btn-outline btn-success">Export table</button>
+                        		<button class="btn btn-outline btn-success ml-2" (click)="printReciept('withdrawal_table')">Print</button>
+                        		<button *ngIf="!show_adv_form" class="btn btn-success ml-2" (click)="show_adv_filter_form()">
                         			Show Search
                         		</button>
-                        		<button *ngIf="show_adv_form" class="btn btn-success" style="margin-left:5px" (click)="show_adv_filter_form()">
+                        		<button *ngIf="show_adv_form" class="btn btn-success ml-2" (click)="show_adv_filter_form()">
                         			Hide Search
                         		</button>
 			            	</div>
-			            	<div class="row" *ngIf="show_adv_form">
+			            	<div *ngIf="show_adv_form">
 			            		<form [formGroup] = "filterForm" (ngSubmit) = "filter_withdrawal(filterForm.value)" style="width: 100%;">
-                                    <div class="row p-1">
+                                    <div class="row">
                                         <div class="col-md-3">
                                           <div class="form-group">
                                             <label>Transaction ID</label>
@@ -97,7 +97,7 @@
 						                </div>
                                         <div class="col-md-2">
                                           <div class="form-group">
-                                            <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+                                            <button type="submit" class="btn btn-primary btn-block" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
                                               <span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
                                               <span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
                                               <span *ngIf="!submitPending">Filter</span>
@@ -110,7 +110,7 @@
                                   </form>
 			            	</div>
             				<mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
-			            	<table id="withdrawal_table" class="table table-responsive table-hover table-outline mb-0" width="100%">
+			            	<table id="withdrawal_table" class="table table-responsive table-hover table-outline mt-2 mb-3" width="100%">
 				                <thead>
 				                    <tr>
 				                        <th>Trans ID</th>
@@ -214,7 +214,7 @@
 				                    </tr>
 				                </tbody>
 				            </table>
-				            <div class="col-md-12 load-more">
+				            <div class="load-more">
 	                           <a  (click)="loadMore()" class="btn btn-success" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
 	                        </div>
 			            </div>

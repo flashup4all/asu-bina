@@ -38,26 +38,19 @@ export class SigninComponent implements OnInit {
 
 	ngOnInit() {
     var url = window.location.hostname;
+    //var url = "www.asusu.asusu.ng";
     let domain = url.split(".")
-    //console.log(window.location.hostname)
-    //console.log(domain[0]);
-    this.signinService.verify_domain(domain[0]).subscribe((response) => {
-      //console.log(response)
+    let name = '';
+    if(domain[0] == 'www'){
+      name = domain[1];
+    }else{
+      name = domain[0];
+    }
+    // vendor domain name verification
+    this.signinService.verify_domain(name).subscribe((response) => {
+      // console.log(response)
       this.vendor = response.data;
     })
-    /*this.route.data
-        .subscribe((data) => {
-          console.log(data)
-           if(!data.school){
-            this.titleService.setTitle(`${ environment.application_name }`);
-            this.isDataAvailable = false;
-            //this.router.navigate(['/domain-does-not-exist']);
-          }else{
-            this.vendor = data.school;
-            this.titleService.setTitle(`${ (this.vendor.name) ? this.vendor.name : 'ASUSU'} ( ${ environment.application_name } ) Login`);
-            this.isDataAvailable = true;
-          }
-        });*/
 	  	this.signinForm = this._fb.group({
 	  		email : [null, Validators.compose([Validators.required, Validators.email])],
 	  		password : [null, Validators.compose([Validators.required])]

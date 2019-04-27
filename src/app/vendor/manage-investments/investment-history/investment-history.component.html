@@ -5,9 +5,9 @@
     			<div class="">
     				<tabset>
 		          <tab heading="Manage Investment">
-			            <div class="col-md-12">
-                      <form [formGroup] = "investmentFilterForm" (ngSubmit) = "filter_investment_history(investmentFilterForm.value)" style="width: 100%;">
-                        <div class="row p-1">
+			            <div class="">
+                      <form [formGroup] = "investmentFilterForm" (ngSubmit) = "filter_investment_history(investmentFilterForm.value)">
+                        <div class="row">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label>From</label>
@@ -41,7 +41,7 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
-                                <button type="submit" class="btn btn-primary" [disabled]="investmentFilterForm.invalid || investment_history_loader">
+                                <button type="submit" class="btn btn-primary btn-block" [disabled]="investmentFilterForm.invalid || investment_history_loader">
                                  Filter</button>
                               </div>
                             </div>
@@ -61,9 +61,9 @@
                           </div> -->
                       </form>
                     </div>
-	            	<div class="container p-2">
+	            	<div class=" mt-3 mb-4">
 			           <button (click)="exportTable('xls', 'investment_history')" class="btn btn-outline btn-success">Export table</button>
-			           <button class="btn btn-outline btn-success" (click)="printReciept('investment_history')">Print</button>
+			           <button class="btn btn-outline btn-success ml-2" (click)="printReciept('investment_history')">Print</button>
 			       	</div>
 			       	<div>
 					<mat-progress-spinner *ngIf="investment_history_loader" style="margin:auto;" mode="indeterminate" value=""></mat-progress-spinner>
@@ -156,7 +156,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <div class="col-md-12 load-more">
+                <div class="load-more mt-3 mb-3">
                    <a  (click)="loadMore()" class="btn btn-success" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
                 </div>
             </tab>

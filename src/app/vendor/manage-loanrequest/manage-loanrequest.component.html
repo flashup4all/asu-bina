@@ -5,9 +5,9 @@
             <div class="col">
                 <tabset>
                   <tab heading="Manage Loan Request">
-                        <div class="col-md-12">
+                        <div class="container mt-5">
                             <form [formGroup] = "filterForm" (ngSubmit) = "filterLoanRequest(filterForm.value)" style="width: 100%;">
-                            <div class="row p-1">
+                            <div class="row">
                                 <div class="col-md-3">
                                   <div class="form-group">
                                     <label>From</label>
@@ -81,11 +81,11 @@
                           </form>
                         </div>
                         <div class="col-md-12">
-                            <div style="margin-bottom: 4px">
-                                <button style="margin-left:5px;" (click)="exportTable('xls', 'loan_request_table')" class="btn btn-outline btn-success">Export table</button>
-                                <button class="btn btn-outline btn-success" (click)="printReciept('loan_request_table')">Print</button>
+                            <div class="mb-4 mt-4">
+                                <button (click)="exportTable('xls', 'loan_request_table')" class="btn btn-outline btn-success">Export table</button>
+                                <button class="btn btn-outline btn-success ml-2" (click)="printReciept('loan_request_table')">Print</button>
                             </div>
-                            <table id="loan_request_table" class="table table-responsive table-hover table-outline mb-0" width="100%">
+                            <table id="loan_request_table" class="table table-responsive table-hover table-outline mb-4" width="100%">
                                 <thead>
                                     <tr>
                                         <th>Branch</th>
@@ -175,7 +175,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <div class="col-md-12 load-more">
+                            <div class="mb-4 load-more">
                                <a  (click)="loadMore()" class="btn btn-success" style="cursor: pointer;"><i *ngIf="loader" class="fa fa-spinner"></i>Load more... </a>
                             </div>
                         </div>
