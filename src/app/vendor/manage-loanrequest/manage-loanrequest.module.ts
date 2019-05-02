@@ -12,6 +12,7 @@ import { ManageLoanrequestComponent } from './manage-loanrequest.component';
 import { LoanRequestService } from './loan-request.service';
 import { ViewRequestHistoryComponent } from './view-request-history/view-request-history.component';
 import { LoanCalculatorComponent } from '../../loan-calculator/loan-calculator.component';
+import { ManageLoanAccountOfficerComponent } from './manage-loan-account-officer/manage-loan-account-officer.component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,7 @@ import { LoanCalculatorComponent } from '../../loan-calculator/loan-calculator.c
     NgbModule,
     SweetAlert2Module
   ],
-  declarations: [ManageLoanrequestComponent, ViewRequestHistoryComponent, LoanCalculatorComponent],
+  declarations: [ManageLoanrequestComponent, ViewRequestHistoryComponent, LoanCalculatorComponent, ManageLoanAccountOfficerComponent],
   providers: [LoanRequestService]
 })
 export class ManageLoanrequestModule { }

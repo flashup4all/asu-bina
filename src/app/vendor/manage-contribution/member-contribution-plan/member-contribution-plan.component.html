@@ -2,8 +2,8 @@
 	<div class="card-body" style="padding:0px;">
 		<div class="row">
 			<div class="col">
-				<div class="container" style="padding: 30px;">
-					<div class="row">
+				<div class="container">
+					<div class="mt-5">
 						<form [formGroup]="filterForm" (ngSubmit)="filter_member_contribution_plan(filterForm.value)" style="width: 100%;">
 							<div class="row p-1">
 								<!-- <div class="col-md-3">
@@ -48,7 +48,7 @@
 									</div>
 								</div>
 
-								<div class="col-md-2">
+								<div class="col-md-3">
 									<div class="form-group">
 										<label>Status</label>
 										<select class="form-control" formControlName="status">
@@ -75,9 +75,9 @@
 				                        <option value="{{ item.id }}" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
 				                    </select>
 	                            </div> -->
-								<div class="col-md-2">
+								<div class="col-md-3">
 									<div class="form-group">
-										<button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
+										<button type="submit" class="btn btn-primary btn-block" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
 											<span *ngIf="submitPending && filterForm.valid">Please Wait...</span>
 											<span *ngIf="submitPending && filterForm.valid"><i class="fa fa-spinner"></i></span>
 											<span *ngIf="!submitPending">Filter</span>
@@ -88,11 +88,11 @@
 						</form>
 					</div>
 				</div>
-				<div style="margin-bottom: 4px">
-					<button style="margin-left:18px;" (click)="exportTable('xls', 'contri_table')" class="btn btn-outline btn-success">Export
+				<div class="container ml-1">
+					<button (click)="exportTable('xls', 'contri_table')" class="btn btn-outline btn-success">Export
 						table</button>
-					<button class="btn btn-outline btn-success" (click)="printReciept('contri_table')">Print</button>
-					<button style="margin-left:1px;" (click)="show_hide_adv_options = !show_hide_adv_options" class="btn btn-outline btn-success">Advance
+					<button class="btn btn-outline btn-success ml-2 " (click)="printReciept('contri_table')">Print</button>
+					<button (click)="show_hide_adv_options = !show_hide_adv_options" class=" ml-2 btn btn-outline btn-success">Advance
 						Options</button>
 				</div>
 				<div class="col-md-12" *ngIf="show_hide_adv_options">
@@ -182,11 +182,11 @@
 							</tr>
 						</tbody>
 					</table>
-				</div>
-				<br>
-				<div class="col-md-12 load-more" *ngIf="show_load_more_button">
-					<a (click)="load_more()" style="cursor: pointer;" class="btn btn-block btn-success"><i *ngIf="loader" class="fa fa-spinner"></i>Load
-						more... </a>
+					<br>
+					<div class="load-more mb-2" *ngIf="show_load_more_button">
+						<a (click)="load_more()" style="cursor: pointer;" class="btn btn-success"><i *ngIf="loader" class="fa fa-spinner"></i>Load
+							more... </a>
+					</div>
 				</div>
 			</div>
 		</div>

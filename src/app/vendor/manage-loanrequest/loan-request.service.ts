@@ -173,4 +173,14 @@ export class LoanRequestService {
       return this.http.post(environment.api.url+'CoopManagement/loan-request/filter',JSON.stringify(data), this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
+    /**
+     * @method advance_filterLoanRequest
+     * filter loan request
+     * @return data
+     */
+    advance_filterLoanRequest(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/loan-request/advance-filter',JSON.stringify(data), this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
 }

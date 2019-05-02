@@ -6,3 +6,9 @@
   .asu-widget-font{
     font-weight: 800;
   }
+.table-outline {
+    border: 0px solid #a4b7c10a !important;
+}
+.table thead th {
+    border-bottom: 0px solid #a4b7c1 !important; 
+}
