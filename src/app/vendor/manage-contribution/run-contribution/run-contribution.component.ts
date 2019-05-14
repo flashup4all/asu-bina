@@ -61,9 +61,10 @@ export class RunContributionComponent implements OnInit {
   	}
 
   	initMembersForm(data) {
-        return this._fb.group({
+      return this._fb.group({
         contribution: data.member.contribution,
         status: true,
+        txn_status: 0,
         member_id: data.member.id,
         phone1: data.member.phone1,
         name: data.member.first_name
@@ -94,27 +95,24 @@ export class RunContributionComponent implements OnInit {
 
 	runContribution(formValues)
 	{
-		formValues['vendor_id'] = this.vendor.id
-		formValues['branch_id'] = this.vendor_branch.id
-		formValues['approved_by'] = this.user.id
-		formValues['staff_id'] = this.user.id
-		formValues['user_id'] = this.user.user_id
+		formValues['vendor_id'] = this.vendor.id;
+		formValues['branch_id'] = this.vendor_branch.id;
+		formValues['approved_by'] = this.user.id;
+		formValues['staff_id'] = this.user.id;
+		formValues['user_id'] = this.user.user_id;
     formValues['mode'] = 'ntxn';
     formValues['app_channel'] = 'web';
     formValues['device_info'] = 'browser: '+ this.deviceService.getDeviceInfo().browser + ' /browser_version: ' + this.deviceService.getDeviceInfo().browser_version + ' /device: ' + this.deviceService.getDeviceInfo().device + ' /os: '+this.deviceService.getDeviceInfo().os;
     formValues.transaction_type = 'credit';
 		
 		this.show_plan_members_loader = true;
-		this.contributionService.runEditedContributions(formValues).subscribe((response) => {
+    console.log(formValues)
+		/*this.contributionService.runEditedContributions(formValues).subscribe((response) => {
 			if (response.success) {
 				this.show_plan_members_loader = false;
         this.show_sucess_alert = true;
         this.success_msg = response.message;
         this.runContributionForm.reset();
-        /*const control = <FormArray>this.runContributionForm.controls['contributions'];
-          for(let i = control.length-1; i >= 0; i--) {
-          control.removeAt(i)
-        }*/
         this.localService.showSuccess(response.message,'Operation Successfull');
 			}else{
 				this.show_plan_members_loader = false;
@@ -123,7 +121,7 @@ export class RunContributionComponent implements OnInit {
 		}, (error) => {
 			this.submitPending = false;
           	this.localService.showError(error,'Operation Unsuccessfull');
-		});
+		});*/
 	}
 
   hide_success_alert()

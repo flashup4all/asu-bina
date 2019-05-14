@@ -23,12 +23,10 @@
 	  100% { transform: rotate(360deg); }
 	}
 </style>
-<div class="card">
+<div class="asu-card">
   	<div class="card-body">
     	<div class="row">
       		<div class="col">
-		        <tabset>
-			        <tab heading="Manage Contributions">
 			        	<!-- <div class="loader"></div> -->
                       	<form [formGroup]="runContributionForm" (ngSubmit)="runContribution(runContributionForm.value)">
                       		<div class="row">
@@ -80,19 +78,22 @@
 								    <span aria-hidden="true">&times;</span>
 								  </button>
 	                       	</div>
-                      		 <table *ngIf="!show_plan_members_loader" class="table table-hover table-outline mb-0">
-		                        <thead class="thead-light">
+                      		 <table *ngIf="!show_plan_members_loader" class="table table-hover table-outline mb-3 mt-3">
+		                        <thead class="thead-ligh">
 		                          <tr>
+		                            <th class="text-center">#</th>
 		                            <th class="text-center">Acct No.| Account ID</th>
 		                            <th>
 		                            	<input type="checkbox" (click)="checkAll($event)">
 		                            </th>
 		                            <th class="text-center">Name</th>
 		                            <th>Contribution</th>
+		                            <th>Status</th>
 		                          </tr>
 		                        </thead>
 		                        <tbody>
 		                        	<tr *ngFor="let item of runContributionForm['controls'].contributions['controls']; let i=index">
+		                        		<td>{{ i+1 }}</td>
 		                        		<td>
 		                        			{{ coorpMembers[i]?.member?.account_number ||  coorpMembers[i]?.member?.asusu_id }}
 		                        		</td>
@@ -102,6 +103,20 @@
 		                        		<td>{{coorpMembers[i]?.member?.first_name}} {{coorpMembers[i]?.member?.middle_name}} {{coorpMembers[i]?.member?.last_name}}</td>
 		                        		<td>
 		                        			<input type="text" [value]="coorpMembers[i]?.member?.contribution" [formControl]="item.controls.contribution" class="form-control">
+		                        		</td>
+		                        		<td>
+		                        			<div *ngIf="item.controls.txn_status == 1" class="badge badge-success">
+									            uploaded
+									          </div>
+									          <div *ngIf="item.controls.txn_status == 2" class="badge badge-danger">
+									            failed
+									          </div>
+									          <div *ngIf="item.controls.txn_status == 0" class="badge badge-warning">
+									            pending
+									          </div>
+									          <div *ngIf="item.controls.txn_status == 4" class="badge badge-primary">
+									            uploading... <i class="ml-2 fa fa-spinner"></i>
+									          </div>
 		                        		</td>
 		                        	</tr>
 		                        </tbody>
@@ -150,8 +165,6 @@
 									  (confirm)="runContribution(runContributionForm.value)">
 									</swal>
                       	</form>
-			        </tab>
-		      	</tabset>
 		  	</div>
 		</div>
 	</div>
