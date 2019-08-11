@@ -36,8 +36,8 @@ export class MemberTransactionComponent implements OnInit {
   member_plan_list;
   transaction_loader: boolean = false;
   show_table:boolean = false;
-  total_credit: number;
-  total_debit: number;
+  total_credit;
+  total_debit;
   from_date;
   to_date;
   constructor(private route: ActivatedRoute,
@@ -139,9 +139,9 @@ export class MemberTransactionComponent implements OnInit {
    * @method calculate_total_balance
    * subtract two numbers
    */
-  calculate_total_balance(a, b)
+  calculate_total_balance()
   {
-    return parseFloat(a) - parseFloat(b);
+    return parseFloat(this.total_credit) - parseFloat(this.total_debit);
   }
   exportTable(format, tableId)
   {

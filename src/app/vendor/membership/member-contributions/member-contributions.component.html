@@ -1,501 +1,439 @@
 <mat-accordion class="example-headers-align" style="width: 100%;">
-    <mat-expansion-panel hideToggle="true">
-        <mat-expansion-panel-header>
-            <mat-panel-title>Contribution Plans</mat-panel-title>
-        </mat-expansion-panel-header>
-        <div *ngIf="member_plan_list !=''" style="width:100%;">
-        	<div class="container p-2">
-	           <button (click)="exportTable('xls', 'member_contribution_table')" class="btn btn-outline btn-success">Export table</button>
-	           <button class="btn btn-outline btn-success" (click)="printReciept('member_contribution_table')">Print</button>
-	           <button type="button" class="btn btn-primary pull-right" (click)="newContributionPlanModal.show()"> Add Contribution Plan</button>
-	       	</div>
-		        <table *ngIf="!submitPending" id="member_contribution_table" class="table table-responsive table-hover table-outline mb-0" width="100%">
-		            <thead>
-		                <tr>
-		                    <th>S/N</th>
-		                    <th>Plan</th>
-		                    <th>Type</th>
-		                    <th>{{ vendor_curency }} Balance</th>
-		                    <th>Status</th>
-		                    <th>Start Date</th>
-		                    <th>Created</th>
-		                    <th>Created By</th>
-		                    <th>Approved</th>
-		                    <th>Actions</th>
-		                </tr>
-		            </thead>
-		            <tbody>
-		                <tr class="" *ngFor="let item of member_plan_list; let i = index">
-		                    <td>{{ i + 1 }}</td>
-		                    <td>
-		                        {{item?.contribution_plan?.name}}
-		                    </td>
-		                    <td>
-		                        {{item?.contribution_plan?.type}} 
-		                        <small *ngIf="item?.contribution_plan?.amount_type =='fixed'"> {{ vendor_curency }} {{item?.contribution_plan?.min_amount }}</small> 
-		                		<small *ngIf="item?.contribution_plan?.amount_type =='range'"> {{ vendor_curency }} {{item?.contribution_plan?.min_amount }} - {{item?.contribution_plan?.max_amount }}</small> 
-		                    </td>
-		                    <td>{{ item?.balance | number }}</td>
-		                    <td>
-		                        <mat-chip-list>
-				                    <mat-chip *ngIf="item.status == 1" color="primary" selected="true">Active</mat-chip>
-				                    <mat-chip *ngIf="!item.status" color="accent" selected="true">Inactive</mat-chip>
-				                    <mat-chip *ngIf="item.status == 2" color="warn" selected="true">Cancelled</mat-chip>
-				                </mat-chip-list>
-		                    </td>
-		                    <td>
-		                        {{item?.start_at | date: 'shortDate'}} 
-		                    </td>
-		                    <td>
-		                        {{item?.created_at | date: 'shortDate'}} 
-		                    </td>
-		                    <td>
-		                    	{{ item?.staff?.first_name}} 
-		                    	{{ item?.staff?.last_name}} 
-		                    	{{ item?.staff?.middle_name}}
-		                    </td>
-		                    <td>
-		                    	{{ item?.approved_by?.first_name}} 
-		                    	{{ item?.approved_by?.last_name}} 
-		                    	{{ item?.approved_by?.middle_name}}
-		                    </td>
-		                    <td class="center">
-		                    	<mat-menu #appM="matMenu">
-                        		<mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
-								  <button *ngIf="!item.status" [swal]="approve_contri" mat-menu-item>Approve Plan</button>
-								  <button [swal]="cancel_contri" mat-menu-item>Cancel Plan</button>
-								   <button *ngIf="user.role_id ==2" [swal]="delete_contri" mat-menu-item>Delete Plan</button>
-								   <swal
-									  #delete_contri
-									  title="Are You Sure You want to Delete this Contribution Plan?"
-									  text="This cannot be undone"
-									  type="warning"
-									  [showCancelButton]="true"
-									  [focusCancel]="true"
-									  (confirm)="delete_contribution_plan(item.id)">
-									</swal>
-								  <swal
-									  #approve_contri
-									  title="Are You Sure You want to Approve this Contribution Plan?"
-									  text="This cannot be undone"
-									  type="warning"
-									  [showCancelButton]="true"
-									  [focusCancel]="true"
-									  (confirm)="approve_contribution(item.id, 1)">
-									</swal>
-									<swal
-									  #cancel_contri
-									  title="Are You Sure You want to Cancel this Contribution Plan?"
-									  text="This cannot be undone"
-									  type="warning"
-									  [showCancelButton]="true"
-									  [focusCancel]="true"
-									  (confirm)="approve_contribution(item.id, 2)">
-									</swal>
-								</mat-menu>
-
-								<button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
-								  <mat-icon>more_vert</mat-icon>
-								</button>
-		                    </td>
-		                </tr>
-		            </tbody>
-		        </table>
+  <mat-expansion-panel hideToggle="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Contribution Plans</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div *ngIf="member_plan_list !=''" style="width:100%;">
+      
+      <div class="mt-2 mb-4">
+        <div class="mb-4 mt-4">
+          <button (click)="exportTable('xls', 'member_contribution_table')" class="btn btn-outline btn-success">Export table</button>
+          <button class="btn btn-outline btn-success ml-2" (click)="printReciept('member_contribution_table')">Print</button>
+          <button type="button" class="btn btn-primary pull-right" (click)="newContributionPlanModal.show()"> Add Contribution Plan</button>
         </div>
-        <div *ngIf="member_plan_list == ''" style="width:100%">
-	    	<mat-icon style="margin: auto;font-size: 3em;display: block; cursor:pointer;" (click)="newContributionPlanModal.show()">add</mat-icon>
-	    </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel hideToggle="true">
-        <mat-expansion-panel-header>
-            <mat-panel-title>Contribution History</mat-panel-title>
-        </mat-expansion-panel-header>
-        <p>Generate Report by Date</p>
-		<div class="row">
-		    <form [formGroup] = "contributionFilterForm" (ngSubmit) = "filterContribution(contributionFilterForm.value)" style="width: 100%;">
-	        <div class="row p-1">
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>From</label>
-	                <input type="date" formControlName = "from" class="form-control" name=""> 
-	              </div>
-	            </div>
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>To</label>
-	                <input type="date" formControlName = "to" class="form-control" name="">
-	              </div>
-	            </div>
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Type</label>
-	                <select class="form-control" placeholder="type" formControlName = "type">
-	                    <option value="">Type</option>
-	                    <option value="{{item.id}}" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
-	                </select>
-	              </div>
-	            </div>
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="contributionFilterForm.invalid && !submitPending">
-	                  <span *ngIf="submitPending && contributionFilterForm.valid">Please Wait...</span>
-	                  <span *ngIf="submitPending && contributionFilterForm.valid"><i class="fa fa-spinner"></i></span>
-	                  <span *ngIf="!submitPending">Filter</span>
-	                </button>
-	              </div>
-	            </div>
-	          </div>
-	      </form>
-		   <div class="container p-2">
-		       <button (click)="exportTable('xls', 'contribution_table')" class="btn btn-outline btn-success">Export table</button>
-		       <button class="btn btn-outline btn-success" (click)="printReciept('contribution_table')">Print</button>
-		       <button type="button" class="btn btn-primary pull-right" (click)="newContributionModal.show()"> Make a Contribution</button>
-		   </div>
-		    <table id="contribution_table" class="table table-responsive table-hover table-outline mb-0" width="100%">
-		        <thead>
-		            <tr>
-		                <th>Trans ID</th>
-		                <th>Plan</th>
-		                <th>&#8358; Contributed</th>
-		                <th>Type</th>
-		                <th>Status</th>
-		                <th>Depositor</th>
-		                <th>Naration</th>
-		                <th>Date</th>
-                        <th>Pre-Post</th>
-                        <th>Posted</th>
-		                <th>Actions</th>
-		            </tr>
-		        </thead>
-		        <tbody>
-		            <tr class="" *ngFor="let item of memberContributionList">
-		                <td>#{{ item?.transaction_id }}</td>
-		                <td>
-		                    {{item.plan?.name}} 
-		                </td>
-		                <td>
-		                   {{ item?.amount | number: '1.0-0' }}  
-		                </td>
-		                <td>
-		                   {{ item?.transaction_type }}  
-		                </td>
-		                  <td>
-		                    <mat-chip-list>
-			                    <mat-chip *ngIf="item.status == 1 " color="primary" selected="true">Posted</mat-chip>
-			                     <mat-chip *ngIf="item.status == 2" color="warn" selected="true">Canceled</mat-chip>
-			                    <mat-chip *ngIf="item.status == 0" color="accent" selected="true">Pending</mat-chip>
-			                </mat-chip-list>
-		                </td>
-		                <td>
-		                	{{ item?.depositor }}
-		                </td>
-		                <td>
-		                	{{ item?.description}}
-		                </td>
-		                <td>
-		                    {{item?.created_at | date: 'shortDate'}} 
-		                </td>
-		                <td class="center">
-                        	{{ item?.staff?.first_name }} 
-                        	{{ item?.staff?.last_name }} 
-                        	{{ item?.staff?.middle_name }} 
-                        </td>
-                        <td class="center">
-                        	{{ item?.approved_by?.first_name }} 
-                        	{{ item?.approved_by?.last_name }}
-                        </td>
-                        <td>
-                        	<mat-menu #appMenu="matMenu">
-                        		<mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
-							   <button [disabled]="btn_loader" mat-menu-item (click)="view_contribution_transaction_details(item)">View Details</button>
-							   <button *ngIf="item.status == 0" [swal]="post_contri_trans" mat-menu-item>Post Transaction</button>
-							  <swal
-								  #post_contri_trans
-								  title="Are You Sure You want to Approve this Transaction?"
-								  text="This cannot be undone"
-								  type="warning"
-								  [showCancelButton]="true"
-								  [focusCancel]="true"
-								  (confirm)="post_transaction(item.id, 1)">
-								</swal>
-								 <button *ngIf="item.status != 2" [swal]="cancel_contri_trans" mat-menu-item>Cancel Transaction</button>
-							  <swal
-								  #cancel_contri_trans
-								  title="Are You Sure You want to Cancel this Transaction?"
-								  text="This cannot be undone"
-								  type="warning"
-								  [showCancelButton]="true"
-								  [focusCancel]="true"
-								  (confirm)="post_transaction(item.id, 2)">
-								</swal>
-								<button *ngIf="user.role_id < 3" [swal]="delete_contri_trans" mat-menu-item>Delete Transaction</button>
-							  <swal
-								  #delete_contri_trans
-								  title="Are You Sure You want to Delete this Transaction?"
-								  text="This cannot be undone"
-								  type="warning"
-								  [showCancelButton]="true"
-								  [focusCancel]="true"
-								  (confirm)="delete_contribution_history(item.id)">
-								</swal>
-							</mat-menu>
+        <table *ngIf="!submitPending" id="member_contribution_table" class="table table-responsive table-hover table-outline mb-0" width="100%">
+        <thead>
+          <tr>
+            <th>S/N</th>
+            <th>Plan</th>
+            <th>Type</th>
+            <th>{{ vendor_curency }} Balance</th>
+            <th>Status</th>
+            <th>Start Date</th>
+            <th>Created</th>
+            <th>Created By</th>
+            <th>Approved</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="" *ngFor="let item of member_plan_list; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>
+              {{item?.contribution_plan?.name}}
+            </td>
+            <td>
+              {{item?.contribution_plan?.type}}
+              <small *ngIf="item?.contribution_plan?.amount_type =='fixed'"> {{ vendor_curency }} {{item?.contribution_plan?.min_amount }}</small>
+              <small *ngIf="item?.contribution_plan?.amount_type =='range'"> {{ vendor_curency }} {{item?.contribution_plan?.min_amount }} - {{item?.contribution_plan?.max_amount }}</small>
+            </td>
+            <td>{{ item?.balance | number }}</td>
+            <td>
+              <mat-chip-list>
+                <mat-chip *ngIf="item.status == 1" color="primary" selected="true">Active</mat-chip>
+                <mat-chip *ngIf="!item.status" color="accent" selected="true">Inactive</mat-chip>
+                <mat-chip *ngIf="item.status == 2" color="warn" selected="true">Cancelled</mat-chip>
+              </mat-chip-list>
+            </td>
+            <td>
+              {{item?.start_at | date: 'shortDate'}}
+            </td>
+            <td>
+              {{item?.created_at | date: 'shortDate'}}
+            </td>
+            <td>
+              {{ item?.staff?.first_name}}
+              {{ item?.staff?.last_name}}
+              {{ item?.staff?.middle_name}}
+            </td>
+            <td>
+              {{ item?.approved_by?.first_name}}
+              {{ item?.approved_by?.last_name}}
+              {{ item?.approved_by?.middle_name}}
+            </td>
+            <td class="center">
+              <mat-menu #appM="matMenu">
+                <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
+                <button *ngIf="!item.status" (click)="approve_contribution(item.id, '1')" mat-menu-item>Approve Plan</button>
+                <button  (click)="approve_contribution(item.id, '2')"  mat-menu-item>Cancel Plan</button>
+                <button *ngIf="user.role_id ==2" (click)="delete_contribution_plan(item.id)" mat-menu-item>Delete Plan</button>
+              </mat-menu>
+              <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
 
-							<button mat-icon-button *ngIf="localService.check_posting_cash_role(item.amount)" [matMenuTriggerFor]="appMenu">
-							  <mat-icon>more_vert</mat-icon>
-							</button>
-                        </td>
-		            </tr>
-		            <!-- <tr>
-		                <td colspan="3">Total</td>
-		                <td>{{ total_contribution_amount | number }}</td>
-		                <td></td>
-		                <td></td>
-		                <td></td>
-		                <td></td>
-		            </tr> -->
-		        </tbody>
-		    </table>
-		</div>
-    </mat-expansion-panel>
-</mat-accordion>
-
-<div bsModal #newContributionPlanModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-       	<div class="modal-content">
-         	<div class="modal-header">
-           		<h4 class="modal-title pull-left">Select an Contribution Plan</h4>
-           		<button type="button" class="close pull-right" aria-label="Close" (click)="newContributionPlanModal.hide()">
-             	<span aria-hidden="true">&times;</span>
-           		</button>
-         	</div>
-	        <div class="modal-body">
-	        	<div class="new session form">
-	        		<mat-error *ngIf="errorMessage != ''"> {{ errorMessage }}</mat-error>
-	        		<mat-accordion class="example-headers-align">
-	                    <mat-expansion-panel *ngFor="let plan_list of contribution_plan_list; let i= index" hideToggle="true">
-	                        <mat-expansion-panel-header>
-	                            <mat-panel-title>{{ plan_list?.name }}</mat-panel-title>
-	                            <mat-panel-description>
-	                            </mat-panel-description>
-	                        </mat-expansion-panel-header>
-	                        <h3 style="text-align:center;">CONTRIBUTION APPLICATION</h3>
-	                        <br>
-	                        <mat-list>
-	                            <mat-list-item>
-	                                <h3 matLine> Duration  </h3>
-	                                <p matLine>{{ plan_list?.duration }} Weeks</p>
-	                            </mat-list-item>
-	                            <mat-list-item>
-	                                <h3 matLine>Interest Rate  </h3>
-	                                <p matLine >{{ plan_list?.interest }} %</p>
-	                            </mat-list-item>
-	                            <mat-list-item>
-	                                <h3 matLine>Interest Duration  </h3>
-	                                <p matLine>{{ plan_list?.duration }} Days</p>
-	                            </mat-list-item>
-	                            <mat-list-item>
-	                                <h3 matLine> Amount Type  </h3>
-	                                <p matLine>{{ plan_list?.amount_type }}</p>
-	                                <p matLine *ngIf="plan_list.amount_type =='fixed'">{{ vendor_curency }} {{ plan_list?.min_amount }}</p>
-	                                <p matLine *ngIf="plan_list.amount_type =='range'">
-	                                	{{ vendor_curency }} {{ plan_list?.min_amount }} - {{ vendor_curency }} {{ plan_list?.max_amount }}
-	                                </p>
-	                            </mat-list-item>
-	                            <mat-list-item>
-	                                <h3 matLine>Withdrawal Permit </h3>
-	                                <p matLine>{{ plan_list?.withdrawal_permit }}</p>
-	                            </mat-list-item>
-	                            <mat-list-item *ngIf="plan_list.withdrawal_permit">
-	                                <h3 matLine> Withdrawal Limit that cancels Interest </h3>
-	                                <p matLine>{{ plan_list?.withdrawal_limit }}</p>
-	                            </mat-list-item>
-	                                <h3 matLine> Description </h3>
-	                                <p style="text-align: justify;">{{ plan_list?.description || 'Nill' }}</p>
-	                                <br>
-	                                <h3 matLine> Terms & Conditions </h3>
-	                                <p style="text-align: justify;">{{ plan_list?.terms_conditions || 'Nill' }}</p>
-	                                <h3>Application Settings</h3>
-	                                <br>
-	                                <form [formGroup]="contribution_application_form" (ngSubmit)="apply_contribution_plan(contribution_application_form.value, plan_list)">
-		                                <div class="row">
-		                                	<div class="col-md-12">
-		                                		<mat-checkbox formControlName="accept_terms">Accept Terms & Conditions</mat-checkbox>
-		                                		<mat-error [hidden]="(contribution_application_form.controls.accept_terms.valid ) || (contribution_application_form.controls.accept_terms.pristine )" class="text-danger">Accept terms and Conditions</mat-error>
-		                                	</div>
-					                        <!-- <div class="col-md-6">
-					                            <div class="form-group">
-					                                <label>Return on Investment</label>
-					                                <select formControlName="roi_value" (ngModelChange)="rot_check($event)" class="form-control" placeholder="type">
-					                                    <option *ngFor="let rot_list of return_on_investment_list" [value]="rot_list.value">{{ rot_list?.name }}</option>
-					                                </select>
-					                                <mat-error [hidden]="(contribution_application_form.controls.roi_value.valid ) || (contribution_application_form.controls.roi_value.pristine )" class="text-danger">Please Select an Investment Plan</mat-error>
-					                            </div>
-					                        </div> -->
-					                        <!-- <div class="col-md-6">
-					                        	{{ rot_value?.description }}
-					                        </div> -->
-					                        <button mat-raised-button [disabled]="contribution_application_form.invalid || form_loader" class="btn btn-success" block color="accent" selected="true">Apply</button>
-                    					</div>
-                					</form>
-		                        </mat-list>
-		                    </mat-expansion-panel>
-                </mat-accordion>
-	        	</div>
-	    	</div>
-  		</div>
-	</div>
-</div>
-
-<div bsModal #newContributionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-     <div class="modal-dialog modal-md">
-       <div class="modal-content">
-         <div class="modal-header">
-           <h4 class="modal-title pull-left">Make A Contribution</h4>
-           <button type="button" class="close pull-right" aria-label="Close" (click)="newContributionModal.hide()">
-             <span aria-hidden="true">&times;</span>
-           </button>
-         </div>
-         <div class="modal-body">
-           <div class="new session form">
-                <form [formGroup]="runContributionForm" (ngSubmit)="makeContribution(runContributionForm.value)">
-                    <div class="row">
-                    	<div class="col-md-6">
-                            <div class="form-group">
-                                <label>Contribution Plan</label>
-                                <select class="form-control" placeholder="type" formControlName = "plan_id">
-                                    <option selected="false">Type</option>
-                                    <option [value]="item.contribution_plan.id" *ngFor="let item of member_plan_list">
-                                    	{{item?.contribution_plan?.name }}
-                                    </option>
-                                </select>
-                                <small [hidden]="(runContributionForm.controls.type.valid ) || (runContributionForm.controls.type.pristine )" class="text-danger">Period Method is Required</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Type</label>
-                                <select class="form-control" placeholder="type" formControlName = "type">
-                                    <option selected="false">Type</option>
-                                    <option [value]="item.id" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
-                                </select>
-                                <small [hidden]="(runContributionForm.controls.type.valid ) || (runContributionForm.controls.type.pristine )" class="text-danger">Period Method is Required</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Amount</label>
-                                <input type="number" name="" formControlName = "amount" class="form-control">
-                                <small [hidden]="(runContributionForm.controls.amount.valid ) || (runContributionForm.controls.amount.pristine )" class="text-danger">Contribution Amount Required</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Depositor</label>
-                                <input type="text" name="" formControlName = "depositor" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Description</label>
-                                <input type="text" name="" formControlName = "description" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                       <button type="submit" class="btn btn-success" [disabled]="runContributionForm.invalid">
-                            <span *ngIf="!submitPending">Make Contribution</span>
-                            <span *ngIf="submitPending && runContributionForm.valid">Please Wait...</span>
-                            <span *ngIf="submitPending && runContributionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
-                        </button>
-                </form>
+      
+    </div>
+    <div *ngIf="member_plan_list == ''" style="width:100%">
+      <mat-icon style="margin: auto;font-size: 3em;display: block; cursor:pointer;" (click)="newContributionPlanModal.show()">add</mat-icon>
+    </div>
+  </mat-expansion-panel>
+  <mat-expansion-panel hideToggle="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Contribution History</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="mt-2 mb-4">
+      <form [formGroup]="contributionFilterForm" (ngSubmit)="filterContribution(contributionFilterForm.value)" style="width: 100%;">
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label>From</label>
+              <input type="date" formControlName="from" class="form-control" name="">
             </div>
-         </div>
-       </div>
-     </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label>To</label>
+              <input type="date" formControlName="to" class="form-control" name="">
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label>Plan</label>
+              <select class="form-control" placeholder="type" formControlName="plan_id">
+                <option selected="false">Type</option>
+                <option [value]="item.contribution_plan.id" *ngFor="let item of member_plan_list">
+                  {{item?.contribution_plan?.name }}
+                </option>
+              </select>
+            </div>
+            <mat-error [hidden]="(contributionFilterForm.controls.plan_id.valid ) || (contributionFilterForm.controls.plan_id.pristine )" class="text-danger">Please select member Plan/Package</mat-error>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label>Type</label>
+              <select class="form-control" placeholder="type" formControlName="type">
+                <option value="">Type</option>
+                <option value="{{item.id}}" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="">
+              <button type="submit" class="btn btn-primary btn-block" style="margin-top:30px" [disabled]="contributionFilterForm.invalid && !submitPending">
+                <span *ngIf="submitPending && contributionFilterForm.valid">Please Wait...</span>
+                <span *ngIf="submitPending && contributionFilterForm.valid"><i class="fa fa-spinner"></i></span>
+                <span *ngIf="!submitPending">Filter</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="mb-4 mt-4">
+        <button (click)="exportTable('xls', 'contribution_table')" class="btn btn-outline btn-success">Export table</button>
+        <button class="btn btn-outline btn-success ml-2" (click)="printReciept('contribution_table')">Print</button>
+        <button type="button" class="btn btn-primary pull-right" (click)="newContributionModal.show()"> Make a Contribution</button>
+      </div>
+      <table id="contribution_table" class="table table-responsive table-hover table-outline mb-0" width="100%">
+        <thead>
+          <tr>
+            <th>Trans ID</th>
+            <th>Plan</th>
+            <th>&#8358; Contributed</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Depositor</th>
+            <th>Naration</th>
+            <th>Date</th>
+            <th>Pre-Post</th>
+            <th>Posted</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="" *ngFor="let item of memberContributionList">
+            <td>#{{ item?.transaction_id }}</td>
+            <td>
+              {{item.plan?.name}}
+            </td>
+            <td>
+              {{ item?.amount | number: '1.0-0' }}
+            </td>
+            <td>
+              {{ item?.transaction_type }}
+            </td>
+            <td>
+              <mat-chip-list>
+                <mat-chip *ngIf="item.status == 1 " color="primary" selected="true">Posted</mat-chip>
+                <mat-chip *ngIf="item.status == 2" color="warn" selected="true">Canceled</mat-chip>
+                <mat-chip *ngIf="item.status == 0" color="accent" selected="true">Pending</mat-chip>
+              </mat-chip-list>
+            </td>
+            <td>
+              {{ item?.depositor }}
+            </td>
+            <td>
+              {{ item?.description}}
+            </td>
+            <td>
+              {{item?.created_at | date: 'shortDate'}}
+            </td>
+            <td class="center">
+              {{ item?.staff?.first_name }}
+              {{ item?.staff?.last_name }}
+              {{ item?.staff?.middle_name }}
+            </td>
+            <td class="center">
+              {{ item?.approved_by?.first_name }}
+              {{ item?.approved_by?.last_name }}
+            </td>
+            <td>
+              <mat-menu #appMenu="matMenu">
+                <mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
+                <button [disabled]="btn_loader" mat-menu-item (click)="view_contribution_transaction_details(item)">View Details</button>
+                <button *ngIf="item.status == 0" (click)="post_transaction(item.id, 1)" mat-menu-item>Post Transaction</button>
+                <button *ngIf="item.status != 2" (click)="post_transaction(item.id, 2)" mat-menu-item>Cancel Transaction</button>
+                <button *ngIf="user.role_id < 3" (click)="delete_contribution_history(item.id)" mat-menu-item>Delete Transaction</button>
+              </mat-menu>
+              <button mat-icon-button *ngIf="localService.check_posting_cash_role(item.amount)" [matMenuTriggerFor]="appMenu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
+<div bsModal #newContributionPlanModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Select an Contribution Plan</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="newContributionPlanModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="new session form">
+          <mat-error *ngIf="errorMessage != ''"> {{ errorMessage }}</mat-error>
+          <mat-accordion class="example-headers-align">
+            <mat-expansion-panel *ngFor="let plan_list of contribution_plan_list; let i= index" hideToggle="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ plan_list?.name }}</mat-panel-title>
+                <mat-panel-description>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <h3 style="text-align:center;">CONTRIBUTION APPLICATION</h3>
+              <br>
+              <mat-list>
+                <mat-list-item>
+                  <h3 matLine> Duration </h3>
+                  <p matLine>{{ plan_list?.duration }} Weeks</p>
+                </mat-list-item>
+                <mat-list-item>
+                  <h3 matLine>Interest Rate </h3>
+                  <p matLine>{{ plan_list?.interest }} %</p>
+                </mat-list-item>
+                <mat-list-item>
+                  <h3 matLine>Interest Duration </h3>
+                  <p matLine>{{ plan_list?.duration }} Days</p>
+                </mat-list-item>
+                <mat-list-item>
+                  <h3 matLine> Amount Type </h3>
+                  <p matLine>{{ plan_list?.amount_type }}</p>
+                  <p matLine *ngIf="plan_list.amount_type =='fixed'">{{ vendor_curency }} {{ plan_list?.min_amount }}</p>
+                  <p matLine *ngIf="plan_list.amount_type =='range'">
+                    {{ vendor_curency }} {{ plan_list?.min_amount }} - {{ vendor_curency }} {{ plan_list?.max_amount }}
+                  </p>
+                </mat-list-item>
+                <mat-list-item>
+                  <h3 matLine>Withdrawal Permit </h3>
+                  <p matLine>{{ plan_list?.withdrawal_permit }}</p>
+                </mat-list-item>
+                <mat-list-item *ngIf="plan_list.withdrawal_permit">
+                  <h3 matLine> Withdrawal Limit that cancels Interest </h3>
+                  <p matLine>{{ plan_list?.withdrawal_limit }}</p>
+                </mat-list-item>
+                <h3 matLine> Description </h3>
+                <p style="text-align: justify;">{{ plan_list?.description || 'Nill' }}</p>
+                <br>
+                <h3 matLine> Terms & Conditions </h3>
+                <p style="text-align: justify;">{{ plan_list?.terms_conditions || 'Nill' }}</p>
+                <h3>Application Settings</h3>
+                <br>
+                <form [formGroup]="contribution_application_form" (ngSubmit)="apply_contribution_plan(contribution_application_form.value, plan_list)">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <mat-checkbox formControlName="accept_terms">Accept Terms & Conditions</mat-checkbox>
+                      <mat-error [hidden]="(contribution_application_form.controls.accept_terms.valid ) || (contribution_application_form.controls.accept_terms.pristine )" class="text-danger">Accept terms and Conditions</mat-error>
+                    </div>
+                    <button mat-raised-button [disabled]="contribution_application_form.invalid || form_loader" class="btn btn-success" block color="accent" selected="true">Apply</button>
+                  </div>
+                </form>
+              </mat-list>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div bsModal #newContributionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Make A Contribution</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="newContributionModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="new session form">
+          <form [formGroup]="runContributionForm" (ngSubmit)="makeContribution(runContributionForm.value)">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Contribution Plan</label>
+                  <select class="form-control" placeholder="type" formControlName="plan_id">
+                    <option selected="false">Type</option>
+                    <option [value]="item.contribution_plan.id" *ngFor="let item of member_plan_list">
+                      {{item?.contribution_plan?.name }}
+                    </option>
+                  </select>
+                  <small [hidden]="(runContributionForm.controls.type.valid ) || (runContributionForm.controls.type.pristine )" class="text-danger">Period Method is Required</small>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Type</label>
+                  <select class="form-control" placeholder="type" formControlName="type">
+                    <option selected="false">Type</option>
+                    <option [value]="item.id" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
+                  </select>
+                  <small [hidden]="(runContributionForm.controls.type.valid ) || (runContributionForm.controls.type.pristine )" class="text-danger">Period Method is Required</small>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Amount</label>
+                  <input type="number" name="" formControlName="amount" class="form-control">
+                  <small [hidden]="(runContributionForm.controls.amount.valid ) || (runContributionForm.controls.amount.pristine )" class="text-danger">Contribution Amount Required</small>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Depositor</label>
+                  <input type="text" name="" formControlName="depositor" class="form-control">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Description</label>
+                  <input type="text" name="" formControlName="description" class="form-control">
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success" [disabled]="runContributionForm.invalid">
+              <span *ngIf="!submitPending">Make Contribution</span>
+              <span *ngIf="submitPending && runContributionForm.valid">Please Wait...</span>
+              <span *ngIf="submitPending && runContributionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <div bsModal #view_contribution_transaction_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-     <div class="modal-dialog modal-md">
-       <div class="modal-content">
-         <div class="modal-header">
-           <h4 class="modal-title pull-left">Transaction  Details</h4>
-           <button type="button" class="close pull-right" aria-label="Close" (click)="view_contribution_transaction_modal.hide()">
-             <span aria-hidden="true">&times;</span>
-           </button>
-         </div>
-         <div class="modal-body">
-           <div class="">
-           		<div class="card">
-	              <div class="card-body">
-	                <div class="row mb-4">
-	                  <div class="col-lg-12" id="transaction">
-	                    <table class="table table-clear">
-	                      <tbody>
-	                        <tr>
-	                          <td class="left">
-	                            <strong>Ref</strong>
-	                          </td>
-	                          <td class="right">{{ transaction_data?.transaction_id }}</td>
-	                        </tr>
-	                        <tr>
-	                          <td class="left">
-	                            <strong>Branch</strong>
-	                          </td>
-	                          <td class="right">{{ transaction_data?.branch?.name }}</td>
-	                        </tr>
-	                        <tr *ngIf="transaction_data?.member?.account_number != ''">
-	                          <td class="left">
-	                            <strong>Account Number</strong>
-	                          </td>
-	                          <td class="right">{{ mask_number(transaction_data?.member?.account_number) }}</td>
-	                        </tr>
-	                        <tr *ngIf="transaction_data?.member?.asusu_id != ''">
-	                          <td class="left">
-	                            <strong>Account ID</strong>
-	                          </td>
-	                          <td class="right">{{ mask_number(transaction_data?.member?.asusu_id) }}</td>
-	                        </tr>
-	                        <tr>
-	                          <td class="left"><strong>Plan</strong></td>
-	                          <td class="right">{{ transaction_data?.plan?.name }}</td>
-	                        </tr>
-	                        <tr>
-	                          <td class="left"><strong>Amount</strong></td>
-	                          <td class="right">&#8358;{{ transaction_data?.amount | number }}</td>
-	                        </tr>
-	                        <tr>
-	                          <td class="left"><strong>Description</strong></td>
-	                          <td class="right">{{ transaction_data?.details || 'No description'}}</td>
-	                        </tr>
-	                        <tr>
-	                          <td class="left"><strong>Date</strong></td>
-	                          <td class="right">{{ transaction_data?.created_at }}</td>
-	                        </tr>
-	                        <tr>
-	                          <td class="left"><strong>Created</strong></td>
-	                          <td class="right">
-	                            {{ transaction_data?.staff?.first_name }} 
-	                            {{ transaction_data?.staff?.last_name }} 
-	                            {{ transaction_data?.staff?.middle_name }}
-	                          </td>
-	                        </tr>
-	                        <tr>
-	                          <td class="left"><strong>Posted</strong></td>
-	                          <td class="right">
-	                            {{ transaction_data?.approved_by?.first_name }} 
-	                            {{ transaction_data?.approved_by?.last_name }} 
-	                            {{ transaction_data?.approved_by?.middle_name }}
-	                          </td>
-	                        </tr>
-	                      </tbody>
-	                    </table>
-	                  </div>
-	                  </div>
-	                </div>
-	                <div class="card-footer">
-	                  <a class="btn btn-sm btn-info float-right" (click)="print_transaction('transaction');"><i class="fa fa-print"></i> Print</a>
-	                </div>
-	              </div>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Transaction Details</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="view_contribution_transaction_modal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="">
+          <div class="card">
+            <div class="card-body">
+              <div class="row mb-4">
+                <div class="col-lg-12" id="transaction">
+                  <table class="table table-clear">
+                    <tbody>
+                      <tr>
+                        <td class="left">
+                          <strong>Ref</strong>
+                        </td>
+                        <td class="right">{{ transaction_data?.transaction_id }}</td>
+                      </tr>
+                      <tr>
+                        <td class="left">
+                          <strong>Branch</strong>
+                        </td>
+                        <td class="right">{{ transaction_data?.branch?.name }}</td>
+                      </tr>
+                      <tr *ngIf="transaction_data?.member?.account_number != ''">
+                        <td class="left">
+                          <strong>Account Number</strong>
+                        </td>
+                        <td class="right">{{ mask_number(transaction_data?.member?.account_number) }}</td>
+                      </tr>
+                      <tr *ngIf="transaction_data?.member?.asusu_id != ''">
+                        <td class="left">
+                          <strong>Account ID</strong>
+                        </td>
+                        <td class="right">{{ mask_number(transaction_data?.member?.asusu_id) }}</td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Plan</strong></td>
+                        <td class="right">{{ transaction_data?.plan?.name }}</td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Amount</strong></td>
+                        <td class="right">&#8358;{{ transaction_data?.amount | number }}</td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Description</strong></td>
+                        <td class="right">{{ transaction_data?.details || 'No description'}}</td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Date</strong></td>
+                        <td class="right">{{ transaction_data?.created_at }}</td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Created</strong></td>
+                        <td class="right">
+                          {{ transaction_data?.staff?.first_name }}
+                          {{ transaction_data?.staff?.last_name }}
+                          {{ transaction_data?.staff?.middle_name }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Posted</strong></td>
+                        <td class="right">
+                          {{ transaction_data?.approved_by?.first_name }}
+                          {{ transaction_data?.approved_by?.last_name }}
+                          {{ transaction_data?.approved_by?.middle_name }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-         </div>
-       </div>
-     </div>
+            <div class="card-footer">
+              <a class="btn btn-sm btn-info float-right" (click)="print_transaction('transaction');"><i class="fa fa-print"></i> Print</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

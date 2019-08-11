@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContributionPlanComponent } from './contribution-plan.component';
+import { TransferFormComponent } from './transfer-form.component';
 
-describe('ContributionPlanComponent', () => {
-  let component: ContributionPlanComponent;
-  let fixture: ComponentFixture<ContributionPlanComponent>;
+describe('TransferFormComponent', () => {
+  let component: TransferFormComponent;
+  let fixture: ComponentFixture<TransferFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContributionPlanComponent ]
+      declarations: [ TransferFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ContributionPlanComponent);
+    fixture = TestBed.createComponent(TransferFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

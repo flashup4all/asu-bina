@@ -10,7 +10,7 @@ import {
 import { LocalService } from '../../storage/local.service';
 
 import { environment } from '../../../environments/environment';
-
+const host = environment.api.url;
 
 @Injectable()
 export class ContributionService {
@@ -358,7 +358,18 @@ export class ContributionService {
      */
     post_contribution_history(data)
     {
-      return this.http.post(environment.api.url+'CoopManagement/post-contribution-history', data, this.localService.header())
+      return this.http.post(`${host}CoopManagement/post-contribution-history`, data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+    /**
+     * @method inter_account_transfer
+     * transfer between accounts with the same vendor
+     * @param data
+     * @return response
+     */
+    inter_account_transfer(data)
+    {
+      return this.http.post(`${host}transactions/inter-account-transfer`, data, this.localService.header())
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 }

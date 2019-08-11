@@ -37,7 +37,7 @@ import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
     BranchesComponent,
     SmsSubscriptionComponent,
     ManageSmsComponent,
-    SmsHistoryComponent
+    SmsHistoryComponent,
   ],
   providers:[
   	VendorService

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import * as XLSX from 'xlsx';
+// import * as XLSX from 'xlsx';
 import { last } from 'rxjs-compat/operator/last';
 import { LocalService } from '../../../storage/local.service';
 import { MembersService } from '../members.service';
+import Swal from 'sweetalert2'
 
-//import * as XLSX from 'ts-xlsx';
+import * as XLSX from 'ts-xlsx';
 @Component({
   selector: 'app-member-upload',
   templateUrl: './member-upload.component.html',
@@ -63,48 +64,60 @@ export class MemberUploadComponent implements OnInit {
       var bstr = arr.join("");
       var workbook = XLSX.read(bstr, { type: "binary" });
       var first_sheet_name = workbook.SheetNames[0];
-      console.log(first_sheet_name)
       var worksheet = workbook.Sheets[first_sheet_name];
-      console.log(XLSX.utils.decode_row('A1'));
+      let colValues =[];
+      var cells = Object.keys(worksheet);
+      
       let json = XLSX.utils.sheet_to_json(worksheet, { raw: true })
       if (json.length <= 0) {
         this.error_msg = "Empty file uploaded, please verify that the uploaded file is excel and has appropiate data in it";
         this.upload_pending = false;
-        return;
+        return this.localService.showError('Empty file uploaded, please verify that the uploaded file is excel and has appropiate data in it', 'Operation Unsuccessfull');
+      }
+      for (var i = 0; i < Object.keys(cells).length; i++) {
+        if( cells[i].indexOf('1') > -1)
+        {
+            colValues.push(worksheet[cells[i]].v); //Contails all column names
+        }
       }
       this.error_msg = ''
       this.upload_list = json;
       var lastItem = json[json.length - 1]; 
-      /*if (lastItem.hasOwnProperty("first_name")) {
-        console.log('first name true')
-      } else {
+      if (colValues[0] != 'cooperative_acc_no') {
         this.upload_pending = false;
-        return this.localService.showError('first_name header incorrect', 'Operation Unsuccessfull');
-      }*/
-      /*if (lastItem.hasOwnProperty("last_name")) {
-        console.log('last true')
-      } else {
+        return this.localService.showError('cooperative account no header incorrect (Invalid Upload format)', 'Operation Unsuccessfull');
+      }
+      if (colValues[1] != 'first_name') {
         this.upload_pending = false;
-        return this.localService.showError('last_name header incorrect', 'Operation Unsuccessfull');
-      }*/
-
-      /* if (!lastItem.hasOwnProperty("middle_name")) {
-        return this.localService.showError('middle_name header incorrect', 'Operation Unsuccessfull');
-      } */
-      /*if (lastItem.hasOwnProperty("gender")) {
-        console.log('last true')
-      } else {
+        return this.localService.showError('first name header incorrect (Invalid Upload format)', 'Operation Unsuccessfull');
+      }
+      if (colValues[3] != "last_name") {
         this.upload_pending = false;
-        return this.localService.showError('gender header incorrect', 'Operation Unsuccessfull');
-      }*/
-      /* if (!lastItem.hasOwnProperty("account_number")) {
+        return this.localService.showError('last name header incorrect (Invalid Upload format)', 'Operation Unsuccessfull');
+      }
+      if (colValues[2] != "middle_name") {
+        return this.localService.showError('middle name header incorrect (Invalid Upload format)', 'Operation Unsuccessfull');
+      } 
+      if (colValues[4] != "email") {
         this.upload_pending = false;
-        return this.localService.showError('account_number header incorrect', 'Operation Unsuccessfull');
-      } */
-      /*if (!lastItem.hasOwnProperty("phone")) {
+        return this.localService.showError('email header incorrect (Invalid Upload format)', 'Operation Unsuccessfull');
+      }
+       if (colValues[5] !="phone"){
         this.upload_pending = false;
-        return this.localService.showError('phone header incorrect', 'Operation Unsuccessfull');
-      }*/
+        return this.localService.showError('phone number header incorrect (Invalid Upload format)', 'Operation Unsuccessfull');
+      } 
+      if (colValues[6] !="membership_date") {
+        this.upload_pending = false;
+        return this.localService.showError('phone header incorrect (Invalid Upload format)', 'Operation Unsuccessfull');
+      }
+      if (colValues[7] !="date_of_birth") {
+        this.upload_pending = false;
+        return this.localService.showError('date of birth header incorrect (Invalid Upload format)', 'Operation Unsuccessfull');
+      }
+      if (colValues[8] !="gender") {
+        this.upload_pending = false;
+        return this.localService.showError('gender header incorrect (Invalid Upload format)', 'Operation Unsuccessfull');
+      }
 
       for (let i in this.upload_list) {
         this.upload_list[i].status = 0;
@@ -140,14 +153,18 @@ export class MemberUploadComponent implements OnInit {
       item.date_of_birth = '';
     }
     input.append('date_of_birth', item.date_of_birth);
-    if(!item.account_number){
-      item.account_number = '';
+    if(!item.cooperative_acc_no){
+      item.cooperative_acc_no = '';
     }
-    input.append('account_number', item.account_number);
+    input.append('account_number', item.cooperative_acc_no);
     if(!item.membership_date){
       item.membership_date = '';
     }
     input.append('membership_date', item.membership_date);
+    if(!item.address){
+      item.address = '';
+    }
+    input.append('address', item.address);
     if(!item.email){
       item.email = '';
     }
@@ -167,7 +184,17 @@ export class MemberUploadComponent implements OnInit {
 
   save() {
     this.upload_loader = true;
-    this.success_msg ="please wait while processing data (uploading). please ensure the last data has been uploaded";
+    Swal.fire({
+			title: 'Are You Sure You want to Upload all this Member?',
+			text: "Be sure! this cannot be undone",
+			type: 'warning',
+			showCancelButton: true,
+			//confirmButtonColor: '#3085d6',
+			//cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes!'
+		  }).then((result) => {
+			if (result.value) {
+				this.success_msg ="please wait while processing data (uploading). please ensure the last data has been uploaded";
     for (let i in this.upload_list) {
       let data = this.prepareSave(this.upload_list[i]);
       this.upload_list[i].status = 4;
@@ -175,14 +202,16 @@ export class MemberUploadComponent implements OnInit {
         if (response.success) {
           this.upload_list[i].status = 1;
           this.uploaded_list.push(this.upload_list[i])
-          this.localService.showSuccess(response.message, 'Operation Successfull');
+						//this.localService.swal_alert('success','Operation Successfull',response.message);
+              this.localService.showSuccess(response.message, 'Operation Successfull');
           this.number_of_successful_uploads = this.uploaded_list.length
         }
         else {
           //this.member_form_loader = false;
           this.upload_list[i].status = 2;
           this.failed_list.push(this.upload_list[i])
-          this.localService.showError(response.message, 'Operation Unsuccessfull');
+						//this.localService.swal_alert('error','Operation UnsSuccessfull',response.message);
+            this.localService.showError(response.message, 'Operation Unsuccessfull');
           this.number_of_failed_uploads = this.failed_list.length
 
         }
@@ -194,6 +223,8 @@ export class MemberUploadComponent implements OnInit {
     //this.success_msg ="uploaded Successfully";
     this.excel_data = this.upload_list;    
     this.upload_loader= false;
+			}
+		  })
   }
   percentageCalculator(value, total)
   {

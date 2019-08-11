@@ -1,121 +1,105 @@
-<div class="row">
-  <form [formGroup]="transaction_filter_form" (ngSubmit)="filter_transactions(transaction_filter_form.value)" style="width: 100%;">
-    <div class="row p-1">
-      <div class="col-md-2">
-        <div class="form-group">
-          <label>From</label>
-          <input type="date" formControlName="from" class="form-control" name="">
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="form-group">
-          <label>To</label>
-          <input type="date" formControlName="to" class="form-control" name="">
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="form-group">
-          <label>Type</label>
-          <select class="form-control" placeholder="type" formControlName="plan_id">
-            <option selected="false">Type</option>
-            <option [value]="item.contribution_plan.id" *ngFor="let item of member_plan_list">
-              {{item?.contribution_plan?.name }}
-            </option>
-          </select>
-        </div>
-        <mat-error [hidden]="(transaction_filter_form.controls.plan_id.valid ) || (transaction_filter_form.controls.plan_id.pristine )" class="text-danger">Please select member Plan/Package</mat-error>
-      </div>
-      <div class="col-md-3">
-        <div class="form-group">
-          <label>Status</label>
-          <select class="form-control" placeholder="status" formControlName="status">
-            <option selected="false">Status</option>
-            <option value="0">Pending</option>
-            <option value="1">Approved</option>
-            <option value="2">Cancelled</option>
-          </select>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="form-group">
-          <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="transaction_loader">
-            <span *ngIf="transaction_loader && transaction_filter_form.valid">Please Wait...</span>
-            <span *ngIf="transaction_loader && transaction_filter_form.valid"><i class="fa fa-spinner"></i></span>
-            <span *ngIf="!transaction_loader">Filter</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </form>
- 
-  <div *ngIf="show_table">
-    <div class="container p-2">
-      <button (click)="exportTable('xls', 'transaction_table')" class="btn btn-outline btn-success">Export table</button>
-      <button class="btn btn-outline btn-success" (click)="printReciept('transaction_table')">Print</button>
-      <!-- <button type="button" class="btn btn-primary pull-right" (click)="newWithdrawalModal.show()"> Make a Withdrawal</button> -->
-    </div>
+<div class="">
   <div>
-    
-  </div>
-  <div class="h-100 justify-content-center align-items-center">
-  <table id="transaction_table" class="table table-responsive table-hover table-outline mb-0 justify" width="100%">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Plan</th>
-        <th>Ref</th>
-        <!-- <th>Branch</th> -->
-        
-        <!-- <th>&#8358; Previous Balance</th> -->
-        <th>debit</th>
-        <th>credit</th>
-        <!-- <th>&#8358; Amount</th> -->
-        <th>Balance</th>
-        <th>Status</th>
-        <!-- <th>Naration</th> -->
-       
-        <!-- <th>Actions</th> -->
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="" *ngFor="let item of transaction_list">
-        <td>
-          {{ item?.updated_at }}
-        </td>
-        <td>
-          {{item?.plan?.name}}<br>
-          <span *ngIf="item.naration">/nar:{{ item?.naration }}</span>
-
-        </td>
-        <td>{{ item?.id }}</td>
-        <td>
-          <i *ngIf="item.type == 2" style="color: red">-{{ item?.amount | number }}</i>
-        </td>
-        <td>
-          <i *ngIf="item.type == 1" style="color: green">+{{ item?.amount | number }}</i>        
-        
-        </td>
-        <!-- <td>{{ item?.branch?.name }}</td> -->
-        
-        
-        <!-- <td>{{ item?.previous_balance | number }}</td> -->
-        <!-- <td>
-          <i *ngIf="item.type == 1" style="color: green">+{{ item?.amount | number }}</i>
-          <i *ngIf="item.type == 2" style="color: red">-{{ item?.amount | number }}</i>
-        
-        </td> -->
-        <td>{{ item?.current_balance | number }}</td>
-        <td>
-          <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
-          <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
-          <span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
-        </td>
-        <!-- <td>
+    <div class=" asu-card  pt-4 pb-4 col-md-12">
+      <form [formGroup]="transaction_filter_form" (ngSubmit)="filter_transactions(transaction_filter_form.value)" style="width: 100%;">
+      <div class="row p-1">
+        <div class="col">
+          <div class="form-group">
+            <label>From</label>
+            <input type="date" formControlName="from" class="form-control" name="">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label>To</label>
+            <input type="date" formControlName="to" class="form-control" name="">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label>Type</label>
+            <select class="form-control" placeholder="type" formControlName="plan_id">
+              <option selected="false">Type</option>
+              <option [value]="item.contribution_plan.id" *ngFor="let item of member_plan_list">
+                {{item?.contribution_plan?.name }}
+              </option>
+            </select>
+          </div>
+          <mat-error [hidden]="(transaction_filter_form.controls.plan_id.valid ) || (transaction_filter_form.controls.plan_id.pristine )" class="text-danger">Please select member Plan/Package</mat-error>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" placeholder="status" formControlName="status">
+              <option selected="false">Status</option>
+              <option value="0">Pending</option>
+              <option value="1">Approved</option>
+              <option value="2">Cancelled</option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top:30px" [disabled]="transaction_loader">
+              <span *ngIf="transaction_loader && transaction_filter_form.valid">Please Wait...</span>
+              <span *ngIf="transaction_loader && transaction_filter_form.valid"><i class="fa fa-spinner"></i></span>
+              <span *ngIf="!transaction_loader">Filter</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+      
+      <div  *ngIf="show_table" class="h-100 justify-content-center align-items-center">
+        <div class="mb-4 mt-4">
+        <button (click)="exportTable('xls', 'transaction_table')" class="btn btn-outline btn-success">Export table</button>
+        <button class="btn btn-outline btn-success ml-2" (click)="printReciept('transaction_table')">Print</button>
+      </div>
+        <table id="transaction_table" class="table table-responsive table-hover table-outline mb-0 justify" width="100%">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Plan</th>
+              <th>Ref</th>
+              <!-- <th>Branch</th> -->
+              <!-- <th>&#8358; Previous Balance</th> -->
+              <th>debit</th>
+              <th>credit</th>
+              <!-- <th>&#8358; Amount</th> -->
+              <th>Balance</th>
+              <th>Status</th>
+              <th>Meta</th>
+              <th>Naration</th>
+              <!-- <th>Actions</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="" *ngFor="let item of transaction_list">
+              <td>
+                {{ item?.created_at }}
+              </td>
+              <td>
+                {{item?.plan?.name}}<br>
+                <span *ngIf="item.naration">/nar:{{ item?.naration }}</span>
+              </td>
+              <td>{{ item?.id }}</td>
+              <td>
+                <i *ngIf="item.type == 2" style="color: red">-{{ item?.amount | number }}</i>
+              </td>
+              <td>
+                <i *ngIf="item.type == 1" style="color: green">+{{ item?.amount | number }}</i>
+              </td>
+              <td>{{ item?.current_balance | number }}</td>
+              <td>
+                <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
+                <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
+                <span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
+              </td>
+              <td>{{ item?.txn_meta }}</td>
+              <td>
           {{ item?.naration }}
-        </td> -->
-        
-        
-        <!-- <td class="center">
+        </td>
+              <!-- <td class="center">
           <mat-menu #appMenu="matMenu">
             <button [disabled]="btn_loader" mat-menu-item (click)="view_transaction_details(item)">View Details</button>
             <button [swal]="approve_request" [disabled]="btn_loader" mat-menu-item *ngIf="item.status==0">Approve
@@ -136,19 +120,19 @@
             <mat-icon>more_vert</mat-icon>
           </button>
         </td> -->
-      </tr>
-      <tr>
-        <td colspan="3">Total</td>
-        <td>{{ total_debit | number }}</td>
-        <td>{{ total_credit | number }}</td>
-        <td>{{ calculate_total_balance(total_credit, total_debit) | number }}</td>
-      </tr>
-    </tbody>
-  </table>
+            </tr>
+            <tr>
+              <td colspan="3">Total</td>
+              <td>{{ total_debit | number }}</td>
+              <td>{{ total_credit | number }}</td>
+              <td>{{ calculate_total_balance(total_credit, total_debit) | number }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
-</div>
-</div>
-
 <!-- <div bsModal #view_transaction_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
   aria-hidden="true">
   <div class="modal-dialog modal-md">

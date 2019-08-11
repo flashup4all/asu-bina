@@ -94,9 +94,11 @@
 					<button class="btn btn-outline btn-success ml-2 " (click)="printReciept('contri_table')">Print</button>
 					<button (click)="show_hide_adv_options = !show_hide_adv_options" class=" ml-2 btn btn-outline btn-success">Advance
 						Options</button>
+                    <button class="btn btn-outline btn-success ml-2" (click)="get_member_contribution_plan()"><i class="fa fa-refresh"></i></button>
+					<app-transfer-form></app-transfer-form>
 				</div>
 				<div class="col-md-12" *ngIf="show_hide_adv_options">
-					show adv options
+					..
 				</div>
 				<mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
 

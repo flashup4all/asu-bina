@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { Router} from '@angular/router';
+import Swal from 'sweetalert2'
 
 import { Subject } from 'rxjs/Rx';
 import {Observable} from 'rxjs/Observable';
@@ -112,7 +113,7 @@ export class ManageMembersComponent implements OnInit {
 	          }))
 	      .do(() => this.searching = false)
 	      .merge(this.hideSearchingWhenUnsubscribed);
-	      formatter = (x: {first_name: string, middle_name: string, last_name: string}) => x.first_name+'  '+ x.middle_name+'  '+ x.last_name;
+	      formatter = (x: {first_name: string, middle_name: string, last_name: string}) => this.localService.check_for_empty_string(x.first_name)+' '+ this.localService.check_for_empty_string(x.middle_name)+' '+ this.localService.check_for_empty_string(x.last_name);
 
 	ngOnInit() {
 	
@@ -427,22 +428,38 @@ export class ManageMembersComponent implements OnInit {
 	activateMember(id)
 	{
 		this.submitPending = true;
-		let data ={
-			user_id: this.user.user_id,
-			staff_id: this.user.id,
-			vendor_id: this.vendor.id
-		}
-		this.manageMemberService.activateMember(data).subscribe((response) => {
-			if(response.success == true)
-			{
-				this.getMembers()
-				this.localService.showSuccess(response.message,'Operation Successfull');
-				this.submitPending = false;
-			}else{
-				this.localService.showError(response.message,'Operation UnsSuccessfull');
-				this.submitPending = false;
+		Swal.fire({
+			title: 'Activate',
+			text: "Are You Sure You want to Activate this Member?",
+			type: 'warning',
+			showCancelButton: true,
+			//confirmButtonColor: '#3085d6',
+			//cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes!'
+		  }).then((result) => {
+			if (result.value) {
+
+				let data ={
+					id: id,
+					user_id: this.user.user_id,
+					staff_id: this.user.id,
+					vendor_id: this.vendor.id
+				}
+				this.manageMemberService.activateMember(data).subscribe((response) => {
+					if(response.success == true)
+					{
+						this.getMembers()
+						this.localService.swal_alert('success','Operation Successfull',response.message);
+						this.localService.showSuccess(response.message,'Operation Successfull');
+						this.submitPending = false;
+					}else{
+						this.localService.swal_alert('error','Operation UnsSuccessfull',response.message);
+						this.localService.showError(response.message,'Operation UnsSuccessfull');
+						this.submitPending = false;
+					}
+				});
 			}
-		});
+		  })
 	}
 	/**
 	 * @method activateAllMember
@@ -501,20 +518,35 @@ export class ManageMembersComponent implements OnInit {
 	 */
 	deactivateMember(id)
 	{
-		let data ={
-			id: id,
-			user_id: this.user.user_id,
-			vendor_id: this.vendor.id
-		}
-		this.manageMemberService.deactivateMember(data).subscribe((response) => {
-			if(response.success == true)
-			{
-				this.getMembers()
-				this.localService.showSuccess(response.message,'Operation Successfull');
-			}else{
-				this.localService.showError(response.message,'Operation UnsSuccessfull');
+		Swal.fire({
+			title: 'Deactivate',
+			text: "Are You Sure You want to De-activate this Member Account?",
+			type: 'warning',
+			showCancelButton: true,
+			//confirmButtonColor: '#3085d6',
+			//cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes!'
+		  }).then((result) => {
+			if (result.value) {
+				let data ={
+					id: id,
+					user_id: this.user.user_id,
+					vendor_id: this.vendor.id
+				}
+				this.manageMemberService.deactivateMember(data).subscribe((response) => {
+					if(response.success == true)
+					{
+						this.getMembers()
+						  this.localService.swal_alert('success','Operation Successfull',response.message);
+						  this.localService.showSuccess(response.message,'Operation Successfull');
+					}else{
+						this.localService.swal_alert('error','Operation UnsSuccessfull',response.message);
+						this.localService.showError(response.message,'Operation UnsSuccessfull');
+					}
+				});
+			  
 			}
-		});
+		  })
 	}
 
 	/**
@@ -541,7 +573,7 @@ export class ManageMembersComponent implements OnInit {
 		this.generate_login_check = true;
 		data = {
 			vendor_id: JSON.parse(this.localService.getVendor()).id,
-			user_id: JSON.parse(this.localService.getUser()).id,
+			user_id: JSON.parse(this.localService.getUser()).user_id,
 			asusu_id: data.asusu_id,
 			member_user_id: data.user_id,
 			member_id: data.id,

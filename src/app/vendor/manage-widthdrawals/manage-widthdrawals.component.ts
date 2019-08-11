@@ -11,6 +11,7 @@ import { StaffService } from '../staff/staff.service';
 import { ContributionService } from '../manage-contribution/contribution.service';
 import { environment } from '../../../environments/environment';
 import { VendorService } from '../vendor.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-manage-widthdrawals',
@@ -181,30 +182,44 @@ export class ManageWidthdrawalsComponent implements OnInit {
 	 * approve widthdrawal requests
 	 *	@return true/false
 	 */
-	approveWidthdrawalRequest(id)
+	approveWidthdrawalRequest(item)
 	{
-		let data = {
-			id : id,
-			vendor_id: this.vendor.id,
-			status: 'Approved',
-			approved_by: JSON.parse(this.localService.getUser()).id
-		}
-		this.approve_btn_loader = true;
-		this.widthdrawalService.approveWidthdrawalRequest(data).subscribe((response) => {
-  	 		if(response.success = true)
-			{
-	 			this.getWidthdrawals()
-	 			this.approve_btn_loader = false;
-				this.localService.showSuccess(response.message,'Operation Successfull');
+		Swal.fire({
+      title: 'Approve Withdrawal',
+      text: "Are You Sure You want to Approve this Withdrawal?",
+      type: 'warning',
+      showCancelButton: true,
+      //confirmButtonColor: '#3085d6',
+      //cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+	        let data = {
+				id : item.id,
+				user_id : this.user.id,
+				member_id : item.member_id,
+				vendor_id: this.vendor.id,
+				status: 1,
+				approved_by: JSON.parse(this.localService.getUser()).id
 			}
-			else{
-				this.approve_btn_loader = false;
-				this.localService.showError(response.message,'Operation Unsuccessfull');
-			}
-  	 	}, (error) => {
-  	 		this.approve_btn_loader = false;
-  	 		this.localService.showError('Error while performing this action, please try again later', 'Server Error')
-  	 	});
+			this.approve_btn_loader = true;
+			this.widthdrawalService.approveWidthdrawalRequest(data).subscribe((response) => {
+	  	 		if(response.success = true)
+				{
+		 			this.getWidthdrawals()
+		 			this.approve_btn_loader = false;
+					this.localService.showSuccess(response.message,'Operation Successfull');
+				}
+				else{
+					this.approve_btn_loader = false;
+					this.localService.showError(response.message,'Operation Unsuccessfull');
+				}
+	  	 	}, (error) => {
+	  	 		this.approve_btn_loader = false;
+	  	 		this.localService.showError('Error while performing this action, please try again later', 'Server Error')
+	  	 	});
+	      }
+      })
 	}
 
 	/**
@@ -212,30 +227,44 @@ export class ManageWidthdrawalsComponent implements OnInit {
 	 * cancel widthdrawal requests
 	 *	@return true/false
 	 */
-	cancelWidthdrawalRequest(id)
+	cancelWidthdrawalRequest(item)
 	{
-		let data = {
-			id : id,
-			vendor_id: this.vendor.id,
-			status: 'Cancelled',
-			approved_by: JSON.parse(this.localService.getUser()).id
-		}
-		this.approve_btn_loader = true;
-		this.widthdrawalService.cancelWidthdrawalRequest(data).subscribe((response) => {
-  	 		if(response.success = true)
-			{
-	 			this.getWidthdrawals()
-	 			this.approve_btn_loader = false;
-				this.localService.showSuccess(response.message,'Operation Successfull');
+		Swal.fire({
+      title: 'Approve Withdrawal',
+      text: "Are You Sure You want to Approve this Withdrawal?",
+      type: 'warning',
+      showCancelButton: true,
+      //confirmButtonColor: '#3085d6',
+      //cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+	        let data = {
+				id : item.id,
+				user_id : this.user.id,
+				member_id : item.member_id,
+				vendor_id: this.vendor.id,
+				status: 2,
+				approved_by: JSON.parse(this.localService.getUser()).id
 			}
-			else{
-				this.approve_btn_loader = false;
-				this.localService.showError(response.message,'Operation Unsuccessfull');
-			}
-  	 	}, (error) => {
-  	 		this.approve_btn_loader = false;
-  	 		this.localService.showError('Error while performing this action, please try again later', 'Server Error')
-  	 	});
+			this.approve_btn_loader = true;
+			this.widthdrawalService.cancelWidthdrawalRequest(data).subscribe((response) => {
+	  	 		if(response.success = true)
+				{
+		 			this.getWidthdrawals()
+		 			this.approve_btn_loader = false;
+					this.localService.showSuccess(response.message,'Operation Successfull');
+				}
+				else{
+					this.approve_btn_loader = false;
+					this.localService.showError(response.message,'Operation Unsuccessfull');
+				}
+	  	 	}, (error) => {
+	  	 		this.approve_btn_loader = false;
+	  	 		this.localService.showError('Error while performing this action, please try again later', 'Server Error')
+	  	 	});
+	      }
+      })
 	}
 
 	exportTable(format, tableId)

@@ -22,4 +22,7 @@ describe('MemberTransactionComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  it('return the subtraction of to numbers', () => {
+    // expect(component.calculate_total_balance(expect(a).toBeDefined(),b))
+  })
 });

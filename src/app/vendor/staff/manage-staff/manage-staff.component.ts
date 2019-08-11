@@ -125,7 +125,7 @@ export class ManageStaffComponent implements OnInit {
             }))
         .do(() => this.searching = false)
         .merge(this.hideSearchingWhenUnsubscribed);
-        formatter = (x: {first_name: string, middle_name: string, last_name: string}) => x.first_name+'  '+ x.middle_name+'  '+ x.last_name;
+        formatter = (x: {first_name: string, middle_name: string, last_name: string}) => this.localService.check_for_empty_string(x.first_name)+'  '+ this.localService.check_for_empty_string(x.middle_name)+'  '+ this.localService.check_for_empty_string(x.last_name);
 
 
   	ngOnInit() {
@@ -319,6 +319,13 @@ export class ManageStaffComponent implements OnInit {
   	 */
   	addStaff(data)
   	{
+      this.newStaffForm.updateValueAndValidity();
+      if (this.newStaffForm.invalid) {
+        Object.keys(this.newStaffForm.controls).forEach(key => {
+          this.newStaffForm.get(key).markAsDirty();
+        });
+        return;
+      }
      /* if(data.mobile_phone != null)
       {
         data.mobile_phone = '234'+(data.mobile_phone.substr(1));

@@ -88,7 +88,6 @@
 		                            </th>
 		                            <th class="text-center">Name</th>
 		                            <th>Contribution</th>
-		                            <th>Status</th>
 		                          </tr>
 		                        </thead>
 		                        <tbody>
@@ -103,20 +102,6 @@
 		                        		<td>{{coorpMembers[i]?.member?.first_name}} {{coorpMembers[i]?.member?.middle_name}} {{coorpMembers[i]?.member?.last_name}}</td>
 		                        		<td>
 		                        			<input type="text" [value]="coorpMembers[i]?.member?.contribution" [formControl]="item.controls.contribution" class="form-control">
-		                        		</td>
-		                        		<td>
-		                        			<div *ngIf="item.controls.txn_status == 1" class="badge badge-success">
-									            uploaded
-									          </div>
-									          <div *ngIf="item.controls.txn_status == 2" class="badge badge-danger">
-									            failed
-									          </div>
-									          <div *ngIf="item.controls.txn_status == 0" class="badge badge-warning">
-									            pending
-									          </div>
-									          <div *ngIf="item.controls.txn_status == 4" class="badge badge-primary">
-									            uploading... <i class="ml-2 fa fa-spinner"></i>
-									          </div>
 		                        		</td>
 		                        	</tr>
 		                        </tbody>
@@ -150,7 +135,7 @@
 									    <span aria-hidden="true">&times;</span>
 									  </button>
 		                       	</div>
-		                       <button type="submit" class="btn btn-success" [swal]="delete_contri" [disabled]="runContributionForm.invalid || submitPending">
+		                       <button type="submit" class="btn btn-success" (click)="runContribution(runContributionForm.value)" [disabled]="runContributionForm.invalid || submitPending">
 			                        <span *ngIf="!submitPending">Run Contribution</span>
 			                        <span *ngIf="submitPending && runContributionForm.valid">Please Wait...</span>
 			                        <span *ngIf="submitPending && runContributionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>

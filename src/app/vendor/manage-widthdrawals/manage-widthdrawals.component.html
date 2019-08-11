@@ -165,51 +165,13 @@
 				                        <td class="center">
 				                        	<mat-menu #appMenu="matMenu">
 				                        	<mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
-											  <button [swal]="approve_request" mat-menu-item *ngIf="item.status==0">Approve Request</button>
-											  <button [swal]="cancel_request" mat-menu-item *ngIf="item.status == 0 ">Cancel Request</button>
-											  <swal
-												  #approve_request
-												  title="Are You Sure You want to Approve this Withdrawal?"
-												  text="This cannot be undone"
-												  type="warning"
-												  [showCancelButton]="true"
-												  [focusCancel]="true"
-												  (confirm)="approveWidthdrawalRequest(item.id)">
-												</swal>
-												<swal
-												  #cancel_request
-												  title="Are You Sure You want to Cancel this Withdrawal?"
-												  text="This cannot be undone"
-												  type="warning"
-												  [showCancelButton]="true"
-												  [focusCancel]="true"
-												  (confirm)="cancelWidthdrawalRequest(item.id)">
-												</swal>
+											  <button (click)="approveWidthdrawalRequest(item)" mat-menu-item *ngIf="item.status==0">Approve Request</button>
+											  <button (click)="cancelWidthdrawalRequest(item)" mat-menu-item *ngIf="item.status == 0 ">Cancel Request</button>
 											</mat-menu>
 
 											<button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appMenu">
 											  <mat-icon>more_vert</mat-icon>
 											</button>
-				                         <!-- <div class="btn-group">
-					                          <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
-					                            <span><i class="fa fa-ellipsis-v"></i></span>
-					                          </button>
-					                          <ul class="dropdown-menu" style="min-width:1px;     left: -66px;">
-			                                      <li>
-			                                        <a >
-			                                          <i class="fa fa-check"> Approve Request</i>
-			                                        </a>
-			                                        <a *ngIf="item.status === 'Approved'">
-			                                          <i class="fa fa-check"> Approved Already</i>
-			                                        </a>
-			                                      </li>
-			                                      <li>
-			                                        <a >
-			                                          <i class="fa fa-times"> Cancel Request</i>
-			                                        </a>
-			                                      </li>
-			                                    </ul>
-					                        </div> -->
 				                        </td>
 				                    </tr>
 				                </tbody>

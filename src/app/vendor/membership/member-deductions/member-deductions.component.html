@@ -1,7 +1,7 @@
 <p>Generate Report by Date</p>
-  <div class="row">
+  <div class="col asu-card pt-3 pb-3 mt-2 mb-4">
         <form [formGroup] = "deductionFilterForm" (ngSubmit) = "filterDeduction(deductionFilterForm.value)" style="width: 100%;">
-          <div class="row p-1">
+          <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
                   <label>From</label>
@@ -34,19 +34,19 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="deductionFilterForm.invalid && !submitPending">
+                  <button type="submit" class="btn btn-primary btn-block" style="margin-top:30px" [disabled]="deductionFilterForm.invalid && !submitPending">
                     <span *ngIf="submitPending && deductionFilterForm.valid">Please Wait...</span>
                     <span *ngIf="submitPending && deductionFilterForm.valid"><i class="fa fa-spinner"></i></span>
                     <span *ngIf="!submitPending">Filter</span>
                   </button>
-                   <button type="button" class="btn btn-primary" (click)="newRepaymentModal.show()" style="margin-top: 30px;"> Make a Repayment</button>
                 </div>
               </div>
             </div>
         </form>
-        <div class="container p-2">
+        <div class="mb-4 mt-4">
             <button (click)="exportTable('xls', 'deductions_table')" class="btn btn-outline btn-success">Export table</button>
-            <button class="btn btn-outline btn-success" (click)="printReciept('deductions_table')">Print</button>
+            <button class="btn btn-outline btn-success ml-2" (click)="printReciept('deductions_table')">Print</button>
+            <button type="button" class="btn btn-primary ml-2" (click)="newRepaymentModal.show()" style="float: right;"> Make a Repayment</button>
         </div>
           <table id="deductions_table" class="table table-responsive table-hover table-outline mb-0" width="100%">
           <thead>
@@ -111,27 +111,8 @@
                   <td>
                     <mat-menu #appM="matMenu">
                       <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
-                      <button *ngIf="item.status == 0 && user?.role_id !=4" [swal]="approve_repay" mat-menu-item>Post Loan Repayment</button>
-                      <button [swal]="cancel_repay"  *ngIf="item.status != 2 && user?.role_id !=4" mat-menu-item>Cancel Loan Repayment</button>
-                      <!-- <button mat-menu-item (click)="calculate_loan_balance(item?.current_balance,item?.interest_percent, item?.created_at)">Calculate Loan Balance</button> -->
-                      <swal
-                        #approve_repay
-                        title="Are You Sure You want to Approve this Loan Repayment?"
-                        text="This cannot be undone"
-                        type="warning"
-                        [showCancelButton]="true"
-                        [focusCancel]="true"
-                        (confirm)="post_repayment(item.id, 1)">
-                      </swal>
-                      <swal
-                        #cancel_repay
-                        title="Are You Sure You want to Cancel this Loan Repayment?"
-                        text="This cannot be undone"
-                        type="warning"
-                        [showCancelButton]="true"
-                        [focusCancel]="true"
-                        (confirm)="post_repayment(item.id, 2)">
-                      </swal>
+                      <button *ngIf="item.status == 0 && user?.role_id !=4" (click)="post_repayment(item.id, 1)" mat-menu-item>Post Loan Repayment</button>
+                      <button (click)="post_repayment(item.id, 2)"  *ngIf="item.status != 2 && user?.role_id !=4" mat-menu-item>Cancel Loan Repayment</button>
                     </mat-menu>
 
                     <button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
@@ -139,11 +120,6 @@
                     </button>
                   </td>
               </tr>
-              <!-- <tr>
-                  <td colspan="3">Total</td>
-                  <td>{{ total_deduction_amount | number }}</td>
-                  <td></td>
-              </tr> -->
           </tbody>
       </table>
   </div>

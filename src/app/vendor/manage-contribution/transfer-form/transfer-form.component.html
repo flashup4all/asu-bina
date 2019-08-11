@@ -1,0 +1,114 @@
+<button type="button" class="btn btn-primary ml-2" (click)="transfer_form_modal.show()">Transfer</button>
+
+<div bsModal #transfer_form_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Inter Account Transfer</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="transfer_form_modal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="new session form">
+          <form [formGroup]="transfer_form" (ngSubmit)="inter_account_transfer(transfer_form.value)">
+            <div class="row">
+              <div class="col-md-6">
+                <legend>Sender Details</legend>								
+                <div class="form-group">
+                  <label>Sender Account <small>Filter by name|account number|phone number</small></label> <br><span
+                    *ngIf="debit_searching">searching...</span>
+                  <div class="input-group">
+                    <input id="typeahead-http" formControlName="debit_member" type="text" class="form-control"
+                      [class.is-invalid]="debit_search_failed" [ngbTypeahead]="debit_search"
+                      placeholder="Filter Member" [inputFormatter]="debit_formatter" [resultTemplate]="debit_rt" />
+                    <ng-template #debit_rt let-debit_r="result" let-t="debit_term">
+                      <div class="row" (click)="load_sender_savings_plan(debit_r)">
+                          <img *ngIf="!debit_r.passport" src="assets/images/avata.png" class="img-avatar" width='39px' height="39px">
+                          <img *ngIf="debit_r.passport" src="{{member_image_url}}{{debit_r?.passport}}" class="img-avatar" width='39px' height="39px">
+                        {{ _ls.check_for_empty_string(debit_r?.first_name) }}
+                        {{ _ls.check_for_empty_string(debit_r?.middle_name) }}
+                        {{ _ls.check_for_empty_string(debit_r?.last_name) }}
+                        <br> {{ debit_r?.account_number ? debit_r?.account_number : debit_r?.account_id }}
+                        <small> <i class="fa fa-phone"> </i> {{ debit_r?.phone1  }}</small>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Sender Savings Plan</label> <small *ngIf="debit_plan_loader"> <i class="fa fa-spinner"></i>Loading plan ..</small>
+                  <select class="form-control" placeholder="type" formControlName="debit_plan_id">
+                    <option selected="false">Loading</option>
+                    <option [value]="item.contribution_plan.id" *ngFor="let item of debit_plan_list">
+                      {{item?.contribution_plan?.name }} <p class="pull-right">&#8358;{{item?.balance }} </p>
+                    </option>
+                  </select>
+                  <mat-error
+                    [hidden]="(transfer_form.controls.debit_plan_id.valid ) || (transfer_form.controls.debit_plan_id.pristine )"
+                    class="text-danger">Please Select an Savings Plan</mat-error>
+                </div>
+                <div class="form-group">
+                  <label>Amount</label>
+                  <input type="number" name="" formControlName="amount" class="form-control">
+                  <mat-error
+                    [hidden]="(transfer_form.controls.amount.valid ) || (transfer_form.controls.amount.pristine )"
+                    class="text-danger">Transfer Amount Required</mat-error>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <legend>Recipient Details</legend>
+                <div class="form-group">
+                  <label>Recipient Account <small>Filter by name|account number|phone number</small></label> <br><span
+                    *ngIf="credit_searching">searching...</span>
+                  <div class="input-group">
+                    <input id="typeahead-http" formControlName="credit_member" type="text" class="form-control"
+                      [class.is-invalid]="credit_search_failed" [ngbTypeahead]="credit_search"
+                      placeholder="Filter Member" [inputFormatter]="credit_formatter" [resultTemplate]="credit_rt" />
+                    <ng-template #credit_rt let-recipient_r="result" let-t="credit_term">
+                      <div class="row" (click)="load_beneficiary_savings_plan(recipient_r)">
+                          <img *ngIf="!recipient_r.passport" src="assets/images/avata.png" class="img-avatar" width='39px' height="39px">
+                          <img *ngIf="recipient_r.passport" src="{{member_image_url}}{{recipient_r?.passport}}" class="img-avatar" width='39px' height="39px">
+                        {{ _ls.check_for_empty_string(recipient_r?.first_name) }}
+                        {{ _ls.check_for_empty_string(recipient_r?.middle_name) }}
+                        {{ _ls.check_for_empty_string(recipient_r?.last_name) }}
+                        <br> {{ sender_r?.account_number }}
+                        <small> <i class="fa fa-phone"> </i> {{ sender_r?.phone1  }}</small>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Recipient Savings Plan</label>  <small *ngIf="credit_plan_loader"> <i class="fa fa-spinner"></i>Loading plan ..</small>
+                  <select class="form-control" placeholder="type" formControlName="credit_plan_id">
+                    <option selected="false">Type</option>
+                    <option [value]="item.contribution_plan.id" *ngFor="let item of credit_plan_list">
+                        {{item?.contribution_plan?.name }} <p class="pull-right">&#8358;{{item?.balance }} </p>
+                      </option>
+                  </select>
+                  <mat-error
+                    [hidden]="(transfer_form.controls.credit_plan_id.valid ) || (transfer_form.controls.credit_plan_id.pristine )"
+                    class="text-danger">Please Select an Savings Plan</mat-error>
+                </div>
+                <div class="form-group">
+                    <label>Naration | Desc</label>
+                    <input type="text" name="" formControlName="naration" class="form-control">
+                    <mat-error
+                      [hidden]="(transfer_form.controls.naration.valid ) || (transfer_form.controls.naration.pristine )"
+                      class="text-danger">Transfer Naration Required</mat-error>
+                  </div>
+              </div>
+              <div class="form-group col-md-12">
+                  <button type="submit" class="btn btn-primary btn-block mt-3">
+                    <span *ngIf="submit_pending && transfer_form.valid">Please Wait...</span>
+                    <span *ngIf="submit_pending && transfer_form.valid"><i class="fa fa-spinner"></i></span>
+                    <span *ngIf="!submit_pending">Post</span>
+                  </button>
+                </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

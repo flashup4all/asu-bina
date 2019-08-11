@@ -137,6 +137,17 @@ export class MembersService {
               .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
     }
 
+    /**
+     * @method close_member_account
+     * close  a member account
+     * @return data
+     */
+    close_member_account(data)
+    {
+      return this.http.post(environment.api.url+'CoopManagement/close-coop-member-account', data, this.localService.header())
+              .map((response : Response) => response.json()).catch((error)=>{return this.handleErr.err(error)});
+    }
+
      /**
      * @method deactivateAllMember
      * activate  all coorp member resource

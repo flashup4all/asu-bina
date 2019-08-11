@@ -42,9 +42,9 @@
                             <button class="btn btn-success" type="submit" [disabled]="filterMemberForm.invalid">Manage</button>
                             <ng-template #rt let-r="result" let-t="term">
                              <div class="row">
-                                {{ r?.first_name}} {{ r?.middle_name}} {{ r?.last_name}} 
-                                <br> {{ r?.account_number}}
-                                <small> <i class="fa fa-phone"> </i> {{ r?.phone1 }}</small>
+                                {{ localService.check_for_empty_string(r?.first_name) }} {{ localService.check_for_empty_string(r?.middle_name) }} {{ localService.check_for_empty_string(r?.last_name) }} 
+                                <br> {{ r?.account_number }}
+                                <small> <i class="fa fa-phone"> </i> {{ r?.phone1  }}</small>
                              </div>
                             </ng-template>
                         </div>
@@ -53,9 +53,10 @@
                   <br>
                     <div class="row mb-4 mt-4">
                       <div class="pull-right">
-                        <button *ngIf="user.role_id < 3" class="btn btn-success pull-left" (click)="activateAllMember()">Activate All Members</button>
-                        <button *ngIf="user.role_id < 3" style="margin-left:5px;" class="btn btn-danger" (click)="deactivateAllMember()">Deactivate All Members</button>
-                         <button style="margin-left:5px;" (click)="exportTable('xls', 'members_table')" class="btn btn-outline btn-success">Export table</button>
+                        <!-- <button *ngIf="user.role_id < 3" class="btn btn-success pull-left" (click)="activateAllMember()">Activate All Members</button>
+                        <button *ngIf="user.role_id < 3" style="margin-left:5px;" class="btn btn-danger" (click)="deactivateAllMember()">Deactivate All Members</button> -->
+                        <button style="margin-left:5px;" (click)="getMembers()" class="btn btn-outline btn-success"><i class="fa fa-refresh"></i></button>
+                        <button style="margin-left:5px;" (click)="exportTable('xls', 'members_table')" class="btn btn-outline btn-success">Export table</button>
                         <button class="btn btn-outline btn-success" (click)="printReciept('members_table')">Print</button>
                         <button class="btn btn-success" style="margin-left:5px" (click)="show_adv_form = !show_adv_form">Show Search</button>
                       </div>
@@ -94,9 +95,9 @@
                                 <select formControlName="staff_id" class="form-control" value="" >
                                   <option value="">None</option>
                                   <option [value]="staff.id" *ngFor="let staff of staffList">
-                                  {{ staff?.first_name }} 
-                                  {{ staff?.last_name }} 
-                                  {{ staff?.middle_name }}
+                                  {{ staff?.first_name || '' }} 
+                                  {{ staff?.last_name || '' }} 
+                                  {{ staff?.middle_name || '' }}
                                   </option>
                                 </select>
                               </div>
@@ -151,7 +152,7 @@
                                 </div>
                               </td>
                               <td>
-                                <div>{{item?.first_name}} {{item?.middle_name}} {{item?.last_name}}</div>
+                                <div>{{ localService.check_for_empty_string(item?.first_name) }} {{ localService.check_for_empty_string(item?.middle_name) }} {{ localService.check_for_empty_string(item?.last_name) }}</div>
                               </td>
                               <td>{{item?.gender}}</td>
                               <td>
@@ -166,7 +167,7 @@
                                    Approved
                                 </div>
                                 <div *ngIf="item.status == 2">
-                                   Blocked
+                                   Blocked | Closed
                                 </div>
                                 <div *ngIf="item.status == 0">
                                   Inactive
@@ -184,42 +185,14 @@
                                   <button mat-menu-item [routerLink]="['/app/members/', item.id,'view']" title="edit member details">Manage</button>
                                   <button mat-menu-item (click)="editPassword(item)" title="Generate or reset member login details">Reset Login Details</button>
                                   <div *ngIf="user.role_id < 4">
-                                  <button [swal]="deactivate_member"  *ngIf="item.status == 1" title="deactivate or suspend this member"  mat-menu-item>Deactivate</button>
-                                  <button [swal]="activate_member"  *ngIf="item.status != 1" title="activate this member"  mat-menu-item>Activate</button>
+                                  <button (click)="deactivateMember(item.id)"  *ngIf="item.status == 1" title="deactivate or suspend this member"  mat-menu-item>Deactivate</button>
+                                  <button (click)="activateMember(item.id)"  *ngIf="item.status != 1" title="activate this member"  mat-menu-item>Activate</button>
                                   </div>
-                                  
-                                  <swal
-                                    #deactivate_member
-                                    title="Are You Sure You want to De-activate this Member Account?"
-                                    text="Be sure!"
-                                    type="warning"
-                                    [showCancelButton]="true"
-                                    [focusCancel]="true"
-                                    (confirm)="deactivateMember(item.id)">
-                                  </swal>
-                                  <swal
-                                    #activate_member
-                                    title="Are You Sure You want to Activate this Member?"
-                                    text="Be sure!"
-                                    type="warning"
-                                    [showCancelButton]="true"
-                                    [focusCancel]="true"
-                                    (confirm)="activateMember(item.id)">
-                                  </swal>
                                 </mat-menu>
 
                                 <button  mat-icon-button [matMenuTriggerFor]="appM">
                                   <mat-icon>more_vert</mat-icon>
                                 </button>
-
-                                <!-- <a class="btn btn-primary btn-sm" [routerLink]="['/app/members/', item.id,'view']" title="edit member details">
-                                  <i class="fa fa-sliders"> </i></a>
-                                <button class="btn btn-success btn-sm" (click)="editPassword(item)" title="reset member password: this sends a password reset link"><i class="fa fa-lock"></i></button>
-                                <div *ngIf="user.role_id < 4">
-                                  <button class="btn btn-danger btn-sm" *ngIf="item.status == 1" (click)="deactivateMember(item.id)" title="deactivate or suspend this member">
-                                  <i class="fa fa-unlock"></i></button>
-                                <button class="btn btn-success btn-sm" *ngIf="item.status != 1" (click)="activateMember(item.id)" title="activate this member"><i class="fa fa-unlock"></i></button>
-                                </div> -->
                               </td>
                             </tr>
                           </tbody>

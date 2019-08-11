@@ -12,6 +12,7 @@ import { WidthdrawalsService } from '../../manage-widthdrawals/widthdrawals.serv
 import { ViewMemberComponent } from '../view-member/view-member.component';
 import { MemberContributionsComponent } from '../member-contributions/member-contributions.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import Swal from 'sweetalert2';
 
 import * as moment from 'moment';
 import { TableExportService } from '../../../shared/services/index';
@@ -216,34 +217,47 @@ export class MemberWithdrawalsComponent implements OnInit {
    */
   approveWidthdrawalRequest(id)
   {
-    this.btn_loader = true;
-    let data = {
-      id : id,
-      vendor_id: this.vendor.id,
-      member_id: this.memberId,
-      status: 1,
-      approved_by: JSON.parse(this.localService.getUser()).id,
-      user_id :this.user.user_id
+    Swal.fire({
+      title: 'Approve Withdrawal',
+      text: "Are You Sure You want to Approve this Withdrawal?",
+      type: 'warning',
+      showCancelButton: true,
+      //confirmButtonColor: '#3085d6',
+      //cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+        this.btn_loader = true;
+        let data = {
+          id : id,
+          vendor_id: this.vendor.id,
+          member_id: this.memberId,
+          status: 1,
+          approved_by: JSON.parse(this.localService.getUser()).id,
+          user_id :this.user.user_id
 
-    }
-    this.withdrawalService.approveWidthdrawalRequest(data).subscribe((response) => {
-         if(response.success = true)
-      {
-        this.btn_loader = false;
-         this.getMemberWithdrawal()
-          this.view_member_component.get_member_contribution_plan();
-         this.view_member_component.getMemberProfile();
-         this.view_member_component.getActualBalance();
-         //this.member_contribution_component.get_member_contribution_plan();
-        this.localService.showSuccess(response.message,'Operation Successfull');
+        }
+        this.withdrawalService.approveWidthdrawalRequest(data).subscribe((response) => {
+             if(response.success = true)
+          {
+            this.btn_loader = false;
+             this.getMemberWithdrawal()
+              this.view_member_component.get_member_contribution_plan();
+             this.view_member_component.getMemberProfile();
+             this.view_member_component.getActualBalance();
+             //this.member_contribution_component.get_member_contribution_plan();
+            this.localService.showSuccess(response.message,'Operation Successfull');
+          }
+          else{
+            this.localService.showError(response.message,'Operation Unsuccessfull');
+          }
+           }, (error) => {
+             this.btn_loader = false;
+             this.localService.showError('Error while performing this action, please try again later', 'Server Error')
+           });
       }
-      else{
-        this.localService.showError(response.message,'Operation Unsuccessfull');
-      }
-       }, (error) => {
-         this.btn_loader = false;
-         this.localService.showError('Error while performing this action, please try again later', 'Server Error')
-       });
+      })
+    
   }
 
   /**
@@ -280,29 +294,42 @@ export class MemberWithdrawalsComponent implements OnInit {
    */
   cancelWidthdrawalRequest(id)
   {
-    this.btn_loader = true;
-    let data = {
-      id : id,
-      vendor_id: this.vendor.id,
-      member_id: this.memberId,
-      status: 2,
-      user_id :this.user.user_id,
-      approved_by: JSON.parse(this.localService.getUser()).id
-    }
-    this.withdrawalService.cancelWidthdrawalRequest(data).subscribe((response) => {
-         if(response.success = true)
-      {
-        this.btn_loader = false;
-         this.getMemberWithdrawal()
-        this.localService.showSuccess(response.message,'Operation Successfull');
+     Swal.fire({
+      title: 'Approve Withdrawal',
+      text: "Are You Sure You want to Cancel this Withdrawal?",
+      type: 'warning',
+      showCancelButton: true,
+      //confirmButtonColor: '#3085d6',
+      //cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+        this.btn_loader = true;
+        let data = {
+          id : id,
+          vendor_id: this.vendor.id,
+          member_id: this.memberId,
+          status: 2,
+          user_id :this.user.user_id,
+          approved_by: JSON.parse(this.localService.getUser()).id
+        }
+        this.withdrawalService.cancelWidthdrawalRequest(data).subscribe((response) => {
+             if(response.success = true)
+          {
+            this.btn_loader = false;
+             this.getMemberWithdrawal()
+            this.localService.showSuccess(response.message,'Operation Successfull');
+          }
+          else{
+            this.localService.showError(response.message,'Operation Unsuccessfull');
+          }
+           }, (error) => {
+             this.btn_loader = false;
+             this.localService.showError('Error while performing this action, please try again later', 'Server Error')
+           });
       }
-      else{
-        this.localService.showError(response.message,'Operation Unsuccessfull');
-      }
-       }, (error) => {
-         this.btn_loader = false;
-         this.localService.showError('Error while performing this action, please try again later', 'Server Error')
-       });
+      })
+    
   }
 
    printReciept(id): void {

@@ -59,7 +59,7 @@
                 <tabset>
                   <tab heading="Loan Request History">
                      <!-- <button type="button" class="btn btn-primary" (click)="newRepaymentModal.show()" style="margin-top: 30px;"> Repay this Loan</button> -->
-                        <div class="col-md-12">
+                        <div class="col-md-12 mt-4">
                   <mat-progress-bar *ngIf="history_loader" mode="indeterminate"></mat-progress-bar>
                         	<table class="table table-responsive table-hover table-outline mb-0">
 				                <thead>
@@ -69,7 +69,7 @@
                                         <th>&#8358; Previous Balance</th>
                                         <th>Interest Days</th>
                                         <th>&#8358; Amount Paid</th>
-                                        <th>&#8358; Current Balance</th>
+                                        <!-- <th>&#8358; Current Balance</th> -->
                                         <th>Status</th>
                                         <th>Date</th>
 				                        <!-- <th>Actions</th> -->
@@ -82,18 +82,17 @@
 				                            {{item?.repayment_method?.name}} 
 				                        </td>
                                         <td>
-                                              {{item?.previous_balance | number }} 
+                                              {{item?.previous_balance | number: '1.2-2' }} 
                                         </td>
                                         <td>
                                               {{item?.no_days | number }} 
                                         </td>
                                         <td>
-                                              {{item?.amount_deducted | number }} 
+                                              {{item?.amount_deducted | number: '1.2-2' }} 
                                         </td>
-                                        <td>
-                                          {{ item?.current_balance }}
-                                              <!-- {{ calculate_loan_balance(item.current_balance, item.interest_percent, item.run_date) | number }}  -->
-                                        </td>
+                                       <!--  <td>
+                                          {{ item?.current_balance | number: '1.2-2'}}
+                                        </td> -->
                                         <td>
                                             <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
                                             <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>

@@ -5,49 +5,6 @@
 		        <tabset>
 		          <tab heading="Manage Contributions">
 			            <div class="container">
-			            	<div _ngcontent-c4="" class="module-option clearfix">
-					           <!-- <form class="pull-left" [formGroup] = "runContributionForm" (ngSubmit) = "runContribution(runContributionForm.value)">
-					           	 	<div class="row">
-					           	 		<div class="col-md-3">
-		                      				<div class="form-group">
-				                                <label>Contribution Plan</label>
-				                                <select class="form-control" placeholder="type" formControlName = "plan_id">
-				                                    <option selected="false">Type</option>
-				                                    <option [value]="item.id" *ngFor="let item of contribution_plan_list">
-				                                    	{{item?.name }}
-				                                    </option>
-				                                </select>
-				                                <small [hidden]="(runContributionForm.controls.plan_id.valid ) || (runContributionForm.controls.plan_id.pristine )" class="text-danger">Period Method is Required</small>
-				                            </div>
-		                      			</div>
-					                	<div class="col-md-3">
-					                		 <label>Contribution Type</label>
-					                		<select class="form-control" placeholder="Filter by name..." formControlName = "type">
-						                        <option value="{{ item.id }}" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
-						                    </select>
-						                    <small [hidden]="(runContributionForm.controls.type.valid ) || (runContributionForm.controls.type.pristine )" class="text-danger">Type is Required</small> 
-					                	</div>
-							           	<div class="col-md-3">
-							           		 <label>Period</label>
-							           		<select class="form-control" placeholder="Period" formControlName = "period">
-						                        <option *ngFor="let item of monthList">{{item.name}}/{{ current_year }}</option>
-						                    </select>
-						                    <small [hidden]="(runContributionForm.controls.period.valid ) || (runContributionForm.controls.period.pristine )" class="text-danger">Period Method is Required</small> 
-							           	</div>
-							           	<div class="col-md-3">
-							           		 <button style="margin-top:30px" type="submit" class="btn btn-success" [disabled]="runContributionForm.invalid || submitPending ">
-						                        <span *ngIf="!submitPending">Run Contribution</span>
-						                        <span *ngIf="submitPending && runContributionForm.valid">Please Wait...</span>
-						                        <span *ngIf="submitPending && runContributionForm.valid" class="fa fa-spinner" aria-hidden="true"></span>
-						                    </button>
-							           	</div>
-					                </div>
-					                <br>
-					            </form> -->
-					            <!-- <button class="btn btn-success" (click)="excelUploadModal.show()">Upload Excel Format</button> -->
-					            <!-- <button *ngIf="!adv_filter" class="btn btn-success" style="margin-top:30px" (click)="show_adv_form()">Show Search</button>
-					            <button *ngIf="adv_filter" class="btn btn-success" style="margin-top:30px" (click)="show_adv_form()">Hide Search</button> -->
-					        </div>
 					        <div class=""> <!-- *ngIf="adv_filter" -->
 			            		<form [formGroup] = "filterForm" (ngSubmit) = "filterContribution(filterForm.value)">
                                     <div class="row asu-card">
@@ -125,13 +82,6 @@
 						                    </select>
 						                  </div>
 						                </div>
-                                        <!-- <div class="col-md-3">
-                                        	<label>Type</label>
-	                                       	<select class="form-control" placeholder="Filter by name..." formControlName = "type">
-	                                       		<option value="">None</option>
-						                        <option value="{{ item.id }}" *ngFor="let item of contribution_type_list">{{ item?.name }}</option>
-						                    </select>
-	                                    </div> -->
                                         <div class="col-md-2">
                                           <div class="form-group">
                                             <button type="submit" class="btn btn-primary btn-block" style="margin-top:30px" [disabled]="filterForm.invalid && !submitPending">
@@ -144,39 +94,10 @@
                                       </div>
                                   </form>
 			            	</div>
-			            	<!-- <div class="row" *ngIf="show_bulk_contribution">
-			            		<form [formGroup] = "bulk_plan_contribution_form" (ngSubmit) = "bulk_contribution(bulk_plan_contribution_form.value)" style="width: 100%;">
-                                    <div class="row p-1">
-                              
-                                      <div class="col-md-3">
-                                      	<div class="form-group">
-			                                <label>Select Contribution Plan</label>
-			                                <select class="form-control" placeholder="type" formControlName = "plan_id">
-			                                    <option selected="false">Type</option>
-			                                    <option [value]="item.id" *ngFor="let item of contribution_plan_list">
-			                                    	{{item?.name }}
-			                                    </option>
-			                                </select>
-			                                <small [hidden]="(bulk_plan_contribution_form.controls.plan_id.valid ) || (bulk_plan_contribution_form.controls.plan_id.pristine )" class="text-danger">Contribution Plan is Required</small>
-			                            </div>
-                                      </div>
-		                      		
-                                 
-                                        <div class="col-md-2">
-                                          <div class="form-group">
-                                            <button type="submit" class="btn btn-primary" style="margin-top:30px" [disabled]="bulk_plan_contribution_form.invalid && !submitPending">
-                                              <span *ngIf="submitPending && bulk_plan_contribution_form.valid">Please Wait...</span>
-                                              <span *ngIf="submitPending && bulk_plan_contribution_form.valid"><i class="fa fa-spinner"></i></span>
-                                              <span *ngIf="!submitPending">Filter</span>
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                  </form>
-			            	</div> -->
 			            	<div class="mt-3 mb-4">
 			            		<button (click)="exportTable('xls', 'contri_table')" class="btn btn-outline btn-success">Export table</button>
                         		<button class="btn btn-outline btn-success ml-2" (click)="printReciept('contri_table')">Print</button>
+                        		<button class="btn btn-outline btn-success ml-2" (click)="getContributions()"><i class="fa fa-refresh"></i></button>
                         		<!-- <a class="btn btn-success" [routerLink]="['/app/contributions/bulk-contributions']">Bulk Contributions</a> -->
 			            	</div>
             				<mat-progress-bar *ngIf="submitPending" mode="indeterminate"></mat-progress-bar>
@@ -244,48 +165,12 @@
 					                    <td class="center">
 					                    	<mat-menu #appMenu="matMenu">
 				                        		<mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
-											  <button [hidden]="item.status > 0" [swal]="post_contri_trans" mat-menu-item>Post Transaction</button>
-											  <swal
-												  #post_contri_trans
-												  title="Are You Sure You want to Approve this Transaction?"
-												  text="This cannot be undone"
-												  type="warning"
-												  [showCancelButton]="true"
-												  [focusCancel]="true"
-												  (confirm)="post_transaction(item, 1)">
-												</swal>
-												 <button *ngIf="item.status != 2" [swal]="cancel_contri_trans" mat-menu-item>Cancel Transaction</button>
-											  <swal
-												  #cancel_contri_trans
-												  title="Are You Sure You want to Cancel this Transaction?"
-												  text="This cannot be undone"
-												  type="warning"
-												  [showCancelButton]="true"
-												  [focusCancel]="true"
-												  (confirm)="post_transaction(item.id, 2)">
-												</swal>
+											  <button [hidden]="item.status > 0" (click)="post_transaction(item, 1)" mat-menu-item>Post Transaction</button>
 											</mat-menu>
 
 											<button mat-icon-button *ngIf="localService.check_posting_cash_role(item.amount)" [matMenuTriggerFor]="appMenu">
 											  <mat-icon>more_vert</mat-icon>
 										</button>
-					                        <!-- <div class="btn-group">
-					                         
-					                          <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
-					                            <span><i class="fa fa-ellipsis-v"></i></span>
-					                          </button>
-					                          <ul class="dropdown-menu" style="min-width:1px;">
-					                            
-					                            <li><a tabindex="-1" (click)="deleteMember(item.id)">Another action</a></li>
-					                             <li class="divider"></li>
-					                            <li>
-					                                <button class="btn btn-small" (click)="deleteMember(item.id)" title="delete member">
-					                                    <i class="fa fa-trash-o"></i>
-					                                </button>
-					                            </li>
-					                             <li class="divider"></li>
-					                          </ul>
-					                        </div> -->
 					                    </td>
 					                </tr>
 					            </tbody>
@@ -298,7 +183,8 @@
 		        	</tab>
 		        	<tab heading='Bulk Contribution' *ngIf="user.role_id < 4">
 		        		<app-run-contribution></app-run-contribution>
-		        	</tab>
+					</tab>
+					
 		    	</tabset>
 			</div>
 		</div>

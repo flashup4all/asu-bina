@@ -12,6 +12,7 @@ import { StaffService } from '../staff/staff.service';
 import { LoanSettingsService } from '../loans/loan-settings/loan-settings.service';
 import { TableExportService } from '../../shared/services/index';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-manage-loanrequest',
@@ -92,7 +93,7 @@ export class ManageLoanrequestComponent implements OnInit {
           }))
       .do(() => this.staff_searching = false)
       .merge(this.staff_hideSearchingWhenUnsubscribed);
-      staff_formatter = (y: {first_name: string, middle_name: string, last_name: string, passport: string, staff_id: string}) => y.first_name+'  '+ y.middle_name+'  '+ y.last_name;
+      staff_formatter = (y: {first_name: string, middle_name: string, last_name: string, passport: string, staff_id: string}) => this.localService.check_for_empty_string(y.first_name)+'  '+ this.localService.check_for_empty_string(y.middle_name)+'  '+ this.localService.check_for_empty_string(y.last_name);
 
 	ngOnInit() {
     this.cardForm = this._fb.group({
@@ -563,28 +564,37 @@ export class ManageLoanrequestComponent implements OnInit {
      */
     close_loan(loan)
     {
-      console.log(loan)
-      this.approve_btn_loader = true;
-      let data = {
-        vendor_id: this.vendor.id,
-        user_id: this.user.id,
-        member_id: loan.member_id,
-        loan_request_id: loan.id,
-      } 
-      this.loanrequestService.close_loan_request(data).subscribe((response) => {
-        if(response.success)
-        {
-          this.approve_btn_loader = false;
-           this.getLoanRequest()
-          this.localService.showSuccess(response.message,'Operation Successfull');
-        }else{
-          this.approve_btn_loader = false;
-          this.localService.showError(response.message,'Operation Unsuccessfull');
+      Swal.fire({
+      title: `Close this Loan Request`,
+      text: 'Are You Sure You want to Close this Loan Request?',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+          this.approve_btn_loader = true;
+          let data = {
+            vendor_id: this.vendor.id,
+            user_id: this.user.id,
+            member_id: loan.member_id,
+            loan_request_id: loan.id,
+          } 
+          this.loanrequestService.close_loan_request(data).subscribe((response) => {
+            if(response.success)
+            {
+              this.approve_btn_loader = false;
+               this.getLoanRequest()
+              this.localService.showSuccess(response.message,'Operation Successfull');
+            }else{
+              this.approve_btn_loader = false;
+              this.localService.showError(response.message,'Operation Unsuccessfull');
+            }
+          }, (error) => {
+              this.approve_btn_loader = false;
+              this.localService.showError('Please contact admin','Server Error!!');
+          })
         }
-      }, (error) => {
-          this.approve_btn_loader = false;
-          this.localService.showError('Please contact admin','Server Error!!');
-      })
+      })      
     }
 
   /**

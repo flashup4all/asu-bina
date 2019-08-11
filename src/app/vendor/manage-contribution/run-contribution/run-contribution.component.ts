@@ -6,6 +6,7 @@ import { ContributionService } from '../contribution.service';
 import { XlsxToJsonService } from '../../../shared/xls/index'
 //import * as FileSaver from 'file-saver';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { AlertConfig } from 'ngx-bootstrap/alert';
 
@@ -95,33 +96,42 @@ export class RunContributionComponent implements OnInit {
 
 	runContribution(formValues)
 	{
-		formValues['vendor_id'] = this.vendor.id;
-		formValues['branch_id'] = this.vendor_branch.id;
-		formValues['approved_by'] = this.user.id;
-		formValues['staff_id'] = this.user.id;
-		formValues['user_id'] = this.user.user_id;
-    formValues['mode'] = 'ntxn';
-    formValues['app_channel'] = 'web';
-    formValues['device_info'] = 'browser: '+ this.deviceService.getDeviceInfo().browser + ' /browser_version: ' + this.deviceService.getDeviceInfo().browser_version + ' /device: ' + this.deviceService.getDeviceInfo().device + ' /os: '+this.deviceService.getDeviceInfo().os;
-    formValues.transaction_type = 'credit';
-		
-		this.show_plan_members_loader = true;
-    console.log(formValues)
-		/*this.contributionService.runEditedContributions(formValues).subscribe((response) => {
-			if (response.success) {
-				this.show_plan_members_loader = false;
-        this.show_sucess_alert = true;
-        this.success_msg = response.message;
-        this.runContributionForm.reset();
-        this.localService.showSuccess(response.message,'Operation Successfull');
-			}else{
-				this.show_plan_members_loader = false;
-          		this.localService.showError(response.message,'Operation Unsuccessfull');
-			}
-		}, (error) => {
-			this.submitPending = false;
-          	this.localService.showError(error,'Operation Unsuccessfull');
-		});*/
+    Swal.fire({
+      title: `Close this Loan Request`,
+      text: 'Are You Sure You want to Close this Loan Request?',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+          formValues['vendor_id'] = this.vendor.id;
+          formValues['branch_id'] = this.vendor_branch.id;
+          formValues['approved_by'] = this.user.id;
+          formValues['staff_id'] = this.user.id;
+          formValues['user_id'] = this.user.user_id;
+          formValues['mode'] = 'ntxn';
+          formValues['app_channel'] = 'web';
+          formValues['device_info'] = 'browser: '+ this.deviceService.getDeviceInfo().browser + ' /browser_version: ' + this.deviceService.getDeviceInfo().browser_version + ' /device: ' + this.deviceService.getDeviceInfo().device + ' /os: '+this.deviceService.getDeviceInfo().os;
+          formValues.transaction_type = 'credit';
+          
+          this.show_plan_members_loader = true;
+          this.contributionService.runEditedContributions(formValues).subscribe((response) => {
+            if (response.success) {
+              this.show_plan_members_loader = false;
+              this.show_sucess_alert = true;
+              this.success_msg = response.message;
+              this.runContributionForm.reset();
+              this.localService.showSuccess(response.message,'Operation Successfull');
+            }else{
+              this.show_plan_members_loader = false;
+                    this.localService.showError(response.message,'Operation Unsuccessfull');
+            }
+          }, (error) => {
+            this.submitPending = false;
+                  this.localService.showError(error,'Operation Unsuccessfull');
+          });
+        }
+      })      
 	}
 
   hide_success_alert()

@@ -7,6 +7,8 @@ import { InvestmentService } from '../../manage-investments/investment.service';
 import { ContributionService } from '../../manage-contribution/contribution.service';
 import { ViewMemberComponent } from '../view-member/view-member.component';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-member-investments',
   templateUrl: './member-investments.component.html'
@@ -55,7 +57,7 @@ export class MemberInvestmentsComponent implements OnInit {
     @ViewChild('newInvestmentPlanModal') public newInvestmentPlanModal : ModalDirective;
   	@ViewChild('newInvestmentHistoryModal') public newInvestmentHistoryModal : ModalDirective;
   	constructor(
-		private localService : LocalService,
+		  private localService : LocalService,
   		private investmentService : InvestmentService,
       private exportService: TableExportService,
   		private _fb: FormBuilder,
@@ -245,29 +247,51 @@ export class MemberInvestmentsComponent implements OnInit {
 
     approve_investment(id, status)
     {
+        let title: string;
+        let text: string;
+        if(status==2)
+        {
+          title="Cancel this Investment?"
+          text="Are You Sure You want to Cancel this Investment?"
+        }
+        if(status==1)
+        {
+          title="Approve this Investment?"
+          text="Are You Sure You want to Approve this Investment?"
+        }
+      Swal.fire({
+      title: title,
+      text: text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
       this.approve_btn_loader = true;
-      let data = {
-        id: id,
-        approved_by: this.user.id,
-        user_id: this.user.user_id,
-        vendor_id: this.vendor.id,
-        status: status,
-      }
+        let data = {
+          id: id,
+          approved_by: this.user.id,
+          user_id: this.user.user_id,
+          vendor_id: this.vendor.id,
+          status: status,
+        }
       
-      this.investmentService.approve_investment(data).subscribe((response) => {
-        if (response.success) {
-            this.approve_btn_loader = false;
-            this.get_member_investment_plan();
-            this.localService.showSuccess(response.message,'Operation Successfull');
-          }else{
-            this.approve_btn_loader = false;
-            this.localService.showError(response.message,'Operation Unsuccessfull');
-          }
-        }, (error) => {
-            this.approve_btn_loader = false;
-            this.investment_history_form_loader = false;
-                this.localService.showError(error,'Operation Unsuccessfull');
-        });
+        this.investmentService.approve_investment(data).subscribe((response) => {
+          if (response.success) {
+              this.approve_btn_loader = false;
+              this.get_member_investment_plan();
+              this.localService.showSuccess(response.message,'Operation Successfull');
+            }else{
+              this.approve_btn_loader = false;
+              this.localService.showError(response.message,'Operation Unsuccessfull');
+            }
+          }, (error) => {
+              this.approve_btn_loader = false;
+              this.investment_history_form_loader = false;
+                  this.localService.showError(error,'Operation Unsuccessfull');
+          });
+      }
+      })
     }
 
     filter_investment_history(filterValues)
@@ -423,29 +447,51 @@ export class MemberInvestmentsComponent implements OnInit {
     }
     post_transaction(transaction_id, status)
     {
-      this.btn_loader = true;
-      let data = {
-        id: transaction_id,
-        approved_by: this.user.id,
-        user_id: this.user.user_id,
-        vendor_id: this.vendor.id,
-        status: status
-      }
-      
-      this.investmentService.post_investment_history(data).subscribe((response) => {
-        if (response.success) {
-          this.btn_loader = false;
-            this.get_member_investment_history();
-            this.localService.showSuccess(response.message,'Operation Successfull');
-          }else{
+      let title: string;
+        let text: string;
+        if(status==2)
+        {
+          title="Cancel this Transaction?"
+          text="Are You Sure You want to Cancel this Transaction?"
+        }
+        if(status==1)
+        {
+          title="Approve this Transaction?"
+          text="Are You Sure You want to Approve this Transaction?"
+        }
+      Swal.fire({
+      title: title,
+      text: text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+        this.btn_loader = true;
+        let data = {
+          id: transaction_id,
+          approved_by: this.user.id,
+          user_id: this.user.user_id,
+          vendor_id: this.vendor.id,
+          status: status
+        }
+        
+        this.investmentService.post_investment_history(data).subscribe((response) => {
+          if (response.success) {
             this.btn_loader = false;
-            this.localService.showError(response.message,'Operation Unsuccessfull');
-          }
-        }, (error) => {
-          this.btn_loader = false;
-          this.investment_history_form_loader = false;
-                this.localService.showError(error,'Operation Unsuccessfull');
-        });
+              this.get_member_investment_history();
+              this.localService.showSuccess(response.message,'Operation Successfull');
+            }else{
+              this.btn_loader = false;
+              this.localService.showError(response.message,'Operation Unsuccessfull');
+            }
+          }, (error) => {
+            this.btn_loader = false;
+            this.investment_history_form_loader = false;
+                  this.localService.showError(error,'Operation Unsuccessfull');
+          });
+        }
+      })
     }
 
     calculate_loan_balance(balance, interest, last_date)

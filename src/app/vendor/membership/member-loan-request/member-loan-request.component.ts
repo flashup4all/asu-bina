@@ -8,6 +8,7 @@ import { MembersService } from '../members.service';
 import { LoanRequestService } from '../../manage-loanrequest/loan-request.service';
 import { LoanSettingsService } from '../../loans/loan-settings/loan-settings.service';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 import { TableExportService } from '../../../shared/services/index';
 import { environment } from '../../../../environments/environment';
 import { ViewMemberComponent } from '../view-member/view-member.component';
@@ -224,26 +225,38 @@ export class MemberLoanRequestComponent implements OnInit {
      */
     close_loan(loan)
     {
-      this.approve_btn_loader = true;
-      let data = {
-        vendor_id: this.vendor.id,
-        user_id: this.user.id,
-        member_id: this.memberId,
-        loan_request_id: loan.id,
-      } 
-      this.loanRequestService.close_loan_request(data).subscribe((response) => {
-        if(response.success)
-        {
-          this.approve_btn_loader = false;
-           this.getMemberLoanRequest()
-          this.localService.showSuccess(response.message,'Operation Successfull');
-        }else{
-          this.approve_btn_loader = false;
-          this.localService.showError(response.message,'Operation Unsuccessfull');
-        }
-      }, (error) => {
-          this.approve_btn_loader = false;
-          this.localService.showError('Please contact admin','Server Error!!');
+      Swal.fire({
+      title: 'CLose Loan',
+      text: "Are You Sure You want to Close this Loan Request?",
+      type: 'warning',
+      showCancelButton: true,
+      //confirmButtonColor: '#3085d6',
+      //cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+        this.approve_btn_loader = true;
+        let data = {
+          vendor_id: this.vendor.id,
+          user_id: this.user.user_id,
+          member_id: this.memberId,
+          loan_request_id: loan.id,
+        } 
+        this.loanRequestService.close_loan_request(data).subscribe((response) => {
+          if(response.success)
+          {
+            this.approve_btn_loader = false;
+             this.getMemberLoanRequest()
+            this.localService.showSuccess(response.message,'Operation Successfull');
+          }else{
+            this.approve_btn_loader = false;
+            this.localService.showError(response.message,'Operation Unsuccessfull');
+          }
+        }, (error) => {
+            this.approve_btn_loader = false;
+            this.localService.showError('Please contact admin','Server Error!!');
+        })
+      }
       })
     }
 

@@ -12,11 +12,12 @@ import { DeductionsService } from '../../manage-deductions/deductions.service';
 import { TargetSavingsService } from '../../target-savings/target-savings.service';
 import { WidthdrawalsService } from '../../manage-widthdrawals/widthdrawals.service';
 import { VendorService } from '../../vendor.service';
-//import { MemberLoanRequestComponent } from '../member-loan-request/member-loan-request.component';
+// import { MemberLoanRequestComponent } from '../member-loan-request/member-loan-request.component';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 import { TableExportService } from '../../../shared/services/index';
 import { environment } from '../../../../environments/environment';
-//import { MemberContributionsComponent } from '../member-contributions/member-contributions.component';
+// import { MemberContributionsComponent } from '../member-contributions/member-contributions.component';
 @Component({
   selector: 'app-view-member',
   templateUrl: './view-member.component.html',
@@ -232,7 +233,19 @@ export class ViewMemberComponent implements OnInit {
      */
     show_member_account_no_modal()
     {
-      this.account_number_modal.show();
+      Swal.fire({
+      title: 'Edit Member Account Number?',
+      text: "Are You Sure You want to Edit Member Account Number?",
+      type: 'warning',
+      showCancelButton: true,
+      //confirmButtonColor: '#3085d6',
+      //cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+        this.account_number_modal.show();
+      }
+      })
     }
 
     /**
@@ -797,28 +810,101 @@ export class ViewMemberComponent implements OnInit {
     }
 
   /**
+   * @method close_member_account
+   * close member account and stop all activity tied to this member
+   * @return data
+   */
+  close_member_account(id)
+  {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "A closed account cannot perform any operation on the platform",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Close Account'
+    }).then((result) => {
+      Swal.fire({
+        title: 'Please Enter a Reason for Closing this account',
+        input: 'text',
+        inputAttributes: {
+          autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Close Account',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            if(login=='') {
+              Swal.showValidationMessage(
+                `You must enter a reason please!`
+              )
+              return;
+            }
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        if (result.value) {
+          let data ={
+            id: id,
+            status_detail: result.value,
+            user_id: this.user.user_id,
+            vendor_id: this.vendor.id
+          }
+          this.memberService.close_member_account(data).subscribe((response) => {
+            if(response.success == true)
+            {
+              this.getMemberProfile()
+              this.localService.showSuccess(response.message,'Operation Successfull');
+              Swal.fire(
+                    'Account Closed!',
+                    'this account has been closed. No operation can be performed on this account.',
+                    'success'
+                  )
+            }else{
+              this.localService.showError(response.message,'Operation UnsSuccessfull');
+            }
+          });
+        }
+      })
+    })
+    
+  }
+
+  /**
    * @method activateMember
    * activate member
    * @return data
    */
   activateMember(id)
   {
-    let data ={
-      id: id,
-      user_id: this.user.user_id,
-      vendor_id: this.vendor.id
-    }
-    this.memberService.activateMember(data).subscribe((response) => {
-      if(response.success == true)
-      {
-        this.getMemberProfile()
-        this.localService.showSuccess(response.message,'Operation Successfull');
-      }else{
-        this.localService.showError(response.message,'Operation UnsSuccessfull');
+    Swal.fire({
+      title: 'Edit Member Account Number?',
+      text: "Are You Sure You want to Edit Member Account Number?",
+      type: 'warning',
+      showCancelButton: true,
+      //confirmButtonColor: '#3085d6',
+      //cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+        let data ={
+          id: id,
+          user_id: this.user.user_id,
+          vendor_id: this.vendor.id
+        }
+        this.memberService.activateMember(data).subscribe((response) => {
+          if(response.success == true)
+          {
+            this.getMemberProfile()
+            this.localService.showSuccess(response.message,'Operation Successfull');
+          }else{
+            this.localService.showError(response.message,'Operation UnsSuccessfull');
+          }
+        });
       }
-    });
+      })
   }
-
   /**
    * @method deactivateMember
    * deactivate member
@@ -826,20 +912,32 @@ export class ViewMemberComponent implements OnInit {
    */
   deactivateMember(id)
   {
-    let data ={
-      id: id,
-      user_id: this.user.user_id,
-      vendor_id: this.vendor.id
-    }
-    this.memberService.deactivateMember(data).subscribe((response) => {
-      if(response.success == true)
-      {
-        this.getMemberProfile()
-        this.localService.showSuccess(response.message,'Operation Successfull');
-      }else{
-        this.localService.showError(response.message,'Operation UnsSuccessfull');
+    Swal.fire({
+      title: 'Edit Member Account Number?',
+      text: "Are You Sure You want to Edit Member Account Number?",
+      type: 'warning',
+      showCancelButton: true,
+      //confirmButtonColor: '#3085d6',
+      //cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+        let data ={
+          id: id,
+          user_id: this.user.user_id,
+          vendor_id: this.vendor.id
+        }
+        this.memberService.deactivateMember(data).subscribe((response) => {
+          if(response.success == true)
+          {
+            this.getMemberProfile()
+            this.localService.showSuccess(response.message,'Operation Successfull');
+          }else{
+            this.localService.showError(response.message,'Operation UnsSuccessfull');
+          }
+        });
       }
-    });
+      })
   }
 
   /**

@@ -135,36 +135,9 @@
 			                    <td class="center">
 			                    	<mat-menu #appM="matMenu">
 	                        		<mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
-									  <button *ngIf="!item.status" [swal]="approve_inv" mat-menu-item>Approve Investment</button>
-									  <button *ngIf="item.status !=3" [swal]="close_inv" mat-menu-item>Close Investment</button>
-									  <button [swal]="cancel_inv" mat-menu-item>Cancel Investment</button>
-									  <swal
-										  #approve_inv
-										  title="Are You Sure You want to Approve this Investment?"
-										  text="This cannot be undone"
-										  type="warning"
-										  [showCancelButton]="true"
-										  [focusCancel]="true"
-										  (confirm)="approve_investment(item.id, 1)">
-										</swal>
-										<swal
-										  #cancel_inv
-										  title="Are You Sure You want to Cancel this Investment?"
-										  text="This cannot be undone"
-										  type="warning"
-										  [showCancelButton]="true"
-										  [focusCancel]="true"
-										  (confirm)="approve_investment(item.id, 2)">
-										</swal>
-										<swal
-										  #close_inv
-										  title="Are You Sure You want to close this Investment?"
-										  text="This cannot be undone"
-										  type="warning"
-										  [showCancelButton]="true"
-										  [focusCancel]="true"
-										  (confirm)="approve_investment(item.id, 3)">
-										</swal>
+									  <button *ngIf="!item.status" (click)="approve_investment(item.id, 1)" mat-menu-item>Approve Investment</button>
+									  <button *ngIf="item.status !=3" (click)="approve_investment(item.id, 3)" mat-menu-item>Close Investment</button>
+									  <button (click)="approve_investment(item.id, 2)" mat-menu-item>Cancel Investment</button>
 									</mat-menu>
 
 									<button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">

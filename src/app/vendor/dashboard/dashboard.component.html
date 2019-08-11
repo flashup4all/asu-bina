@@ -265,12 +265,9 @@
                                         <th>Name</th>
                                         <th>Loan Type (% Intr)</th>
                                         <th>Interest Type</th>
-                                        <th>&#8358; Amount</th>
-                                        <!-- <th>&#8358; Interest</th> -->
-                                        <!-- <th>&#8358;Monthly Deductions</th> -->
-                                        <!-- <th>Repayment Method</th> -->
-                                        <!-- <th>Duration(Months)</th> -->
-                                        <th>Current Interest Balance</th>
+                                        <th>&#8358; Principal Amount</th>
+                                        <th>&#8358; Total Paid</th>
+                                        <th>Current Balance</th>
                                         <th>Start Date</th>
                                         <th>Created</th>
                                         <th>Status</th>
@@ -290,22 +287,13 @@
                                         </td>
                                         <td>{{ filter_loan_interest_type(item?.type?.interest_type) }}</td>
                                         <td>
-                                            {{item?.amount | number }} 
-                                        </td>
-                                        <!-- <td>
-                                            {{ percentage_to_amount(item.amount, item.type.interest)  | number }} 
-                                        </td> -->
-                                        <!-- <td>
-                                            {{item.monthly_deductions | number:'.2'}} 
+                                            {{item?.amount | number: '1.2-2' }} 
                                         </td>
                                         <td>
-                                            {{item.repayment_method}} 
-                                        </td> -->
-                                        <!-- <td>
-                                            {{item.type.duration}} 
-                                        </td> -->
+                                            {{item?.total_repayment | number: '1.2-2' }}  
+                                        </td>
                                         <td>
-                                            {{ calculate_loan_balance(item) | number }} 
+                                           {{ item?.loan_balance | number: '1.2-2' }} 
                                         </td>
                                         <td>
                                             {{item.start_date |date}} <!-- <p style="color: red">({{ count_no_loan_days(item?.start_date) }})</p> -->

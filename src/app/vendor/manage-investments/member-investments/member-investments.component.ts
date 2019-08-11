@@ -6,6 +6,7 @@ import { TableExportService } from '../../../shared/services/index';
 import { InvestmentService } from '../../manage-investments/investment.service';
 import { ContributionService } from '../../manage-contribution/contribution.service';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-member-investments',
@@ -250,28 +251,56 @@ export class ManageMemberInvestmentsComponent implements OnInit {
 
     approve_investment(id, status)
     {
-      this.approve_btn_loader = true;
-      let data = {
-        id: id,
-        approved_by: this.user.id,
-        user_id: this.user.user_id,
-        vendor_id: this.vendor.id,
-        status: status,
+
+      let t_title :string;
+      let t_text : string;
+      if(status == 1)
+      {
+        t_title = 'Approve?';
+        t_text = "Are You Sure You want to Approve this Investment?";
       }
-      
-      this.investmentService.approve_investment(data).subscribe((response) => {
-        if (response.success) {
-            this.approve_btn_loader = false;
-			this.get_member_investment_plans();
-            this.localService.showSuccess(response.message,'Operation Successfull');
-          }else{
-            this.approve_btn_loader = false;
-            this.localService.showError(response.message,'Operation Unsuccessfull');
-          }
-        }, (error) => {
-            this.approve_btn_loader = false;
-            this.investment_history_form_loader = false;
-                this.localService.showError(error,'Operation Unsuccessfull');
-        });
+      if(status == 2)
+      {
+        t_title = 'Cancel?';
+        t_text = "Are You Sure You want to Cancel this Investment?";
+      }
+      if(status == 3)
+      {
+        t_title = 'Cancel?';
+        t_text = "Are You Sure You want to Close this Investment?";
+      }
+      Swal.fire({
+      title: `${t_title}`,
+      text: t_text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+        this.approve_btn_loader = true;
+        let data = {
+          id: id,
+          approved_by: this.user.id,
+          user_id: this.user.user_id,
+          vendor_id: this.vendor.id,
+          status: status,
+        }
+        
+        this.investmentService.approve_investment(data).subscribe((response) => {
+          if (response.success) {
+              this.approve_btn_loader = false;
+        this.get_member_investment_plans();
+              this.localService.showSuccess(response.message,'Operation Successfull');
+            }else{
+              this.approve_btn_loader = false;
+              this.localService.showError(response.message,'Operation Unsuccessfull');
+            }
+          }, (error) => {
+              this.approve_btn_loader = false;
+              this.investment_history_form_loader = false;
+                  this.localService.showError(error,'Operation Unsuccessfull');
+          });
+      }
+      })
     }
 }

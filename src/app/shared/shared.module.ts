@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 //import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 import { MatAutocompleteModule,
          MatButtonModule,
          MatButtonToggleModule,
@@ -37,6 +40,9 @@ import { LogPipePipe } from './pipe/log-pipe.pipe';
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule, 
+    ReactiveFormsModule,
+    NgbModule,
     //FlexLayoutModule,
     MatAutocompleteModule,
     MatButtonModule,
@@ -103,7 +109,8 @@ import { LogPipePipe } from './pipe/log-pipe.pipe';
     MatToolbarModule,
     MatTooltipModule,
     MatStepperModule,
-    LogPipePipe
+    LogPipePipe,
+    
   ],
   declarations: [LogPipePipe],
   

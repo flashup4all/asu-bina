@@ -12,6 +12,7 @@ import { MembersService } from '../membership/members.service';
 import { LoanSettingsService } from '../loans/loan-settings/loan-settings.service';
 import { TableExportService } from '../../shared/services/index';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 import { VendorService } from '../vendor.service';
 
 @Component({
@@ -258,27 +259,50 @@ export class ManageDeductionsComponent implements OnInit {
 
     post_repayment(id, status)
     {
-      let data = {
-        id: id,
-        status: status,
-        approved_by : this.user.id,
-        vendor_id: this.vendor.id
-      };
-      this.approve_btn_loader = true;
-      this.deductionService.post_repayment(data).subscribe((response) => {
-        if (response.success) {
-          this.approve_btn_loader = false;
-          //this.member_loan_request_component.getMemberLoanRequest();
-          this.getLoanDeductions();
-          this.localService.showSuccess(response.message,'Operation Successfull');
-        }else{
-          this.approve_btn_loader = false;
-                this.localService.showError(response.message,'Operation Unsuccessfull');
+      let t_title :string;
+      let t_text : string;
+      if(status == 1)
+      {
+        t_title = 'Approve?';
+        t_text = "Are You Sure You want to Approve this Loan Repayment?";
+      }
+      if(status == 2)
+      {
+        t_title = 'Cancel?';
+        t_text = "Are You Sure You want to Cancel this Loan Repayment?";
+      }
+      
+      Swal.fire({
+      title: `${t_title}`,
+      text: t_text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+          let data = {
+            id: id,
+            status: status,
+            approved_by : this.user.id,
+            vendor_id: this.vendor.id
+          };
+          this.approve_btn_loader = true;
+          this.deductionService.post_repayment(data).subscribe((response) => {
+            if (response.success) {
+              this.approve_btn_loader = false;
+              //this.member_loan_request_component.getMemberLoanRequest();
+              this.getLoanDeductions();
+              this.localService.showSuccess(response.message,'Operation Successfull');
+            }else{
+              this.approve_btn_loader = false;
+                    this.localService.showError(response.message,'Operation Unsuccessfull');
+            }
+          }, (error) => {
+            this.approve_btn_loader = false;
+                  this.localService.showError(error,'Operation Unsuccessfull');
+          });
         }
-      }, (error) => {
-        this.approve_btn_loader = false;
-              this.localService.showError(error,'Operation Unsuccessfull');
-      });
+      })
     }
 
     printReciept(id): void {

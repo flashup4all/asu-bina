@@ -7,240 +7,231 @@ import { Observable } from 'rxjs/Rx';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import * as crypto from 'crypto-js'
 import * as aes from 'crypto-js/aes'
-import * as sha256 from 'crypto-js/sha256'
+import * as sha256 from 'crypto-js/sha256';
+import Swal from 'sweetalert2'
 
 @Injectable()
 export class LocalService {
 
   key: any = '';
-	constructor(
-    public http : Http, 
-    private toastrService : ToastsManager, 
+  constructor(
+    public http: Http,
+    private toastrService: ToastsManager,
     public router: Router,
+    // private exportService: TableExportService,
     private route: ActivatedRoute,
-    ) { 
-      (<any>window).$$$ = sha256('23984urkjefgdvcxh90342hk');
-      //   console.log('Key', (<any>window).$$$);
-      (<any>window).$$$.words.forEach(key_part => {
-        this.key += key_part.toString().replace('-', '');
-      });
+  ) {
+    (<any>window).$$$ = sha256('23984urkjefgdvcxh90342hk');
+    //   console.log('Key', (<any>window).$$$);
+    (<any>window).$$$.words.forEach(key_part => {
+      this.key += key_part.toString().replace('-', '');
+    });
   }
-	  /*get jwt token*/
-  	setToken(token: string) :void
-  	{
-      return window.localStorage.setItem('token', token);
-      /*let set_data = aes.encrypt(token, this.key);
-      return window.localStorage.setItem('token', set_data);*/
-  	}
-	
-    /*get token*/
-    getToken()
-    {
-      return window.localStorage.getItem('token');
-      /*let stored_token = window.localStorage.getItem('token');
-      return aes.decrypt(stored_token.toString(), this.key).toString(crypto.enc.Utf8);*/
-    }
+  /*get jwt token*/
+  setToken(token: string): void {
+    return window.localStorage.setItem('token', token);
+    /*let set_data = aes.encrypt(token, this.key);
+    return window.localStorage.setItem('token', set_data);*/
+  }
+
+  /*get token*/
+  getToken() {
+    return window.localStorage.getItem('token');
+    /*let stored_token = window.localStorage.getItem('token');
+    return aes.decrypt(stored_token.toString(), this.key).toString(crypto.enc.Utf8);*/
+  }
   /*set profile*/
-    setVendor(vendorProfile): void
-    { 
-      let set_data = aes.encrypt(JSON.stringify(vendorProfile), this.key);
-      return window.localStorage.setItem('vendorProfile', set_data);
-      // return window.localStorage.setItem('vendorProfile', vendorProfile);
-    }
-      /*get agency profile*/
-    getVendor()
-    {
-      let stored_user = window.localStorage.getItem('vendorProfile');
-      return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);
-        // return window.localStorage.getItem('vendorProfile');
-    }
-
-    /*set session*/
-    setSessionData(session_data): void
-    {
-      // let set_data = aes.encrypt(JSON.stringify(session_data), this.key);
-      // return window.localStorage.setItem('session_data', set_data);
-         return window.localStorage.setItem('session_data', session_data);
-    }
-      /*get agency profile*/
-    getSessionData()
-    {
-      /*let stored_user = window.localStorage.getItem('session_data');
-      return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);*/
-        return window.localStorage.getItem('session_data');
-    }
-
-    /* set branch data */
-    setBranchData(branch)
-    {
-      // let set_data = aes.encrypt(JSON.stringify(branch), this.key);
-      // return window.localStorage.setItem('branch', set_data);
-        return window.localStorage.setItem('branch', branch);
-    }
-    /* get branch data*/
-    getBranchData()
-    {
-      // let stored_user = window.localStorage.getItem('branch');
-      // return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);
-        return window.localStorage.getItem('branch');
-    }
-      /*set user profile*/
-    setUser(userProfile)
-    {
-      /*let set_data = aes.encrypt(JSON.stringify(userProfile), this.key);
-      return window.localStorage.setItem('userProfile', set_data);*/
-        return window.localStorage.setItem('userProfile', userProfile);
-    }
-      /*get user profile*/
-    getUser()
-    {
-      /*let stored_user = window.localStorage.getItem('userProfile');
-      return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);*/
-        return window.localStorage.getItem('userProfile');
-    }
-
-    public showSuccess(message, title) {
-        this.toastrService.success(message, title);
-    }
-
-    public showError(message, title) {
-        this.toastrService.error(message, title);
-    }
-    public GetSubDomain(url: any) {
-      let parts = url.split('.');
-      let subdomain = parts[0];
-      return subdomain;
-    }
-    check_posting_cash_role(amount)
-    {
-      let user = JSON.parse(this.getUser());
-      let position = user.user_position;
-      if(user.role_id == 2)
-      {
-        return true;
-      } else if(user.role_id == 3 || user.role_id == 4)
-      {
-        if(position.post_max_amount >= amount)
-        {
-          return true;
-        } else{
-          return false;
-        }
-      }
-    }
-
-    check_approval_staff(array, id, type)
-    {
-      let user = JSON.parse(this.getUser());
-      let position = user.user_position;
-      for (var i in array) {
-        if(array[i].staff_id == id){
-          return 1;
-        }else{
-          return 0;
-        }
-      }
-    }
-
-	header(){
-        let headers = new Headers();
-            headers.append('content-type', 'application/json');
-        let token = this.getToken();
-            if(token) {
-                headers.append('Authorization', 'Bearer ' + token);      
-            }
-        let request       = new RequestOptions({ headers: headers });
-        return request 
-    }
-
-     duration()
-     {
-       return [ 
-         {name: 'any', value: "any"},
-         {name: 'daily', value: "daily"},
-         {name: 'weekly', value: "weekly"},
-         {name: 'monthly', value: "monthly"},
-         {name: 'bi-anually', value: "bi-anually"},
-         {name: 'anually', value: "anually"},
-       ]
-     }
-
-     amount_type()
-     {
-       return [ 
-         {name: 'any  [ variable or any amount ]', value: "any"},
-         {name: 'fixed', value: "fixed"},
-         {name: 'range', value: "range"}
-       ]
-     }
-
-     interest_type()
-     {
-       return [ 
-         {name: 'Flat Rate', value: 1, desc: 'Interest is applied on principal amount and shared accross specified duration' },
-         {name: 'Interest On Reducing Balance', value: 2, desc: 'Interest is applied on each reducing balance per reducing duration'}
-       ]
-     }
-
-     account_status()
-     {
-       return [ 
-         {name: 'Activate', value: 1},
-         {name: 'De-Activate', value: 0},
-         {name: 'Suspend/Block', value: 2}
-       ]
-     }
-     return_on_investment_type()
-     {
-       return [ 
-         {value: '1', name: "Re-Invest /Roll Over Interest", description:"This option forces that the interest be applied back into the investment until the investment duration is covered / matured"},
-         {value: '2', name: "Pay Interest to My Account/Savings", description:"This option forces that the interest be paid into your account / contributions or you make request for it in cash at any of our branches by the time the interest period cycles"},
-         //{value: '3', name: "Wallet", description:"This option transfer the ROI to your wallet where you can withdraw it or perform any other online transaction using the ASUSU mobile app or USSD code for any transactions"},
-       ]
-     }
-
-    token_expired(status){
-        // console.log(status)
-    }
-
-    /*clear storage*/
-    ClearStorage(){
-        window.localStorage.removeItem('token');
-        window.localStorage.removeItem('userProfile');
-        window.localStorage.removeItem('vendorProfile');
-    }
-
-    /**
-     * @method getPaginateData
-     * get staff position resource
-     * @return data
-     */
-    getPaginateData(url)
-    {
-      return this.http.get(url, this.header())
-              .map((response : Response) => response.json());
-    }
-
-    jwtHelper = new JwtHelperService();
-
-useJwtHelper(error: Response) {
-  var token = localStorage.getItem('token');
-
-  // console.log(
-  //   this.jwtHelper.decodeToken(token),
-  //   this.jwtHelper.getTokenExpirationDate(token),
-  //   this.jwtHelper.isTokenExpired(token)
-  // );
-  if(this.jwtHelper.isTokenExpired(token))
-  {
-    this.router.navigate(['/auth']);
+  setVendor(vendorProfile): void {
+    let set_data = aes.encrypt(JSON.stringify(vendorProfile), this.key);
+    return window.localStorage.setItem('vendorProfile', set_data);
+    // return window.localStorage.setItem('vendorProfile', vendorProfile);
   }
-}
+  /*get agency profile*/
+  getVendor() {
+    let stored_user = window.localStorage.getItem('vendorProfile');
+    return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);
+    // return window.localStorage.getItem('vendorProfile');
+  }
 
-    yearjson()
-    {
-      return [
-       {
+  /*set session*/
+  setSessionData(session_data): void {
+    // let set_data = aes.encrypt(JSON.stringify(session_data), this.key);
+    // return window.localStorage.setItem('session_data', set_data);
+    return window.localStorage.setItem('session_data', session_data);
+  }
+  /*get agency profile*/
+  getSessionData() {
+    /*let stored_user = window.localStorage.getItem('session_data');
+    return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);*/
+    return window.localStorage.getItem('session_data');
+  }
+
+  /* set branch data */
+  setBranchData(branch) {
+    // let set_data = aes.encrypt(JSON.stringify(branch), this.key);
+    // return window.localStorage.setItem('branch', set_data);
+    return window.localStorage.setItem('branch', branch);
+  }
+  /* get branch data*/
+  getBranchData() {
+    // let stored_user = window.localStorage.getItem('branch');
+    // return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);
+    return window.localStorage.getItem('branch');
+  }
+  /*set user profile*/
+  setUser(userProfile) {
+    /*let set_data = aes.encrypt(JSON.stringify(userProfile), this.key);
+    return window.localStorage.setItem('userProfile', set_data);*/
+    return window.localStorage.setItem('userProfile', userProfile);
+  }
+  /*get user profile*/
+  getUser() {
+    /*let stored_user = window.localStorage.getItem('userProfile');
+    return aes.decrypt(stored_user.toString(), this.key).toString(crypto.enc.Utf8);*/
+    return window.localStorage.getItem('userProfile');
+  }
+
+  public showSuccess(message, title) {
+    this.toastrService.success(message, title);
+  }
+
+  public showError(message, title) {
+    this.toastrService.error(message, title);
+  }
+  public GetSubDomain(url: any) {
+    let parts = url.split('.');
+    let subdomain = parts[0];
+    return subdomain;
+  }
+  /**
+   * @method check_for_empty_string
+   * return empty string if string is null | undefines
+   */
+  check_for_empty_string(string) {
+    if (string == 'null' || string == undefined || string == '') {
+      return '';
+    }
+    return string;
+  }
+
+  check_posting_cash_role(amount) {
+    let user = JSON.parse(this.getUser());
+    let position = user.user_position;
+    if (user.role_id == 2) {
+      return true;
+    } else if (user.role_id == 3 || user.role_id == 4) {
+      if (position.post_max_amount >= amount) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  check_approval_staff(array, id, type) {
+    let user = JSON.parse(this.getUser());
+    let position = user.user_position;
+    for (var i in array) {
+      if (array[i].staff_id == id) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+  }
+
+  header() {
+    let headers = new Headers();
+    //headers.append('content-type', 'multipart/form-data');
+    headers.append('content-type', 'application/json');
+    let token = this.getToken();
+    if (token) {
+      headers.append('Authorization', 'Bearer ' + token);
+    }
+    let request = new RequestOptions({ headers: headers });
+    return request
+  }
+
+  duration() {
+    return [
+      { name: 'any', value: "any" },
+      { name: 'daily', value: "daily" },
+      { name: 'weekly', value: "weekly" },
+      { name: 'monthly', value: "monthly" },
+      { name: 'bi-anually', value: "bi-anually" },
+      { name: 'anually', value: "anually" },
+    ]
+  }
+
+  amount_type() {
+    return [
+      { name: 'any  [ variable or any amount ]', value: "any" },
+      { name: 'fixed', value: "fixed" },
+      { name: 'range', value: "range" }
+    ]
+  }
+
+  interest_type() {
+    return [
+      { name: 'Flat Rate', value: 1, desc: 'Interest is applied on principal amount and shared accross specified duration' },
+      { name: 'Interest On Reducing Balance', value: 2, desc: 'Interest is applied on each reducing balance per reducing duration' }
+    ]
+  }
+
+  account_status() {
+    return [
+      { name: 'Activate', value: 1 },
+      { name: 'De-Activate', value: 0 },
+      { name: 'Suspend/Block', value: 2 }
+    ]
+  }
+  return_on_investment_type() {
+    return [
+      { value: '1', name: "Re-Invest /Roll Over Interest", description: "This option forces that the interest be applied back into the investment until the investment duration is covered / matured" },
+      { value: '2', name: "Pay Interest to My Account/Savings", description: "This option forces that the interest be paid into your account / contributions or you make request for it in cash at any of our branches by the time the interest period cycles" },
+      //{value: '3', name: "Wallet", description:"This option transfer the ROI to your wallet where you can withdraw it or perform any other online transaction using the ASUSU mobile app or USSD code for any transactions"},
+    ]
+  }
+
+  token_expired(status) {
+    // console.log(status)
+  }
+
+  /*clear storage*/
+  ClearStorage() {
+    window.localStorage.removeItem('token');
+    window.localStorage.removeItem('userProfile');
+    window.localStorage.removeItem('vendorProfile');
+  }
+
+  /**
+   * @method getPaginateData
+   * get staff position resource
+   * @return data
+   */
+  getPaginateData(url) {
+    return this.http.get(url, this.header())
+      .map((response: Response) => response.json());
+  }
+
+  jwtHelper = new JwtHelperService();
+
+  useJwtHelper(error: Response) {
+    var token = localStorage.getItem('token');
+
+    // console.log(
+    //   this.jwtHelper.decodeToken(token),
+    //   this.jwtHelper.getTokenExpirationDate(token),
+    //   this.jwtHelper.isTokenExpired(token)
+    // );
+    if (this.jwtHelper.isTokenExpired(token)) {
+      this.router.navigate(['/auth']);
+    }
+  }
+
+  yearjson() {
+    return [
+      {
         "name": "January",
         "short": "Jan",
         "number": 1,
@@ -313,5 +304,85 @@ useJwtHelper(error: Response) {
         "days": 31
       }
     ]
-    }
+  }
+
+  /*exportTable(format, tableId)
+  {
+    this.exportService.exportTo(format, tableId);
+  }*/
+
+  printReciept(id): void {
+    let printContents, popupWin;
+
+    printContents = document.getElementById(id).outerHTML;
+    popupWin = window.open('', '_blank', 'width=auto');
+    popupWin.document.open();
+    popupWin.document.write(`
+        <html>
+          <head>
+            <title>Print tab</title>
+            <style>
+              body{font-size:14px; text-align: center;}
+                table {
+                    margin: 5px;
+                  
+              }
+
+              .center{
+                text-align:center;
+              }
+              .full{
+                width:100%;
+              }
+              .row{
+                display: block;
+              }
+
+              .border, tr, th, td {
+                  border: 1px solid black;
+                  padding:2px;
+                  border-collapse: collapse;
+                   }
+                   
+              .no-border{ 
+                  border: none !important;
+                  }
+                  
+               .print-full{ 
+                 width: 100%      
+               }
+
+               .print-half{ 
+                 width: 48%;   
+               }
+               
+               .left{ float: left;}
+               
+               .right{float: right;}
+               
+               
+               .margin{ 5px;}
+               .row{width:100%;}
+            </style>
+          </head>
+      <body onload="window.print();window.close()">${printContents}</body>
+        </html>`
+    );
+    popupWin.document.close();
+  }
+
+  /**
+ * @method swal_alert
+ * trigger sweet alert modal
+ */
+  swal_alert(type, title: string, msg: string = null, position = null, timer = null, footer: string = null) {
+    Swal.fire({
+      position: position,
+      type: type,
+      title: title,
+      text: msg,
+      footer: footer,
+      timer: timer
+    })
+  }
 }

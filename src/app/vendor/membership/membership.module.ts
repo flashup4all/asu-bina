@@ -13,6 +13,7 @@ import { MemberContributionsComponent } from './member-contributions/member-cont
 import { MemberAccountOfficerComponent } from './member-account-officer/member-account-officer.component';
 import { MemberLoanRequestComponent } from './member-loan-request/member-loan-request.component';
 import { MemberDeductionsComponent } from './member-deductions/member-deductions.component';
+import { MemberTransactionComponent } from './member-transaction/member-transaction.component';
 import { MembersService } from './members.service';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '../../shared/shared.module';
@@ -20,7 +21,6 @@ import { SharedModule } from '../../shared/shared.module';
 
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 import { MemberUploadComponent } from './member-upload/member-upload.component';
-import { MemberTransactionComponent } from './member-transaction/member-transaction.component';
 
 export const members_routes = [
   { path: '', redirectTo: 'manage-members', pathMatch: 'full'},

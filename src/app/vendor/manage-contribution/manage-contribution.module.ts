@@ -17,6 +17,7 @@ import { ContributionTypeComponent } from './contribution-type/contribution-type
 import { ContributionPlanComponent } from './contribution-plan/contribution-plan.component';
 import { MemberContributionPlanComponent } from './member-contribution-plan/member-contribution-plan.component';
 import { UploadMembersToPlanComponent } from './upload-members-to-plan/upload-members-to-plan.component';
+import { TransferFormComponent } from './transfer-form/transfer-form.component';
 
 @NgModule({
   imports: [
@@ -37,7 +38,8 @@ import { UploadMembersToPlanComponent } from './upload-members-to-plan/upload-me
     ContributionTypeComponent,
     ContributionPlanComponent,
     MemberContributionPlanComponent,
-    UploadMembersToPlanComponent
+    UploadMembersToPlanComponent,
+    TransferFormComponent,
   ],
   providers: [ContributionService]
 })

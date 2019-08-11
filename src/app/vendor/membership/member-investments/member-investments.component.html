@@ -72,26 +72,8 @@
 		                    <td class="center">
 		                    	<mat-menu #appM="matMenu">
                         		<mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
-								  <button *ngIf="item.status != 1" [swal]="approve_inv" mat-menu-item>Approve Investment</button>
-								  <button [swal]="cancel_inv" mat-menu-item>Cancel Investment</button>
-								  <swal
-									  #approve_inv
-									  title="Are You Sure You want to Approve this Investment?"
-									  text="This cannot be undone"
-									  type="warning"
-									  [showCancelButton]="true"
-									  [focusCancel]="true"
-									  (confirm)="approve_investment(item.id, 1)">
-									</swal>
-									<swal
-									  #cancel_inv
-									  title="Are You Sure You want to Cancel this Investment?"
-									  text="This cannot be undone"
-									  type="warning"
-									  [showCancelButton]="true"
-									  [focusCancel]="true"
-									  (confirm)="approve_investment(item.id, 2)">
-									</swal>
+								  <button *ngIf="item.status != 1" (click)="approve_investment(item.id, 1)" mat-menu-item>Approve Investment</button>
+								  <button (click)="approve_investment(item.id, 2)" mat-menu-item>Cancel Investment</button>
 								</mat-menu>
 
 								<button *ngIf="item.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appM">
@@ -243,26 +225,7 @@
                             <td>
                             	<mat-menu #appMenu="matMenu">
                         		<mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
-								  <button [hidden]="item.status > 0" [swal]="post_inv_trans" mat-menu-item>Post Transaction</button>
-								  <swal
-									  #post_inv_trans
-									  title="Are You Sure You want to Approve this Transaction?"
-									  text="This cannot be undone"
-									  type="warning"
-									  [showCancelButton]="true"
-									  [focusCancel]="true"
-									  (confirm)="post_transaction(item.id, 1)">
-									</swal>
-									 <button *ngIf="item.status != 2" [swal]="cancel_inv_trans" mat-menu-item>Cancel Transaction</button>
-								  <swal
-									  #cancel_inv_trans
-									  title="Are You Sure You want to Cancel this Transaction?"
-									  text="This cannot be undone"
-									  type="warning"
-									  [showCancelButton]="true"
-									  [focusCancel]="true"
-									  (confirm)="post_transaction(item.id, 2)">
-									</swal>
+								  <button [hidden]="item.status > 0" (click)="post_transaction(item.id, 1)" mat-menu-item>Post Transaction</button>
 								</mat-menu>
 
 								<button *ngIf="localService.check_posting_cash_role(item.amount)" mat-icon-button [matMenuTriggerFor]="appMenu">

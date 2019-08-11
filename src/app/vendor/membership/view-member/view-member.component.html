@@ -17,37 +17,8 @@
                 <mat-chip-list style="float: right">
                     <mat-chip *ngIf="member?.status == '1'" color="primary" selected="true">Activated</mat-chip>
                     <mat-chip *ngIf="member?.status == '0'" color="warn" selected="true">Not Active</mat-chip>
-                    <mat-chip *ngIf="member?.status == '2'" color="warn" selected="true">Suspended</mat-chip>
+                    <mat-chip *ngIf="member?.status == '2'" color="warn" selected="true">Closed ({{ member?.status_detail}})</mat-chip>
                 </mat-chip-list>
-                <mat-menu #appMi="matMenu">
-                  <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
-                  <button *ngIf="member?.status != 1" [swal]="approve_inv" mat-menu-item>Activate Account</button>
-                  <button [swal]="cancel_inv" *ngIf="member?.status == 1" mat-menu-item>Deactivate Account</button>
-                  <swal
-                    #approve_inv
-                    title="Are You Sure You want to Activate This Account?"
-                    text="This cannot be undone"
-                    type="warning"
-                    [showCancelButton]="true"
-                    [focusCancel]="true"
-                    (confirm)="activateMember(member.id)">
-                  </swal>
-                  <swal
-                    #cancel_inv
-                    title="Are You Sure You want to Deactivate this Account?"
-                    text="This cannot be undone"
-                    type="warning"
-                    [showCancelButton]="true"
-                    [focusCancel]="true"
-                    (confirm)="deactivateMember(member.id)">
-                  </swal>
-                </mat-menu>
-                <button style="float: right" *ngIf="member?.status != 2 && user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appMi">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <!-- <button mat-icon-button [matMenuTriggerFor]="appMi">
-                  <mat-icon>more_vert</mat-icon>
-                </button> -->
                 <p class="profile-brief">
                     {{member?.email}}
                 </p>
@@ -172,16 +143,7 @@
                                       </label>
                                       <p class="pull-right" style="cursor: pointer; color: blue;">
                                           <!-- <i *ngIf="user?.role_id < 4" class="fa fa-edit" (click)="allow_edit_acc_no = !allow_edit_acc_no">edit</i> -->
-                                          <button type="button" [swal]="acc_no_alert" *ngIf="user?.role_id < 4" mat-menu-item>Edit</button>
-                                          <swal
-                                            #acc_no_alert
-                                            title="Are You Sure You want to Edit Member Account Number?"
-                                            text="Please Be sure of this Action"
-                                            type="warning"
-                                            [showCancelButton]="true"
-                                            [focusCancel]="true"
-                                            (confirm)="show_member_account_no_modal()">
-                                          </swal>
+                                          <button type="button" (click)="show_member_account_no_modal()" *ngIf="user?.role_id < 4" mat-menu-item>Edit</button>
                                         </p>
                                   </div>
                                   <!-- <div class="form-group" *ngIf="allow_edit_acc_no">
@@ -307,6 +269,31 @@
                                       <mat-panel-title>Account Settings</mat-panel-title>
                                   </mat-expansion-panel-header>
                                   <br>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                      <ul class="list-group">
+                                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Account Status
+                                            <mat-chip-list style="">
+                                                <mat-chip *ngIf="member?.status == '1'" color="primary" selected="true">Activated </mat-chip>
+                                                <mat-chip *ngIf="member?.status == '0'" color="warn" selected="true">Not Active </mat-chip>
+                                                <mat-chip *ngIf="member?.status == '2'" color="warn" selected="true">Closed ({{ member?.status_detail}})</mat-chip>
+                                            </mat-chip-list>
+                                            <span class="">
+                                                <mat-menu #appMi="matMenu">
+                                                    <mat-progress-bar *ngIf="approve_btn_loader" mode="indeterminate"></mat-progress-bar>
+                                                    <button *ngIf="member?.status != 1" (click)="activateMember(member.id)" mat-menu-item>Activate Account</button>
+                                                    <button (click)="deactivateMember(member.id)" *ngIf="member?.status == 1" mat-menu-item>Deactivate Account</button>
+                                                    <button (click)="close_member_account(member.id)" mat-menu-item>Close | Block Account</button>
+                                                  </mat-menu>
+                                                  <button style="float: right" *ngIf="user.role_id != 4" mat-icon-button [matMenuTriggerFor]="appMi">
+                                                      <mat-icon>more_vert</mat-icon>
+                                                    </button>
+                                            </span>
+                                          </li>
+                                        </ul>
+                                  </div>
+                                </div>
                                    
                                 </mat-expansion-panel>
                             </mat-accordion>
@@ -317,100 +304,7 @@
                         </tab>
                         <tab heading="WITHDRAWAL">
                           <app-member-withdrawals></app-member-withdrawals>
-                            <!-- <div class="container p-2">
-                                   <button (click)="exportTable('xls', 'withdrawal_table')" class="btn btn-outline btn-success">Export table</button>
-                                   <button class="btn btn-outline btn-success" (click)="printReciept('withdrawal_table')">Print</button>
-                                   <button type="button" class="btn btn-primary pull-right" (click)="newWithdrawalModal.show()"> Make a Withdrawal</button>
-                               </div>
-                                <table id="withdrawal_table" class="table table-responsive-sm table-hover table-outline mb-0" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Trans ID</th>
-                                            <th>Branch</th>
-                                            <th>Name</th>
-                                            <th>Plan</th>
-                                            <th> &#8358; Amount</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                            <th>Created By</th>
-                                            <th>Approved</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="" *ngFor="let item of withdrawal_list">
-                                            <td>#00{{ item?.id }}</td>
-                                            <td>{{ item?.branch?.name }}</td>
-                                            <td>
-                                                {{item?.member?.first_name}} 
-                                                {{item?.member?.last_name}} 
-                                                {{item?.member?.middle_name}} 
-                                            </td>
-                                            <td>
-                                               {{item?.plan?.name}}  
-                                            </td>
-                                            <td>
-                                               {{ item?.amount  | number }}  
-                                            </td>
-                                              <td>
-                                                <span *ngIf="item.status == 0" class="badge badge-warning">Pending </span>
-                                                <span *ngIf="item.status == 2" class="badge badge-danger">Cancelled </span>
-                                                <span *ngIf="item.status == 1" class="badge badge-success">Approved </span>
-                                            </td>
-                                            <td>
-                                                {{item?.created_at | date: 'shortDate'}} 
-                                            </td>
-                                            <td>
-                                              {{ item?.staff?.first_name}} 
-                                              {{ item?.staff?.last_name}} 
-                                              {{ item?.staff?.middle_name}}
-                                            </td>
-                                            <td>
-                                              {{ item?.approved_by?.first_name}} 
-                                              {{ item?.approved_by?.last_name}} 
-                                              {{ item?.approved_by?.middle_name}}
-                                            </td>
-                                            <td class="center">
-                                              <mat-menu #appMenu="matMenu">
-                                                <button [swal]="approve_request" [disabled]="btn_loader" mat-menu-item *ngIf="item.status==0">Approve Request</button>
-                                                <mat-progress-bar *ngIf="btn_loader" mode="indeterminate"></mat-progress-bar>
-                                                <button [swal]="cancel_request" [disabled]="btn_loader" mat-menu-item *ngIf="item.status == 0 ">Cancel Request</button>
-                                                <swal
-                                                  #approve_request
-                                                  title="Are You Sure You want to Approve this Withdrawal?"
-                                                  text="This cannot be undone"
-                                                  type="warning"
-                                                  [showCancelButton]="true"
-                                                  [focusCancel]="true"
-                                                  (confirm)="approveWidthdrawalRequest(item.id)">
-                                                </swal>
-                                                <swal
-                                                  #cancel_request
-                                                  title="Are You Sure You want to Cancel this Withdrawal?"
-                                                  text="This cannot be undone"
-                                                  type="warning"
-                                                  [showCancelButton]="true"
-                                                  [focusCancel]="true"
-                                                  (confirm)="cancelWidthdrawalRequest(item.id)">
-                                                </swal>
-                                              </mat-menu>
-
-                                              <button *ngIf="item.status != 2 && localService.check_posting_cash_role(item.amount)" mat-icon-button [matMenuTriggerFor]="appMenu">
-                                                <mat-icon>more_vert</mat-icon>
-                                              </button>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="3">Total</td>
-                                            <td>{{ total_contribution_amount | number }}</td>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
-                                </table> -->
                         </tab>
-                        <!-- <tab heading="LOAN REPAYMENTS">
-                          
-                        </tab> -->
                         <tab heading="LOAN REQUEST">
                             <app-member-loan-request></app-member-loan-request>
                         </tab>

@@ -6,13 +6,12 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LocalService } from '../../storage/local.service';
 import { ContributionService } from './contribution.service';
-// import { XlsxToJsonService } from '../../shared/xls/index'
 import { MembersService } from '../membership/members.service';
 import { StaffService } from '../staff/staff.service';
 import { VendorService } from '../vendor.service';
 import { TableExportService } from '../../shared/services/index';
-//import * as FileSaver from 'file-saver';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-manage-contribution',
@@ -89,13 +88,7 @@ export class ManageContributionComponent implements OnInit {
 		this.monthList = this.localService.yearjson();
   		}
 
-	  ngOnInit() {
-	  	/*this.runContributionForm = this._fb.group({
-        plan_id : [null, Validators.compose([Validators.required])],
-  			type : [null, Validators.compose([Validators.required])],
-  			period : [null, Validators.compose([Validators.required])]
-  		});*/
-      
+	  ngOnInit() {      
   		 /*filter form*/
        this.filterForm = this._fb.group({
           transaction_id : '',
@@ -147,10 +140,6 @@ export class ManageContributionComponent implements OnInit {
 
 	  handleFile(event) {
 	    let file = event.target.files[0];
-	    /*this.xlsxToJsonService.processFileToJson({}, file).subscribe(data => {
-	    this.result = JSON.stringify(data['sheets'].Sheet1);
-	    console.log(data['sheets'].Sheet1);
-	    });*/
 	  }
 
 	get_contribution_type()
@@ -167,9 +156,11 @@ export class ManageContributionComponent implements OnInit {
 	 */
 	getContributions()
 	{
+      this.submitPending = true;
 		this.contributionService.getContributions().subscribe((response) => {
 			this.toPage = response.next_page_url;
 			this.contibutionsList = response.data
+      this.submitPending = false;
 			/*for(var i=0; i < response.data.length; i++)
 	         {
 	           	this.contibutionsList.push(response.data[i])
@@ -410,7 +401,26 @@ export class ManageContributionComponent implements OnInit {
 
     post_transaction(transaction, status)
     {
-      console.log(transaction)
+      let t_title :string;
+      let t_text : string;
+      if(status == 1)
+      {
+        t_title = 'Approve?';
+        t_text = "Are You Sure You want to Approve this Transaction?";
+      }
+      if(status == 2)
+      {
+        t_title = 'Cancel?';
+        t_text = "Are You Sure You want to Cancel this Transaction?";
+      }
+      Swal.fire({
+      title: `${t_title}`,
+      text: t_text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
       this.btn_loader = true;
       let data = {
         id: transaction.id,
@@ -434,6 +444,8 @@ export class ManageContributionComponent implements OnInit {
             this.btn_loader = false;
                 this.localService.showError('Server Error Please contact Administrator','Operation Unsuccessfull');
         });
+      }
+      })
     }
 
 }

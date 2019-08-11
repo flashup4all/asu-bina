@@ -15,6 +15,7 @@ import * as moment from 'moment';
 import { TableExportService } from '../../../shared/services/index';
 import { ViewMemberComponent } from '../view-member/view-member.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-member-contributions',
@@ -110,7 +111,8 @@ export class MemberContributionsComponent implements OnInit {
         from : '',
         to : '',
         id : '',
-        type:''
+        type:'',
+        plan_id: ''
       });
 
       this.contribution_application_form = this._fb.group({
@@ -369,11 +371,7 @@ export class MemberContributionsComponent implements OnInit {
 
     makeContribution(formValues)
     {
-      console.log(this.deviceService.getDeviceInfo())
-       /*if(parseInt(this.member.status))
-       {*/
          let data = {
-           //status: parseInt(this.member.status),
            id:this.member_id,
            contribution: parseInt(formValues.contribution)
          }
@@ -406,26 +404,7 @@ export class MemberContributionsComponent implements OnInit {
         }, (error) => {
           this.submitPending = false;
                 this.localService.showError('Server Error','Operation Unsuccessfull');
-        })
-        /*this.contributionService.runEditedContributions(formValues).subscribe((response) => {
-          if (response.success) {
-            this.submitPending = false;
-          this.getMemberContributions();
-          this.getActualBalance();
-          this.runContributionForm.reset()
-            this.newContributionModal.hide();
-            this.localService.showSuccess(response.message,'Operation Successfull');
-          }else{
-            this.localService.showError(response.message,'Operation Unsuccessfull');
-          }
-        }, (error) => {
-          this.submitPending = false;
-                this.localService.showError(error,'Operation Unsuccessfull');
-        });*/
-       /*}else{
-         console.log('not active')
-            this.localService.showError('Cannot make contribution on an inactive account','Account Inactive');
-       }*/
+        });
     }
 
     filterContribution(filterValues)
@@ -492,7 +471,29 @@ export class MemberContributionsComponent implements OnInit {
 
     approve_contribution(id, status)
     {
+
       this.approve_btn_loader = true;
+      let t_title :string;
+      let t_text : string;
+      if(status == 1)
+      {
+        t_title = 'Approve?';
+        t_text = "Are You Sure You want to Approve this plan?";
+      }
+      if(status == 2)
+      {
+        t_title = 'Cancel?';
+        t_text = "Are You Sure You want to Cancel this plan?";
+      }
+      Swal.fire({
+      title: `${t_title}`,
+      text: t_text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+        
       let data = {
         id: id,
         approved_by: this.user.id,
@@ -515,10 +516,21 @@ export class MemberContributionsComponent implements OnInit {
           this.form_loader = false;
                 this.localService.showError(error,'Operation Unsuccessfull');
         });
+      }
+      })
     }
 
     delete_contribution_plan(id)
     {
+      Swal.fire({
+      title: 'Delete Member Plan?',
+      text: "Are You Sure You want to Delete this Plan?",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+        
       let data = {
         user_id : this.user.user_id,
         vendor_id : this.vendor.id
@@ -537,10 +549,21 @@ export class MemberContributionsComponent implements OnInit {
           this.form_loader = false;
                 this.localService.showError(error,'Operation Unsuccessfull');
         });
+      }
+      })
     }
 
     delete_contribution_history(id)
     {
+      Swal.fire({
+      title: "Delete Transaction",
+      text: 'Are You Sure You want to Delete this Transaction?',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+      
       let data = {
         id: id,
         user_id : this.user.user_id,
@@ -562,11 +585,33 @@ export class MemberContributionsComponent implements OnInit {
           this.form_loader = false;
                 this.localService.showError(error,'Operation Unsuccessfull');
         });
+      }
+      })
     }
 
     post_transaction(transaction_id, status)
     {
       this.btn_loader = true;
+        let title: string;
+        let text: string;
+        if(status==2)
+        {
+          title="Cancel this Transaction?"
+          text="Are You Sure You want to Cancel this Transaction?"
+        }
+        if(status==1)
+        {
+          title="Approve this Transaction?"
+          text="Are You Sure You want to Approve this Transaction?"
+        }
+      Swal.fire({
+      title: title,
+      text: text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
       let data = {
         id: transaction_id,
         approved_by: this.user.id,
@@ -593,5 +638,7 @@ export class MemberContributionsComponent implements OnInit {
           this.form_loader = false;
                 this.localService.showError(error,'Operation Unsuccessfull');
         });
+      }
+      })
     }
 }

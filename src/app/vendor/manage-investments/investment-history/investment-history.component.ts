@@ -6,6 +6,7 @@ import { TableExportService } from '../../../shared/services/index';
 import { InvestmentService } from '../../manage-investments/investment.service';
 import { ContributionService } from '../../manage-contribution/contribution.service';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-investment-history',
@@ -193,27 +194,49 @@ export class InvestmentHistoryComponent implements OnInit {
 
     post_transaction(transaction_id, status)
     {
-      this.btn_loader = true;
-      let data = {
-        id: transaction_id,
-        approved_by: this.user.id,
-        user_id: this.user.user_id,
-        vendor_id: this.vendor.id,
-        status: status
+      let t_title :string;
+      let t_text : string;
+      if(status == 1)
+      {
+        t_title = 'Approve?';
+        t_text = "Are You Sure You want to Approve this Transaction?";
       }
-      
-      this.investmentService.post_investment_history(data).subscribe((response) => {
-        if (response.success) {
-          this.btn_loader = false;
-            this.get_vendor_investment_history();
-            this.localService.showSuccess(response.message,'Operation Successfull');
-          }else{
+      if(status == 2)
+      {
+        t_title = 'Cancel?';
+        t_text = "Are You Sure You want to Cancel this Transaction?";
+      }
+      Swal.fire({
+      title: `${t_title}`,
+      text: t_text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!'
+      }).then((result) => {
+      if (result.value) {
+        this.btn_loader = true;
+        let data = {
+          id: transaction_id,
+          approved_by: this.user.id,
+          user_id: this.user.user_id,
+          vendor_id: this.vendor.id,
+          status: status
+        }
+        
+        this.investmentService.post_investment_history(data).subscribe((response) => {
+          if (response.success) {
             this.btn_loader = false;
-            this.localService.showError(response.message,'Operation Unsuccessfull');
-          }
-        }, (error) => {
-          this.btn_loader = false;
-            this.localService.showError('Please try again later or contact admin','Server Error');
-        });
+              this.get_vendor_investment_history();
+              this.localService.showSuccess(response.message,'Operation Successfull');
+            }else{
+              this.btn_loader = false;
+              this.localService.showError(response.message,'Operation Unsuccessfull');
+            }
+          }, (error) => {
+            this.btn_loader = false;
+              this.localService.showError('Please try again later or contact admin','Server Error');
+          });
+      }
+      })
     }
 }
