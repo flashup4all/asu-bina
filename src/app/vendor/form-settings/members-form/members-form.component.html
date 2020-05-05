@@ -26,12 +26,8 @@
                                 </mat-expansion-panel-header>
                                 <mat-panel-description>
                                     <mat-progress-bar *ngIf="login_details_loader" mode="indeterminate"></mat-progress-bar>
-                                    <br><button class="btn btn-success pull-left" [swal]="send_login_swal">Send Login
+                                    <br><button class="btn btn-success pull-left" (click)="send_login_details_to_all_members()">Send Login
                                         Details to all Members</button>
-                                    <swal #send_login_swal title="Are You Sure You want to send login details to all members?"
-                                        text="This cannot be undone" type="warning" [showCancelButton]="true"
-                                        [focusCancel]="true" (confirm)="send_login_details_to_all_members()">
-                                    </swal>
                                 </mat-panel-description>
                             </mat-expansion-panel>
                         </mat-accordion>

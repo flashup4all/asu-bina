@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LocalService } from '../../../storage/local.service';
 import { FormService } from '../form.service';
 import { MembersService } from '../../membership/members.service';
+import Swal from 'sweetalert2'
 
 @Component({
 	selector: 'app-members-form',
@@ -138,22 +139,35 @@ export class MembersFormComponent implements OnInit {
 	*/
 	send_login_details_to_all_members()
 	{
-		this.login_details_loader = true;
-		let data = {
-			user_id: this.user.user_id,
-			staff_id: this.user.id,
-			vendor_id: this.vendor.id
-		}
-		this.manageMemberService.send_login_details_to_all_members(data).subscribe((response) => {
-			this.login_details_loader = false
-			if (response.success == true) {
-				this.localService.showSuccess(response.message, 'Operation Successfull');
-			} else {
-				this.localService.showError(response.message, 'Operation UnsSuccessfull');
+		Swal.fire({
+	      title: 'Send Login Details',
+	      text: "Are You Sure You want to send login details to all members?",
+	      type: 'warning',
+	      showCancelButton: true,
+	      //confirmButtonColor: '#3085d6',
+	      //cancelButtonColor: '#d33',
+	      confirmButtonText: 'Yes!'
+	      }).then((result) => {
+	      if (result.value) {
+	        this.login_details_loader = true;
+			let data = {
+				user_id: this.user.user_id,
+				staff_id: this.user.id,
+				vendor_id: this.vendor.id
 			}
-		}, (error) => {
-			this.login_details_loader = false;
-			this.localService.showError('Server Error', 'Please contact Admin/support');
-		});
+			this.manageMemberService.send_login_details_to_all_members(data).subscribe((response) => {
+				this.login_details_loader = false
+				if (response.success == true) {
+					this.localService.showSuccess(response.message, 'Operation Successfull');
+				} else {
+					this.localService.showError(response.message, 'Operation UnsSuccessfull');
+				}
+			}, (error) => {
+				this.login_details_loader = false;
+				this.localService.showError('Server Error', 'Please contact Admin/support');
+			});
+	      }
+	      })
+
 	}
 }
